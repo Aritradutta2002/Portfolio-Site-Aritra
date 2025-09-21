@@ -332,22 +332,6 @@ export function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Simple Scroll indicator */}
-          <motion.div
-            className="absolute bottom-16 left-1/2 transform -translate-x-1/2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-          >
-            <motion.button
-              onClick={scrollToNext}
-              className="flex flex-col items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <ChevronDown className="w-5 h-5" />
-            </motion.button>
-          </motion.div>
         </div>
       </div>
     </section>

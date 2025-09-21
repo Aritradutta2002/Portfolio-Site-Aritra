@@ -1,7 +1,7 @@
 import { Navigation } from '@/components/Navigation'
 import { Hero } from '@/components/Hero'
 import { About } from '@/components/About'
-import { Skills } from '@/components/Skills'
+import { SkillWheel } from '@/components/SkillWheel'
 import { Projects } from '@/components/Projects'
 import { Experience } from '@/components/Experience'
 import { Blog } from '@/components/Blog'
@@ -16,7 +16,7 @@ export default function Home() {
       <Navigation />
       <Hero />
       <About />
-      <Skills />
+      <SkillWheel />
       <Projects />
       <Experience />
       <Blog />
