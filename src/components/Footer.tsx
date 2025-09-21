@@ -125,7 +125,7 @@ export function Footer() {
                 href="tel:+916295699190"
                 className="block text-gray-300 hover:text-white transition-colors duration-200"
               >
-                +91 6295699190
+                +91 629569XXXX
               </a>
               <p className="text-gray-400">
                 Bhubaneswar, Odisha, India
