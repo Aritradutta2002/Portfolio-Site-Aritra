@@ -79,7 +79,7 @@ function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError
           transition={{ delay: 0.4 }}
           className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed"
         >
-          We encountered an unexpected error. Don't worry, it's not your fault. 
+          We encountered an unexpected error. Don&apos;t worry, it&apos;s not your fault. 
           Please try refreshing the page or go back to the homepage.
         </motion.p>
 

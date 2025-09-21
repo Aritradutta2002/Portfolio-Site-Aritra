@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { ChevronDown, Download, Mail, Github, Linkedin, Code2, Target, Zap } from 'lucide-react'
+import { ChevronDown, Download } from 'lucide-react'
 
 export function Hero() {
   const scrollToNext = () => {

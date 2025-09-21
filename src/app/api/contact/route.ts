@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { EMAIL_CONFIG, validateEmail } from '@/lib/email-config'
+import { validateEmail } from '@/lib/email-config'
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,22 +20,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-
-    // Create email content
-    const emailContent = `
-      New Contact Form Submission from Portfolio Website
-      
-      Name: ${name}
-      Email: ${email}
-      Subject: ${subject}
-      
-      Message:
-      ${message}
-      
-      ---
-      This message was sent from your portfolio contact form.
-      Reply directly to: ${email}
-    `
 
     // For now, we'll use a simple approach with mailto
     // In production, you would integrate with an email service like:

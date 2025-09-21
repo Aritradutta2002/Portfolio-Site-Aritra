@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
-import { Mail, Phone, MapPin, Github, Linkedin, Code2, Send, CheckCircle, Trophy, Target, Zap, Twitter } from 'lucide-react'
+import { Mail, Phone, MapPin, Github, Linkedin, Code2, Send, CheckCircle, Target, Zap, Twitter } from 'lucide-react'
 import { createMailtoLink } from '@/lib/email-config'
 
 interface FormData {

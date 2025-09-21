@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { MapPin, Calendar, Building, Code, Users, Trophy } from 'lucide-react'
+import { MapPin, Calendar, Building, Code, Trophy } from 'lucide-react'
 
 const experience = {
   company: 'Tata Consultancy Services',

@@ -60,8 +60,6 @@ const blogPosts: BlogPost[] = [
   }
 ]
 
-const categories = ['All', 'Programming', 'Backend Development', 'Web Development', 'Career']
-
 export function Blog() {
   const featuredPosts = blogPosts.filter(post => post.featured)
   const recentPosts = blogPosts.slice(0, 3)
