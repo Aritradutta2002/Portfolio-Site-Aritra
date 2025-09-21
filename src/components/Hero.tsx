@@ -13,7 +13,7 @@ export function Hero() {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950 pt-24">
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950 pt-24">
       {/* Enhanced Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Subtle grid pattern */}
@@ -62,7 +62,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pb-20">
         <div className="text-center">
           {/* Enhanced Profile Image with Premium Effects */}
           <motion.div
@@ -249,15 +249,15 @@ export function Hero() {
               </p>
             </motion.div>
 
-            {/* Enhanced Action Button */}
+            {/* Enhanced Action Buttons */}
             <motion.div 
-              className="mb-40 mt-12"
+              className="mb-48 mt-12 flex flex-col sm:flex-row gap-8 lg:gap-12 justify-center items-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.0 }}
             >
               <motion.button
-                className="group relative px-12 py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white rounded-2xl font-semibold text-lg shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden border border-white/20"
+                className="group relative px-8 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white rounded-xl font-medium text-base shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-white/20"
                 whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
@@ -274,25 +274,67 @@ export function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 
                 {/* Button text */}
-                <span className="relative z-10 flex items-center gap-3">
-                  <svg className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span className="relative z-10 flex items-center gap-2">
+                  <svg className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   More About Me
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </span>
                 
                 {/* Glow effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-500 -z-10"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-500 -z-10"></div>
               </motion.button>
+
+              {/* Scroll Down Icon - Between Buttons */}
+              <motion.button
+                onClick={scrollToNext}
+                className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-white/10 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-700/50 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-white/20 dark:hover:bg-gray-700/50 transition-all duration-300"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 1.2 }}
+              >
+                <motion.div
+                  animate={{ y: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <ChevronDown className="w-5 h-5" />
+                </motion.div>
+              </motion.button>
+
+              {/* Resume Download Button */}
+              <motion.a
+                href="/RESUME-ARITRA.pdf"
+                download="Aritra_Dutta_Resume.pdf"
+                className="group relative px-8 py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-xl font-medium text-base shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-white/20"
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {/* Animated background overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                
+                {/* Button text */}
+                <span className="relative z-10 flex items-center gap-2">
+                  <Download className="w-5 h-5 group-hover:animate-bounce transition-transform duration-300" />
+                  Download Resume
+                </span>
+                
+                {/* Glow effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-500 -z-10"></div>
+              </motion.a>
             </motion.div>
           </motion.div>
 
           {/* Simple Scroll indicator */}
           <motion.div
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+            className="absolute bottom-16 left-1/2 transform -translate-x-1/2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5, duration: 1 }}

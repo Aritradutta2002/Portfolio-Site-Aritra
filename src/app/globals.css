@@ -20,6 +20,52 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Accessibility: Reduced motion class */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* High contrast mode */
+.high-contrast {
+  filter: contrast(150%);
+}
+
+.high-contrast * {
+  border-color: currentColor !important;
+}
+
+/* Font size accessibility */
+.font-normal {
+  font-size: 100%;
+}
+
+.font-large {
+  font-size: 110%;
+}
+
+.font-extra-large {
+  font-size: 120%;
+}
+
 /* Body styles */
 body {
   background: var(--background);

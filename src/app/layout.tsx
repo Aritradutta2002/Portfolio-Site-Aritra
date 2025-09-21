@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Fira_Code } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { AccessibilityProvider, AccessibilitySettings } from '@/components/AccessibilityProvider'
 
 const inter = Inter({
   variable: "--font-inter",
@@ -43,17 +45,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange={false}
-        >
-          {children}
-        </ThemeProvider>
+        <ErrorBoundary>
+          <AccessibilityProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange={false}
+            >
+              {children}
+              <AccessibilitySettings />
+            </ThemeProvider>
+          </AccessibilityProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

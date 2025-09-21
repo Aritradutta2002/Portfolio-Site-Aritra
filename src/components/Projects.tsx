@@ -164,13 +164,30 @@ export function Projects() {
             >
               {/* Project Image */}
               <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 to-purple-900 overflow-hidden">
+                {/* Fallback gradient background with icon */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20 flex items-center justify-center">
-                  <div className="text-6xl opacity-20">
+                  <div className="text-6xl opacity-30">
                     {project.category === 'Web Development' && '🌐'}
                     {project.category === 'Desktop Application' && '💻'}
                     {project.category === 'AI/ML' && '🤖'}
                     {project.category === 'Competitive Programming' && '🏆'}
                     {project.category === 'Backend Development' && '⚙️'}
+                  </div>
+                </div>
+                
+                {/* Project preview mockup */}
+                <div className="absolute inset-4 bg-white/90 dark:bg-gray-800/90 rounded-lg shadow-lg flex items-center justify-center">
+                  <div className="text-center p-4">
+                    <div className="text-2xl mb-2">
+                      {project.category === 'Web Development' && '🌐'}
+                      {project.category === 'Desktop Application' && '💻'}
+                      {project.category === 'AI/ML' && '🤖'}
+                      {project.category === 'Competitive Programming' && '🏆'}
+                      {project.category === 'Backend Development' && '⚙️'}
+                    </div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {project.title}
+                    </div>
                   </div>
                 </div>
                 
