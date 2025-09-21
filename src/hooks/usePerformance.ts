@@ -50,7 +50,7 @@ export function usePerformance() {
           
           try {
             lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] })
-          } catch (e) {
+          } catch {
             console.warn('LCP observation not supported')
           }
 
@@ -58,8 +58,12 @@ export function usePerformance() {
           const clsObserver = new PerformanceObserver((list) => {
             let clsValue = 0
             for (const entry of list.getEntries()) {
-              if (!(entry as any).hadRecentInput) {
-                clsValue += (entry as any).value
+              const layoutShiftEntry = entry as PerformanceEntry & {
+                hadRecentInput?: boolean
+                value?: number
+              }
+              if (!layoutShiftEntry.hadRecentInput) {
+                clsValue += layoutShiftEntry.value || 0
               }
             }
             setMetrics(prev => ({
@@ -70,23 +74,26 @@ export function usePerformance() {
 
           try {
             clsObserver.observe({ entryTypes: ['layout-shift'] })
-          } catch (e) {
+          } catch {
             console.warn('CLS observation not supported')
           }
 
           // First Input Delay
           const fidObserver = new PerformanceObserver((list) => {
             for (const entry of list.getEntries()) {
+              const fidEntry = entry as PerformanceEntry & {
+                processingStart?: number
+              }
               setMetrics(prev => ({
                 ...prev,
-                firstInputDelay: (entry as any).processingStart - entry.startTime
+                firstInputDelay: (fidEntry.processingStart || 0) - entry.startTime
               }))
             }
           })
 
           try {
             fidObserver.observe({ entryTypes: ['first-input'] })
-          } catch (e) {
+          } catch {
             console.warn('FID observation not supported')
           }
         }

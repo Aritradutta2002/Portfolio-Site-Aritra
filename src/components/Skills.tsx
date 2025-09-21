@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Code, Database, Globe, Server, GitBranch, Terminal } from 'lucide-react'
+import { Code, Database, Globe, Server } from 'lucide-react'
 
 const skillCategories = [
   {
