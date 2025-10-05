@@ -22,7 +22,7 @@ const experience = {
   achievements: [
     'Contributing to enterprise product improvements',
     'Gaining hands-on experience in full-stack enterprise development'
-  }
+  ]
 }
 
 // Training experience kept for future reference
