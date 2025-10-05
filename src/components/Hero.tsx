@@ -41,7 +41,6 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
       mounted = false;
       clearTimeout(handle);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [charIndex, currentIndex, isDeleting, texts]);
 
   return (
@@ -59,14 +58,14 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Hi, I'm Aritra
+          Hi, I&apos;m Aritra
         </motion.span>
 
         {/* Main typewriter container */}
         <div className="flex items-center">
           {/* "I'm a" prefix - static */}
           <span className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-800 dark:text-gray-200 mr-4">
-            I'm a
+            I&apos;m a
           </span>
 
           {/* Animated typewriter text */}

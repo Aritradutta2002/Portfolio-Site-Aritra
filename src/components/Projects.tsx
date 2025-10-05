@@ -102,7 +102,8 @@ export function Projects() {
     ? projects 
     : projects.filter(project => project.category === selectedCategory)
 
-  const featuredProjects = projects.filter(project => project.featured)
+  // Featured projects kept for future reference
+  // const featuredProjects = projects.filter(project => project.featured)
 
   return (
     <section id="projects" className="py-20 bg-gray-50 dark:bg-gray-800">

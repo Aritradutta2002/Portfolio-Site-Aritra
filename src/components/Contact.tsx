@@ -99,7 +99,7 @@ export function Contact() {
 
         if (!validation.isValid) {
             Object.keys(validation.errors).forEach((key) => {
-                // @ts-ignore
+                // @ts-expect-error - Dynamic key access for form error setting
                 setError(key, { type: 'manual', message: validation.errors[key] })
             })
             setFormErrors(validation.errors)

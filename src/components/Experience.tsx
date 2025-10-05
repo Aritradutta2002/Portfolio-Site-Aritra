@@ -22,18 +22,19 @@ const experience = {
   achievements: [
     'Contributing to enterprise product improvements',
     'Gaining hands-on experience in full-stack enterprise development'
-  ]
+  }
 }
 
-const trainingExperience = {
-  company: 'Tata Consultancy Services',
-  position: 'ILP Training (ITIS Technology)',
-  location: 'Thiruvananthapuram, IN',
-  startDate: 'September 2024',
-  endDate: 'November 2024',
-  description:
-    'Training at ITIS Technology: Developed a strong foundation in Windows and Unix systems, along with in-depth knowledge of Computer Networking and Advanced Networking principles. Additionally, enhanced business acumen and soft skills, including communication, teamwork, and problem-solving.'
-}
+// Training experience kept for future reference
+// const trainingExperience = {
+//   company: 'Tata Consultancy Services',
+//   position: 'ILP Training (ITIS Technology)',
+//   location: 'Thiruvananthapuram, IN',
+//   startDate: 'September 2024',
+//   endDate: 'November 2024',
+//   description:
+//     'Training at ITIS Technology: Developed a strong foundation in Windows and Unix systems, along with in-depth knowledge of Computer Networking and Advanced Networking principles. Additionally, enhanced business acumen and soft skills, including communication, teamwork, and problem-solving.'
+// }
 
 const skills = [
   { name: 'Java Full Stack Development', level: 85 },
