@@ -1,0 +1,5 @@
+com\aritra\blog\model\BlogPost.class
+com\aritra\blog\config\DataLoader.class
+com\aritra\blog\controller\BlogPostController.class
+com\aritra\blog\repository\BlogPostRepository.class
+com\aritra\blog\BlogApplication.class

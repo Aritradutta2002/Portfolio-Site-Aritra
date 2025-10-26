@@ -47,7 +47,20 @@ const skills = [
 
 export function Experience() {
   return (
-    <section id="experience" className="py-20 bg-white dark:bg-gray-900">
+    <section id="experience" className="py-24 relative">
+      {/* Enhanced Top Separator */}
+      <div className="absolute top-0 left-0 right-0 overflow-hidden">
+        <svg className="w-full h-20" preserveAspectRatio="none" viewBox="0 0 1440 100">
+          <defs>
+            <linearGradient id="experienceGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style={{ stopColor: 'rgb(37, 99, 235)', stopOpacity: 0.1 }} />
+              <stop offset="50%" style={{ stopColor: 'rgb(37, 99, 235)', stopOpacity: 0.3 }} />
+              <stop offset="100%" style={{ stopColor: 'rgb(37, 99, 235)', stopOpacity: 0.1 }} />
+            </linearGradient>
+          </defs>
+          <path d="M0,35 Q360,20 720,35 T1440,35 L1440,0 L0,0 Z" fill="url(#experienceGradient)" />
+        </svg>
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

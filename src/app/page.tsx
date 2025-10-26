@@ -1,7 +1,7 @@
 import { Navigation } from '@/components/Navigation'
 import { Hero } from '@/components/Hero'
 import { About } from '@/components/About'
-import { SkillWheel } from '@/components/SkillWheel'
+import { Skills } from '@/components/Skills'
 import { Projects } from '@/components/Projects'
 import { Experience } from '@/components/Experience'
 import { Blog } from '@/components/Blog'
@@ -13,15 +13,17 @@ export default function Home() {
   return (
     <main className="min-h-screen relative overflow-x-hidden">
       <AnimatedBackground />
+      <div className="relative z-10">
       <Navigation />
       <Hero />
       <About />
-      <SkillWheel />
+      <Skills />
       <Projects />
       <Experience />
       <Blog />
       <Contact />
       <Footer />
+      </div>
     </main>
   )
 }

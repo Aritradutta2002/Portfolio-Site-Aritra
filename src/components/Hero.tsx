@@ -44,16 +44,16 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
   }, [charIndex, currentIndex, isDeleting, texts]);
 
   return (
-    <div className="relative min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] flex items-center justify-center px-4">
+    <div className="relative min-h-[80px] sm:min-h-[90px] lg:min-h-[100px] flex items-center justify-center px-4">
       <motion.div
-        className="flex flex-col items-center space-y-2"
+        className="flex flex-col items-center space-y-1"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         {/* Greeting text */}
         <motion.span 
-          className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-400 font-light"
+          className="text-xl sm:text-2xl lg:text-3xl text-gray-800 dark:text-gray-300 font-light"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -64,7 +64,7 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
         {/* Main typewriter container */}
         <div className="flex items-center">
           {/* "I'm a" prefix - static */}
-          <span className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-800 dark:text-gray-200 mr-4">
+          <span className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-gray-100 mr-4">
             I&apos;m a
           </span>
 
@@ -103,7 +103,7 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
 
         {/* Decorative underline */}
         <motion.div
-          className="h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent rounded-full mt-4"
+          className="h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent rounded-full mt-2"
           initial={{ width: 0, opacity: 0 }}
           animate={{ width: '200px', opacity: 0.6 }}
           transition={{ duration: 1, delay: 0.5 }}
@@ -114,6 +114,23 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
 };
 
 export function Hero() {
+  const [showSidebar, setShowSidebar] = useState(true)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Hide sidebar on ANY scroll movement (even 1px)
+      if (window.scrollY > 5) {
+        setShowSidebar(false)
+      } else {
+        setShowSidebar(true)
+      }
+    }
+
+    // Use passive listener for better performance
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const scrollToNext = () => {
     const aboutSection = document.querySelector('#about')
     if (aboutSection) {
@@ -122,60 +139,71 @@ export function Hero() {
   }
 
   return (
-    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950 pt-24">
-      {/* Enhanced Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-5 dark:opacity-10"></div>
+    <section id="home" className="min-h-screen flex flex-col justify-center relative">
+      
+      {/* Vertical Right Sidebar Navigation - Home Page Only */}
+      {showSidebar && (
+        <motion.div 
+          className="fixed right-4 top-24 z-[50]"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: showSidebar ? 1 : 0, x: showSidebar ? 0 : 50 }}
+          exit={{ opacity: 0, x: 50 }}
+          transition={{ duration: 0.2 }}
+        >
+        <div className="bg-white/90 dark:bg-gray-900/25 backdrop-blur-xl rounded-2xl py-4 px-3 border border-gray-200/50 dark:border-gray-700/30 shadow-2xl">
+          <div className="flex flex-col space-y-3">
+            {[
+              { name: 'Home', href: '#home', icon: '🏠' },
+              { name: 'About', href: '#about', icon: '👤' },
+              { name: 'Skills', href: '#skills', icon: '⚡' },
+              { name: 'Projects', href: '#projects', icon: '💼' },
+              { name: 'Experience', href: '#experience', icon: '🎯' },
+              { name: 'Blog', href: '#blog', icon: '📝' },
+              { name: 'Social', href: '/social', icon: '🌐' },
+              { name: 'Contact', href: '#contact', icon: '📧' }
+            ].map((item, index) => (
+              <motion.button
+                key={item.name}
+                onClick={() => {
+                  if (item.href.startsWith('#')) {
+                    const element = document.querySelector(item.href)
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' })
+                    }
+                  } else {
+                    window.location.href = item.href
+                  }
+                }}
+                className="group relative flex items-center justify-center w-12 h-12 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 rounded-xl hover:bg-white/30 dark:hover:bg-gray-800/30"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
+                whileHover={{ scale: 1.1, x: -5 }}
+                whileTap={{ scale: 0.95 }}
+                title={item.name}
+              >
+                <span className="text-lg">{item.icon}</span>
+                
+                {/* Tooltip */}
+                <div className="absolute right-full mr-3 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                  {item.name}
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-gray-900 dark:border-l-white"></div>
+                </div>
+                
+                {/* Active indicator */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-400/30 dark:to-purple-400/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+        </motion.div>
+      )}
 
-        <motion.div
-          className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-blue-400/15 to-purple-400/15 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
-        />
-        <motion.div
-          className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-purple-400/15 to-pink-400/15 rounded-full blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.5, 0.3, 0.5],
-            rotate: [360, 180, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
-        />
-
-        {/* Additional floating elements */}
-        <motion.div
-          className="absolute top-1/4 right-1/4 w-32 h-32 bg-gradient-to-br from-blue-300/20 to-purple-300/20 rounded-full blur-2xl"
-          animate={{
-            y: [0, -30, 0],
-            x: [0, 20, 0],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-[1] pb-20">
         <div className="text-center">
           {/* Enhanced Profile Image with Premium Effects */}
           <motion.div
-            className="mb-16"
+            className="mb-12 sm:mb-14 lg:mb-16"
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 1.2, type: "spring", stiffness: 80 }}
@@ -212,7 +240,7 @@ export function Hero() {
               />
 
               {/* Premium Profile Container */}
-              <div className="relative w-56 h-56 mx-auto group-hover:scale-105 transition-all duration-700">
+              <div className="relative w-48 h-48 sm:w-52 sm:h-52 lg:w-56 lg:h-56 mx-auto group-hover:scale-105 transition-all duration-700">
                 {/* Gradient Border Ring */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-1 shadow-2xl">
                   <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 p-2">
@@ -311,7 +339,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-6"
+            className="space-y-4"
           >
             {/* Premium Typewriter Effect */}
             <TypewriterText 
@@ -327,7 +355,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="text-lg sm:text-xl lg:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-3xl mx-auto px-4 mt-8"
+              className="text-lg sm:text-xl lg:text-2xl text-gray-800 dark:text-gray-200 font-medium max-w-3xl mx-auto px-4 mt-4"
             >
               Building robust enterprise solutions at{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 font-bold">
@@ -341,7 +369,7 @@ export function Hero() {
 
             {/* Enhanced Action Buttons with Perfect Spacing */}
             <motion.div 
-              className="mt-12 mb-24 flex flex-col sm:flex-row gap-5 lg:gap-6 justify-center items-center px-4"
+              className="mt-8 mb-12 flex flex-col sm:flex-row gap-4 lg:gap-5 justify-center items-center px-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}

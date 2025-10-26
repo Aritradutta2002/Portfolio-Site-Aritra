@@ -23,7 +23,7 @@ export function Navigation() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 10
+      const isScrolled = window.scrollY > 50
       setScrolled(isScrolled)
     }
 
@@ -47,22 +47,26 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+      className={`fixed top-0 w-full z-[100] transition-all duration-500 ${
         scrolled
-          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-2xl border-b border-gray-200/20 dark:border-gray-700/20'
-          : 'bg-transparent'
+          ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50 translate-y-0 opacity-100'
+          : 'bg-transparent backdrop-blur-none shadow-none border-none -translate-y-full opacity-0'
       }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ 
+        y: scrolled ? 0 : -100,
+        opacity: scrolled ? 1 : 0
+      }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
           <motion.div
-            className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 transition-all duration-300"
+            className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 transition-all duration-300 cursor-pointer group"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => handleNavClick('#home')}
           >
             <span className="relative">
               Aritra Dutta
@@ -78,12 +82,12 @@ export function Navigation() {
                   <motion.button
                     key={item.name}
                     onClick={() => handleNavClick(item.href)}
-                    className="relative px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 font-medium group"
+                    className="relative px-4 py-2 text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 font-medium group"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <span className="relative z-10">{item.name}</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <span className="relative z-[120]">{item.name}</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full group-hover:left-0"></div>
                   </motion.button>
                 )
@@ -96,10 +100,10 @@ export function Navigation() {
                   >
                     <Link
                       href={item.href}
-                      className="relative px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 font-medium group block"
+                      className="relative px-4 py-2 text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 font-medium group block"
                     >
-                      <span className="relative z-10">{item.name}</span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <span className="relative z-[120]">{item.name}</span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full group-hover:left-0"></div>
                     </Link>
                   </motion.div>
@@ -114,7 +118,7 @@ export function Navigation() {
             <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="p-2 rounded-lg text-gray-800 dark:text-gray-200 hover:bg-gray-100/70 dark:hover:bg-gray-800/70 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 backdrop-blur-sm"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -124,7 +128,7 @@ export function Navigation() {
         {/* Mobile Navigation */}
         {isOpen && (
           <motion.div
-            className="md:hidden pb-4"
+            className="md:hidden pb-4 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-700/50 relative z-[110]"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -136,7 +140,7 @@ export function Navigation() {
                     <motion.button
                       key={item.name}
                       onClick={() => handleNavClick(item.href)}
-                      className="text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                      className="text-left px-4 py-3 text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30 rounded-lg transition-all duration-200 font-medium border border-transparent hover:border-blue-200/50 dark:hover:border-blue-700/50"
                       whileHover={{ x: 10 }}
                     >
                       {item.name}
@@ -150,7 +154,7 @@ export function Navigation() {
                     >
                       <Link
                         href={item.href}
-                        className="block text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200"
+                        className="block text-left px-4 py-3 text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30 rounded-lg transition-all duration-200 font-medium border border-transparent hover:border-blue-200/50 dark:hover:border-blue-700/50"
                         onClick={() => setIsOpen(false)}
                       >
                         {item.name}
