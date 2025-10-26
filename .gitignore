@@ -39,3 +39,65 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ===== BACKEND =====
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Compiled Java
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+
+# Backend specific
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+h2/
+data/
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.iml
+.project
+.classpath
+.settings/
+.metadata/
+
+# ===== LOGS =====
+logs/
+*.log
+
+# ===== TEMP =====
+*.tmp
+*.temp
+tmp/
+temp/
+
+# ===== FRONTEND SPECIFIC =====
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+frontend/build/
+frontend/.turbo/

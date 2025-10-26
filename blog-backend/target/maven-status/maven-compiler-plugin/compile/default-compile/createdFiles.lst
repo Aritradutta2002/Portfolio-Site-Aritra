@@ -1,8 +1,0 @@
-com\aritra\blog\dto\BlogPostResponseDTO.class
-com\aritra\blog\model\BlogPost.class
-com\aritra\blog\model\BlogCategory.class
-com\aritra\blog\repository\CommentRepository.class
-com\aritra\blog\dto\BlogPostUpdateDTO.class
-com\aritra\blog\BlogApplication.class
-com\aritra\blog\model\Comment.class
-com\aritra\blog\exception\ErrorResponse.class
