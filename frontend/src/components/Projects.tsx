@@ -20,6 +20,18 @@ type Project = {
 const projects: Project[] = [
   {
     id: 1,
+    title: 'JobFit.AI – AI-Powered Job Matching Platform',
+    description: 'Distributed microservices system with AI-powered resume-to-job matching using OpenAI embeddings, achieving 75%+ match accuracy with pgvector similarity search.',
+    longDescription: 'Architected a distributed microservices system with Spring Boot backend, Kafka-based async job aggregation, Redis caching, and Elasticsearch for full-text search. Implemented OAuth2 + JWT authentication with Google OAuth integration. Built an AI resume-to-job matching engine using OpenAI embeddings and cosine similarity with 75%+ match accuracy, storing embeddings using pgvector in PostgreSQL with multi-dimensional scoring. Developed a resume gap analysis engine using GPT-4 for actionable skill improvement suggestions.',
+    technologies: ['Spring Boot', 'React.js', 'PostgreSQL', 'OpenAI API', 'Kafka', 'Redis', 'Elasticsearch', 'OAuth2', 'JWT', 'pgvector'],
+    category: 'AI/ML',
+    image: '/project-jobfit.jpg',
+    github: 'https://github.com/Aritradutta2002/JobFit.AI',
+    demo: '#',
+    featured: true
+  },
+  {
+    id: 2,
     title: 'Algorithm Visualizer',
     description: 'Interactive platform for visualizing sorting algorithms including Bubble Sort, Merge Sort, Quick Sort, and Insertion Sort with dynamic animations.',
     longDescription: 'Developed a comprehensive platform for visualizing various sorting algorithms. The project helps students and developers understand how different sorting algorithms work through interactive visualizations. Features include speed controls, step-by-step execution, and comparison of algorithm performance.',
@@ -31,7 +43,7 @@ const projects: Project[] = [
     featured: true
   },
   {
-    id: 2,
+    id: 3,
     title: 'HuffZip - File Compressor',
     description: 'Advanced file compression tool using Huffman Coding algorithm with visualization of the Huffman Tree construction process.',
     longDescription: 'Implemented the Huffman Coding algorithm for efficient file compression. The project includes a visualization tool that shows how the Huffman Tree is constructed step by step. Built with C++ for backend processing and JavaScript for creating interactive visualizations.',
@@ -43,7 +55,7 @@ const projects: Project[] = [
     featured: true
   },
   {
-    id: 3,
+    id: 4,
     title: 'ChatGPT Clone',
     description: 'Clean and intuitive web interface powered by Streamlit for interacting with GPT-4 model with customizable parameters.',
     longDescription: 'Created a ChatGPT clone using Streamlit in Python. Users can interact with the GPT-4 model through a simple and clean interface. Features include customizable temperature, max tokens, and other parameters for fine-tuning responses.',
@@ -55,7 +67,7 @@ const projects: Project[] = [
     featured: false
   },
   {
-    id: 4,
+    id: 5,
     title: 'LeetCode Directory',
     description: 'Comprehensive collection of LeetCode solutions with 537+ commits, organized by topics and difficulty levels.',
     longDescription: 'A well-organized repository containing solutions to various LeetCode problems. Each solution includes detailed explanations, time and space complexity analysis, and multiple approaches where applicable. The repository serves as a learning resource for competitive programming.',
@@ -67,7 +79,7 @@ const projects: Project[] = [
     featured: true
   },
   {
-    id: 5,
+    id: 6,
     title: 'TIC-TAC-TOE Game',
     description: 'Modern implementation of the classic Tic-Tac-Toe game built with Angular and TypeScript featuring responsive design.',
     longDescription: 'A modern take on the classic Tic-Tac-Toe game built using Angular and TypeScript. Features include responsive design, score tracking, and smooth animations. The game implements optimal AI strategy and provides an engaging user experience.',
@@ -79,7 +91,7 @@ const projects: Project[] = [
     featured: false
   },
   {
-    id: 6,
+    id: 7,
     title: 'SpringBoot Application',
     description: 'First SpringBoot application demonstrating RESTful APIs, database integration, and modern Java backend development practices.',
     longDescription: 'My first SpringBoot application showcasing RESTful API development, database integration with JPA/Hibernate, and modern Java backend development practices. The project includes proper error handling, validation, and follows Spring Boot best practices.',

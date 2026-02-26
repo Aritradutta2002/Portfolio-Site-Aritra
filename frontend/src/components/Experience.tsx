@@ -5,23 +5,28 @@ import { MapPin, Calendar, Building, Code, Trophy } from 'lucide-react'
 
 const experience = {
   company: 'Tata Consultancy Services',
-  position: 'Assistant System Engineer',
-  location: 'Bhubaneswar, IN',
-  startDate: 'December 2024',
+  position: 'Assistant System Engineer – Backend & Microservices',
+  location: 'Bhubaneswar, India',
+  startDate: 'September 2024',
   endDate: 'Present',
   description:
-    'Full Stack Java Developer: Currently contributing to an internal TCS project aimed at enhancing the Ultimatix platform. Proficiently utilizing Angular, Spring, Spring Boot, Django, and React for front-end and back-end development.',
+    'Building enterprise-grade microservices and backend systems for Ultimatix platform. Leading critical production migrations, version upgrades, and performance optimizations while working with Java 17, Spring Boot 3, PostgreSQL, Angular, and Azure PaaS infrastructure.',
   responsibilities: [
-    'Contributing to Ultimatix platform enhancements as part of an internal TCS project',
-    'Building and maintaining full-stack features using Angular and React for frontend',
-    'Developing backend services with Java, Spring, and Spring Boot',
-    'Integrating and maintaining services possibly using Django where applicable',
-    'Collaborating with cross-functional teams to deliver enterprise-grade solutions'
+    'Single-handedly decomposed iDeclare from monolithic application into independent microservice with 20+ REST APIs',
+    'Executed zero-downtime production migration from JBoss to Tomcat PaaS on Azure (10K+ daily users)',
+    'Led critical version upgrades: Java 8→17 and Spring Boot 2→3 with zero service disruption',
+    'Optimized SQL queries achieving 20-30x performance improvement across critical APIs',
+    'Built and owned Jenkins CI/CD pipelines for automated Docker containerization and production releases',
+    'Designed complex multi-stage approval workflows with full audit trail for Patent/Trademark modules',
+    'Upgraded Angular frontend from v17 to v20 LTS with zero-disruption migration'
   ],
-  technologies: ['Angular', 'React', 'Java', 'Spring', 'Spring Boot', 'Django', 'SQL'],
+  technologies: ['Java 17', 'Spring Boot 3', 'PostgreSQL', 'Oracle', 'Angular v20', 'TypeScript', 'Azure PaaS', 'Jenkins', 'Docker', 'Git'],
   achievements: [
-    'Contributing to enterprise product improvements',
-    'Gaining hands-on experience in full-stack enterprise development'
+    'Achieved 20-30x performance improvement through query optimization and database schema design',
+    'Delivered zero-downtime production migration for 10K+ daily users',
+    'Successfully upgraded Java 8→17 and Spring Boot 2→3 in live production with backward compatibility',
+    'Built stage-aware email notification system reducing manual follow-ups',
+    'Architected full database schema and owned end-to-end microservice delivery'
   ]
 }
 
@@ -244,10 +249,10 @@ export function Experience() {
                   <div className="w-3 h-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mt-2"></div>
                   <div>
                     <p className="font-semibold text-gray-900 dark:text-white">
-                          December 2024 - Present
+                          September 2024 - Present
                         </p>
                         <p className="text-gray-600 dark:text-gray-400">
-                          {experience.position} | {experience.company} — {experience.location}
+                          Assistant System Engineer – Backend & Microservices | TCS — Bhubaneswar, India
                         </p>
                   </div>
                 </motion.div>
@@ -296,7 +301,7 @@ export function Experience() {
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">
-                    3+
+                    5+
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
                     Months at TCS
@@ -304,10 +309,10 @@ export function Experience() {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
-                    5+
+                    10+
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Technologies Learned
+                    Technologies Mastered
                   </div>
                 </div>
                 <div className="text-center">
@@ -320,10 +325,10 @@ export function Experience() {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-1">
-                    24
+                    20+
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Team Collaboration
+                    REST APIs Built
                   </div>
                 </div>
               </div>

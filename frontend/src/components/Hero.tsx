@@ -344,9 +344,9 @@ export function Hero() {
             {/* Premium Typewriter Effect */}
             <TypewriterText 
               texts={[
-                "Full Stack Developer",
-                "Problem Solver",
-                "Tech Innovator"
+                "Backend Engineer",
+                "Microservices Architect",
+                "Problem Solver"
               ]}
             />
 
@@ -357,13 +357,13 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 0.5 }}
               className="text-lg sm:text-xl lg:text-2xl text-gray-900 dark:text-gray-200 font-medium max-w-3xl mx-auto px-4 mt-4 drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)] dark:drop-shadow-none"
             >
-              Building robust enterprise solutions at{' '}
+              Building enterprise microservices at{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 font-bold">
                 TCS
               </span>
-              {' '}with a passion for{' '}
+              {' '}• Leading production migrations & optimizations with{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-600 font-bold">
-                competitive programming
+                20-30x performance gains
               </span>
             </motion.p>
 

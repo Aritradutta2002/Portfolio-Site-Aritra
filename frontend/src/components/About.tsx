@@ -5,11 +5,11 @@ import { GraduationCap, MapPin, Calendar, Award, Trophy, Code2, Target, Sparkles
 
 const educationData = [
   {
-    degree: 'B.Tech in ECE',
-    institution: 'WBTU - College of Engineering',
+    degree: 'B.Tech in Electronics & Communication Engineering',
+    institution: 'Maulana Abul Kalam Azad University of Technology (MAKAUT)',
     location: 'Kolkata, WB',
-    duration: 'June 2024',
-    grade: 'CGPA: 8.67',
+    duration: '2020 - 2024',
+    grade: 'CGPA: 8.79/10',
     icon: GraduationCap
   },
   {
@@ -31,8 +31,9 @@ const educationData = [
 ]
 
 const achievements = [
+  'TCS DEEP Ninja Certified DevOps Engineer – specialized in Docker, Jenkins CI/CD, and cloud deployment',
+  'Solved 600+ algorithmic problems across LeetCode and Codeforces',
   'LeetCode Weekly Contest ranking 3556 with max rating 1750',
-  'Solved 500+ problems across LeetCode, CodeForces, and CodeChef',
   'Secured Global Rank 1046 in CodeForces Round 967 div 2',
   'CodeChef Rating 1604 (3-star)',
   'Solved over 100 problems in CSES CP sheet',
@@ -109,9 +110,9 @@ export function About() {
                 viewport={{ once: true }}
                 className="relative pl-6 border-l-4 border-blue-500"
               >
-                Hello! I&apos;m <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Aritra Dutta</span>, a passionate Software Engineer currently working at 
+                Hello! I&apos;m <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Aritra Dutta</span>, a passionate Backend & Microservices Engineer at 
                 <span className="font-semibold text-blue-600 dark:text-blue-400"> Tata Consultancy Services (TCS)</span> 
-                in Bhubaneswar, Odisha. At 23, I&apos;ve already embarked on an exciting journey in the world of technology.
+                in Bhubaneswar, India. At 23, I&apos;ve already embarked on an exciting journey building enterprise-grade systems.
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -120,9 +121,9 @@ export function About() {
                 viewport={{ once: true }}
                 className="relative pl-6 border-l-4 border-purple-500"
               >
-                Currently, I&apos;m undergoing comprehensive training in Thiruvananthapuram, Kerala, where I&apos;m diving deep into 
-                <span className="font-semibold text-purple-600 dark:text-purple-400"> C++, MVC architecture, SQL, and PROC</span>. My focus extends to Java Full Stack development, building RESTful APIs 
-                using Java, Spring Boot, and Hibernate.
+                Currently, I&apos;m building enterprise microservices for the Ultimatix platform, working with 
+                <span className="font-semibold text-purple-600 dark:text-purple-400"> Java 17, Spring Boot 3, PostgreSQL, Angular v20, and Azure PaaS</span>. I&apos;ve led critical production migrations, 
+                version upgrades, and achieved 20-30x performance improvements through query optimization.
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -132,7 +133,7 @@ export function About() {
                 className="relative pl-6 border-l-4 border-pink-500"
               >
                 What drives me is my love for <span className="font-semibold text-pink-600 dark:text-pink-400">
-                competitive programming</span> and problem-solving. With over <span className="font-bold">500+ problems</span> solved across various platforms 
+                competitive programming</span> and problem-solving. With over <span className="font-bold">600+ problems</span> solved across LeetCode and Codeforces 
                 and a LeetCode rating of <span className="font-bold text-green-600 dark:text-green-400">1750</span>, I constantly challenge myself to think algorithmically and write clean, 
                 efficient code.
               </motion.p>

@@ -8,9 +8,9 @@ const skillCategories = [
     title: 'Programming Languages',
     icon: Code,
     skills: [
-      { name: 'Java', level: 96, color: 'from-orange-400 to-orange-600' },
+      { name: 'Java 17', level: 96, color: 'from-orange-400 to-orange-600' },
+      { name: 'TypeScript', level: 85, color: 'from-blue-400 to-blue-600' },
       { name: 'JavaScript', level: 85, color: 'from-yellow-400 to-yellow-600' },
-      { name: 'TypeScript', level: 80, color: 'from-blue-400 to-blue-600' },
       { name: 'C++', level: 85, color: 'from-purple-400 to-purple-600' },
       { name: 'Python', level: 75, color: 'from-green-400 to-green-600' }
     ]
@@ -19,10 +19,10 @@ const skillCategories = [
     title: 'Frameworks & Libraries',
     icon: Globe,
     skills: [
-      { name: 'Spring Boot', level: 90, color: 'from-green-500 to-green-700' },
-      { name: 'Angular', level: 85, color: 'from-red-500 to-red-700' },
+      { name: 'Spring Boot 3', level: 95, color: 'from-green-500 to-green-700' },
+      { name: 'Angular v20', level: 90, color: 'from-red-500 to-red-700' },
+      { name: 'Hibernate', level: 85, color: 'from-brown-400 to-brown-600' },
       { name: 'React', level: 75, color: 'from-cyan-400 to-cyan-600' },
-      { name: 'Hibernate', level: 80, color: 'from-brown-400 to-brown-600' },
       { name: 'Express.js', level: 70, color: 'from-gray-400 to-gray-600' }
     ]
   },
@@ -30,26 +30,27 @@ const skillCategories = [
     title: 'Databases & Tools',
     icon: Database,
     skills: [
-      { name: 'MySQL', level: 85, color: 'from-blue-500 to-blue-700' },
-      { name: 'PostgreSQL', level: 75, color: 'from-indigo-400 to-indigo-600' },
+      { name: 'PostgreSQL', level: 90, color: 'from-indigo-400 to-indigo-600' },
+      { name: 'Oracle Database', level: 85, color: 'from-red-500 to-red-700' },
       { name: 'Git & GitHub', level: 90, color: 'from-gray-700 to-gray-900' },
-      { name: 'Docker', level: 70, color: 'from-blue-400 to-blue-600' },
-      { name: 'Linux/UNIX', level: 75, color: 'from-orange-500 to-orange-700' }
+      { name: 'Docker', level: 85, color: 'from-blue-400 to-blue-600' },
+      { name: 'Jenkins', level: 85, color: 'from-red-400 to-red-600' }
     ]
   },
   {
     title: 'Cloud & DevOps',
     icon: Server,
     skills: [
-      { name: 'AWS', level: 65, color: 'from-orange-400 to-orange-600' },
-      { name: 'REST APIs', level: 85, color: 'from-green-400 to-green-600' },
-      { name: 'MVC Architecture', level: 90, color: 'from-purple-400 to-purple-600' },
-      { name: 'Microservices', level: 70, color: 'from-blue-400 to-blue-600' }
+      { name: 'Azure PaaS', level: 85, color: 'from-blue-400 to-blue-600' },
+      { name: 'REST APIs', level: 95, color: 'from-green-400 to-green-600' },
+      { name: 'Microservices', level: 90, color: 'from-purple-400 to-purple-600' },
+      { name: 'CI/CD Pipelines', level: 85, color: 'from-orange-400 to-orange-600' }
     ]
   }
 ]
 
 const certifications = [
+  'TCS DEEP Ninja Certified DevOps Engineer - TCS (Docker, Jenkins CI/CD, Cloud Deployment)',
   'Problem Solving (Intermediate) - HackerRank',
   'The Complete Python Pro Bootcamp - Udemy',
   'Object Oriented Programming in Java - Coursera',
@@ -172,9 +173,9 @@ export function Skills() {
               <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">3-Star</div>
             </div>
             <div className="text-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-8 rounded-2xl">
-              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">500+</div>
+              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">600+</div>
               <div className="text-gray-600 dark:text-gray-400 font-medium">Problems Solved</div>
-              <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">Multiple Platforms</div>
+              <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">LeetCode & Codeforces</div>
             </div>
             <div className="text-center bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-8 rounded-2xl">
               <div className="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">1046</div>
