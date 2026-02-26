@@ -76,7 +76,7 @@ export function Blog() {
   }
 
   return (
-    <section id="blog" className="py-24 relative">
+    <section id="blog" className="py-24 relative bg-white/60 dark:bg-black/60 backdrop-blur-sm">
       {/* Enhanced Top Separator */}
       <div className="absolute top-0 left-0 right-0 overflow-hidden">
         <svg className="w-full h-20" preserveAspectRatio="none" viewBox="0 0 1440 100">

@@ -53,7 +53,7 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
       >
         {/* Greeting text */}
         <motion.span 
-          className="text-xl sm:text-2xl lg:text-3xl text-gray-800 dark:text-gray-300 font-light"
+          className="text-xl sm:text-2xl lg:text-3xl text-gray-900 dark:text-gray-300 font-light drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)] dark:drop-shadow-none"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -64,7 +64,7 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
         {/* Main typewriter container */}
         <div className="flex items-center">
           {/* "I'm a" prefix - static */}
-          <span className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-gray-100 mr-4">
+          <span className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-gray-100 mr-4 drop-shadow-[0_1px_4px_rgba(255,255,255,0.9)] dark:drop-shadow-none">
             I&apos;m a
           </span>
 
@@ -355,7 +355,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="text-lg sm:text-xl lg:text-2xl text-gray-800 dark:text-gray-200 font-medium max-w-3xl mx-auto px-4 mt-4"
+              className="text-lg sm:text-xl lg:text-2xl text-gray-900 dark:text-gray-200 font-medium max-w-3xl mx-auto px-4 mt-4 drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)] dark:drop-shadow-none"
             >
               Building robust enterprise solutions at{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 font-bold">
@@ -426,7 +426,7 @@ export function Hero() {
 
               {/* Resume Download Button */}
               <motion.a
-                href="/RESUME-ARITRA.pdf"
+                href="/resume.pdf"
                 download="Aritra_Dutta_Resume.pdf"
                 className="group relative px-8 py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-2xl font-semibold text-base sm:text-lg shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden border border-white/20"
                 whileHover={{ scale: 1.05, y: -3 }}

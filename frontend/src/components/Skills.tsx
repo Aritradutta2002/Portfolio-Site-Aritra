@@ -90,7 +90,7 @@ function SkillBar({ skill, index }: { skill: Skill, index: number }) {
 
 export function Skills() {
   return (
-    <section id="skills" className="py-24 relative">
+    <section id="skills" className="py-24 relative bg-white/60 dark:bg-black/60 backdrop-blur-sm">
       {/* Enhanced Top Separator */}
       <div className="absolute top-0 left-0 right-0 overflow-hidden">
         <svg className="w-full h-20" preserveAspectRatio="none" viewBox="0 0 1440 100">
@@ -112,7 +112,7 @@ export function Skills() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
             Skills & Technologies
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>

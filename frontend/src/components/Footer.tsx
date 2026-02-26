@@ -51,7 +51,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-950 dark:to-black text-white overflow-hidden">
+    <footer className="relative bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 dark:from-black/90 dark:via-gray-950/90 dark:to-black/90 text-white overflow-hidden backdrop-blur-sm">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div

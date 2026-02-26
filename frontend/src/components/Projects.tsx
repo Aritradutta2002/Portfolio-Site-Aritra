@@ -106,7 +106,7 @@ export function Projects() {
   // const featuredProjects = projects.filter(project => project.featured)
 
   return (
-    <section id="projects" className="py-24 relative">
+    <section id="projects" className="py-24 relative bg-white/60 dark:bg-black/60 backdrop-blur-sm">
       {/* Enhanced Top Separator */}
       <div className="absolute top-0 left-0 right-0 overflow-hidden">
         <svg className="w-full h-20" preserveAspectRatio="none" viewBox="0 0 1440 100">
@@ -128,7 +128,7 @@ export function Projects() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
             Featured Projects
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8"></div>
@@ -152,7 +152,7 @@ export function Projects() {
               className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                 selectedCategory === category
                   ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
+                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
               }`}
             >
               <Filter className="w-4 h-4 inline-block mr-2" />

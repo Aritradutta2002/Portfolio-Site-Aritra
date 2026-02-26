@@ -3,6 +3,7 @@ package com.aritra.blog.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,7 +27,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -35,29 +36,30 @@ public class SecurityConfig {
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                // Public endpoints
+                // Static and base pages
+                .requestMatchers("/", "/index", "/index.html", "/home.html",
+                                  "/favicon.ico", "/assets/**", "/static/**", "/css/**", "/js/**", "/images/**")
+                    .permitAll()
+                // Swagger and docs
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                // Console/actuator
+                .requestMatchers("/h2-console/**", "/actuator/**").permitAll()
+                // Public API endpoints
                 .requestMatchers(HttpMethod.GET, "/v1/blog-posts/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/v1/blog-posts/*/like").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/comments/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/v1/comments").permitAll()
-                
-                // Swagger and documentation
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                
-                // Admin only endpoints
+                // Admin-only API
                 .requestMatchers(HttpMethod.POST, "/v1/blog-posts").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/v1/blog-posts/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/v1/blog-posts/**").hasRole("ADMIN")
-                
                 .anyRequest().authenticated()
             )
-            .httpBasic(httpBasic -> {});
-        
+            .httpBasic(Customizer.withDefaults());
+
         return http.build();
     }
-    
+
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.builder()
@@ -65,15 +67,14 @@ public class SecurityConfig {
                 .password(passwordEncoder().encode("admin123"))
                 .roles("ADMIN")
                 .build();
-        
         return new InMemoryUserDetailsManager(admin);
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -81,7 +82,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

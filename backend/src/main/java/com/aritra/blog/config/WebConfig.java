@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve Next.js static files
+        // Serve static files from classpath:/static/
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(0);
@@ -18,9 +18,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // Forward all non-API routes to index.html for Next.js SPA routing
-        registry.addViewController("/").setViewName("forward:/index.html");
-        registry.addViewController("/{x:[\\w\\-]+}").setViewName("forward:/index.html");
-        registry.addViewController("/{x:^(?!api$).*$}/**/{y:[\\w\\-]+}").setViewName("forward:/index.html");
+        // Forward top-level non-file routes to index.html (PathPatternParser-safe)
+        registry.addViewController("/{path:[^\\.]*}")
+                .setViewName("forward:/index.html");
+        // Do NOT register "/**/{...}" here; Spring 6 PathPatternParser forbids variables after /**
     }
 }

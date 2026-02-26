@@ -8,7 +8,7 @@
     <groupId>com.aritra</groupId>
     <artifactId>portfolio-fullstack</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     
     <name>Aritra Portfolio - Full Stack</name>
     <description>Full Stack Portfolio with Next.js Frontend and Spring Boot Backend</description>
@@ -36,6 +36,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -222,7 +233,7 @@
                 </configuration>
             </plugin>
 
-            <!-- 4. Package as Spring Boot JAR -->
+            <!-- 4. Package as Spring Boot WAR -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

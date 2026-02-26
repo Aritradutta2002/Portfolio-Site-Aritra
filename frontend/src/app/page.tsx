@@ -14,15 +14,15 @@ export default function Home() {
     <main className="min-h-screen relative overflow-x-hidden">
       <AnimatedBackground />
       <div className="relative z-10">
-      <Navigation />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Experience />
-      <Blog />
-      <Contact />
-      <Footer />
+        <Navigation />
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Experience />
+        <Blog />
+        <Contact />
+        <Footer />
       </div>
     </main>
   )
