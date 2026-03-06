@@ -10,7 +10,7 @@ const educationData = [
     location: 'Kolkata, WB',
     duration: '2020 - 2024',
     grade: 'CGPA: 8.79/10',
-    icon: GraduationCap
+    icon: GraduationCap,
   },
   {
     degree: 'Higher Secondary (XII)',
@@ -18,7 +18,7 @@ const educationData = [
     location: 'Kirnahar, WB',
     duration: '2020',
     grade: 'Percentage: 92%',
-    icon: Award
+    icon: Award,
   },
   {
     degree: 'Secondary (X)',
@@ -26,182 +26,164 @@ const educationData = [
     location: 'Kirnahar, WB',
     duration: '2018',
     grade: 'Percentage: 90.30%',
-    icon: Award
-  }
+    icon: Award,
+  },
 ]
 
 const achievements = [
-  'TCS DEEP Ninja Certified DevOps Engineer – specialized in Docker, Jenkins CI/CD, and cloud deployment',
+  'TCS DEEP Ninja Certified DevOps Engineer – Docker, Jenkins CI/CD, and cloud deployment',
   'Solved 600+ algorithmic problems across LeetCode and Codeforces',
   'LeetCode Weekly Contest ranking 3556 with max rating 1750',
   'Secured Global Rank 1046 in CodeForces Round 967 div 2',
   'CodeChef Rating 1604 (3-star)',
   'Solved over 100 problems in CSES CP sheet',
-  'First Runner-up in District Level Youth Parliament'
+  'First Runner-up in District Level Youth Parliament',
 ]
+
+const interests = [
+  { emoji: '🎮', label: 'Gaming' },
+  { emoji: '✈️', label: 'Traveling' },
+  { emoji: '🎵', label: 'Music' },
+  { emoji: '💡', label: 'Learning' },
+]
+
+/* ── Shared section-header component ─────────────────────── */
+function SectionHeader({ label, title, subtitle }: { label: string; title: string; subtitle: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="text-center mb-16"
+    >
+      <motion.span
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        viewport={{ once: true }}
+        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200/70 dark:border-blue-500/25 text-blue-700 dark:text-blue-300 text-[13px] font-medium mb-4"
+      >
+        <Sparkles size={12} />
+        {label}
+      </motion.span>
+      <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
+        {title}
+      </h2>
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <div className="h-px w-12 bg-gradient-to-r from-transparent to-blue-500" />
+        <div className="h-1 w-16 rounded-full bg-gradient-to-r from-blue-600 to-violet-600" />
+        <div className="h-px w-12 bg-gradient-to-l from-transparent to-violet-500" />
+      </div>
+      <p className="text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">{subtitle}</p>
+    </motion.div>
+  )
+}
 
 export function About() {
   return (
-    <section id="about" className="py-24 relative bg-white/60 dark:bg-black/60 backdrop-blur-sm">
-      {/* Enhanced Top Separator */}
-      <div className="absolute top-0 left-0 right-0 overflow-hidden">
-        <svg className="w-full h-20" preserveAspectRatio="none" viewBox="0 0 1440 100">
-          <defs>
-            <linearGradient id="aboutGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style={{ stopColor: 'rgb(59, 130, 246)', stopOpacity: 0.1 }} />
-              <stop offset="50%" style={{ stopColor: 'rgb(59, 130, 246)', stopOpacity: 0.3 }} />
-              <stop offset="100%" style={{ stopColor: 'rgb(59, 130, 246)', stopOpacity: 0.1 }} />
-            </linearGradient>
-          </defs>
-          <path d="M0,20 Q360,5 720,20 T1440,20 L1440,0 L0,0 Z" fill="url(#aboutGradient)" />
-        </svg>
-      </div>
-
+    <section id="about" className="py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            transition={{ duration: 0.5, type: "spring" }}
-            viewport={{ once: true }}
-            className="inline-block mb-4"
-          >
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto transform rotate-12 hover:rotate-0 transition-transform duration-300">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
-          </motion.div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-            About Me
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-4 rounded-full"></div>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Get to know more about my journey, education, and achievements
-          </p>
-        </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Personal Story */}
+        <SectionHeader
+          label="About Me"
+          title="My Journey"
+          subtitle="Get to know more about my background, education, and achievements"
+        />
+
+        <div className="grid lg:grid-cols-2 gap-10 items-start">
+
+          {/* ── Personal Story ─────────────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
             viewport={{ once: true }}
-            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-gray-200/50 dark:border-gray-700/50"
+            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-200/50 dark:border-gray-700/50"
           >
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mr-4">
-                <Code2 className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-violet-600 rounded-xl flex items-center justify-center shadow-md">
+                <Code2 className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                My Journey
-              </h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Who I Am</h3>
             </div>
-            <div className="space-y-6 text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                viewport={{ once: true }}
-                className="relative pl-6 border-l-4 border-blue-500"
-              >
-                Hello! I&apos;m <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Aritra Dutta</span>, a passionate Backend & Microservices Engineer at 
-                <span className="font-semibold text-blue-600 dark:text-blue-400"> Tata Consultancy Services (TCS)</span> 
-                in Bhubaneswar, India. At 23, I&apos;ve already embarked on an exciting journey building enterprise-grade systems.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                viewport={{ once: true }}
-                className="relative pl-6 border-l-4 border-purple-500"
-              >
-                Currently, I&apos;m building enterprise microservices for the Ultimatix platform, working with 
-                <span className="font-semibold text-purple-600 dark:text-purple-400"> Java 17, Spring Boot 3, PostgreSQL, Angular v20, and Azure PaaS</span>. I&apos;ve led critical production migrations, 
-                version upgrades, and achieved 20-30x performance improvements through query optimization.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                viewport={{ once: true }}
-                className="relative pl-6 border-l-4 border-pink-500"
-              >
-                What drives me is my love for <span className="font-semibold text-pink-600 dark:text-pink-400">
-                competitive programming</span> and problem-solving. With over <span className="font-bold">600+ problems</span> solved across LeetCode and Codeforces 
-                and a LeetCode rating of <span className="font-bold text-green-600 dark:text-green-400">1750</span>, I constantly challenge myself to think algorithmically and write clean, 
-                efficient code.
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                viewport={{ once: true }}
-                className="relative pl-6 border-l-4 border-green-500"
-              >
-                Beyond coding, I enjoy playing video games, traveling to new places, and listening to music. 
-                I believe in <span className="font-semibold text-green-600 dark:text-green-400">continuous learning</span> and am always eager to explore new technologies and methodologies.
-              </motion.p>
+
+            <div className="space-y-5 text-[15px] text-gray-600 dark:text-gray-400 leading-relaxed">
+              <p className="pl-4 border-l-2 border-blue-500/60">
+                Hello! I&apos;m <span className="font-semibold text-gray-900 dark:text-white">Aritra Dutta</span>, a passionate Backend &amp; Microservices Engineer at{' '}
+                <span className="font-semibold text-blue-600 dark:text-blue-400">Tata Consultancy Services (TCS)</span> in Bhubaneswar, India.
+              </p>
+              <p className="pl-4 border-l-2 border-violet-500/60">
+                Currently building enterprise microservices for the Ultimatix platform with{' '}
+                <span className="font-medium text-gray-800 dark:text-gray-200">Java 17, Spring Boot 3, PostgreSQL, Angular v20, and Azure PaaS</span>. Led critical production migrations and achieved 20–30× performance improvements.
+              </p>
+              <p className="pl-4 border-l-2 border-pink-500/60">
+                Driven by a love for <span className="font-medium text-gray-800 dark:text-gray-200">competitive programming</span> — 600+ problems solved, LeetCode rating{' '}
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">1750</span>.
+              </p>
+              <p className="pl-4 border-l-2 border-emerald-500/60">
+                Beyond coding I enjoy gaming, traveling, and music. I believe in{' '}
+                <span className="font-medium text-gray-800 dark:text-gray-200">continuous learning</span> and always exploring new technologies.
+              </p>
+            </div>
+
+            {/* Interests */}
+            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-600 mb-4">When I&apos;m not coding</p>
+              <div className="flex gap-4 flex-wrap">
+                {interests.map((item) => (
+                  <motion.div
+                    key={item.label}
+                    whileHover={{ scale: 1.08, y: -2 }}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200/60 dark:border-gray-700/60 text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    <span>{item.emoji}</span>
+                    {item.label}
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.div>
 
-          {/* Education Timeline */}
+          {/* ── Education Timeline ─────────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl flex items-center justify-center mr-4">
-                <GraduationCap className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
+                <GraduationCap className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                Education
-              </h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Education</h3>
             </div>
-            <div className="space-y-6">
+
+            <div className="space-y-4">
               {educationData.map((item, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-200/50 dark:border-gray-700/50 hover:scale-105 group"
+                  whileHover={{ y: -3 }}
+                  className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-gray-200/50 dark:border-gray-700/50 group transition-shadow duration-300 hover:shadow-xl"
                 >
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <item.icon className="w-6 h-6 text-white" />
-                      </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-violet-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform duration-300">
+                      <item.icon className="w-5 h-5 text-white" />
                     </div>
-                    <div className="flex-grow">
-                      <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                        {item.degree}
-                      </h4>
-                      <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">
-                        {item.institution}
-                      </p>
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-1" />
-                          {item.location}
-                        </div>
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          {item.duration}
-                        </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 dark:text-white text-[15px] leading-snug mb-1">{item.degree}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{item.institution}</p>
+                      <div className="flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-500 mb-3">
+                        <span className="flex items-center gap-1"><MapPin size={11} />{item.location}</span>
+                        <span className="flex items-center gap-1"><Calendar size={11} />{item.duration}</span>
                       </div>
-                      <div className="mt-3 inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/50 dark:to-purple-900/50 text-blue-800 dark:text-blue-200 rounded-full text-sm font-semibold shadow-md">
-                        <Trophy className="w-4 h-4 mr-1" />
-                        {item.grade}
-                      </div>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200/60 dark:border-blue-500/20 text-blue-700 dark:text-blue-300 text-xs font-semibold">
+                        <Trophy size={11} />{item.grade}
+                      </span>
                     </div>
                   </div>
                 </motion.div>
@@ -210,96 +192,41 @@ export function About() {
           </motion.div>
         </div>
 
-        {/* Achievements Section */}
+        {/* ── Achievements ───────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
           viewport={{ once: true }}
           className="mt-20"
         >
-          <div className="text-center mb-12">
-            <motion.div
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              transition={{ duration: 0.5, type: "spring" }}
-              viewport={{ once: true }}
-              className="inline-block mb-4"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto transform -rotate-12 hover:rotate-0 transition-transform duration-300">
-                <Trophy className="w-8 h-8 text-white" />
-              </div>
-            </motion.div>
-            <h3 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 dark:from-yellow-400 dark:via-orange-400 dark:to-red-400 bg-clip-text text-transparent mb-4">
-              Key Achievements
-            </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Milestones and accomplishments throughout my journey
-            </p>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
+              <Trophy className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Key Achievements</h3>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {achievements.map((achievement, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.07 }}
                 viewport={{ once: true }}
-                className="bg-gradient-to-br from-white to-blue-50/30 dark:from-gray-800 dark:to-blue-900/20 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-200/50 dark:border-gray-700/50 group"
+                whileHover={{ y: -3 }}
+                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-gray-200/50 dark:border-gray-700/50 flex items-start gap-3 group hover:shadow-lg transition-all duration-300"
               >
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <Target className="w-5 h-5 text-white" />
-                    </div>
-                  </div>
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base font-medium pt-2">
-                    {achievement}
-                  </p>
+                <div className="w-7 h-7 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                  <Target className="w-3.5 h-3.5 text-white" />
                 </div>
+                <p className="text-[13.5px] text-gray-700 dark:text-gray-300 leading-relaxed">{achievement}</p>
               </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* Personal Interests */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          viewport={{ once: true }}
-          className="mt-20 text-center"
-        >
-          <h3 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
-            When I&apos;m Not Coding
-          </h3>
-          <div className="flex flex-wrap justify-center gap-8">
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mb-3">
-                <span className="text-2xl">🎮</span>
-              </div>
-              <span className="text-gray-700 dark:text-gray-300 font-medium">Gaming</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mb-3">
-                <span className="text-2xl">✈️</span>
-              </div>
-              <span className="text-gray-700 dark:text-gray-300 font-medium">Traveling</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center mb-3">
-                <span className="text-2xl">🎵</span>
-              </div>
-              <span className="text-gray-700 dark:text-gray-300 font-medium">Music</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mb-3">
-                <span className="text-2xl">💡</span>
-              </div>
-              <span className="text-gray-700 dark:text-gray-300 font-medium">Learning</span>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   )

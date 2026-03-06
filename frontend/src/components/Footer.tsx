@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Heart, ArrowUp, Github, Linkedin, Code2, Mail, MapPin, Phone, Sparkles, Coffee, Rocket, Star } from 'lucide-react'
+import { Heart, ArrowUp, Github, Linkedin, Code2, Mail, MapPin, Phone, Rocket, Star } from 'lucide-react'
 import { useState } from 'react'
 
 const quickLinks = [
@@ -90,73 +90,66 @@ export function Footer() {
             viewport={{ once: true }}
             className="lg:col-span-2"
           >
-            {/* Name with Sparkle Effect */}
-            <div className="flex items-center gap-3 mb-4">
-              <motion.div
-                animate={{
-                  rotate: [0, 360],
-                  scale: [1, 1.2, 1],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <Sparkles className="w-8 h-8 text-yellow-400" />
-              </motion.div>
-              <h3 className="text-4xl font-black">
-                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Aritra Dutta
+            {/* Name */}
+            <div className="mb-1">
+              <h3 className="text-3xl font-extrabold tracking-tight">
+                <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
+                  Aritra
                 </span>
+                <span className="text-white ml-2">Dutta</span>
               </h3>
+              <div className="flex items-center gap-2 mt-2 mb-4">
+                <div className="h-px w-8 bg-gradient-to-r from-blue-500 to-transparent" />
+                <div className="h-0.5 w-12 rounded-full bg-gradient-to-r from-blue-600 to-violet-600" />
+              </div>
             </div>
-            
-            {/* Description with Better Typography */}
-            <motion.p 
-              className="text-gray-300 text-lg mb-8 leading-relaxed max-w-md"
+
+            {/* Description */}
+            <motion.p
+              className="text-[14px] text-gray-400 mb-7 leading-relaxed max-w-sm"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <span className="font-semibold text-white">Passionate Software Engineer</span> at{' '}
+              <span className="font-semibold text-gray-200">Passionate Software Engineer</span> at{' '}
               <span className="text-blue-400 font-semibold">TCS</span>, specializing in{' '}
-              <span className="text-purple-400">Java Full Stack</span> development, 
-              competitive programming, and building innovative solutions. Always eager to learn 
+              <span className="text-violet-400 font-medium">Java Full Stack</span> development,
+              competitive programming, and building innovative solutions. Always eager to learn
               and contribute to exciting projects.
             </motion.p>
 
-            {/* Enhanced Social Links */}
-            <div className="flex flex-wrap gap-3">
+            {/* Social icon buttons — matching site style */}
+            <div className="flex flex-wrap gap-2.5">
               {socialLinks.map((social, index) => (
                 <motion.a
                   key={social.name}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  initial={{ opacity: 0, scale: 0 }}
+                  title={social.name}
+                  initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.08 }}
                   viewport={{ once: true }}
                   onHoverStart={() => setHoveredSocial(social.name)}
                   onHoverEnd={() => setHoveredSocial(null)}
                   className="relative group"
                 >
                   <motion.div
-                    className="p-4 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-xl shadow-lg transition-all duration-300 group-hover:border-blue-500"
-                    whileHover={{ scale: 1.1, y: -4 }}
-                    whileTap={{ scale: 0.95 }}
+                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-gray-400 group-hover:bg-blue-600/20 group-hover:border-blue-500/50 group-hover:text-blue-400 transition-all duration-200"
+                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileTap={{ scale: 0.93 }}
                   >
-                    <social.icon className="w-6 h-6 text-gray-400 group-hover:text-blue-400 transition-colors duration-300" />
+                    <social.icon className="w-4 h-4" />
                   </motion.div>
-                  
+
                   {/* Tooltip */}
                   {hoveredSocial === social.name && (
                     <motion.div
-                      initial={{ opacity: 0, y: 5 }}
+                      initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-800 border border-gray-700 rounded-lg text-xs font-medium whitespace-nowrap"
+                      className="absolute -top-9 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-gray-800 border border-gray-700 rounded-lg text-[11px] font-medium whitespace-nowrap text-gray-200"
                     >
                       {social.name}
                     </motion.div>

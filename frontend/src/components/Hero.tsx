@@ -2,456 +2,322 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { ChevronDown, Download } from 'lucide-react'
+import { ChevronDown, Download, Github, Linkedin, Code2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
+/* ── Typewriter ─────────────────────────────────────────────── */
 const TypewriterText = ({ texts }: { texts: string[] }) => {
-  const [currentText, setCurrentText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [currentText, setCurrentText] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
-    let mounted = true;
-    const current = texts[currentIndex] ?? '';
-
-    const typingSpeed = isDeleting ? 50 : 100;
+    let mounted = true
+    const current = texts[currentIndex] ?? ''
+    const speed = isDeleting ? 45 : 95
 
     const handle = setTimeout(() => {
-      if (!mounted) return;
-
+      if (!mounted) return
       if (!isDeleting && charIndex < current.length) {
-        setCurrentText(current.slice(0, charIndex + 1));
-        setCharIndex((c) => c + 1);
+        setCurrentText(current.slice(0, charIndex + 1))
+        setCharIndex(c => c + 1)
       } else if (!isDeleting && charIndex === current.length) {
-        // pause before deleting
-        setTimeout(() => {
-          if (mounted) setIsDeleting(true);
-        }, 2000);
+        setTimeout(() => { if (mounted) setIsDeleting(true) }, 2200)
       } else if (isDeleting && charIndex > 0) {
-        setCurrentText(current.slice(0, charIndex - 1));
-        setCharIndex((c) => c - 1);
+        setCurrentText(current.slice(0, charIndex - 1))
+        setCharIndex(c => c - 1)
       } else if (isDeleting && charIndex === 0) {
-        setIsDeleting(false);
-        setCurrentIndex((i) => (i + 1) % texts.length);
+        setIsDeleting(false)
+        setCurrentIndex(i => (i + 1) % texts.length)
       }
-    }, typingSpeed);
+    }, speed)
 
-    return () => {
-      mounted = false;
-      clearTimeout(handle);
-    };
-  }, [charIndex, currentIndex, isDeleting, texts]);
+    return () => { mounted = false; clearTimeout(handle) }
+  }, [charIndex, currentIndex, isDeleting, texts])
 
   return (
-    <div className="relative min-h-[80px] sm:min-h-[90px] lg:min-h-[100px] flex items-center justify-center px-4">
-      <motion.div
-        className="flex flex-col items-center space-y-1"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+    <span className="inline-flex items-baseline">
+      <span
+        className="font-black bg-clip-text text-transparent"
+        style={{
+          backgroundImage: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 40%, #ec4899 80%, #f59e0b 100%)',
+          WebkitBackgroundClip: 'text',
+          backgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          filter: 'drop-shadow(0 2px 12px rgba(139,92,246,0.35))',
+        }}
       >
-        {/* Greeting text */}
-        <motion.span 
-          className="text-xl sm:text-2xl lg:text-3xl text-gray-900 dark:text-gray-300 font-light drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)] dark:drop-shadow-none"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          Hi, I&apos;m Aritra
-        </motion.span>
+        {currentText || '\u00A0'}
+      </span>
+      {/* Caret */}
+      <motion.span
+        aria-hidden
+        animate={{ opacity: [1, 0] }}
+        transition={{ duration: 0.65, repeat: Infinity, repeatType: 'reverse' }}
+        className="inline-block w-[3px] h-[0.85em] ml-1 align-middle rounded-sm"
+        style={{ background: 'linear-gradient(180deg,#8b5cf6,#ec4899)', boxShadow: '0 0 12px rgba(139,92,246,0.7)' }}
+      />
+    </span>
+  )
+}
 
-        {/* Main typewriter container */}
-        <div className="flex items-center">
-          {/* "I'm a" prefix - static */}
-          <span className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-gray-100 mr-4 drop-shadow-[0_1px_4px_rgba(255,255,255,0.9)] dark:drop-shadow-none">
-            I&apos;m a
-          </span>
+/* ── Stats ──────────────────────────────────────────────────── */
+const stats = [
+  { value: '600+',  label: 'Problems Solved' },
+  { value: '1750',  label: 'LeetCode Rating' },
+  { value: '1yr+',  label: 'at TCS' },
+]
 
-          {/* Animated typewriter text */}
-          <div className="relative">
-            <span className="inline-block text-4xl sm:text-5xl lg:text-7xl font-black" aria-label={currentText || 'role'}>
-              <span
-                className="bg-clip-text text-transparent relative"
-                style={{
-                  backgroundImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #feca57 75%, #ff6b6b 100%)',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  filter: 'drop-shadow(0 4px 20px rgba(102, 126, 234, 0.3))',
-                  textShadow: '0 0 40px rgba(102, 126, 234, 0.4)'
-                }}
-              >
-                {currentText || '\u00A0'}
-              </span>
-            </span>
+/* ── Social quick-links ─────────────────────────────────────── */
+const socials = [
+  { icon: Github,   href: 'https://github.com/Aritradutta2002',                  label: 'GitHub' },
+  { icon: Linkedin, href: 'https://www.linkedin.com/in/aritra-dutta-rick20/',    label: 'LinkedIn' },
+  { icon: Code2,    href: 'https://leetcode.com/u/ari2002/',                     label: 'LeetCode' },
+]
 
-            {/* Premium caret */}
-            <motion.span
-              aria-hidden
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.7, repeat: Infinity, repeatType: 'reverse' }}
-              className="inline-block w-1 sm:w-1.5 h-10 sm:h-12 lg:h-14 ml-2 align-middle"
-              style={{
-                background: 'linear-gradient(180deg, #667eea, #f093fb)',
-                boxShadow: '0 0 20px rgba(102, 126, 234, 0.6), 0 0 40px rgba(240, 147, 251, 0.4)',
-                borderRadius: '2px'
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Decorative underline */}
-        <motion.div
-          className="h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent rounded-full mt-2"
-          initial={{ width: 0, opacity: 0 }}
-          animate={{ width: '200px', opacity: 0.6 }}
-          transition={{ duration: 1, delay: 0.5 }}
-        />
-      </motion.div>
-    </div>
-  );
-};
-
+/* ── Hero ───────────────────────────────────────────────────── */
 export function Hero() {
-  const [showSidebar, setShowSidebar] = useState(true)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Hide sidebar on ANY scroll movement (even 1px)
-      if (window.scrollY > 5) {
-        setShowSidebar(false)
-      } else {
-        setShowSidebar(true)
-      }
-    }
-
-    // Use passive listener for better performance
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const scrollToNext = () => {
-    const aboutSection = document.querySelector('#about')
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
+  const scrollToAbout = () =>
+    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <section id="home" className="min-h-screen flex flex-col justify-center relative">
-      
-      {/* Vertical Right Sidebar Navigation - Home Page Only */}
-      {showSidebar && (
-        <motion.div 
-          className="fixed right-4 top-24 z-[50]"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: showSidebar ? 1 : 0, x: showSidebar ? 0 : 50 }}
-          exit={{ opacity: 0, x: 50 }}
-          transition={{ duration: 0.2 }}
-        >
-        <div className="bg-white/90 dark:bg-gray-900/25 backdrop-blur-xl rounded-2xl py-4 px-3 border border-gray-200/50 dark:border-gray-700/30 shadow-2xl">
-          <div className="flex flex-col space-y-3">
-            {[
-              { name: 'Home', href: '#home', icon: '🏠' },
-              { name: 'About', href: '#about', icon: '👤' },
-              { name: 'Skills', href: '#skills', icon: '⚡' },
-              { name: 'Projects', href: '#projects', icon: '💼' },
-              { name: 'Experience', href: '#experience', icon: '🎯' },
-              { name: 'Blog', href: '#blog', icon: '📝' },
-              { name: 'Social', href: '/social', icon: '🌐' },
-              { name: 'Contact', href: '#contact', icon: '📧' }
-            ].map((item, index) => (
-              <motion.button
-                key={item.name}
-                onClick={() => {
-                  if (item.href.startsWith('#')) {
-                    const element = document.querySelector(item.href)
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' })
-                    }
-                  } else {
-                    window.location.href = item.href
-                  }
-                }}
-                className="group relative flex items-center justify-center w-12 h-12 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 rounded-xl hover:bg-white/30 dark:hover:bg-gray-800/30"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
-                whileHover={{ scale: 1.1, x: -5 }}
-                whileTap={{ scale: 0.95 }}
-                title={item.name}
-              >
-                <span className="text-lg">{item.icon}</span>
-                
-                {/* Tooltip */}
-                <div className="absolute right-full mr-3 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
-                  {item.name}
-                  <div className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-gray-900 dark:border-l-white"></div>
-                </div>
-                
-                {/* Active indicator */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-400/30 dark:to-purple-400/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </motion.button>
-            ))}
-          </div>
-        </div>
-        </motion.div>
-      )}
+    <section
+      id="home"
+      className="min-h-screen flex items-center relative pt-16 lg:pt-20 overflow-hidden"
+    >
+      {/* Subtle radial glow behind content */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,92,246,0.07) 0%, transparent 70%)',
+        }}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-[1] pb-20">
-        <div className="text-center">
-          {/* Enhanced Profile Image with Premium Effects */}
-          <motion.div
-            className="mb-12 sm:mb-14 lg:mb-16"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 1.2, type: "spring", stiffness: 80 }}
-          >
-            <div className="relative group">
-              {/* Outer Glow Ring */}
-              <motion.div
-                className="absolute inset-0 w-72 h-72 rounded-full bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-pink-500/30 -m-10 blur-xl"
-                animate={{
-                  scale: [1, 1.15, 1],
-                  opacity: [0.4, 0.7, 0.4],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 py-16 lg:py-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-              {/* Middle Glow Ring */}
-              <motion.div
-                className="absolute inset-0 w-64 h-64 rounded-full bg-gradient-to-r from-cyan-400/25 via-blue-400/25 to-purple-400/25 -m-6 blur-lg"
-                animate={{
-                  scale: [1.1, 1, 1.1],
-                  opacity: [0.3, 0.6, 0.3],
-                  rotate: [360, 180, 0],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
+          {/* ── LEFT: Text Content ─────────────────────────── */}
+          <div className="order-2 lg:order-1 text-center lg:text-left">
 
-              {/* Premium Profile Container */}
-              <div className="relative w-48 h-48 sm:w-52 sm:h-52 lg:w-56 lg:h-56 mx-auto group-hover:scale-105 transition-all duration-700">
-                {/* Gradient Border Ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-1 shadow-2xl">
-                  <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 p-2">
-                    {/* Inner Gradient Border */}
-                    <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/50 dark:via-purple-900/50 dark:to-pink-900/50 p-1">
-                      {/* Image Container */}
-                      <div className="relative w-full h-full rounded-full overflow-hidden shadow-inner">
-                        <Image
-                          src="/aritra-profile-picture.png"
-                          alt="Aritra Dutta - Software Engineer"
-                          width={224}
-                          height={224}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          priority
-                          onError={() => console.log('Profile image failed to load')}
-                        />
-
-                        {/* Overlay Gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-blue-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Rotating Outer Ring */}
-                <motion.div
-                  className="absolute -inset-3 rounded-full border-2 border-dashed border-blue-400/60 dark:border-blue-300/60"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                />
-
-                {/* Counter-Rotating Inner Ring */}
-                <motion.div
-                  className="absolute -inset-1 rounded-full border border-purple-400/40 dark:border-purple-300/40"
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                />
-              </div>
-
-              {/* Enhanced Floating Particles */}
-              {Array.from({ length: 8 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 rounded-full"
-                  style={{
-                    background: `linear-gradient(45deg, ${
-                      ['#3b82f6', '#8b5cf6', '#ec4899', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#6366f1'][i]
-                    }, ${
-                      ['#8b5cf6', '#ec4899', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#6366f1', '#3b82f6'][i]
-                    })`,
-                    top: `${30 + Math.sin(i * Math.PI / 4) * 70}%`,
-                    left: `${50 + Math.cos(i * Math.PI / 4) * 70}%`,
-                    transform: 'translate(-50%, -50%)',
-                  }}
-                  animate={{
-                    scale: [0.5, 1.5, 0.5],
-                    opacity: [0.3, 1, 0.3],
-                    y: [0, -20, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    delay: i * 0.4,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-
-              {/* Sparkle Effects */}
-              {Array.from({ length: 4 }).map((_, i) => (
-                <motion.div
-                  key={`sparkle-${i}`}
-                  className="absolute w-1 h-1 bg-white rounded-full"
-                  style={{
-                    top: `${25 + Math.sin(i * Math.PI / 2) * 50}%`,
-                    left: `${50 + Math.cos(i * Math.PI / 2) * 50}%`,
-                    transform: 'translate(-50%, -50%)',
-                  }}
-                  animate={{
-                    scale: [0, 1, 0],
-                    opacity: [0, 1, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.5,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Enhanced Main Content with Better Spacing */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-4"
-          >
-            {/* Premium Typewriter Effect */}
-            <TypewriterText 
-              texts={[
-                "Backend Engineer",
-                "Microservices Architect",
-                "Problem Solver"
-              ]}
-            />
-
-            {/* Subtitle with enhanced styling and spacing */}
+            {/* Greeting */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="text-lg sm:text-xl lg:text-2xl text-gray-900 dark:text-gray-200 font-medium max-w-3xl mx-auto px-4 mt-4 drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)] dark:drop-shadow-none"
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 font-light mb-2"
             >
-              Building enterprise microservices at{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 font-bold">
-                TCS
-              </span>
-              {' '}• Leading production migrations & optimizations with{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-600 font-bold">
-                20-30x performance gains
-              </span>
+              Hi there, I&apos;m
             </motion.p>
 
-            {/* Enhanced Action Buttons with Perfect Spacing */}
-            <motion.div 
-              className="mt-8 mb-12 flex flex-col sm:flex-row gap-4 lg:gap-5 justify-center items-center px-4"
+            {/* Name */}
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 leading-[1.05]"
             >
+              Aritra{' '}
+              <span className="bg-gradient-to-r from-blue-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
+                Dutta
+              </span>
+            </motion.h1>
+
+            {/* Typewriter role */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.45 }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-6 min-h-[1.3em]"
+            >
+              <TypewriterText
+                texts={['Backend Engineer', 'Problem Solver', 'Full Stack Dev']}
+              />
+            </motion.div>
+
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.55 }}
+              className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8"
+            >
+              Building enterprise microservices at{' '}
+              <span className="font-semibold text-blue-600 dark:text-blue-400">TCS</span>.
+              {' '}Leading production migrations &amp; optimizations with{' '}
+              <span className="font-semibold text-emerald-600 dark:text-emerald-400">20–30× performance gains</span>.
+            </motion.p>
+
+            {/* Stats row */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.65 }}
+              className="flex items-center gap-6 justify-center lg:justify-start mb-10"
+            >
+              {stats.map((s, i) => (
+                <div key={i} className="text-center lg:text-left">
+                  <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent leading-none">
+                    {s.value}
+                  </div>
+                  <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-500 mt-0.5 font-medium uppercase tracking-wide">
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.75 }}
+              className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10"
+            >
+              {/* Primary */}
               <motion.button
-                className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white rounded-2xl font-semibold text-base sm:text-lg shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden border border-white/20"
-                whileHover={{ scale: 1.05, y: -3 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const aboutSection = document.querySelector('#about')
-                  if (aboutSection) {
-                    aboutSection.scrollIntoView({ behavior: 'smooth' })
-                  }
-                }}
+                onClick={scrollToAbout}
+                className="group relative px-7 py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white rounded-xl font-semibold text-[15px] shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 overflow-hidden"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
               >
-                {/* Animated background overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-
-                {/* Button text */}
-                <span className="relative z-10 flex items-center gap-3">
-                  <svg className="w-5 h-5 transition-transform duration-300 text-amber-400 dark:text-amber-300 group-hover:text-amber-300" viewBox="0 0 24 24" aria-hidden>
-                    <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" fill="currentColor"/>
-                  </svg>
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                <span className="relative z-10 flex items-center gap-2">
                   About Me
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300 text-amber-400 dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </span>
-
-                {/* Glow effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-2xl blur opacity-40 group-hover:opacity-70 transition-opacity duration-500 -z-10"></div>
               </motion.button>
 
-              {/* Scroll Down Icon - Between Buttons */}
-              <motion.button
-                onClick={scrollToNext}
-                className="hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white/10 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-700/50 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-white/20 dark:hover:bg-gray-700/50 transition-all duration-300 shadow-lg"
-                whileHover={{ scale: 1.15 }}
-                whileTap={{ scale: 0.9 }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1.0 }}
-              >
-                <motion.div
-                  animate={{ y: [0, 4, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <ChevronDown className="w-6 h-6 text-amber-400 dark:text-amber-300" />
-                </motion.div>
-              </motion.button>
-
-              {/* Resume Download Button */}
+              {/* Secondary */}
               <motion.a
                 href="/resume.pdf"
                 download="Aritra_Dutta_Resume.pdf"
-                className="group relative px-8 py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-2xl font-semibold text-base sm:text-lg shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden border border-white/20"
-                whileHover={{ scale: 1.05, y: -3 }}
-                whileTap={{ scale: 0.95 }}
+                className="group relative px-7 py-3.5 rounded-xl font-semibold text-[15px] border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 bg-white/60 dark:bg-white/[0.03] backdrop-blur-sm transition-all duration-300"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
               >
-                {/* Animated background overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-
-                {/* Button text */}
-                <span className="relative z-10 flex items-center gap-3">
-                  <Download className="w-5 h-5 text-amber-400 dark:text-amber-300 group-hover:animate-bounce" />
-                  Download Resume
+                <span className="flex items-center gap-2">
+                  <Download className="w-4 h-4 group-hover:animate-bounce" />
+                  Resume
                 </span>
-
-                {/* Glow effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl blur opacity-40 group-hover:opacity-70 transition-opacity duration-500 -z-10"></div>
               </motion.a>
             </motion.div>
-          </motion.div>
 
+            {/* Social links */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.85 }}
+              className="flex items-center gap-3 justify-center lg:justify-start"
+            >
+              <span className="text-xs text-gray-400 dark:text-gray-600 font-medium uppercase tracking-widest">Find me on</span>
+              <div className="flex gap-2">
+                {socials.map(({ icon: Icon, href, label }) => (
+                  <motion.a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-blue-500/15 hover:text-blue-600 dark:hover:text-blue-400 border border-gray-200/60 dark:border-gray-700/60 hover:border-blue-300 dark:hover:border-blue-500/40 transition-all duration-200"
+                    whileHover={{ scale: 1.12, y: -2 }}
+                    whileTap={{ scale: 0.93 }}
+                  >
+                    <Icon size={16} />
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* ── RIGHT: Profile Image ───────────────────────── */}
+          <div className="order-1 lg:order-2 flex justify-center lg:justify-start lg:pl-4 lg:-mt-24">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+              className="relative"
+            >
+              {/* Outer ambient glow */}
+              <motion.div
+                className="absolute -inset-8 rounded-full opacity-60"
+                style={{
+                  background: 'radial-gradient(circle, rgba(139,92,246,0.18) 0%, rgba(59,130,246,0.12) 40%, transparent 70%)',
+                  filter: 'blur(24px)',
+                }}
+                animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+              />
+
+              {/* Rotating gradient ring */}
+              <motion.div
+                className="absolute -inset-[6px] rounded-full"
+                style={{
+                  background: 'conic-gradient(from 0deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #3b82f6)',
+                  padding: '3px',
+                }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+              >
+                <div className="w-full h-full rounded-full bg-white dark:bg-[#0a0a0a]" />
+              </motion.div>
+
+              {/* Static gradient border (always visible) */}
+              <div
+                className="absolute -inset-[3px] rounded-full"
+                style={{
+                  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899)',
+                  padding: '3px',
+                }}
+              >
+                <div className="w-full h-full rounded-full bg-white dark:bg-[#0a0a0a]" />
+              </div>
+
+              {/* Image */}
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden shadow-2xl">
+                <Image
+                  src="/aritra-profile-picture.png"
+                  alt="Aritra Dutta – Software Engineer"
+                  width={320}
+                  height={320}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  priority
+                />
+                {/* Subtle overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-violet-900/10 via-transparent to-blue-900/5 pointer-events-none" />
+              </div>
+
+              {/* Dashed orbit ring */}
+              <motion.div
+                className="absolute -inset-5 rounded-full border border-dashed border-blue-300/30 dark:border-blue-500/20 pointer-events-none"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              />
+            </motion.div>
+          </div>
         </div>
       </div>
+
+      {/* ── Scroll indicator ──────────────────────────────────── */}
+      <motion.button
+        onClick={scrollToAbout}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-gray-400 dark:text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 group"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.4, duration: 0.5 }}
+        aria-label="Scroll to About"
+      >
+        <span className="text-[11px] font-medium uppercase tracking-widest">Scroll</span>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <ChevronDown size={20} className="group-hover:text-blue-500 transition-colors" />
+        </motion.div>
+      </motion.button>
     </section>
   )
 }
