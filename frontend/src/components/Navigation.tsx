@@ -79,8 +79,8 @@ export function Navigation() {
     <motion.nav
       className={`fixed top-0 w-full z-[100] transition-all duration-500 ${
         scrolled
-          ? 'bg-white/80 dark:bg-[#0a0a0a]/85 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] border-b border-white/40 dark:border-white/[0.06]'
-          : 'bg-white/40 dark:bg-transparent backdrop-blur-md border-b border-transparent'
+          ? 'glass-panel backdrop-blur-2xl border-b border-white/5 shadow-glass'
+          : 'bg-transparent border-b border-transparent'
       }`}
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -110,7 +110,7 @@ export function Navigation() {
 
             {/* Name */}
             <span className="text-[17px] font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-blue-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
                 Aritra
               </span>
               <span className="text-gray-800 dark:text-gray-100 ml-1">Dutta</span>
@@ -141,7 +141,7 @@ export function Navigation() {
                     {active_ && (
                       <motion.span
                         layoutId="nav-pill"
-                        className="absolute inset-0 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-200/60 dark:border-blue-500/20"
+                        className="absolute inset-0 rounded-lg bg-primary/20 border border-primary/50 shadow-neon-purple"
                         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -149,7 +149,7 @@ export function Navigation() {
 
                     {/* Hover underline */}
                     {!active_ && (
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] rounded-full bg-gradient-to-r from-blue-500 to-violet-500 group-hover:w-4/5 transition-all duration-300" />
+                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] rounded-full bg-gradient-to-r from-primary to-secondary group-hover:w-4/5 transition-all duration-300 shadow-neon-cyan" />
                     )}
                   </motion.button>
                 )
@@ -179,7 +179,7 @@ export function Navigation() {
             {/* Hire Me CTA */}
             <motion.button
               onClick={() => handleNavClick('#contact')}
-              className="relative px-4 py-2 text-[13px] font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-md shadow-blue-500/25 hover:shadow-blue-500/40 hover:from-blue-500 hover:to-violet-500 transition-all duration-300 overflow-hidden group"
+              className="relative px-4 py-2 text-[13px] font-mono rounded-lg bg-primary/20 border border-primary/50 text-white shadow-neon-purple hover:bg-primary/40 transition-all duration-300 overflow-hidden group"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5, duration: 0.4 }}

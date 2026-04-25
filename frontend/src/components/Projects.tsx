@@ -147,7 +147,7 @@ export function Projects() {
             <Sparkles size={12} />
             Portfolio
           </motion.span>
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">
             Featured Projects
           </h2>
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -155,8 +155,8 @@ export function Projects() {
             <div className="h-1 w-16 rounded-full bg-gradient-to-r from-blue-600 to-violet-600" />
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-violet-500" />
           </div>
-          <p className="text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-            Projects showcasing my skills across various technologies and domains
+          <p className="text-base text-gray-400 max-w-2xl mx-auto font-mono text-[13px]">
+            &gt; Projects showcasing my skills across various technologies and domains
           </p>
         </motion.div>
 
@@ -172,10 +172,10 @@ export function Projects() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-200 ${
+              className={`px-4 py-2 rounded-xl text-[13px] font-mono transition-all duration-200 ${
                 selectedCategory === cat
-                  ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-md shadow-blue-500/25'
-                  : 'bg-white/80 dark:bg-gray-900/80 text-gray-600 dark:text-gray-400 border border-gray-200/60 dark:border-gray-700/60 hover:border-blue-300 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400'
+                  ? 'bg-primary/20 text-white shadow-neon-purple border border-primary/50'
+                  : 'glass-panel text-gray-400 border border-white/5 hover:border-secondary/50 hover:text-secondary hover:shadow-neon-cyan'
               }`}
             >
               {cat}
@@ -196,13 +196,13 @@ export function Projects() {
                 transition={{ duration: 0.5, delay: index * 0.07 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -6 }}
-                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden group hover:shadow-2xl transition-all duration-300"
+                className="glass-panel backdrop-blur-xl rounded-2xl overflow-hidden group hover:shadow-neon-purple transition-all duration-500 border border-white/5"
               >
                 {/* Card top gradient bar */}
                 <div className={`h-1.5 w-full bg-gradient-to-r ${gradColor}`} />
 
                 {/* Visual area */}
-                <div className="relative h-40 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center overflow-hidden">
+                <div className="relative h-40 bg-background/50 flex items-center justify-center overflow-hidden">
                   <span className="text-5xl opacity-20 select-none">{categoryEmoji[project.category]}</span>
                   <div className={`absolute inset-0 bg-gradient-to-br ${gradColor} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
 
@@ -234,17 +234,17 @@ export function Projects() {
 
                 {/* Content */}
                 <div className="p-5">
-                  <h3 className="text-[15px] font-bold text-gray-900 dark:text-white mb-2 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 line-clamp-2">
+                  <h3 className="text-[15px] font-bold text-white mb-2 leading-snug group-hover:text-primary transition-colors duration-200 line-clamp-2">
                     {project.title}
                   </h3>
-                  <p className="text-[13px] text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 leading-relaxed">
+                  <p className="text-[13px] text-gray-400 mb-4 line-clamp-2 leading-relaxed font-mono">
                     {project.description}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {project.technologies.slice(0, 4).map((tech, ti) => (
                       <span
                         key={ti}
-                        className="px-2.5 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-500/20 rounded-lg text-[11px] font-medium"
+                        className="px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[11px] font-mono"
                       >
                         {tech}
                       </span>
@@ -269,8 +269,10 @@ export function Projects() {
           viewport={{ once: true }}
           className="mt-20"
         >
-          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-200/50 dark:border-gray-700/50">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-8 text-center">GitHub Activity</h3>
+          <div className="glass-panel backdrop-blur-xl rounded-2xl p-8 border border-white/5 shadow-neon-cyan">
+            <h3 className="text-xl font-mono text-white mb-8 text-center drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">
+              &gt; GitHub Activity
+            </h3>
             <div className="grid md:grid-cols-3 gap-6">
               {githubStats.map((s, i) => (
                 <motion.div
@@ -307,19 +309,19 @@ export function Projects() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 20 }}
               transition={{ duration: 0.25 }}
-              className="bg-white dark:bg-gray-900 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200/50 dark:border-gray-700/50"
+              className="glass-panel backdrop-blur-2xl rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-primary/30 shadow-neon-purple"
               onClick={e => e.stopPropagation()}
             >
               {/* Top gradient bar */}
               <div className={`h-1 w-full bg-gradient-to-r ${categoryColor[selectedProject.category] ?? 'from-blue-500 to-violet-500'} rounded-full mb-6`} />
 
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white pr-4 leading-snug">
+                <h3 className="text-2xl font-bold text-white pr-4 leading-snug drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]">
                   {selectedProject.title}
                 </h3>
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors duration-200 flex-shrink-0"
+                  className="p-2 hover:bg-white/10 rounded-xl transition-colors duration-200 flex-shrink-0"
                 >
                   <X className="w-5 h-5 text-gray-500" />
                 </button>
@@ -329,13 +331,13 @@ export function Projects() {
                 {categoryEmoji[selectedProject.category]} {selectedProject.category}
               </span>
 
-              <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-[14.5px]">
+              <p className="text-gray-300 mb-6 leading-relaxed text-[14.5px] font-mono">
                 {selectedProject.longDescription}
               </p>
 
               <div className="flex flex-wrap gap-2 mb-6">
                 {selectedProject.technologies.map((tech, i) => (
-                  <span key={i} className="px-3 py-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-500/20 rounded-lg text-[12px] font-medium">
+                  <span key={i} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[12px] font-mono">
                     {tech}
                   </span>
                 ))}
@@ -356,7 +358,7 @@ export function Projects() {
                     href={selectedProject.demo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white rounded-xl text-[13.5px] font-semibold hover:opacity-90 transition-opacity duration-200"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-primary/20 text-white rounded-xl text-[13.5px] font-mono border border-primary/50 hover:bg-primary/30 shadow-neon-purple transition-all duration-300"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Live Demo

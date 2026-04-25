@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { AccessibilityProvider, AccessibilitySettings } from '@/components/AccessibilityProvider'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import SmoothScroll from '@/components/SmoothScroll'
 
 const inter = Inter({
   variable: "--font-inter",
@@ -51,19 +52,21 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
-        className={`${inter.variable} ${firaCode.variable} font-sans antialiased bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 transition-colors duration-500`}
+        className={`${inter.variable} ${firaCode.variable} font-sans antialiased transition-colors duration-500`}
       >
         <ErrorBoundary>
           <AccessibilityProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
-              enableSystem
+              defaultTheme="dark"
+              enableSystem={false}
               disableTransitionOnChange={false}
             >
-              <ThemeToggle />
-              {children}
-              <AccessibilitySettings />
+              <SmoothScroll>
+                <ThemeToggle />
+                {children}
+                <AccessibilitySettings />
+              </SmoothScroll>
             </ThemeProvider>
           </AccessibilityProvider>
         </ErrorBoundary>

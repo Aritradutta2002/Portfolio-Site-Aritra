@@ -7,12 +7,11 @@ import { Experience } from '@/components/Experience'
 import { Blog } from '@/components/Blog'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
-import { AnimatedBackground } from '@/components/AnimatedBackground'
-
+import Scene from '@/components/canvas/Scene'
 export default function Home() {
   return (
     <main className="min-h-screen relative overflow-x-hidden">
-      <AnimatedBackground />
+      <Scene />
       <div className="relative z-10">
         <Navigation />
         <Hero />

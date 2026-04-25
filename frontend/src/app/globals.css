@@ -2,24 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS Variables */
+/* Custom CSS Variables - Dark Mode Tech */
 :root {
-  --background: #ffffff;
-  --foreground: #111111;
-  --accent: #14b8a6;
+  --background: #050505;
+  --foreground: #ededed;
+  --accent: #8b5cf6;
   --accent-secondary: #06b6d4;
 }
 
 .dark {
-  --background: #0a0a0a;
+  --background: #050505;
   --foreground: #ededed;
-  --accent: #14b8a6;
+  --accent: #8b5cf6;
   --accent-secondary: #06b6d4;
 }
 
-/* Smooth scrolling for the entire page */
-html {
-  scroll-behavior: smooth;
+/* Lenis recommends auto for smooth scrolling */
+html.lenis {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 /* Respect user's motion preferences */
@@ -378,16 +387,17 @@ a:hover {
 }
 
 /* Glass morphism effect */
-.glass {
-  background: rgba(255, 255, 255, 0.25);
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
-  .glass {
-    background: rgba(0, 0, 0, 0.25);
+  .glass-panel {
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }

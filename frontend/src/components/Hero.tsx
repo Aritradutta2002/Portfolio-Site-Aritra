@@ -86,12 +86,12 @@ export function Hero() {
       id="home"
       className="min-h-screen flex items-center relative pt-16 lg:pt-20 overflow-hidden"
     >
-      {/* Subtle radial glow behind content */}
+      {/* Minimalist Tech Gradient Glow */}
       <div
         className="pointer-events-none absolute inset-0 z-0"
         style={{
           background:
-            'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,92,246,0.07) 0%, transparent 70%)',
+            'radial-gradient(ellipse 60% 60% at 50% 10%, rgba(139,92,246,0.15) 0%, transparent 60%)',
         }}
       />
 
@@ -101,14 +101,13 @@ export function Hero() {
           {/* ── LEFT: Text Content ─────────────────────────── */}
           <div className="order-2 lg:order-1 text-center lg:text-left">
 
-            {/* Greeting */}
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 font-light mb-2"
+              className="text-lg sm:text-xl text-gray-400 font-mono tracking-wide mb-2 uppercase"
             >
-              Hi there, I&apos;m
+              &lt;hello world /&gt; I&apos;m
             </motion.p>
 
             {/* Name */}
@@ -116,10 +115,10 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 leading-[1.05]"
+              className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-4 leading-[1.05]"
             >
               Aritra{' '}
-              <span className="bg-gradient-to-r from-blue-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent filter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
                 Dutta
               </span>
             </motion.h1>
@@ -129,7 +128,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.45 }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-6 min-h-[1.3em]"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-200 mb-6 min-h-[1.3em]"
             >
               <TypewriterText
                 texts={['Backend Engineer', 'Problem Solver', 'Full Stack Dev']}
@@ -141,12 +140,12 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.55 }}
-              className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8"
+              className="text-base sm:text-lg text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8"
             >
               Building enterprise microservices at{' '}
-              <span className="font-semibold text-blue-600 dark:text-blue-400">TCS</span>.
+              <span className="font-semibold text-secondary glow">TCS</span>.
               {' '}Leading production migrations &amp; optimizations with{' '}
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">20–30× performance gains</span>.
+              <span className="font-semibold text-primary glow">20–30× performance gains</span>.
             </motion.p>
 
             {/* Stats row */}
@@ -157,11 +156,11 @@ export function Hero() {
               className="flex items-center gap-6 justify-center lg:justify-start mb-10"
             >
               {stats.map((s, i) => (
-                <div key={i} className="text-center lg:text-left">
-                  <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent leading-none">
+                <div key={i} className="glass-panel px-4 py-3 rounded-lg text-center lg:text-left min-w-[120px] transition-transform hover:scale-105">
+                  <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-none drop-shadow-[0_0_5px_rgba(6,182,212,0.5)]">
                     {s.value}
                   </div>
-                  <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-500 mt-0.5 font-medium uppercase tracking-wide">
+                  <div className="text-[11px] sm:text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">
                     {s.label}
                   </div>
                 </div>
@@ -173,18 +172,17 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.75 }}
-              className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10"
+              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10"
             >
               {/* Primary */}
               <motion.button
                 onClick={scrollToAbout}
-                className="group relative px-7 py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white rounded-xl font-semibold text-[15px] shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 overflow-hidden"
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+                className="group relative px-8 py-3.5 bg-primary/20 text-white rounded-lg font-mono text-[14px] shadow-neon-purple border border-primary/50 hover:bg-primary/30 backdrop-blur-md transition-all duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                <span className="relative z-10 flex items-center gap-2">
-                  About Me
+                <span className="relative z-10 flex items-center gap-2 tracking-wider">
+                  [ ABOUT_ME ]
                   <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
@@ -195,13 +193,13 @@ export function Hero() {
               <motion.a
                 href="/resume.pdf"
                 download="Aritra_Dutta_Resume.pdf"
-                className="group relative px-7 py-3.5 rounded-xl font-semibold text-[15px] border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 bg-white/60 dark:bg-white/[0.03] backdrop-blur-sm transition-all duration-300"
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+                className="group relative px-8 py-3.5 rounded-lg font-mono text-[14px] border border-gray-700 text-gray-300 hover:border-secondary/50 hover:text-secondary hover:shadow-neon-cyan glass-panel transition-all duration-300 flex items-center justify-center"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2 tracking-wider">
                   <Download className="w-4 h-4 group-hover:animate-bounce" />
-                  Resume
+                  RESUME.PDF
                 </span>
               </motion.a>
             </motion.div>
@@ -211,10 +209,10 @@ export function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.85 }}
-              className="flex items-center gap-3 justify-center lg:justify-start"
+              className="flex items-center gap-4 justify-center lg:justify-start"
             >
-              <span className="text-xs text-gray-400 dark:text-gray-600 font-medium uppercase tracking-widest">Find me on</span>
-              <div className="flex gap-2">
+              <span className="text-xs text-gray-500 font-mono uppercase tracking-widest">&gt; Connect</span>
+              <div className="flex gap-3">
                 {socials.map(({ icon: Icon, href, label }) => (
                   <motion.a
                     key={label}
@@ -222,11 +220,11 @@ export function Hero() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800/70 text-gray-600 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-blue-500/15 hover:text-blue-600 dark:hover:text-blue-400 border border-gray-200/60 dark:border-gray-700/60 hover:border-blue-300 dark:hover:border-blue-500/40 transition-all duration-200"
-                    whileHover={{ scale: 1.12, y: -2 }}
-                    whileTap={{ scale: 0.93 }}
+                    className="w-10 h-10 rounded-lg flex items-center justify-center glass-panel text-gray-400 hover:text-primary hover:shadow-neon-purple hover:border-primary/50 transition-all duration-300"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
-                    <Icon size={16} />
+                    <Icon size={18} />
                   </motion.a>
                 ))}
               </div>
@@ -245,35 +243,35 @@ export function Hero() {
               <motion.div
                 className="absolute -inset-8 rounded-full opacity-60"
                 style={{
-                  background: 'radial-gradient(circle, rgba(139,92,246,0.18) 0%, rgba(59,130,246,0.12) 40%, transparent 70%)',
-                  filter: 'blur(24px)',
+                  background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(6,182,212,0.15) 40%, transparent 70%)',
+                  filter: 'blur(30px)',
                 }}
-                animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.9, 0.5] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               />
 
               {/* Rotating gradient ring */}
               <motion.div
                 className="absolute -inset-[6px] rounded-full"
                 style={{
-                  background: 'conic-gradient(from 0deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #3b82f6)',
+                  background: 'conic-gradient(from 0deg, transparent, #8b5cf6, transparent, #06b6d4, transparent)',
                   padding: '3px',
                 }}
                 animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
               >
-                <div className="w-full h-full rounded-full bg-white dark:bg-[#0a0a0a]" />
+                <div className="w-full h-full rounded-full bg-surface" />
               </motion.div>
 
               {/* Static gradient border (always visible) */}
               <div
                 className="absolute -inset-[3px] rounded-full"
                 style={{
-                  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899)',
-                  padding: '3px',
+                  background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)',
+                  padding: '2px',
                 }}
               >
-                <div className="w-full h-full rounded-full bg-white dark:bg-[#0a0a0a]" />
+                <div className="w-full h-full rounded-full bg-surface" />
               </div>
 
               {/* Image */}
