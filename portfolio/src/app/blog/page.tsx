@@ -1,9 +1,12 @@
+
+
+
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Calendar, Clock, ArrowLeft, Search, Tag, Heart, Eye, BookOpen, Star, Filter, Share2
+  Calendar, Clock, ArrowLeft, Search, Tag, Heart, Eye, BookOpen, Star, Filter
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -133,7 +136,7 @@ const containerVariants = {
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40, scale: 0.96 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" as const } },
 }
 
 export default function BlogPage() {
@@ -174,7 +177,11 @@ export default function BlogPage() {
   const toggleLike = (id: number) => {
     setLikedPosts(prev => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
       return next
     })
   }

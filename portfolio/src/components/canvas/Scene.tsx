@@ -3,7 +3,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Suspense, useRef, useState, useCallback, useMemo } from 'react'
 import Particles from './Particles'
-import { Environment, Float, Sphere, MeshDistortMaterial, Stars } from '@react-three/drei'
+import { Environment, Stars } from '@react-three/drei'
 import * as THREE from 'three'
 
 function RippleBurst({ position }: { position: THREE.Vector3 }) {
