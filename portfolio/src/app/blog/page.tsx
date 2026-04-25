@@ -198,7 +198,7 @@ export default function BlogPage() {
         month: 'long',
         day: 'numeric'
       })
-    } catch (error) {
+    } catch {
       return 'Invalid date'
     }
   }
@@ -225,7 +225,7 @@ export default function BlogPage() {
               <div className="flex items-center gap-2">
                 <BookOpen className="w-6 h-6 text-blue-600" />
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Aritra's Blog
+                  Aritra&apos;s Blog
                 </h1>
               </div>
             </div>
@@ -263,6 +263,7 @@ export default function BlogPage() {
                   <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                     {post.featuredImageUrl && (
                       <div className="h-48 bg-gradient-to-r from-blue-500 to-purple-600 relative overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img 
                           src={post.featuredImageUrl} 
                           alt={post.title}
