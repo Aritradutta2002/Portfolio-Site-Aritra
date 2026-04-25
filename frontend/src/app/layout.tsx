@@ -4,7 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { AccessibilityProvider, AccessibilitySettings } from '@/components/AccessibilityProvider'
-import { ThemeToggle } from '@/components/ThemeToggle'
 import SmoothScroll from '@/components/SmoothScroll'
 
 const inter = Inter({
@@ -63,7 +62,6 @@ export default function RootLayout({
               disableTransitionOnChange={false}
             >
               <SmoothScroll>
-                <ThemeToggle />
                 {children}
                 <AccessibilitySettings />
               </SmoothScroll>

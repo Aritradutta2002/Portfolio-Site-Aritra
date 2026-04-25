@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
-import { ThemeToggle } from './ThemeToggle'
+import { Menu, X, Sun, Moon } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -26,6 +26,12 @@ export function Navigation() {
   const [isOpen,   setIsOpen]   = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [active,   setActive]   = useState('home')
+  const [mounted,  setMounted]  = useState(false)
+  const { theme, setTheme } = useTheme()
+
+  useEffect(() => { setMounted(true) }, [])
+
+  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
 
   /* ── Scroll + active-section tracking ─────────────────────── */
   useEffect(() => {
@@ -174,7 +180,7 @@ export function Navigation() {
             })}
 
             {/* Divider */}
-            <div className="w-px h-5 bg-gray-200 dark:bg-gray-700 mx-2" />
+            <div className="w-px h-5 bg-white/10 mx-1" />
 
             {/* Hire Me CTA */}
             <motion.button
@@ -186,7 +192,6 @@ export function Navigation() {
               whileHover={{ scale: 1.04, y: -1 }}
               whileTap={{ scale: 0.96 }}
             >
-              {/* Shimmer */}
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <span className="relative z-10 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -194,14 +199,38 @@ export function Navigation() {
               </span>
             </motion.button>
 
-            <div className="ml-1">
-              <ThemeToggle />
-            </div>
+            {/* Theme toggle — compact icon button */}
+            {mounted && (
+              <motion.button
+                onClick={toggleTheme}
+                className="w-9 h-9 rounded-lg glass-panel flex items-center justify-center text-gray-400 hover:text-primary hover:shadow-neon-purple hover:border-primary/50 transition-all duration-300"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                aria-label="Toggle theme"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                {theme === 'dark'
+                  ? <Sun size={16} className="text-amber-400" />
+                  : <Moon size={16} className="text-blue-400" />}
+              </motion.button>
+            )}
           </div>
 
           {/* ── Mobile Controls ───────────────────────────────── */}
           <div className="md:hidden flex items-center gap-2">
-            <ThemeToggle />
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                className="w-9 h-9 rounded-lg glass-panel flex items-center justify-center text-gray-400 hover:text-primary transition-all duration-300"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark'
+                  ? <Sun size={16} className="text-amber-400" />
+                  : <Moon size={16} className="text-blue-400" />}
+              </button>
+            )}
             <motion.button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
