@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Calendar, 
@@ -13,7 +13,6 @@ import {
   Eye, 
   Share2,
   BookOpen,
-  TrendingUp,
   Star
 } from 'lucide-react'
 import Link from 'next/link'
@@ -35,13 +34,98 @@ type BlogPost = {
   updatedAt: string
 }
 
-type ApiResponse = {
-  content: BlogPost[]
-  totalElements: number
-  totalPages: number
-  size: number
-  number: number
-}
+const allPosts: BlogPost[] = [
+  {
+    id: 1,
+    title: "Mastering Data Structures and Algorithms: A Competitive Programmer's Journey",
+    excerpt: 'My experience solving 500+ problems across LeetCode, CodeForces, and CodeChef. Key insights and strategies that helped me achieve a 1750 rating.',
+    content: "Competitive programming has been an incredible journey for me. Starting from basic array problems to tackling complex graph algorithms, I've learned that consistency beats intensity every time.\n\nIn this post, I share my roadmap: how I structured my practice, the resources that helped me most, and the mindset shifts that turned me from a beginner into a confident problem solver. Whether you're just starting or looking to break through a plateau, these strategies will help you level up.",
+    author: 'Aritra Dutta',
+    viewCount: 1240,
+    likeCount: 87,
+    readTime: 8,
+    tags: ['Competitive Programming', 'DSA', 'LeetCode'],
+    category: 'PROGRAMMING',
+    isFeatured: true,
+    createdAt: '2024-12-15T10:00:00Z',
+    updatedAt: '2024-12-15T10:00:00Z',
+  },
+  {
+    id: 2,
+    title: 'Building Scalable REST APIs with Spring Boot and Hibernate',
+    excerpt: 'A comprehensive guide to creating enterprise-grade REST APIs using Spring Boot, covering best practices, security, and performance optimization.',
+    content: "Spring Boot has revolutionized how we build Java applications. In this guide, I walk through designing RESTful APIs that scale—from proper resource naming and HTTP status codes to implementing pagination, caching, and rate limiting.\n\nWe'll cover authentication with JWT, input validation, global exception handling, and database optimization with Hibernate. By the end, you'll have a blueprint for production-ready APIs that can handle real-world traffic.",
+    author: 'Aritra Dutta',
+    viewCount: 980,
+    likeCount: 64,
+    readTime: 12,
+    tags: ['Spring Boot', 'Java', 'REST API', 'Backend'],
+    category: 'BACKEND_DEVELOPMENT',
+    isFeatured: true,
+    createdAt: '2024-12-10T10:00:00Z',
+    updatedAt: '2024-12-10T10:00:00Z',
+  },
+  {
+    id: 3,
+    title: 'From Algorithm Visualization to Production: My Development Journey',
+    excerpt: 'How I built an interactive algorithm visualizer and the lessons learned about clean code, user experience, and performance optimization.',
+    content: "Turning a side project into a polished product taught me more than any tutorial. In this post, I share the story of building an algorithm visualizer—from the initial React prototypes to optimizing canvas rendering for smooth animations.\n\nKey takeaways: start with user experience, measure performance before optimizing, and don't be afraid to rewrite when the architecture doesn't fit. The journey from hacky prototype to clean codebase is worth every refactor.",
+    author: 'Aritra Dutta',
+    viewCount: 756,
+    likeCount: 45,
+    readTime: 6,
+    tags: ['JavaScript', 'Algorithms', 'Web Development'],
+    category: 'WEB_DEVELOPMENT',
+    isFeatured: false,
+    createdAt: '2024-12-05T10:00:00Z',
+    updatedAt: '2024-12-05T10:00:00Z',
+  },
+  {
+    id: 4,
+    title: 'Effective Problem-Solving Strategies for Technical Interviews',
+    excerpt: 'Proven techniques and mental frameworks that helped me excel in technical interviews and competitive programming contests.',
+    content: "Technical interviews are as much about communication as they are about coding. In this post, I break down the UMPIRE method for approaching unfamiliar problems, techniques for clarifying requirements, and how to think out loud without losing focus.\n\nI also share common patterns I've seen across hundreds of interview problems and how recognizing them early can save precious minutes. Practice these strategies and walk into your next interview with confidence.",
+    author: 'Aritra Dutta',
+    viewCount: 1120,
+    likeCount: 72,
+    readTime: 10,
+    tags: ['Interview Prep', 'Problem Solving', 'Career'],
+    category: 'CAREER',
+    isFeatured: false,
+    createdAt: '2024-11-28T10:00:00Z',
+    updatedAt: '2024-11-28T10:00:00Z',
+  },
+  {
+    id: 5,
+    title: 'Understanding React Server Components in Next.js 15',
+    excerpt: 'A deep dive into React Server Components, how they differ from client components, and when to use each for optimal performance.',
+    content: "Next.js 15 brings React Server Components to the forefront. In this article, I explain the mental model behind server components, the boundary between server and client, and practical patterns for building fast, interactive applications.\n\nWe explore streaming, partial prerendering, and how to leverage the new app router for reduced JavaScript bundles without sacrificing interactivity.",
+    author: 'Aritra Dutta',
+    viewCount: 640,
+    likeCount: 38,
+    readTime: 7,
+    tags: ['React', 'Next.js', 'Frontend'],
+    category: 'WEB_DEVELOPMENT',
+    isFeatured: false,
+    createdAt: '2024-11-20T10:00:00Z',
+    updatedAt: '2024-11-20T10:00:00Z',
+  },
+  {
+    id: 6,
+    title: 'My Competitive Programming Toolkit: Extensions, Templates, and Tips',
+    excerpt: 'The exact setup I use for competitive programming contests—from VS Code extensions to C++ templates and debugging tricks.',
+    content: "Having the right toolkit can save minutes in a timed contest. I share my complete VS Code setup for competitive programming: snippets for fast I/O, common data structures, and algorithms.\n\nPlus, debugging strategies when you're down to your last submission, and how to stay calm under pressure. These small optimizations add up when every second counts.",
+    author: 'Aritra Dutta',
+    viewCount: 890,
+    likeCount: 55,
+    readTime: 5,
+    tags: ['Competitive Programming', 'C++', 'Tools'],
+    category: 'COMPETITIVE_PROGRAMMING',
+    isFeatured: false,
+    createdAt: '2024-11-15T10:00:00Z',
+    updatedAt: '2024-11-15T10:00:00Z',
+  },
+]
 
 const categories = [
   'All',
@@ -53,75 +137,58 @@ const categories = [
 ]
 
 export default function BlogPage() {
-  const [posts, setPosts] = useState<BlogPost[]>([])
-  const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
+  const [likedPosts, setLikedPosts] = useState<Set<number>>(new Set())
 
-  const API_BASE = 'http://localhost:8081/api/v1/blog-posts'
+  const pageSize = 6
 
   useEffect(() => {
-    fetchFeaturedPosts()
-    fetchPosts()
-  }, [selectedCategory, searchQuery, currentPage])
+    const timer = setTimeout(() => setLoading(false), 400)
+    return () => clearTimeout(timer)
+  }, [])
 
-  const fetchFeaturedPosts = async () => {
-    try {
-      const response = await fetch(`${API_BASE}/featured`)
-      const data = await response.json()
-      setFeaturedPosts(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error('Error fetching featured posts:', error)
-      setFeaturedPosts([])
+  const filteredPosts = useMemo(() => {
+    let result = allPosts
+    if (selectedCategory !== 'All') {
+      result = result.filter(p => p.category === selectedCategory)
     }
-  }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      result = result.filter(p => 
+        p.title.toLowerCase().includes(q) || 
+        p.excerpt.toLowerCase().includes(q) ||
+        p.tags.some(t => t.toLowerCase().includes(q))
+      )
+    }
+    return result
+  }, [selectedCategory, searchQuery])
 
-  const fetchPosts = async () => {
-    try {
-      setLoading(true)
-      let url = `${API_BASE}`
-      
-      if (selectedCategory !== 'All') {
-        url = `${API_BASE}/category/${selectedCategory}`
-      }
-      
-      if (searchQuery) {
-        url = `${API_BASE}/search?keyword=${encodeURIComponent(searchQuery)}`
-      }
+  const totalPages = Math.ceil(filteredPosts.length / pageSize) || 1
+  const paginatedPosts = filteredPosts.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+  const featuredPosts = allPosts.filter(p => p.isFeatured)
 
-      const response = await fetch(url)
-      const data = await response.json()
-      
-      // Handle both array response and paginated response
-      if (Array.isArray(data)) {
-        setPosts(data || [])
-        setTotalPages(1)
+  useEffect(() => {
+    setCurrentPage(0)
+  }, [selectedCategory, searchQuery])
+
+  const handleLikePost = (postId: number) => {
+    setLikedPosts(prev => {
+      const next = new Set(prev)
+      if (next.has(postId)) {
+        next.delete(postId)
       } else {
-        setPosts(data.content || [])
-        setTotalPages(data.totalPages || 1)
+        next.add(postId)
       }
-    } catch (error) {
-      console.error('Error fetching posts:', error)
-      setPosts([])
-    } finally {
-      setLoading(false)
-    }
+      return next
+    })
   }
 
-  const handleLikePost = async (postId: number) => {
-    try {
-      await fetch(`${API_BASE}/${postId}/like`, { method: 'POST' })
-      // Refresh posts to get updated like count
-      fetchPosts()
-      fetchFeaturedPosts()
-    } catch (error) {
-      console.error('Error liking post:', error)
-    }
-  }
+  const isLiked = (postId: number) => likedPosts.has(postId)
+  const getLikeCount = (post: BlogPost) => post.likeCount + (isLiked(post.id) ? 1 : 0)
 
   const formatDate = (dateString: string) => {
     if (!dateString) return 'Unknown date'
@@ -158,7 +225,7 @@ export default function BlogPage() {
               <div className="flex items-center gap-2">
                 <BookOpen className="w-6 h-6 text-blue-600" />
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Aritra&apos;s Blog
+                  Aritra's Blog
                 </h1>
               </div>
             </div>
@@ -168,7 +235,7 @@ export default function BlogPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Featured Posts Section */}
-        {featuredPosts.length > 0 && (
+        {featuredPosts.length > 0 && selectedCategory === 'All' && !searchQuery && (
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -235,7 +302,7 @@ export default function BlogPage() {
                           </div>
                           <div className="flex items-center gap-1">
                             <Heart className="w-4 h-4" />
-                            {post.likeCount || 0}
+                            {getLikeCount(post)}
                           </div>
                         </div>
                         <span className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full">
@@ -318,7 +385,7 @@ export default function BlogPage() {
               exit={{ opacity: 0 }}
               className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {posts.map((post, index) => (
+              {paginatedPosts.map((post, index) => (
                 <motion.article
                   key={post.id}
                   initial={{ opacity: 0, y: 30 }}
@@ -371,10 +438,10 @@ export default function BlogPage() {
                             e.stopPropagation()
                             handleLikePost(post.id)
                           }}
-                          className="flex items-center gap-1 hover:text-red-500 transition-colors"
+                          className={`flex items-center gap-1 transition-colors ${isLiked(post.id) ? 'text-red-500' : 'hover:text-red-500'}`}
                         >
-                          <Heart className="w-4 h-4" />
-                          {post.likeCount || 0}
+                          <Heart className={`w-4 h-4 ${isLiked(post.id) ? 'fill-red-500' : ''}`} />
+                          {getLikeCount(post)}
                         </button>
                       </div>
                       <div className="flex items-center gap-1 text-sm text-gray-500">
@@ -388,6 +455,19 @@ export default function BlogPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Empty State */}
+        {!loading && paginatedPosts.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20"
+          >
+            <Search className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No posts found</h3>
+            <p className="text-gray-500 dark:text-gray-400">Try adjusting your search or category filter.</p>
+          </motion.div>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -453,10 +533,14 @@ export default function BlogPage() {
                   <div className="flex items-center gap-4">
                     <button
                       onClick={() => handleLikePost(selectedPost.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-lg hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                        isLiked(selectedPost.id)
+                          ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-red-100 dark:hover:bg-red-900'
+                      }`}
                     >
-                      <Heart className="w-4 h-4" />
-                      {selectedPost.likeCount}
+                      <Heart className={`w-4 h-4 ${isLiked(selectedPost.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                      {getLikeCount(selectedPost)}
                     </button>
                     <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                       <Share2 className="w-5 h-5" />

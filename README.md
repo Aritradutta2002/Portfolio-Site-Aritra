@@ -1,100 +1,65 @@
-# ✅ Clean Full Stack Project Structure!
+# Aritra Portfolio
 
-## 📁 Simple 2-Folder Structure
+A modern, responsive portfolio website built with Next.js, React, TypeScript, and Tailwind CSS.
+
+## Project Structure
 
 ```
-Portfolio-Aritra/
-├── frontend/              # Next.js React Frontend
+Portfolio/
+├── portfolio/              # Next.js React Frontend
 │   ├── src/
-│   ├── public/
-│   ├── out/              # Built static files
+│   │   ├── app/           # Next.js App Router
+│   │   ├── components/    # React Components
+│   │   ├── hooks/         # Custom Hooks
+│   │   ├── lib/           # Utilities
+│   │   └── data/          # Static Data
+│   ├── public/            # Static Assets
 │   └── package.json
 │
-├── backend/              # Spring Boot Backend  
-│   ├── src/main/java/
-│   └── src/main/resources/
-│
-└── pom.xml              # ROOT POM - Builds Both!
+└── README.md
 ```
 
-## ✅ Perfect - Just 2 Folders!
-
-- **`frontend/`** - All React/Next.js code
-- **`backend/`** - All Spring Boot code
-
-No duplicate folders, no confusion!
-
-## 🚀 One Command Builds Everything
+## Development
 
 ```bash
-mvn clean package -DskipTests
-```
-
-**Output:** `target/portfolio-fullstack-1.0.0.jar` (60.9 MB)
-
-Contains frontend + backend ready to deploy!
-
-## 🎯 Run the Application
-
-```bash
-java -jar target/portfolio-fullstack-1.0.0.jar
-```
-
-- **Frontend:** http://localhost:8080/
-- **Backend API:** http://localhost:8080/api/*
-
-## 💻 Development Mode
-
-**Frontend Dev Server:**
-```bash
-cd frontend
+cd portfolio
+npm install
 npm run dev
 ```
+
 Runs on http://localhost:3000
 
-**Backend Dev Server:**
-```bash  
-cd backend
-mvn spring-boot:run
-```
-Runs on http://localhost:8080
+## Build
 
-## 📦 What Happens During Build
-
-1. ✅ Installs npm dependencies (466 packages)
-2. ✅ Builds Next.js → `frontend/out/`
-3. ✅ Copies frontend → `target/classes/static/`
-4. ✅ Compiles Java backend
-5. ✅ Packages everything → Single JAR
-
-## 🚀 Deploy
-
-### Deploy the JAR
-Upload `target/portfolio-fullstack-1.0.0.jar` to:
-- Railway
-- Render  
-- Heroku
-- AWS/GCP/Azure
-
-### Or Deploy Separately
-**Frontend → Vercel:**
 ```bash
-cd frontend
-vercel deploy
+cd portfolio
+npm run build
 ```
 
-**Backend → Railway/Render** (deploy the JAR)
+## Deploy
 
-## ✨ Summary
+The `portfolio/out` folder contains static files ready for deployment to Vercel, Netlify, or any static host.
 
-✅ **2 folders only** - `frontend/` and `backend/`  
-✅ **No duplicates** - Clean structure  
-✅ **Build works** - One command  
-✅ **60.9 MB JAR** - Ready to deploy  
-✅ **All functionality working** - Frontend + Backend integrated
+## Features
+
+- **Responsive Design** - Works on all devices
+- **Dark Mode** - Automatic theme switching
+- **3D Background** - Interactive Three.js scene
+- **Blog Section** - Static blog posts with search & filtering
+- **Contact Form** - Email integration via EmailJS
+- **Smooth Animations** - Framer Motion animations
+- **Accessibility** - WCAG compliant
+
+## Tech Stack
+
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- Three.js / React Three Fiber
+- EmailJS
 
 ---
 
-**Status:** ✅ BUILD SUCCESS  
-**Structure:** Clean & Simple  
-**JAR:** 60.9 MB
+**Status:** Ready to Deploy
