@@ -79,7 +79,7 @@ export function Contact() {
     }
   }
 
-  const inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 text-gray-900 dark:text-white text-[14px] placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:focus:border-blue-500 transition-all duration-200"
+  const inputClass = "w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white text-[14px] placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-300 backdrop-blur-sm shadow-inner"
 
   return (
     <section id="contact" className="py-24 relative">
@@ -126,14 +126,15 @@ export function Contact() {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-7 shadow-xl border border-gray-200/50 dark:border-gray-700/50">
-              <h3 className="text-[17px] font-bold text-gray-900 dark:text-white mb-2">Let&apos;s Connect</h3>
-              <p className="text-[13.5px] text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+            <div className="glass-galaxy rounded-3xl p-8 lg:p-10 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-[60px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
+              <h3 className="text-[20px] font-bold text-white mb-2 tracking-tight">Let&apos;s Connect</h3>
+              <p className="text-[14px] text-gray-400 mb-8 leading-relaxed font-medium">
                 Whether you&apos;re looking to collaborate, need development help, or just want to connect — I&apos;d love to hear from you!
               </p>
 
               {/* Contact details */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {contactInfo.map((c, i) => (
                   <motion.a
                     key={c.label}
@@ -142,15 +143,16 @@ export function Contact() {
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.4, delay: i * 0.08 }}
                     viewport={{ once: true }}
-                    whileHover={{ x: 4 }}
-                    className="flex items-center gap-4 p-3.5 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200/60 dark:border-gray-700/60 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 group"
+                    whileHover={{ x: 6 }}
+                    className="flex items-center gap-5 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/40 hover:bg-white/10 transition-all duration-300 group/item relative overflow-hidden"
                   >
-                    <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-violet-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform duration-200">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity duration-300" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover/item:shadow-neon-purple transition-all duration-300">
                       <c.icon className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <p className="text-[11px] text-gray-400 dark:text-gray-600 font-medium">{c.label}</p>
-                      <p className="text-[13.5px] text-gray-800 dark:text-gray-200 font-medium">{c.value}</p>
+                      <p className="text-[12px] text-gray-500 font-bold uppercase tracking-wider">{c.label}</p>
+                      <p className="text-[14.5px] text-gray-200 font-bold mt-0.5 group-hover/item:text-white transition-colors">{c.value}</p>
                     </div>
                   </motion.a>
                 ))}
@@ -158,9 +160,10 @@ export function Contact() {
             </div>
 
             {/* Social links */}
-            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-7 shadow-xl border border-gray-200/50 dark:border-gray-700/50">
-              <h4 className="text-[15px] font-bold text-gray-900 dark:text-white mb-4">Follow Me On</h4>
-              <div className="flex flex-wrap gap-2.5">
+            <div className="glass-galaxy rounded-3xl p-8 relative overflow-hidden group">
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-[40px] -z-10 group-hover:bg-secondary/20 transition-colors duration-500" />
+              <h4 className="text-[16px] font-bold text-white mb-6 tracking-tight">Follow Me On</h4>
+              <div className="flex flex-wrap gap-3">
                 {socialLinks.map((s, i) => (
                   <motion.a
                     key={s.name}
@@ -172,26 +175,26 @@ export function Contact() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: i * 0.06 }}
                     viewport={{ once: true }}
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileHover={{ scale: 1.1, y: -4 }}
                     whileTap={{ scale: 0.93 }}
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200/60 dark:border-gray-700/60 transition-all duration-200 ${s.hoverBg}`}
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center bg-white/5 border border-white/10 shadow-lg text-gray-300 transition-all duration-300 ${s.hoverBg} hover:shadow-neon-cyan`}
                   >
-                    <s.icon className="w-4 h-4" />
+                    <s.icon className="w-5 h-5" />
                   </motion.a>
                 ))}
               </div>
             </div>
 
             {/* Quick stats */}
-            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-7 shadow-xl border border-gray-200/50 dark:border-gray-700/50">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <div className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">24h</div>
-                  <div className="text-[12px] text-gray-500 dark:text-gray-500 mt-0.5">Response Time</div>
+            <div className="glass-galaxy rounded-3xl p-8 relative overflow-hidden group">
+              <div className="grid grid-cols-2 gap-6 text-center">
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                  <div className="text-3xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent glow">24h</div>
+                  <div className="text-[12px] font-bold text-gray-400 mt-1 uppercase tracking-wider">Response Time</div>
                 </div>
-                <div>
-                  <div className="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">5+</div>
-                  <div className="text-[12px] text-gray-500 dark:text-gray-500 mt-0.5">Years Coding</div>
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                  <div className="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent glow">5+</div>
+                  <div className="text-[12px] font-bold text-gray-400 mt-1 uppercase tracking-wider">Years Coding</div>
                 </div>
               </div>
             </div>
@@ -203,18 +206,19 @@ export function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
             viewport={{ once: true }}
-            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-200/50 dark:border-gray-700/50"
+            className="glass-galaxy rounded-3xl p-8 lg:p-10 relative overflow-hidden group"
           >
-            <h3 className="text-[17px] font-bold text-gray-900 dark:text-white mb-6">Send Me a Message</h3>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-b from-primary/5 to-secondary/5 rounded-full blur-[100px] -z-10 opacity-50" />
+            <h3 className="text-[20px] font-bold text-white mb-8 tracking-tight">Send Me a Message</h3>
 
             {successMessage && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="mb-5 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center gap-3"
+                className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-3 backdrop-blur-sm"
               >
-                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
-                <p className="text-[13.5px] text-emerald-700 dark:text-emerald-300">{successMessage}</p>
+                <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <p className="text-[14px] font-bold text-emerald-300">{successMessage}</p>
               </motion.div>
             )}
 
@@ -222,51 +226,51 @@ export function Contact() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="mb-5 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3"
+                className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 backdrop-blur-sm"
               >
-                <Mail className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
-                <p className="text-[13.5px] text-red-700 dark:text-red-300">{formErrors.general}</p>
+                <Mail className="w-5 h-5 text-rose-400 flex-shrink-0" />
+                <p className="text-[14px] font-bold text-rose-300">{formErrors.general}</p>
               </motion.div>
             )}
 
-            <form ref={formRef} onSubmit={handleFormSubmit} className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+            <form ref={formRef} onSubmit={handleFormSubmit} className="space-y-5">
+              <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-[12.5px] font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Name *</label>
+                  <label className="block text-[13px] font-bold text-gray-300 mb-2 pl-1">Name *</label>
                   <input type="text" {...register('name', { required: 'Name is required' })} className={inputClass} placeholder="Your Name" />
-                  {errors.name && <p className="mt-1 text-[11.5px] text-red-500">{errors.name.message}</p>}
+                  {errors.name && <p className="mt-1.5 pl-1 text-[12px] font-medium text-rose-400">{errors.name.message}</p>}
                 </div>
                 <div>
-                  <label className="block text-[12.5px] font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Email *</label>
+                  <label className="block text-[13px] font-bold text-gray-300 mb-2 pl-1">Email *</label>
                   <input type="email" {...register('email', { required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' } })} className={inputClass} placeholder="your@email.com" />
-                  {errors.email && <p className="mt-1 text-[11.5px] text-red-500">{errors.email.message}</p>}
+                  {errors.email && <p className="mt-1.5 pl-1 text-[12px] font-medium text-rose-400">{errors.email.message}</p>}
                 </div>
               </div>
 
               <div>
-                <label className="block text-[12.5px] font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Subject *</label>
+                <label className="block text-[13px] font-bold text-gray-300 mb-2 pl-1">Subject *</label>
                 <input type="text" {...register('subject', { required: 'Subject is required' })} className={inputClass} placeholder="What's this about?" />
-                {errors.subject && <p className="mt-1 text-[11.5px] text-red-500">{errors.subject.message}</p>}
+                {errors.subject && <p className="mt-1.5 pl-1 text-[12px] font-medium text-rose-400">{errors.subject.message}</p>}
               </div>
 
               <div>
-                <label className="block text-[12.5px] font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Message *</label>
+                <label className="block text-[13px] font-bold text-gray-300 mb-2 pl-1">Message *</label>
                 <textarea rows={6} {...register('message', { required: 'Message is required' })} className={`${inputClass} resize-none`} placeholder="Tell me about your project or just say hello!" />
-                {errors.message && <p className="mt-1 text-[11.5px] text-red-500">{errors.message.message}</p>}
+                {errors.message && <p className="mt-1.5 pl-1 text-[12px] font-medium text-rose-400">{errors.message.message}</p>}
               </div>
 
               <motion.button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white rounded-xl font-semibold text-[14.5px] shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group relative"
-                whileHover={!isLoading ? { scale: 1.02, y: -1 } : {}}
+                className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-primary to-secondary text-white rounded-2xl font-bold text-[15px] shadow-lg shadow-primary/25 hover:shadow-neon-purple transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group relative mt-4"
+                whileHover={!isLoading ? { scale: 1.02, y: -2 } : {}}
                 whileTap={!isLoading ? { scale: 0.98 } : {}}
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 {isLoading ? (
-                  <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Sending...</>
+                  <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />Sending...</>
                 ) : (
-                  <><Send className="w-4 h-4" />Send Message</>
+                  <><Send className="w-5 h-5 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />Send Message</>
                 )}
               </motion.button>
             </form>

@@ -79,11 +79,11 @@ function SkillBar({ skill, index }: { skill: Skill; index: number }) {
       viewport={{ once: true }}
       className="mb-4"
     >
-      <div className="flex justify-between items-center mb-1.5">
-        <span className="text-[13.5px] font-medium text-gray-700 dark:text-gray-300">{skill.name}</span>
-        <span className="text-xs font-semibold text-gray-400 dark:text-gray-500">{skill.level}%</span>
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-[14px] font-bold text-gray-200">{skill.name}</span>
+        <span className="text-[12px] font-bold text-gray-400">{skill.level}%</span>
       </div>
-      <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
+      <div className="w-full bg-white/5 border border-white/10 rounded-full h-2 overflow-hidden backdrop-blur-sm">
         <motion.div
           className={`h-full bg-gradient-to-r ${skill.color} rounded-full`}
           initial={{ width: 0 }}
@@ -133,7 +133,7 @@ export function Skills() {
         </motion.div>
 
         {/* ── Skill Category Cards ────────────────────────── */}
-        <div className="grid lg:grid-cols-2 gap-6 mb-20">
+        <div className="grid lg:grid-cols-2 gap-8 mb-24">
           {skillCategories.map((category, ci) => (
             <motion.div
               key={category.title}
@@ -141,15 +141,17 @@ export function Skills() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: ci * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-7 shadow-xl border border-gray-200/50 dark:border-gray-700/50"
+              className="glass-galaxy rounded-3xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-all duration-500"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <div className={`w-10 h-10 bg-gradient-to-br ${category.color} rounded-xl flex items-center justify-center shadow-md`}>
-                  <category.icon className="w-5 h-5 text-white" />
+              <div className="absolute -top-20 -right-20 w-48 h-48 bg-primary/10 rounded-full blur-[60px] group-hover:bg-primary/20 transition-colors duration-500" />
+              
+              <div className="flex items-center gap-4 mb-8">
+                <div className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <category.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-[16px] font-bold text-gray-900 dark:text-white">{category.title}</h3>
+                <h3 className="text-[20px] font-bold text-white tracking-tight">{category.title}</h3>
               </div>
-              <div>
+              <div className="space-y-1">
                 {category.skills.map((skill, si) => (
                   <SkillBar key={skill.name} skill={skill} index={si} />
                 ))}
@@ -164,15 +166,15 @@ export function Skills() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="mb-20"
+          className="mb-24"
         >
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
-              <Award className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <Award className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Competitive Programming</h3>
+            <h3 className="text-2xl font-bold text-white tracking-tight">Competitive Programming</h3>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {cpStats.map((s, i) => (
               <motion.div
                 key={i}
@@ -180,14 +182,15 @@ export function Skills() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -4 }}
-                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 dark:border-gray-700/50 text-center"
+                whileHover={{ y: -6, scale: 1.02 }}
+                className="glass-galaxy rounded-2xl p-6 text-center group relative overflow-hidden transition-all duration-300"
               >
-                <div className={`text-3xl font-extrabold bg-gradient-to-r ${s.color} bg-clip-text text-transparent mb-1`}>
+                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className={`text-4xl font-extrabold bg-gradient-to-r ${s.color} bg-clip-text text-transparent mb-2 glow`}>
                   {s.value}
                 </div>
-                <div className="text-[13px] font-semibold text-gray-700 dark:text-gray-300">{s.label}</div>
-                <div className="text-[11px] text-gray-400 dark:text-gray-600 mt-0.5">{s.sub}</div>
+                <div className="text-[14px] font-bold text-gray-200">{s.label}</div>
+                <div className="text-[12px] font-medium text-gray-500 mt-1 uppercase tracking-wider">{s.sub}</div>
               </motion.div>
             ))}
           </div>
@@ -200,13 +203,13 @@ export function Skills() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
-              <Award className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <Award className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Certifications</h3>
+            <h3 className="text-2xl font-bold text-white tracking-tight">Certifications</h3>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-5">
             {certifications.map((cert, i) => (
               <motion.div
                 key={i}
@@ -214,11 +217,14 @@ export function Skills() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.07 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -2 }}
-                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-gray-200/50 dark:border-gray-700/50 flex items-start gap-3 hover:shadow-lg transition-all duration-300"
+                whileHover={{ y: -3, scale: 1.01 }}
+                className="glass-galaxy rounded-2xl p-5 flex items-start gap-4 group transition-all duration-300 relative overflow-hidden"
               >
-                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 flex-shrink-0 mt-1.5" />
-                <p className="text-[13.5px] text-gray-700 dark:text-gray-300 leading-relaxed">{cert}</p>
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 group-hover:border-primary/40 transition-colors duration-300 mt-0.5">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </div>
+                <p className="text-[14px] font-medium text-gray-300 leading-relaxed group-hover:text-white transition-colors duration-300">{cert}</p>
               </motion.div>
             ))}
           </div>

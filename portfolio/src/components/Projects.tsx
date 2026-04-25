@@ -195,62 +195,64 @@ export function Projects() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.07 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -6 }}
-                className="glass-panel backdrop-blur-xl rounded-2xl overflow-hidden group hover:shadow-neon-purple transition-all duration-500 border border-white/5"
+                className="glass-galaxy rounded-3xl overflow-hidden group hover:shadow-neon-purple hover:-translate-y-2 transition-all duration-500 relative"
               >
+                {/* Ambient glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[40px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
+
                 {/* Card top gradient bar */}
                 <div className={`h-1.5 w-full bg-gradient-to-r ${gradColor}`} />
 
                 {/* Visual area */}
-                <div className="relative h-40 bg-background/50 flex items-center justify-center overflow-hidden">
-                  <span className="text-5xl opacity-20 select-none">{categoryEmoji[project.category]}</span>
-                  <div className={`absolute inset-0 bg-gradient-to-br ${gradColor} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                <div className="relative h-48 bg-surface/50 flex items-center justify-center overflow-hidden border-b border-white/5">
+                  <span className="text-6xl opacity-20 select-none group-hover:scale-110 transition-transform duration-500">{categoryEmoji[project.category]}</span>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${gradColor} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
 
                   {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 backdrop-blur-[2px]">
                     <a
                       href={project.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2.5 bg-white/20 hover:bg-white/30 rounded-xl transition-colors duration-200"
+                      className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all duration-200 hover:scale-110"
                       onClick={e => e.stopPropagation()}
                     >
-                      <Github className="w-5 h-5 text-white" />
+                      <Github className="w-6 h-6 text-white" />
                     </a>
                     <button
                       onClick={() => setSelectedProject(project)}
-                      className="p-2.5 bg-white/20 hover:bg-white/30 rounded-xl transition-colors duration-200"
+                      className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all duration-200 hover:scale-110"
                     >
-                      <ExternalLink className="w-5 h-5 text-white" />
+                      <ExternalLink className="w-6 h-6 text-white" />
                     </button>
                   </div>
 
                   {project.featured && (
-                    <span className="absolute top-3 right-3 px-2.5 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[11px] font-bold rounded-full shadow-md">
+                    <span className="absolute top-4 right-4 px-3 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[11px] font-bold rounded-full shadow-lg">
                       Featured
                     </span>
                   )}
                 </div>
 
                 {/* Content */}
-                <div className="p-5">
-                  <h3 className="text-[15px] font-bold text-white mb-2 leading-snug group-hover:text-primary transition-colors duration-200 line-clamp-2">
+                <div className="p-6">
+                  <h3 className="text-[18px] font-bold text-white mb-2.5 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-primary transition-all duration-300 line-clamp-2">
                     {project.title}
                   </h3>
-                  <p className="text-[13px] text-gray-400 mb-4 line-clamp-2 leading-relaxed font-mono">
+                  <p className="text-[14px] text-gray-400 mb-5 line-clamp-3 leading-relaxed font-medium">
                     {project.description}
                   </p>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {project.technologies.slice(0, 4).map((tech, ti) => (
                       <span
                         key={ti}
-                        className="px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[11px] font-mono"
+                        className="px-2.5 py-1.5 bg-white/5 text-gray-300 border border-white/10 rounded-lg text-[11px] font-bold group-hover:border-primary/30 transition-colors duration-300"
                       >
                         {tech}
                       </span>
                     ))}
                     {project.technologies.length > 4 && (
-                      <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg text-[11px] font-medium">
+                      <span className="px-2.5 py-1.5 bg-white/5 text-gray-500 border border-white/5 rounded-lg text-[11px] font-bold">
                         +{project.technologies.length - 4}
                       </span>
                     )}
@@ -261,19 +263,20 @@ export function Projects() {
           })}
         </motion.div>
 
-        {/* ── GitHub Stats ────────────────────────────────── */}
+        {/* ── Platform Stats ────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
-          className="mt-20"
+          className="mt-24"
         >
-          <div className="glass-panel backdrop-blur-xl rounded-2xl p-8 border border-white/5 shadow-neon-cyan">
-            <h3 className="text-xl font-mono text-white mb-8 text-center drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">
-              &gt; Competitive Programming
+          <div className="glass-galaxy rounded-3xl p-10 relative overflow-hidden group">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] -z-10 transition-colors duration-700" />
+            <h3 className="text-2xl font-bold text-white mb-10 text-center tracking-tight">
+              Platform Statistics
             </h3>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-8">
               {githubStats.map((s, i) => (
                 <motion.div
                   key={i}
@@ -281,12 +284,13 @@ export function Projects() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   viewport={{ once: true }}
-                  className="text-center"
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  className="text-center bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10"
                 >
-                  <div className={`text-3xl font-extrabold bg-gradient-to-r ${s.color} bg-clip-text text-transparent mb-1`}>
+                  <div className={`text-4xl font-extrabold bg-gradient-to-r ${s.color} bg-clip-text text-transparent mb-2 glow`}>
                     {s.value}
                   </div>
-                  <div className="text-[13px] text-gray-500 dark:text-gray-400 font-medium">{s.label}</div>
+                  <div className="text-[14px] text-gray-300 font-bold uppercase tracking-wider">{s.label}</div>
                 </motion.div>
               ))}
             </div>

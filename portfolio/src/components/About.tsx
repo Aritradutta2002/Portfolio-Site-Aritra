@@ -98,45 +98,51 @@ export function About() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             viewport={{ once: true }}
-            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-200/50 dark:border-gray-700/50"
+            className="glass-galaxy rounded-3xl p-8 lg:p-10 relative overflow-hidden group"
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-violet-600 rounded-xl flex items-center justify-center shadow-md">
-                <Code2 className="w-5 h-5 text-white" />
+            {/* Ambient glow inside card */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-[80px] -z-10 group-hover:bg-secondary/20 transition-colors duration-500" />
+
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-[1px] shadow-neon-purple group-hover:shadow-neon-cyan transition-shadow duration-500">
+                <div className="w-full h-full bg-surface/90 rounded-[15px] flex items-center justify-center backdrop-blur-xl">
+                  <Code2 className="w-6 h-6 text-primary" />
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Who I Am</h3>
+              <h3 className="text-2xl font-bold text-white tracking-tight">Who I Am</h3>
             </div>
 
-            <div className="space-y-5 text-[15px] text-gray-600 dark:text-gray-400 leading-relaxed">
-              <p className="pl-4 border-l-2 border-blue-500/60">
-                Hello! I&apos;m <span className="font-semibold text-gray-900 dark:text-white">Aritra Dutta</span>, a results-driven Backend Engineer with 1.5+ years at{' '}
-                <span className="font-semibold text-blue-600 dark:text-blue-400">Tata Consultancy Services (TCS)</span> in Bhubaneswar, India.
+            <div className="space-y-6 text-[15px] md:text-base text-gray-300 leading-relaxed font-medium">
+              <p className="pl-5 border-l-2 border-primary/40 group-hover:border-primary transition-colors duration-300">
+                Hello! I&apos;m <span className="font-bold text-white">Aritra Dutta</span>, a results-driven Backend Engineer with 1.5+ years at{' '}
+                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Tata Consultancy Services (TCS)</span> in Bhubaneswar, India.
               </p>
-              <p className="pl-4 border-l-2 border-violet-500/60">
+              <p className="pl-5 border-l-2 border-secondary/40 group-hover:border-secondary transition-colors duration-300">
                 Currently building enterprise microservices serving 10K+ daily users with{' '}
-                <span className="font-medium text-gray-800 dark:text-gray-200">Java 17, Spring Boot 3, PostgreSQL, and Azure PaaS</span>. Delivered up to 30x API performance gains and led cloud migrations.
+                <span className="font-bold text-white glow">Java 17, Spring Boot 3, PostgreSQL, and Azure PaaS</span>. Delivered up to 30x API performance gains and led cloud migrations.
               </p>
-              <p className="pl-4 border-l-2 border-pink-500/60">
-                Driven by a love for <span className="font-medium text-gray-800 dark:text-gray-200">competitive programming</span> — 554+ problems solved, LeetCode rating{' '}
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">1672</span>.
+              <p className="pl-5 border-l-2 border-pink-500/40 group-hover:border-pink-500 transition-colors duration-300">
+                Driven by a love for <span className="font-bold text-white">competitive programming</span> — 554+ problems solved, LeetCode rating{' '}
+                <span className="font-extrabold text-transparent bg-clip-text animate-text-shimmer">1672</span>.
               </p>
-              <p className="pl-4 border-l-2 border-emerald-500/60">
+              <p className="pl-5 border-l-2 border-emerald-500/40 group-hover:border-emerald-500 transition-colors duration-300">
                 Beyond coding I enjoy gaming, traveling, and music. I believe in{' '}
-                <span className="font-medium text-gray-800 dark:text-gray-200">continuous learning</span> and always exploring new technologies.
+                <span className="font-bold text-white">continuous learning</span> and always exploring new technologies.
               </p>
             </div>
 
             {/* Interests */}
-            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-600 mb-4">When I&apos;m not coding</p>
-              <div className="flex gap-4 flex-wrap">
+            <div className="mt-10 pt-8 border-t border-white/5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-5">When I&apos;m not coding</p>
+              <div className="flex gap-3 flex-wrap">
                 {interests.map((item) => (
                   <motion.div
                     key={item.label}
-                    whileHover={{ scale: 1.08, y: -2 }}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200/60 dark:border-gray-700/60 text-sm font-medium text-gray-700 dark:text-gray-300"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm font-semibold text-gray-300 hover:bg-white/10 hover:text-white transition-colors cursor-default backdrop-blur-md"
                   >
-                    <span>{item.emoji}</span>
+                    <span className="text-base">{item.emoji}</span>
                     {item.label}
                   </motion.div>
                 ))}
@@ -151,11 +157,13 @@ export function About() {
             transition={{ duration: 0.7, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
-                <GraduationCap className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 p-[1px] shadow-neon-cyan transition-shadow duration-500">
+                <div className="w-full h-full bg-surface/90 rounded-[15px] flex items-center justify-center backdrop-blur-xl">
+                  <GraduationCap className="w-6 h-6 text-emerald-400" />
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Education</h3>
+              <h3 className="text-2xl font-bold text-white tracking-tight">Education</h3>
             </div>
 
             <div className="space-y-4">
@@ -166,22 +174,23 @@ export function About() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  whileHover={{ y: -3 }}
-                  className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-gray-200/50 dark:border-gray-700/50 group transition-shadow duration-300 hover:shadow-xl"
+                  className="glass-galaxy rounded-2xl p-6 group transition-all duration-300 hover:-translate-y-1 relative overflow-hidden"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-violet-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform duration-300">
-                      <item.icon className="w-5 h-5 text-white" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-[40px] -z-10 group-hover:bg-secondary/15 transition-colors duration-500" />
+                  
+                  <div className="flex items-start gap-5">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:border-primary/50 transition-all duration-300 shadow-lg">
+                      <item.icon className="w-6 h-6 text-primary group-hover:text-secondary transition-colors" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 dark:text-white text-[15px] leading-snug mb-1">{item.degree}</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{item.institution}</p>
-                      <div className="flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-500 mb-3">
-                        <span className="flex items-center gap-1"><MapPin size={11} />{item.location}</span>
-                        <span className="flex items-center gap-1"><Calendar size={11} />{item.duration}</span>
+                      <h4 className="font-bold text-white text-[16px] leading-snug mb-1.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">{item.degree}</h4>
+                      <p className="text-[14px] text-gray-400 mb-3 font-medium">{item.institution}</p>
+                      <div className="flex flex-wrap gap-4 text-[12px] text-gray-500 mb-4 font-medium">
+                        <span className="flex items-center gap-1.5"><MapPin size={13} className="text-primary/70" />{item.location}</span>
+                        <span className="flex items-center gap-1.5"><Calendar size={13} className="text-secondary/70" />{item.duration}</span>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200/60 dark:border-blue-500/20 text-blue-700 dark:text-blue-300 text-xs font-semibold">
-                        <Trophy size={11} />{item.grade}
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-primary text-[12px] font-bold group-hover:bg-primary/20 group-hover:border-primary/40 transition-colors">
+                        <Trophy size={13} />{item.grade}
                       </span>
                     </div>
                   </div>

@@ -401,3 +401,164 @@ a:hover {
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   ✦  GALAXY / PREMIUM ANIMATION SYSTEM
+───────────────────────────────────────────────────────────── */
+
+/* Aurora background sweep */
+@keyframes aurora {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-aurora {
+  background: linear-gradient(270deg, #8b5cf6, #06b6d4, #ec4899, #3b82f6, #8b5cf6);
+  background-size: 400% 400%;
+  animation: aurora 8s ease infinite;
+}
+
+/* Star twinkle */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.4); }
+}
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+/* Comet streak */
+@keyframes comet {
+  0%   { transform: translateX(-100%) translateY(0); opacity: 1; }
+  100% { transform: translateX(150vw) translateY(20px); opacity: 0; }
+}
+.animate-comet {
+  animation: comet 2.5s ease-in forwards;
+}
+
+/* Text shimmer */
+@keyframes text-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.animate-text-shimmer {
+  background: linear-gradient(90deg, #8b5cf6 0%, #e879f9 25%, #06b6d4 50%, #e879f9 75%, #8b5cf6 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 4s linear infinite;
+}
+
+/* Glow pulse - purple */
+@keyframes glow-purple {
+  0%, 100% { box-shadow: 0 0 10px rgba(139,92,246,0.3), 0 0 20px rgba(139,92,246,0.1); }
+  50%       { box-shadow: 0 0 25px rgba(139,92,246,0.7), 0 0 50px rgba(139,92,246,0.3), 0 0 80px rgba(139,92,246,0.1); }
+}
+.animate-glow-purple {
+  animation: glow-purple 3s ease-in-out infinite;
+}
+
+/* Glow pulse - cyan */
+@keyframes glow-cyan {
+  0%, 100% { box-shadow: 0 0 10px rgba(6,182,212,0.3), 0 0 20px rgba(6,182,212,0.1); }
+  50%       { box-shadow: 0 0 25px rgba(6,182,212,0.7), 0 0 50px rgba(6,182,212,0.3); }
+}
+.animate-glow-cyan {
+  animation: glow-cyan 3s ease-in-out infinite;
+}
+
+/* Spin slow */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Reveal up – use with IntersectionObserver or whileInView */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(40px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.reveal-up {
+  animation: reveal-up 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+/* Stagger delay helpers */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-700 { animation-delay: 700ms; }
+.delay-1000 { animation-delay: 1000ms; }
+
+/* Neon shadow utilities */
+.shadow-neon-purple { box-shadow: 0 0 15px rgba(139,92,246,0.4), 0 0 30px rgba(139,92,246,0.15); }
+.shadow-neon-cyan   { box-shadow: 0 0 15px rgba(6,182,212,0.4),  0 0 30px rgba(6,182,212,0.15); }
+.shadow-neon-pink   { box-shadow: 0 0 15px rgba(236,72,153,0.4), 0 0 30px rgba(236,72,153,0.15); }
+
+/* Galaxy card glass effect */
+.glass-galaxy {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Gradient border animation */
+@keyframes border-flow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-border-flow {
+  background: linear-gradient(270deg, #8b5cf6, #06b6d4, #ec4899, #8b5cf6);
+  background-size: 300% 300%;
+  animation: border-flow 4s ease infinite;
+}
+
+/* Hover magnetic lift */
+.magnetic-lift {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+.magnetic-lift:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(139,92,246,0.15);
+}
+
+/* Scroll fade-in (for use with Framer Motion whileInView) */
+.section-enter {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.section-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Primary/secondary CSS variables for component usage */
+:root {
+  --primary: #8b5cf6;
+  --secondary: #06b6d4;
+  --surface: #050505;
+}
+
+/* Tailwind-compatible color aliases used in components */
+.text-primary    { color: var(--primary); }
+.text-secondary  { color: var(--secondary); }
+.bg-primary      { background-color: var(--primary); }
+.bg-secondary    { background-color: var(--secondary); }
+.border-primary  { border-color: var(--primary); }
+.border-secondary{ border-color: var(--secondary); }
+.bg-surface      { background-color: var(--surface); }
+
+/* Neon glow text */
+.glow {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+}
+
