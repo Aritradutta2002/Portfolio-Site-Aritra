@@ -54,14 +54,14 @@ const skillCategories = [
 ]
 
 const cpStats = [
-  { value: '1750', label: 'LeetCode Rating',  sub: 'Max Rating',    color: 'from-blue-600 to-blue-400' },
-  { value: '1604', label: 'CodeChef Rating',  sub: '3-Star',        color: 'from-violet-600 to-violet-400' },
-  { value: '600+', label: 'Problems Solved',  sub: 'LC & CF',       color: 'from-emerald-600 to-emerald-400' },
-  { value: '1046', label: 'CodeForces Rank',  sub: 'Global Rank',   color: 'from-orange-600 to-orange-400' },
+  { value: '1672', label: 'LeetCode Rating',  sub: 'Max Rating',    color: 'from-blue-600 to-blue-400' },
+  { value: '1708', label: 'CodeChef Rating',  sub: '3-Star',        color: 'from-violet-600 to-violet-400' },
+  { value: '554+', label: 'Problems Solved',  sub: 'Across Platforms', color: 'from-emerald-600 to-emerald-400' },
+  { value: '1046', label: 'CodeForces Rank',  sub: 'Div 2',         color: 'from-orange-600 to-orange-400' },
 ]
 
 const certifications = [
-  'TCS DEEP Ninja Certified DevOps Engineer — Docker, Jenkins CI/CD, Cloud Deployment',
+  'TCS DEEP Ninja Certified DevOps Engineer — Recognized for expertise in DevOps tooling and practices',
   'Problem Solving (Intermediate) — HackerRank',
   'The Complete Python Pro Bootcamp — Udemy',
   'Object Oriented Programming in Java — Coursera',

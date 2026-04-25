@@ -5,20 +5,20 @@ import { MapPin, Calendar, Building, Code, Trophy, Sparkles, CheckCircle } from 
 
 const experience = {
   company: 'Tata Consultancy Services',
-  position: 'Assistant System Engineer – Backend & Microservices',
+  position: 'Assistant System Engineer',
   location: 'Bhubaneswar, India',
-  startDate: 'September 2024',
+  startDate: 'Sep 2024',
   endDate: 'Present',
   description:
-    'Building enterprise-grade microservices and backend systems for Ultimatix platform. Leading critical production migrations, version upgrades, and performance optimizations while working with Java 17, Spring Boot 3, PostgreSQL, Angular, and Azure PaaS infrastructure.',
+    'Architecting high-performance Java/Spring Boot microservices for the Ultimatix platform. Delivering up to 30x API performance gains, leading cloud migrations to Azure PaaS, and building AI-powered full-stack platforms end-to-end.',
   responsibilities: [
-    'Single-handedly decomposed iDeclare from monolithic application into independent microservice with 20+ REST APIs',
-    'Executed zero-downtime production migration from JBoss to Tomcat PaaS on Azure (10K+ daily users)',
-    'Led critical version upgrades: Java 8→17 and Spring Boot 2→3 with zero service disruption',
-    'Optimized SQL queries achieving 20-30x performance improvement across critical APIs',
-    'Built and owned Jenkins CI/CD pipelines for automated Docker containerization and production releases',
-    'Designed complex multi-stage approval workflows with full audit trail for Patent/Trademark modules',
-    'Upgraded Angular frontend from v17 to v20 LTS with zero-disruption migration',
+    'Migrated critical infrastructure from legacy JBoss server to Azure Tomcat PaaS, configuring health checks and ensuring high availability',
+    'Refactored the iDeclare module from a legacy monolith into a standalone Spring Boot microservice serving 10K+ daily users',
+    'Engineered backend solutions with Java 8 & Spring Boot 3, leveraging GitHub Copilot for modular, reusable code design',
+    'Built end-to-end Jenkins CI/CD pipelines, integrated Docker deployments, and authored 12+ JUnit test cases',
+    'Executed a complex database migration from Oracle to PostgreSQL, redesigning normalized schemas',
+    'Built robust backend services for Patent & Trademark lifecycle modules using Core Java and Spring Boot',
+    'Optimized SQL queries and APIs achieving up to 30x faster response times in critical workflows',
   ],
   technologies: ['Java 17', 'Spring Boot 3', 'PostgreSQL', 'Oracle', 'Angular v20', 'TypeScript', 'Azure PaaS', 'Jenkins', 'Docker', 'Git'],
   achievements: [
@@ -42,7 +42,7 @@ const skills = [
 const timeline = [
   {
     period: 'Sep 2024 – Present',
-    role: 'Assistant System Engineer – Backend & Microservices',
+    role: 'Assistant System Engineer',
     org: 'TCS — Bhubaneswar, India',
     color: 'from-blue-600 to-violet-600',
   },
@@ -61,7 +61,7 @@ const timeline = [
 ]
 
 const workStats = [
-  { value: '1yr+',  label: 'at TCS',                color: 'from-blue-600 to-blue-400' },
+  { value: '1.5yr+',  label: 'at TCS',                color: 'from-blue-600 to-blue-400' },
   { value: '10+',   label: 'Technologies Mastered',  color: 'from-violet-600 to-violet-400' },
   { value: '100%',  label: 'Training Completion',    color: 'from-emerald-600 to-emerald-400' },
   { value: '20+',   label: 'REST APIs Built',        color: 'from-orange-600 to-orange-400' },

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { ChevronDown, Download, Github, Linkedin, Code2 } from 'lucide-react'
+import { ChevronDown, Download, Github, Linkedin, Code2, Globe } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 /* ── Typewriter ─────────────────────────────────────────────── */
@@ -64,9 +64,9 @@ const TypewriterText = ({ texts }: { texts: string[] }) => {
 
 /* ── Stats ──────────────────────────────────────────────────── */
 const stats = [
-  { value: '600+',  label: 'Problems Solved' },
-  { value: '1750',  label: 'LeetCode Rating' },
-  { value: '1yr+',  label: 'at TCS' },
+  { value: '554+',  label: 'Problems Solved' },
+  { value: '1672',  label: 'LeetCode Rating' },
+  { value: '1.5yr+',  label: 'at TCS' },
 ]
 
 /* ── Social quick-links ─────────────────────────────────────── */
@@ -144,8 +144,8 @@ export function Hero() {
             >
               Building enterprise microservices at{' '}
               <span className="font-semibold text-secondary glow">TCS</span>.
-              {' '}Leading production migrations &amp; optimizations with{' '}
-              <span className="font-semibold text-primary glow">20–30× performance gains</span>.
+              {' '}Delivered up to{' '}
+              <span className="font-semibold text-primary glow">30x API performance gains</span> and led cloud migrations to Azure PaaS.
             </motion.p>
 
             {/* Stats row */}
@@ -191,8 +191,9 @@ export function Hero() {
 
               {/* Secondary */}
               <motion.a
-                href="/resume.pdf"
-                download="Aritra_Dutta_Resume.pdf"
+                href="/resume"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group relative px-8 py-3.5 rounded-lg font-mono text-[14px] border border-gray-700 text-gray-300 hover:border-secondary/50 hover:text-secondary hover:shadow-neon-cyan glass-panel transition-all duration-300 flex items-center justify-center"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -200,6 +201,21 @@ export function Hero() {
                 <span className="flex items-center gap-2 tracking-wider">
                   <Download className="w-4 h-4 group-hover:animate-bounce" />
                   RESUME.PDF
+                </span>
+              </motion.a>
+
+              {/* Tertiary */}
+              <motion.a
+                href="https://www.algoguru.online/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative px-8 py-3.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-white rounded-lg font-mono text-[14px] shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-500/50 hover:from-emerald-500/30 hover:to-teal-500/30 backdrop-blur-md transition-all duration-300 flex items-center justify-center"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="relative z-10 flex items-center gap-2 tracking-wider">
+                  <Globe className="w-4 h-4 group-hover:text-emerald-400 transition-colors" />
+                  VISIT_ALGOGURU
                 </span>
               </motion.a>
             </motion.div>

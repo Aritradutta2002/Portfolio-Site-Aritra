@@ -35,13 +35,13 @@ const categoryColor: Record<string, string> = {
 const projects: Project[] = [
   {
     id: 1,
-    title: 'JobFit.AI – AI-Powered Job Matching Platform',
-    description: 'Distributed microservices system with AI-powered resume-to-job matching using OpenAI embeddings, achieving 75%+ match accuracy with pgvector similarity search.',
-    longDescription: 'Architected a distributed microservices system with Spring Boot backend, Kafka-based async job aggregation, Redis caching, and Elasticsearch for full-text search. Implemented OAuth2 + JWT authentication with Google OAuth integration. Built an AI resume-to-job matching engine using OpenAI embeddings and cosine similarity with 75%+ match accuracy, storing embeddings using pgvector in PostgreSQL with multi-dimensional scoring. Developed a resume gap analysis engine using GPT-4 for actionable skill improvement suggestions.',
-    technologies: ['Spring Boot', 'React.js', 'PostgreSQL', 'OpenAI API', 'Kafka', 'Redis', 'Elasticsearch', 'OAuth2', 'JWT', 'pgvector'],
-    category: 'AI/ML',
-    github: 'https://github.com/Aritradutta2002/JobFit.AI',
-    demo: '#',
+    title: 'AlgoGuru – Programming Learning Platform',
+    description: 'Full-stack competitive programming platform featuring a Java Playground, role-based authentication, and interactive problem sets.',
+    longDescription: 'Designed, built, and deployed a full-stack competitive programming platform end-to-end — live at algoguru.online with a custom purchased domain and production deployment. Features a Java Playground, role-based authentication, user progress tracking, and interactive problem sets. Sole developer responsible for the complete product lifecycle — from architecture and implementation to deployment.',
+    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Java'],
+    category: 'Web Development',
+    github: 'https://github.com/Aritradutta2002',
+    demo: 'https://algoguru.online',
     featured: true,
   },
   {
@@ -112,9 +112,9 @@ const projects: Project[] = [
 const categories = ['All', 'Web Development', 'Desktop Application', 'AI/ML', 'Competitive Programming', 'Backend Development']
 
 const githubStats = [
-  { value: '710+', label: 'Contributions This Year', icon: Star,      color: 'from-emerald-600 to-emerald-400' },
-  { value: '6+',   label: 'Public Repositories',     icon: GitBranch, color: 'from-blue-600 to-blue-400' },
-  { value: '537+', label: 'Total Commits',            icon: GitCommit, color: 'from-violet-600 to-violet-400' },
+  { value: '554+', label: 'Problems Solved', icon: Star,      color: 'from-emerald-600 to-emerald-400' },
+  { value: '1672', label: 'LeetCode Rating', icon: GitBranch, color: 'from-blue-600 to-blue-400' },
+  { value: '1708', label: 'CodeChef Rating', icon: GitCommit, color: 'from-violet-600 to-violet-400' },
 ]
 
 export function Projects() {
@@ -271,7 +271,7 @@ export function Projects() {
         >
           <div className="glass-panel backdrop-blur-xl rounded-2xl p-8 border border-white/5 shadow-neon-cyan">
             <h3 className="text-xl font-mono text-white mb-8 text-center drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">
-              &gt; GitHub Activity
+              &gt; Competitive Programming
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
               {githubStats.map((s, i) => (

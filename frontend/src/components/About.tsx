@@ -31,13 +31,12 @@ const educationData = [
 ]
 
 const achievements = [
-  'TCS DEEP Ninja Certified DevOps Engineer – Docker, Jenkins CI/CD, and cloud deployment',
-  'Solved 600+ algorithmic problems across LeetCode and Codeforces',
-  'LeetCode Weekly Contest ranking 3556 with max rating 1750',
-  'Secured Global Rank 1046 in CodeForces Round 967 div 2',
-  'CodeChef Rating 1604 (3-star)',
-  'Solved over 100 problems in CSES CP sheet',
-  'First Runner-up in District Level Youth Parliament',
+  'TCS DEEP Ninja Certified DevOps Engineer — Recognized for expertise in DevOps tooling and practices',
+  'Competitive Programming: 554+ problems solved across platforms',
+  'LeetCode Rating 1672',
+  'Codeforces 1046 (Div 2)',
+  'CodeChef 1708 (3-Star)',
+  'Solved over 100 problems in CSES Problem Set',
 ]
 
 const interests = [
@@ -110,16 +109,16 @@ export function About() {
 
             <div className="space-y-5 text-[15px] text-gray-600 dark:text-gray-400 leading-relaxed">
               <p className="pl-4 border-l-2 border-blue-500/60">
-                Hello! I&apos;m <span className="font-semibold text-gray-900 dark:text-white">Aritra Dutta</span>, a passionate Backend &amp; Microservices Engineer at{' '}
+                Hello! I&apos;m <span className="font-semibold text-gray-900 dark:text-white">Aritra Dutta</span>, a results-driven Backend Engineer with 1.5+ years at{' '}
                 <span className="font-semibold text-blue-600 dark:text-blue-400">Tata Consultancy Services (TCS)</span> in Bhubaneswar, India.
               </p>
               <p className="pl-4 border-l-2 border-violet-500/60">
-                Currently building enterprise microservices for the Ultimatix platform with{' '}
-                <span className="font-medium text-gray-800 dark:text-gray-200">Java 17, Spring Boot 3, PostgreSQL, Angular v20, and Azure PaaS</span>. Led critical production migrations and achieved 20–30× performance improvements.
+                Currently building enterprise microservices serving 10K+ daily users with{' '}
+                <span className="font-medium text-gray-800 dark:text-gray-200">Java 17, Spring Boot 3, PostgreSQL, and Azure PaaS</span>. Delivered up to 30x API performance gains and led cloud migrations.
               </p>
               <p className="pl-4 border-l-2 border-pink-500/60">
-                Driven by a love for <span className="font-medium text-gray-800 dark:text-gray-200">competitive programming</span> — 600+ problems solved, LeetCode rating{' '}
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">1750</span>.
+                Driven by a love for <span className="font-medium text-gray-800 dark:text-gray-200">competitive programming</span> — 554+ problems solved, LeetCode rating{' '}
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">1672</span>.
               </p>
               <p className="pl-4 border-l-2 border-emerald-500/60">
                 Beyond coding I enjoy gaming, traveling, and music. I believe in{' '}
