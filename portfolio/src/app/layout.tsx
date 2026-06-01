@@ -1,35 +1,27 @@
 import type { Metadata } from "next";
 import { Inter, Fira_Code } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import {
-  AccessibilityProvider,
-  AccessibilitySettings,
-} from "@/components/AccessibilityProvider";
-import SmoothScroll from "@/components/SmoothScroll";
-import { BackgroundAurora } from "@/components/BackgroundAurora";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { MagneticCursor } from "@/components/ui/MagneticCursor";
+import { ThemeProvider } from '@/components/ThemeProvider'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { AccessibilityProvider, AccessibilitySettings } from '@/components/AccessibilityProvider'
+import SmoothScroll from '@/components/SmoothScroll'
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  display: "swap",
+  display: 'swap',
 });
 
 const firaCode = Fira_Code({
   variable: "--font-fira-code",
   subsets: ["latin"],
-  display: "swap",
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
   title: "Aritra Dutta - Software Engineer | Portfolio",
-  description:
-    "Passionate coder & problem solver building robust software. Software Engineer at TCS specializing in Java, Angular, and competitive programming.",
-  keywords:
-    "Aritra Dutta, Software Engineer, Java, Angular, Spring Boot, Portfolio, TCS, Competitive Programming, LeetCode",
+  description: "Passionate coder & problem solver building robust software. Software Engineer at TCS specializing in Java, Angular, and competitive programming.",
+  keywords: "Aritra Dutta, Software Engineer, Java, Angular, Spring Boot, Portfolio, TCS, Competitive Programming, LeetCode",
   authors: [{ name: "Aritra Dutta" }],
   creator: "Aritra Dutta",
   openGraph: {
@@ -37,15 +29,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://aritradutta.dev",
     title: "Aritra Dutta - Software Engineer Portfolio",
-    description:
-      "Passionate coder & problem solver building robust software, keen on clean code, algorithms, and technology.",
+    description: "Passionate coder & problem solver building robust software, keen on clean code, algorithms, and technology.",
     siteName: "Aritra Dutta Portfolio",
   },
   twitter: {
     card: "summary_large_image",
     title: "Aritra Dutta - Software Engineer Portfolio",
-    description:
-      "Passionate coder & problem solver building robust software, keen on clean code, algorithms, and technology.",
+    description: "Passionate coder & problem solver building robust software, keen on clean code, algorithms, and technology.",
   },
 };
 
@@ -61,10 +51,8 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
-        className={`${inter.variable} ${firaCode.variable} font-sans antialiased min-h-screen text-fg-1 relative`}
+        className={`${inter.variable} ${firaCode.variable} font-sans antialiased transition-colors duration-500`}
       >
-        <ScrollProgress />
-        <BackgroundAurora />
         <ErrorBoundary>
           <AccessibilityProvider>
             <ThemeProvider
@@ -74,8 +62,7 @@ export default function RootLayout({
               disableTransitionOnChange={false}
             >
               <SmoothScroll>
-                <MagneticCursor />
-                <div className="relative z-10">{children}</div>
+                {children}
                 <AccessibilitySettings />
               </SmoothScroll>
             </ThemeProvider>

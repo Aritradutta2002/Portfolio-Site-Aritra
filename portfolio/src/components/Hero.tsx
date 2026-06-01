@@ -2,203 +2,233 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { ChevronDown, Download, Github, Linkedin, Code2, Globe, ArrowRight } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { scrollTo } from '@/lib/lenis'
-import { Button } from '@/components/ui/Button'
-import { Chip } from '@/components/ui/Chip'
-import { EASE } from '@/lib/motion'
+import { ChevronDown, Download, Github, Linkedin, Code2, Globe } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
-/* ── Typewriter — simpler & smoother ───────────── */
-function TypewriterText({ texts }: { texts: string[] }) {
-  const [text, setText] = useState('')
-  const [i, setI] = useState(0)
-  const [j, setJ] = useState(0)
-  const [del, setDel] = useState(false)
+/* ── Typewriter ─────────────────────────────────────────────── */
+const TypewriterText = ({ texts }: { texts: string[] }) => {
+  const [currentText, setCurrentText] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
-    const current = texts[i] ?? ''
-    const speed = del ? 35 : 80
-    const t = setTimeout(() => {
-      if (!del && j < current.length) {
-        setText(current.slice(0, j + 1))
-        setJ(j + 1)
-      } else if (!del && j === current.length) {
-        setTimeout(() => setDel(true), 1800)
-      } else if (del && j > 0) {
-        setText(current.slice(0, j - 1))
-        setJ(j - 1)
-      } else if (del && j === 0) {
-        setDel(false)
-        setI((p) => (p + 1) % texts.length)
+    let mounted = true
+    const current = texts[currentIndex] ?? ''
+    const speed = isDeleting ? 45 : 95
+
+    const handle = setTimeout(() => {
+      if (!mounted) return
+      if (!isDeleting && charIndex < current.length) {
+        setCurrentText(current.slice(0, charIndex + 1))
+        setCharIndex(c => c + 1)
+      } else if (!isDeleting && charIndex === current.length) {
+        setTimeout(() => { if (mounted) setIsDeleting(true) }, 2200)
+      } else if (isDeleting && charIndex > 0) {
+        setCurrentText(current.slice(0, charIndex - 1))
+        setCharIndex(c => c - 1)
+      } else if (isDeleting && charIndex === 0) {
+        setIsDeleting(false)
+        setCurrentIndex(i => (i + 1) % texts.length)
       }
     }, speed)
-    return () => clearTimeout(t)
-  }, [j, del, i, texts])
+
+    return () => { mounted = false; clearTimeout(handle) }
+  }, [charIndex, currentIndex, isDeleting, texts])
 
   return (
     <span className="inline-flex items-baseline">
-      <span className="gradient-text font-black">{text || '\u00A0'}</span>
       <span
-        className="inline-block w-[3px] h-[0.85em] ml-1 align-middle rounded-sm bg-gradient-to-b from-primary to-rose animate-caret-blink"
-        style={{ boxShadow: '0 0 12px hsl(var(--primary) / 0.7)' }}
+        className="font-black bg-clip-text text-transparent"
+        style={{
+          backgroundImage: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 40%, #ec4899 80%, #f59e0b 100%)',
+          WebkitBackgroundClip: 'text',
+          backgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          filter: 'drop-shadow(0 2px 12px rgba(139,92,246,0.35))',
+        }}
+      >
+        {currentText || '\u00A0'}
+      </span>
+      {/* Caret */}
+      <motion.span
         aria-hidden
+        animate={{ opacity: [1, 0] }}
+        transition={{ duration: 0.65, repeat: Infinity, repeatType: 'reverse' }}
+        className="inline-block w-[3px] h-[0.85em] ml-1 align-middle rounded-sm"
+        style={{ background: 'linear-gradient(180deg,#8b5cf6,#ec4899)', boxShadow: '0 0 12px rgba(139,92,246,0.7)' }}
       />
     </span>
   )
 }
 
-/* ── Stats ───────────────────────────────────────── */
+/* ── Stats ──────────────────────────────────────────────────── */
 const stats = [
   { value: '554+',  label: 'Problems Solved' },
   { value: '1672',  label: 'LeetCode Rating' },
-  { value: '1.5yr+', label: 'at TCS' },
+  { value: '1.5yr+',  label: 'at TCS' },
 ]
 
-/* ── Floating tech badges ───────────────────────── */
-const techOrbit = [
-  { label: 'Java',    tone: 'primary'   as const, x: '-90%', y: '-20%', delay: 0 },
-  { label: 'Spring',  tone: 'emerald'   as const, x: '70%',  y: '-15%', delay: 0.5 },
-  { label: 'Azure',   tone: 'sky'       as const, x: '85%',  y: '50%',  delay: 1 },
-  { label: 'Angular', tone: 'rose'      as const, x: '-80%', y: '55%',  delay: 1.5 },
-  { label: 'SQL',     tone: 'amber'     as const, x: '-30%', y: '-80%', delay: 2 },
-]
-
+/* ── Social quick-links ─────────────────────────────────────── */
 const socials = [
-  { icon: Github,   href: 'https://github.com/Aritradutta2002',               label: 'GitHub' },
-  { icon: Linkedin, href: 'https://www.linkedin.com/in/aritra-dutta-rick20/', label: 'LinkedIn' },
-  { icon: Code2,    href: 'https://leetcode.com/u/ari2002/',                  label: 'LeetCode' },
+  { icon: Github,   href: 'https://github.com/Aritradutta2002',                  label: 'GitHub' },
+  { icon: Linkedin, href: 'https://www.linkedin.com/in/aritra-dutta-rick20/',    label: 'LinkedIn' },
+  { icon: Code2,    href: 'https://leetcode.com/u/ari2002/',                     label: 'LeetCode' },
 ]
 
+/* ── Hero ───────────────────────────────────────────────────── */
 export function Hero() {
+  const scrollToAbout = () =>
+    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
+
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center relative pt-24 lg:pt-20 overflow-hidden"
+      className="min-h-screen flex items-center relative pt-16 lg:pt-20 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 py-16 lg:py-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      {/* Minimalist Tech Gradient Glow */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 60% at 50% 10%, rgba(139,92,246,0.15) 0%, transparent 60%)',
+        }}
+      />
 
-          {/* ── LEFT: Text Content ─────────────── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 py-16 lg:py-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+          {/* ── LEFT: Text Content ─────────────────────────── */}
           <div className="order-2 lg:order-1 text-center lg:text-left">
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2, ease: EASE.outExpo }}
-              className="text-sm sm:text-base text-fg-3 font-mono tracking-wide mb-3 uppercase"
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-lg sm:text-xl text-gray-400 font-mono tracking-wide mb-2 uppercase"
             >
               &lt;hello world /&gt; I&apos;m
             </motion.p>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.5rem] font-extrabold tracking-tight text-fg-0 mb-5 leading-[1.02]">
-              <motion.span
-                className="block"
-                initial={{ opacity: 0, y: 60 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3, ease: EASE.outExpo }}
-              >
-                Aritra
-              </motion.span>
-              <motion.span
-                className="block gradient-text text-glow-sm"
-                initial={{ opacity: 0, y: 60 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4, ease: EASE.outExpo }}
-              >
+            {/* Name */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-4 leading-[1.05]"
+            >
+              Aritra{' '}
+              <span className="bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent filter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
                 Dutta
-              </motion.span>
-            </h1>
+              </span>
+            </motion.h1>
 
+            {/* Typewriter role */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5, ease: EASE.outExpo }}
-              className="text-2xl sm:text-3xl lg:text-4xl font-bold text-fg-1 mb-6 min-h-[1.3em]"
+              transition={{ duration: 0.6, delay: 0.45 }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-200 mb-6 min-h-[1.3em]"
             >
               <TypewriterText
-                texts={['Backend Engineer', 'Problem Solver', 'Full Stack Dev', 'Cloud Native Builder']}
+                texts={['Backend Engineer', 'Problem Solver', 'Full Stack Dev']}
               />
             </motion.div>
 
+            {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6, ease: EASE.outExpo }}
-              className="text-base sm:text-lg text-fg-3 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8 text-pretty"
+              transition={{ duration: 0.6, delay: 0.55 }}
+              className="text-base sm:text-lg text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8"
             >
               Building enterprise microservices at{' '}
-              <span className="font-semibold gradient-text-static">TCS</span>. Delivered
-              up to <span className="font-semibold text-amber">30× API performance gains</span>
-              {' '}and led cloud migrations to Azure PaaS.
+              <span className="font-semibold text-secondary glow">TCS</span>.
+              {' '}Delivered up to{' '}
+              <span className="font-semibold text-primary glow">30x API performance gains</span> and led cloud migrations to Azure PaaS.
             </motion.p>
 
             {/* Stats row */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7, ease: EASE.outExpo }}
-              className="flex flex-wrap items-center gap-4 justify-center lg:justify-start mb-10"
+              transition={{ duration: 0.6, delay: 0.65 }}
+              className="flex items-center gap-6 justify-center lg:justify-start mb-10"
             >
-              {stats.map((s) => (
-                <div
-                  key={s.label}
-                  className="glass rounded-md px-4 py-3 text-center lg:text-left min-w-[110px] hover-tilt"
-                >
-                  <div className="text-2xl sm:text-3xl font-extrabold gradient-text leading-none">
+              {stats.map((s, i) => (
+                <div key={i} className="glass-panel px-4 py-3 rounded-lg text-center lg:text-left min-w-[120px] transition-transform hover:scale-105">
+                  <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-none drop-shadow-[0_0_5px_rgba(6,182,212,0.5)]">
                     {s.value}
                   </div>
-                  <div className="text-[11px] text-fg-3 mt-1.5 font-mono uppercase tracking-wide">
+                  <div className="text-[11px] sm:text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">
                     {s.label}
                   </div>
                 </div>
               ))}
             </motion.div>
 
-            {/* CTAs */}
+            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8, ease: EASE.outExpo }}
-              className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10"
+              transition={{ duration: 0.6, delay: 0.75 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10"
             >
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={() => scrollTo('about')}
-                iconRight={<ArrowRight size={16} />}
+              {/* Primary */}
+              <motion.button
+                onClick={scrollToAbout}
+                className="group relative px-8 py-3.5 bg-primary/20 text-white rounded-lg font-mono text-[14px] shadow-neon-purple border border-primary/50 hover:bg-primary/30 backdrop-blur-md transition-all duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                About me
-              </Button>
+                <span className="relative z-10 flex items-center gap-2 tracking-wider">
+                  [ ABOUT_ME ]
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </motion.button>
 
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => window.open('/resume', '_blank')}
-                icon={<Download size={15} />}
+              {/* Secondary */}
+              <motion.a
+                href="/resume"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative px-8 py-3.5 rounded-lg font-mono text-[14px] border border-gray-700 text-gray-300 hover:border-secondary/50 hover:text-secondary hover:shadow-neon-cyan glass-panel transition-all duration-300 flex items-center justify-center"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Resume.pdf
-              </Button>
+                <span className="flex items-center gap-2 tracking-wider">
+                  <Download className="w-4 h-4 group-hover:animate-bounce" />
+                  RESUME.PDF
+                </span>
+              </motion.a>
 
-              <Button
-                variant="ghost"
-                size="lg"
-                onClick={() => window.open('https://www.algoguru.online/', '_blank', 'noopener,noreferrer')}
-                icon={<Globe size={15} />}
+              {/* Tertiary */}
+              <motion.a
+                href="https://www.algoguru.online/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative px-8 py-3.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-white rounded-lg font-mono text-[14px] shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-500/50 hover:from-emerald-500/30 hover:to-teal-500/30 backdrop-blur-md transition-all duration-300 flex items-center justify-center"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                AlgoGuru
-              </Button>
+                <span className="relative z-10 flex items-center gap-2 tracking-wider">
+                  <Globe className="w-4 h-4 group-hover:text-emerald-400 transition-colors" />
+                  VISIT_ALGOGURU
+                </span>
+              </motion.a>
             </motion.div>
 
-            {/* Socials */}
+            {/* Social links */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.9 }}
+              transition={{ duration: 0.5, delay: 0.85 }}
               className="flex items-center gap-4 justify-center lg:justify-start"
             >
-              <span className="text-xs text-fg-3 font-mono uppercase tracking-widest">&gt; Connect</span>
-              <div className="flex gap-2.5">
+              <span className="text-xs text-gray-500 font-mono uppercase tracking-widest">&gt; Connect</span>
+              <div className="flex gap-3">
                 {socials.map(({ icon: Icon, href, label }) => (
                   <motion.a
                     key={label}
@@ -206,70 +236,62 @@ export function Hero() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    whileHover={{ scale: 1.12, y: -3 }}
+                    className="w-10 h-10 rounded-lg flex items-center justify-center glass-panel text-gray-400 hover:text-primary hover:shadow-neon-purple hover:border-primary/50 transition-all duration-300"
+                    whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    data-cursor="hover"
-                    className="w-10 h-10 rounded-md glass flex items-center justify-center text-fg-3 hover:text-primary hover:border-primary/40 hover:shadow-neon-primary transition-all duration-300"
                   >
-                    <Icon size={17} />
+                    <Icon size={18} />
                   </motion.a>
                 ))}
               </div>
             </motion.div>
           </div>
 
-          {/* ── RIGHT: Profile Image + Tech Orbit ──── */}
-          <div className="order-1 lg:order-2 flex justify-center lg:justify-end lg:-mt-10 relative">
+          {/* ── RIGHT: Profile Image ───────────────────────── */}
+          <div className="order-1 lg:order-2 flex justify-center lg:justify-start lg:pl-4 lg:-mt-24">
             <motion.div
               initial={{ opacity: 0, scale: 0.85, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: EASE.outExpo, delay: 0.2 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
               className="relative"
             >
-              {/* Ambient glow */}
+              {/* Outer ambient glow */}
               <motion.div
-                className="absolute -inset-12 rounded-full"
+                className="absolute -inset-8 rounded-full opacity-60"
                 style={{
-                  background: 'radial-gradient(circle, hsl(262 83% 58% / 0.35) 0%, hsl(189 94% 50% / 0.18) 40%, transparent 70%)',
-                  filter: 'blur(40px)',
+                  background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(6,182,212,0.15) 40%, transparent 70%)',
+                  filter: 'blur(30px)',
                 }}
-                animate={{ scale: [1, 1.18, 1], opacity: [0.5, 0.9, 0.5] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              />
-
-              {/* Outer dashed orbit */}
-              <motion.div
-                className="absolute -inset-8 rounded-full border border-dashed border-primary/30"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.9, 0.5] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               />
 
               {/* Rotating gradient ring */}
               <motion.div
-                className="absolute -inset-[8px] rounded-full"
+                className="absolute -inset-[6px] rounded-full"
                 style={{
-                  background: 'conic-gradient(from 0deg, transparent, hsl(262 83% 58%), transparent, hsl(189 94% 50%), transparent)',
+                  background: 'conic-gradient(from 0deg, transparent, #8b5cf6, transparent, #06b6d4, transparent)',
                   padding: '3px',
                 }}
                 animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
               >
-                <div className="w-full h-full rounded-full bg-bg-0" />
+                <div className="w-full h-full rounded-full bg-surface" />
               </motion.div>
 
-              {/* Static gradient border */}
+              {/* Static gradient border (always visible) */}
               <div
                 className="absolute -inset-[3px] rounded-full"
                 style={{
-                  background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)))',
+                  background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)',
                   padding: '2px',
                 }}
               >
-                <div className="w-full h-full rounded-full bg-bg-0" />
+                <div className="w-full h-full rounded-full bg-surface" />
               </div>
 
               {/* Image */}
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden shadow-glass-lg">
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden shadow-2xl">
                 <Image
                   src="/aritra-profile-picture.png"
                   alt="Aritra Dutta – Software Engineer"
@@ -278,38 +300,25 @@ export function Hero() {
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-secondary/5 pointer-events-none" />
+                {/* Subtle overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-violet-900/10 via-transparent to-blue-900/5 pointer-events-none" />
               </div>
 
-              {/* Floating tech badges (orbit-like) */}
-              {techOrbit.map((t) => (
-                <motion.div
-                  key={t.label}
-                  className="absolute"
-                  style={{ left: '50%', top: '50%' }}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1, x: t.x, y: t.y }}
-                  transition={{ duration: 0.8, delay: 1 + t.delay, ease: EASE.spring }}
-                >
-                  <motion.div
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ duration: 3 + t.delay, repeat: Infinity, ease: 'easeInOut', delay: t.delay }}
-                  >
-                    <Chip tone={t.tone} size="md" className="font-bold shadow-glass-sm">
-                      {t.label}
-                    </Chip>
-                  </motion.div>
-                </motion.div>
-              ))}
+              {/* Dashed orbit ring */}
+              <motion.div
+                className="absolute -inset-5 rounded-full border border-dashed border-blue-300/30 dark:border-blue-500/20 pointer-events-none"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              />
             </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* ── Scroll indicator ──────────────────────────────────── */}
       <motion.button
-        onClick={() => scrollTo('about')}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-fg-3 hover:text-primary transition-colors duration-300 group"
+        onClick={scrollToAbout}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-gray-400 dark:text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 group"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.4, duration: 0.5 }}
@@ -320,7 +329,7 @@ export function Hero() {
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <ChevronDown size={20} className="group-hover:text-primary transition-colors" />
+          <ChevronDown size={20} className="group-hover:text-blue-500 transition-colors" />
         </motion.div>
       </motion.button>
     </section>
