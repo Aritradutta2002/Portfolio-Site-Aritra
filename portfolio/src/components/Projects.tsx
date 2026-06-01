@@ -1,8 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ExternalLink, Github, X, Sparkles, GitBranch, Star, GitCommit } from 'lucide-react'
+import { ExternalLink, Github, Sparkles, Code2, Cpu, Box, Database, Globe, Brain, Trophy, type LucideIcon } from 'lucide-react'
+import { GlassCard } from '@/components/ui/GlassCard'
+import { Chip } from '@/components/ui/Chip'
+import { SectionHeader } from '@/components/ui/SectionHeader'
+import { Modal } from '@/components/ui/Modal'
+import { TiltCard } from '@/components/ui/TiltCard'
+import { Button } from '@/components/ui/Button'
+import { EASE } from '@/lib/motion'
 
 type Project = {
   id: number
@@ -14,108 +21,258 @@ type Project = {
   github: string
   demo: string
   featured?: boolean
+  preview: {
+    icon: LucideIcon
+    primary: string
+    secondary: string
+    lines: { tokens: { type: 'kw' | 'fn' | 'str' | 'num' | 'com' | 'txt'; text: string }[] }[]
+  }
 }
 
-const categoryEmoji: Record<string, string> = {
-  'Web Development': '🌐',
-  'Desktop Application': '💻',
-  'AI/ML': '🤖',
-  'Competitive Programming': '🏆',
-  'Backend Development': '⚙️',
-}
-
-const categoryColor: Record<string, string> = {
-  'Web Development':        'from-cyan-500 to-blue-500',
-  'Desktop Application':    'from-violet-500 to-purple-500',
-  'AI/ML':                  'from-pink-500 to-rose-500',
-  'Competitive Programming':'from-amber-500 to-orange-500',
-  'Backend Development':    'from-emerald-500 to-teal-500',
+const categoryIcon: Record<string, LucideIcon> = {
+  'Web Development': Globe,
+  'Desktop Application': Cpu,
+  'AI/ML': Brain,
+  'Competitive Programming': Trophy,
+  'Backend Development': Database,
 }
 
 const projects: Project[] = [
   {
     id: 1,
     title: 'AlgoGuru – Programming Learning Platform',
-    description: 'Full-stack competitive programming platform featuring a Java Playground, role-based authentication, and interactive problem sets.',
-    longDescription: 'Designed, built, and deployed a full-stack competitive programming platform end-to-end — live at algoguru.online with a custom purchased domain and production deployment. Features a Java Playground, role-based authentication, user progress tracking, and interactive problem sets. Sole developer responsible for the complete product lifecycle — from architecture and implementation to deployment.',
-    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Java'],
+    description: 'Full-stack competitive programming platform with Java Playground, role-based auth, and interactive problem sets.',
+    longDescription: 'Designed, built, and deployed a full-stack competitive programming platform end-to-end — live at algoguru.online with a custom domain and production deployment. Features a Java Playground, role-based authentication, user progress tracking, and interactive problem sets. Sole developer responsible for the complete product lifecycle — from architecture and implementation to deployment.',
+    technologies: ['React', 'TypeScript', 'Tailwind', 'Supabase', 'Java'],
     category: 'Web Development',
     github: 'https://github.com/Aritradutta2002',
     demo: 'https://algoguru.online',
     featured: true,
+    preview: {
+      icon: Globe,
+      primary: 'hsl(262, 83%, 58%)',
+      secondary: 'hsl(189, 94%, 50%)',
+      lines: [
+        { tokens: [{ type: 'com', text: '// algoguru.online' }] },
+        { tokens: [{ type: 'kw', text: 'const' }, { type: 'txt', text: ' ' }, { type: 'fn', text: 'learn' }, { type: 'txt', text: ' = () => {' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'fn', text: 'solve' }, { type: 'txt', text: '(' }, { type: 'str', text: '"DSA"' }, { type: 'txt', text: ');' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'fn', text: 'compete' }, { type: 'txt', text: '(' }, { type: 'str', text: '"weekly"' }, { type: 'txt', text: ');' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'fn', text: 'grow' }, { type: 'txt', text: '(' }, { type: 'str', text: '"together"' }, { type: 'txt', text: ');' }] },
+        { tokens: [{ type: 'txt', text: '};' }] },
+      ],
+    },
   },
   {
     id: 2,
     title: 'Algorithm Visualizer',
-    description: 'Interactive platform for visualizing sorting algorithms including Bubble Sort, Merge Sort, Quick Sort, and Insertion Sort with dynamic animations.',
-    longDescription: 'Developed a comprehensive platform for visualizing various sorting algorithms. The project helps students and developers understand how different sorting algorithms work through interactive visualizations. Features include speed controls, step-by-step execution, and comparison of algorithm performance.',
+    description: 'Interactive platform for visualizing sorting algorithms — Bubble, Merge, Quick, Insertion sort with dynamic animations.',
+    longDescription: 'Developed a comprehensive platform for visualizing various sorting algorithms. Helps students and developers understand how different sorting algorithms work through interactive visualizations. Features include speed controls, step-by-step execution, and algorithm performance comparison.',
     technologies: ['HTML', 'CSS', 'JavaScript'],
     category: 'Web Development',
     github: 'https://github.com/Aritradutta2002/new_Sorting_Visualizer',
     demo: '#',
     featured: true,
+    preview: {
+      icon: Code2,
+      primary: 'hsl(189, 94%, 50%)',
+      secondary: 'hsl(160, 84%, 45%)',
+      lines: [
+        { tokens: [{ type: 'com', text: '// sorting-visualizer' }] },
+        { tokens: [{ type: 'kw', text: 'function' }, { type: 'txt', text: ' ' }, { type: 'fn', text: 'visualize' }, { type: 'txt', text: '(' }, { type: 'txt', text: 'algo' }, { type: 'txt', text: ') {' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'kw', text: 'const' }, { type: 'txt', text: ' arr = [' }, { type: 'num', text: '42' }, { type: 'txt', text: ', ' }, { type: 'num', text: '17' }, { type: 'txt', text: ', ' }, { type: 'num', text: '8' }, { type: 'txt', text: '];' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'fn', text: 'animate' }, { type: 'txt', text: '(' }, { type: 'txt', text: 'arr' }, { type: 'txt', text: ');' }] },
+        { tokens: [{ type: 'txt', text: '}' }] },
+      ],
+    },
   },
   {
     id: 3,
-    title: 'HuffZip - File Compressor',
-    description: 'Advanced file compression tool using Huffman Coding algorithm with visualization of the Huffman Tree construction process.',
-    longDescription: 'Implemented the Huffman Coding algorithm for efficient file compression. The project includes a visualization tool that shows how the Huffman Tree is constructed step by step. Built with C++ for backend processing and JavaScript for creating interactive visualizations.',
+    title: 'HuffZip – File Compressor',
+    description: 'File compression tool using Huffman Coding with interactive tree construction visualization.',
+    longDescription: 'Implemented the Huffman Coding algorithm for efficient file compression. Includes a visualization tool that shows how the Huffman Tree is constructed step by step. Built with C++ for backend processing and JavaScript for interactive visualizations.',
     technologies: ['JavaScript', 'HTML', 'C++'],
     category: 'Desktop Application',
     github: 'https://github.com/Aritradutta2002/File_Compressor',
     demo: '#',
     featured: true,
+    preview: {
+      icon: Cpu,
+      primary: 'hsl(330, 81%, 60%)',
+      secondary: 'hsl(262, 83%, 58%)',
+      lines: [
+        { tokens: [{ type: 'com', text: '// huffman.cpp' }] },
+        { tokens: [{ type: 'kw', text: 'struct' }, { type: 'txt', text: ' ' }, { type: 'fn', text: 'Node' }, { type: 'txt', text: ' {' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'kw', text: 'char' }, { type: 'txt', text: ' ch; ' }, { type: 'kw', text: 'int' }, { type: 'txt', text: ' freq;' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'fn', text: 'Node' }, { type: 'txt', text: ' *left, *right;' }] },
+        { tokens: [{ type: 'txt', text: '};' }] },
+        { tokens: [{ type: 'txt', text: '// build tree & encode...' }] },
+      ],
+    },
   },
   {
     id: 4,
     title: 'ChatGPT Clone',
-    description: 'Clean and intuitive web interface powered by Streamlit for interacting with GPT-4 model with customizable parameters.',
-    longDescription: 'Created a ChatGPT clone using Streamlit in Python. Users can interact with the GPT-4 model through a simple and clean interface. Features include customizable temperature, max tokens, and other parameters for fine-tuning responses.',
+    description: 'Clean Streamlit interface for GPT-4 with customizable parameters and temperature controls.',
+    longDescription: 'Created a ChatGPT clone using Streamlit in Python. Users interact with GPT-4 through a simple, clean interface. Features include customizable temperature, max tokens, and other parameters for fine-tuning responses.',
     technologies: ['Python', 'Streamlit', 'OpenAI API'],
     category: 'AI/ML',
     github: 'https://github.com/Aritradutta2002/ChatGPT-clone',
     demo: '#',
+    preview: {
+      icon: Brain,
+      primary: 'hsl(38, 92%, 55%)',
+      secondary: 'hsl(330, 81%, 60%)',
+      lines: [
+        { tokens: [{ type: 'com', text: '# chatgpt_clone.py' }] },
+        { tokens: [{ type: 'kw', text: 'import' }, { type: 'txt', text: ' openai, streamlit' }] },
+        { tokens: [{ type: 'txt', text: 'resp = openai.ChatCompletion.' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'fn', text: 'create' }, { type: 'txt', text: '(' }] },
+        { tokens: [{ type: 'txt', text: '    model=' }, { type: 'str', text: '"gpt-4"' }, { type: 'txt', text: ', temp=' }, { type: 'num', text: '0.7' }, { type: 'txt', text: ')' }] },
+        { tokens: [{ type: 'txt', text: 'st.' }, { type: 'fn', text: 'write' }, { type: 'txt', text: '(resp.choices[0].text)' }] },
+      ],
+    },
   },
   {
     id: 5,
     title: 'LeetCode Directory',
-    description: 'Comprehensive collection of LeetCode solutions with 537+ commits, organized by topics and difficulty levels.',
+    description: 'Comprehensive LeetCode solutions with 537+ commits, organized by topics and difficulty levels.',
     longDescription: 'A well-organized repository containing solutions to various LeetCode problems. Each solution includes detailed explanations, time and space complexity analysis, and multiple approaches where applicable.',
     technologies: ['Java', 'Python', 'C++'],
     category: 'Competitive Programming',
     github: 'https://github.com/Aritradutta2002/LeetCode-Directory',
     demo: '#',
     featured: true,
+    preview: {
+      icon: Trophy,
+      primary: 'hsl(38, 92%, 55%)',
+      secondary: 'hsl(0, 84%, 60%)',
+      lines: [
+        { tokens: [{ type: 'com', text: '// Two Sum — O(n) hashmap' }] },
+        { tokens: [{ type: 'kw', text: 'class' }, { type: 'txt', text: ' ' }, { type: 'fn', text: 'Solution' }, { type: 'txt', text: ' {' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'kw', text: 'public' }, { type: 'txt', text: ' ' }, { type: 'kw', text: 'int' }, { type: 'txt', text: '[] ' }, { type: 'fn', text: 'twoSum' }, { type: 'txt', text: '(' }] },
+        { tokens: [{ type: 'txt', text: '    ' }, { type: 'kw', text: 'int' }, { type: 'txt', text: '[] nums, ' }, { type: 'kw', text: 'int' }, { type: 'txt', text: ' target) {' }] },
+        { tokens: [{ type: 'txt', text: '    ' }, { type: 'fn', text: 'solve' }, { type: 'txt', text: '(' }, { type: 'txt', text: 'nums, target' }, { type: 'txt', text: ');' }] },
+        { tokens: [{ type: 'txt', text: '  }' }, { type: 'txt', text: ' }' }] },
+      ],
+    },
   },
   {
     id: 6,
-    title: 'TIC-TAC-TOE Game',
-    description: 'Modern implementation of the classic Tic-Tac-Toe game built with Angular and TypeScript featuring responsive design.',
+    title: 'Tic-Tac-Toe',
+    description: 'Modern Tic-Tac-Toe built with Angular and TypeScript featuring responsive design and animations.',
     longDescription: 'A modern take on the classic Tic-Tac-Toe game built using Angular and TypeScript. Features include responsive design, score tracking, and smooth animations.',
     technologies: ['Angular', 'TypeScript', 'CSS'],
     category: 'Web Development',
     github: 'https://github.com/Aritradutta2002/TIC-TAC-TOE-GAME',
     demo: '#',
+    preview: {
+      icon: Box,
+      primary: 'hsl(199, 89%, 60%)',
+      secondary: 'hsl(189, 94%, 50%)',
+      lines: [
+        { tokens: [{ type: 'com', text: '// tic-tac-toe.component.ts' }] },
+        { tokens: [{ type: 'kw', text: 'export' }, { type: 'txt', text: ' ' }, { type: 'kw', text: 'class' }, { type: 'txt', text: ' ' }, { type: 'fn', text: 'Board' }, { type: 'txt', text: ' {' }] },
+        { tokens: [{ type: 'txt', text: '  cells: ' }, { type: 'str', text: "('X'|'O'|null)[]" }, { type: 'txt', text: ' = ' }, { type: 'fn', text: 'Array' }, { type: 'txt', text: '(' }, { type: 'num', text: '9' }, { type: 'txt', text: ');' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'fn', text: 'play' }, { type: 'txt', text: '(i: ' }, { type: 'kw', text: 'number' }, { type: 'txt', text: ') {' }] },
+        { tokens: [{ type: 'txt', text: '    ' }, { type: 'com', text: '/* mark cell */' }] },
+        { tokens: [{ type: 'txt', text: '  }' }, { type: 'txt', text: ' }' }] },
+      ],
+    },
   },
   {
     id: 7,
-    title: 'SpringBoot Application',
-    description: 'First SpringBoot application demonstrating RESTful APIs, database integration, and modern Java backend development practices.',
-    longDescription: 'My first SpringBoot application showcasing RESTful API development, database integration with JPA/Hibernate, and modern Java backend development practices.',
+    title: 'SpringBoot Microservice',
+    description: 'First SpringBoot app demonstrating RESTful APIs, JPA, and modern Java backend practices.',
+    longDescription: 'First SpringBoot application showcasing RESTful API development, database integration with JPA/Hibernate, and modern Java backend development practices.',
     technologies: ['Java', 'Spring Boot', 'MySQL', 'JPA'],
     category: 'Backend Development',
     github: 'https://github.com/Aritradutta2002/First-SpringBoot-App',
     demo: '#',
+    preview: {
+      icon: Database,
+      primary: 'hsl(160, 84%, 45%)',
+      secondary: 'hsl(189, 94%, 50%)',
+      lines: [
+        { tokens: [{ type: 'com', text: '// UserController.java' }] },
+        { tokens: [{ type: 'kw', text: '@RestController' }] },
+        { tokens: [{ type: 'kw', text: 'public' }, { type: 'txt', text: ' ' }, { type: 'kw', text: 'class' }, { type: 'txt', text: ' ' }, { type: 'fn', text: 'UserController' }, { type: 'txt', text: ' {' }] },
+        { tokens: [{ type: 'kw', text: '  @GetMapping' }, { type: 'txt', text: '(' }, { type: 'str', text:'"/users"' }, { type: 'txt', text: ')' }] },
+        { tokens: [{ type: 'txt', text: '  ' }, { type: 'kw', text: 'public' }, { type: 'txt', text: ' List<User> ' }, { type: 'fn', text: 'all' }, { type: 'txt', text: '() {' }] },
+        { tokens: [{ type: 'txt', text: '    ' }, { type: 'fn', text: 'return' }, { type: 'txt', text: ' repo.' }, { type: 'fn', text: 'findAll' }, { type: 'txt', text: '();' }] },
+      ],
+    },
   },
 ]
 
 const categories = ['All', 'Web Development', 'Desktop Application', 'AI/ML', 'Competitive Programming', 'Backend Development']
 
-const githubStats = [
-  { value: '554+', label: 'Problems Solved', icon: Star,      color: 'from-emerald-600 to-emerald-400' },
-  { value: '1672', label: 'LeetCode Rating', icon: GitBranch, color: 'from-blue-600 to-blue-400' },
-  { value: '1708', label: 'CodeChef Rating', icon: GitCommit, color: 'from-violet-600 to-violet-400' },
-]
+const tokenColor: Record<string, string> = {
+  kw:  'text-rose',
+  fn:  'text-secondary',
+  str: 'text-amber',
+  num: 'text-emerald',
+  com: 'text-fg-4',
+  txt: 'text-fg-2',
+}
+
+function ProjectPreview({ preview, title }: { preview: Project['preview']; title: string }) {
+  const Icon = preview.icon
+  return (
+    <div
+      className="relative h-44 sm:h-48 overflow-hidden"
+      style={{
+        background: `linear-gradient(135deg, ${preview.primary}25, ${preview.secondary}10)`,
+      }}
+    >
+      {/* gradient orbs */}
+      <div
+        className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-50"
+        style={{ background: preview.primary }}
+      />
+      <div
+        className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full blur-3xl opacity-30"
+        style={{ background: preview.secondary }}
+      />
+
+      {/* Floating icon */}
+      <motion.div
+        className="absolute top-4 right-4 w-10 h-10 rounded-md flex items-center justify-center"
+        style={{
+          background: `linear-gradient(135deg, ${preview.primary}, ${preview.secondary})`,
+          boxShadow: `0 8px 24px ${preview.primary}60`,
+        }}
+        animate={{ y: [0, -4, 0], rotate: [0, 4, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <Icon className="w-5 h-5 text-white" />
+      </motion.div>
+
+      {/* Code window mock */}
+      <div className="absolute inset-x-4 bottom-4 top-16 rounded-md bg-bg-1/90 backdrop-blur-md border border-line overflow-hidden shadow-glass">
+        {/* Title bar */}
+        <div className="flex items-center gap-1.5 px-3 py-2 border-b border-line-soft bg-bg-2/50">
+          <span className="w-2.5 h-2.5 rounded-full bg-rose" />
+          <span className="w-2.5 h-2.5 rounded-full bg-amber" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald" />
+          <span className="ml-2 text-[10px] font-mono text-fg-4 truncate">{title.toLowerCase()}.{preview.icon === Brain ? 'py' : preview.icon === Database ? 'java' : preview.icon === Cpu ? 'cpp' : 'tsx'}</span>
+        </div>
+        {/* Code lines */}
+        <div className="p-3 space-y-1 font-mono text-[10.5px] leading-relaxed">
+          {preview.lines.slice(0, 5).map((line, li) => (
+            <div key={li} className="flex">
+              <span className="w-5 text-fg-4 text-right pr-2 select-none">{li + 1}</span>
+              <span className="truncate">
+                {line.tokens.map((t, ti) => (
+                  <span key={ti} className={tokenColor[t.type] ?? 'text-fg-2'}>{t.text}</span>
+                ))}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function Projects() {
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -123,256 +280,146 @@ export function Projects() {
 
   const filteredProjects = selectedCategory === 'All'
     ? projects
-    : projects.filter(p => p.category === selectedCategory)
+    : projects.filter((p) => p.category === selectedCategory)
 
   return (
-    <section id="projects" className="py-24 relative">
+    <section id="projects" className="py-28 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader
+          index="03 — Work"
+          eyebrow="Portfolio"
+          title={<>Featured <span className="gradient-text">projects</span></>}
+          description="Selected work spanning full-stack platforms, AI/ML experiments, and competitive programming tools."
+        />
 
-        {/* ── Section Header ─────────────────────────────── */}
+        {/* Filter pills */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200/70 dark:border-blue-500/25 text-blue-700 dark:text-blue-300 text-[13px] font-medium mb-4"
-          >
-            <Sparkles size={12} />
-            Portfolio
-          </motion.span>
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">
-            Featured Projects
-          </h2>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-blue-500" />
-            <div className="h-1 w-16 rounded-full bg-gradient-to-r from-blue-600 to-violet-600" />
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-violet-500" />
-          </div>
-          <p className="text-base text-gray-400 max-w-2xl mx-auto font-mono text-[13px]">
-            &gt; Projects showcasing my skills across various technologies and domains
-          </p>
-        </motion.div>
-
-        {/* ── Filter Pills ────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.5, ease: EASE.outExpo }}
           viewport={{ once: true }}
           className="flex flex-wrap justify-center gap-2 mb-12"
         >
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-[13px] font-mono transition-all duration-200 ${
-                selectedCategory === cat
-                  ? 'bg-primary/20 text-white shadow-neon-purple border border-primary/50'
-                  : 'glass-panel text-gray-400 border border-white/5 hover:border-secondary/50 hover:text-secondary hover:shadow-neon-cyan'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </motion.div>
-
-        {/* ── Projects Grid ───────────────────────────────── */}
-        <motion.div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" layout>
-          {filteredProjects.map((project, index) => {
-            const gradColor = categoryColor[project.category] ?? 'from-blue-500 to-violet-500'
+          {categories.map((cat) => {
+            const active = selectedCategory === cat
+            const CatIcon = categoryIcon[cat] || Code2
             return (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.07 }}
-                viewport={{ once: true }}
-                className="glass-galaxy rounded-3xl overflow-hidden group hover:shadow-neon-purple hover:-translate-y-2 transition-all duration-500 relative"
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                data-cursor="hover"
+                className={[
+                  'h-10 px-4 rounded-full text-[13px] font-semibold inline-flex items-center gap-2 transition-all duration-300',
+                  active
+                    ? 'bg-primary/15 text-primary border border-primary/40 shadow-neon-primary'
+                    : 'glass text-fg-3 border border-line-soft hover:border-secondary/40 hover:text-secondary',
+                ].join(' ')}
               >
-                {/* Ambient glow */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[40px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
-
-                {/* Card top gradient bar */}
-                <div className={`h-1.5 w-full bg-gradient-to-r ${gradColor}`} />
-
-                {/* Visual area */}
-                <div className="relative h-48 bg-surface/50 flex items-center justify-center overflow-hidden border-b border-white/5">
-                  <span className="text-6xl opacity-20 select-none group-hover:scale-110 transition-transform duration-500">{categoryEmoji[project.category]}</span>
-                  <div className={`absolute inset-0 bg-gradient-to-br ${gradColor} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 backdrop-blur-[2px]">
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all duration-200 hover:scale-110"
-                      onClick={e => e.stopPropagation()}
-                    >
-                      <Github className="w-6 h-6 text-white" />
-                    </a>
-                    <button
-                      onClick={() => setSelectedProject(project)}
-                      className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all duration-200 hover:scale-110"
-                    >
-                      <ExternalLink className="w-6 h-6 text-white" />
-                    </button>
-                  </div>
-
-                  {project.featured && (
-                    <span className="absolute top-4 right-4 px-3 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[11px] font-bold rounded-full shadow-lg">
-                      Featured
-                    </span>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <h3 className="text-[18px] font-bold text-white mb-2.5 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-primary transition-all duration-300 line-clamp-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-[14px] text-gray-400 mb-5 line-clamp-3 leading-relaxed font-medium">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.slice(0, 4).map((tech, ti) => (
-                      <span
-                        key={ti}
-                        className="px-2.5 py-1.5 bg-white/5 text-gray-300 border border-white/10 rounded-lg text-[11px] font-bold group-hover:border-primary/30 transition-colors duration-300"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                    {project.technologies.length > 4 && (
-                      <span className="px-2.5 py-1.5 bg-white/5 text-gray-500 border border-white/5 rounded-lg text-[11px] font-bold">
-                        +{project.technologies.length - 4}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
+                {cat !== 'All' && <CatIcon size={13} />}
+                {cat}
+              </button>
             )
           })}
         </motion.div>
 
-        {/* ── Platform Stats ────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="mt-24"
-        >
-          <div className="glass-galaxy rounded-3xl p-10 relative overflow-hidden group">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] -z-10 transition-colors duration-700" />
-            <h3 className="text-2xl font-bold text-white mb-10 text-center tracking-tight">
-              Platform Statistics
-            </h3>
-            <div className="grid md:grid-cols-3 gap-8">
-              {githubStats.map((s, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -4, scale: 1.02 }}
-                  className="text-center bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10"
-                >
-                  <div className={`text-4xl font-extrabold bg-gradient-to-r ${s.color} bg-clip-text text-transparent mb-2 glow`}>
-                    {s.value}
-                  </div>
-                  <div className="text-[14px] text-gray-300 font-bold uppercase tracking-wider">{s.label}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+        {/* Projects grid */}
+        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                layout
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.5, delay: index * 0.06, ease: EASE.outExpo }}
+              >
+                <TiltCard maxTilt={6} scale={1.01}>
+                  <GlassCard
+                    glow="primary"
+                    onClick={() => setSelectedProject(project)}
+                    data-cursor="hover"
+                    className="cursor-pointer overflow-hidden"
+                  >
+                    <ProjectPreview preview={project.preview} title={project.title} />
+
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <h3 className="text-[16.5px] font-bold text-fg-0 leading-snug group-hover:text-primary transition-colors">
+                          {project.title}
+                        </h3>
+                        {project.featured && (
+                          <Chip tone="amber" size="sm" icon={<Sparkles size={10} />}>
+                            Featured
+                          </Chip>
+                        )}
+                      </div>
+                      <p className="text-[13.5px] text-fg-3 mb-4 line-clamp-2 leading-relaxed">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.technologies.slice(0, 4).map((tech) => (
+                          <Chip key={tech} tone="neutral" size="sm">{tech}</Chip>
+                        ))}
+                        {project.technologies.length > 4 && (
+                          <Chip tone="neutral" size="sm">+{project.technologies.length - 4}</Chip>
+                        )}
+                      </div>
+                    </div>
+                  </GlassCard>
+                </TiltCard>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </motion.div>
       </div>
 
-      {/* ── Project Modal ───────────────────────────────── */}
-      <AnimatePresence>
+      <Modal
+        open={!!selectedProject}
+        onClose={() => setSelectedProject(null)}
+        size="lg"
+        title={selectedProject?.title}
+      >
         {selectedProject && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-            onClick={() => setSelectedProject(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.92, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.92, opacity: 0, y: 20 }}
-              transition={{ duration: 0.25 }}
-              className="glass-panel backdrop-blur-2xl rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-primary/30 shadow-neon-purple"
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Top gradient bar */}
-              <div className={`h-1 w-full bg-gradient-to-r ${categoryColor[selectedProject.category] ?? 'from-blue-500 to-violet-500'} rounded-full mb-6`} />
+          <div className="space-y-5">
+            <Chip tone="primary" size="sm" icon={<Sparkles size={11} />}>
+              {selectedProject.category}
+            </Chip>
 
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-2xl font-bold text-white pr-4 leading-snug drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]">
-                  {selectedProject.title}
-                </h3>
-                <button
-                  onClick={() => setSelectedProject(null)}
-                  className="p-2 hover:bg-white/10 rounded-xl transition-colors duration-200 flex-shrink-0"
-                >
-                  <X className="w-5 h-5 text-gray-500" />
-                </button>
-              </div>
+            <p className="text-fg-2 leading-relaxed text-[14.5px]">
+              {selectedProject.longDescription}
+            </p>
 
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200/60 dark:border-blue-500/20 text-blue-700 dark:text-blue-300 text-xs font-medium mb-4">
-                {categoryEmoji[selectedProject.category]} {selectedProject.category}
-              </span>
-
-              <p className="text-gray-300 mb-6 leading-relaxed text-[14.5px] font-mono">
-                {selectedProject.longDescription}
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-6">
-                {selectedProject.technologies.map((tech, i) => (
-                  <span key={i} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[12px] font-mono">
-                    {tech}
-                  </span>
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-fg-4 mb-2">Stack</p>
+              <div className="flex flex-wrap gap-2">
+                {selectedProject.technologies.map((tech) => (
+                  <Chip key={tech} tone="primary" size="md">{tech}</Chip>
                 ))}
               </div>
+            </div>
 
-              <div className="flex gap-3">
-                <a
-                  href={selectedProject.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl text-[13.5px] font-semibold hover:opacity-90 transition-opacity duration-200"
+            <div className="flex flex-wrap gap-3 pt-3 border-t border-line-soft">
+              <Button
+                variant="primary"
+                onClick={() => window.open(selectedProject.github, '_blank', 'noopener,noreferrer')}
+                icon={<Github size={15} />}
+              >
+                View code
+              </Button>
+              {selectedProject.demo !== '#' && (
+                <Button
+                  variant="secondary"
+                  onClick={() => window.open(selectedProject.demo, '_blank', 'noopener,noreferrer')}
+                  icon={<ExternalLink size={15} />}
                 >
-                  <Github className="w-4 h-4" />
-                  View Code
-                </a>
-                {selectedProject.demo !== '#' && (
-                  <a
-                    href={selectedProject.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-5 py-2.5 bg-primary/20 text-white rounded-xl text-[13.5px] font-mono border border-primary/50 hover:bg-primary/30 shadow-neon-purple transition-all duration-300"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Live Demo
-                  </a>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
+                  Live demo
+                </Button>
+              )}
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      </Modal>
     </section>
   )
 }

@@ -1,7 +1,19 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { MapPin, Calendar, Building, Code, Trophy, Sparkles, CheckCircle } from 'lucide-react'
+import {
+  MapPin,
+  Calendar,
+  Building,
+  Code,
+  Trophy,
+  Sparkles,
+  CheckCircle,
+} from 'lucide-react'
+import { GlassCard } from '@/components/ui/GlassCard'
+import { Chip } from '@/components/ui/Chip'
+import { SectionHeader } from '@/components/ui/SectionHeader'
+import { EASE } from '@/lib/motion'
 
 const experience = {
   company: 'Tata Consultancy Services',
@@ -44,249 +56,251 @@ const timeline = [
     period: 'Sep 2024 – Present',
     role: 'Assistant System Engineer',
     org: 'TCS — Bhubaneswar, India',
-    color: 'from-blue-600 to-violet-600',
+    color: 'from-primary to-secondary',
+    glow: 'primary' as const,
   },
   {
     period: 'Sep 2024 – Nov 2024',
     role: 'ILP Training (ITIS Technology)',
     org: 'TCS — Thiruvananthapuram, IN',
-    color: 'from-emerald-500 to-teal-500',
+    color: 'from-emerald to-sky',
+    glow: 'emerald' as const,
   },
   {
     period: '2020 – 2024',
     role: 'B.Tech + Competitive Programming',
     org: 'MAKAUT — Kolkata, WB',
-    color: 'from-violet-500 to-pink-500',
+    color: 'from-rose to-amber',
+    glow: 'rose' as const,
   },
 ]
 
 const workStats = [
-  { value: '1.5yr+',  label: 'at TCS',                color: 'from-blue-600 to-blue-400' },
-  { value: '10+',   label: 'Technologies Mastered',  color: 'from-violet-600 to-violet-400' },
-  { value: '100%',  label: 'Training Completion',    color: 'from-emerald-600 to-emerald-400' },
-  { value: '20+',   label: 'REST APIs Built',        color: 'from-orange-600 to-orange-400' },
+  { value: '1.5yr+',  label: 'at TCS',                tone: 'primary' as const, glow: 'primary'   as const },
+  { value: '10+',     label: 'Technologies Mastered', tone: 'emerald' as const, glow: 'emerald'   as const },
+  { value: '100%',    label: 'Training Completion',   tone: 'sky'     as const, glow: 'sky'       as const },
+  { value: '20+',     label: 'REST APIs Built',       tone: 'amber'   as const, glow: 'amber'     as const },
 ]
+
+const toneClass: Record<string, string> = {
+  primary: 'from-primary to-secondary',
+  emerald: 'from-emerald to-sky',
+  sky:     'from-sky to-primary',
+  amber:   'from-amber to-rose',
+  rose:    'from-rose to-amber',
+}
 
 export function Experience() {
   return (
-    <section id="experience" className="py-24 relative">
+    <section id="experience" className="py-28 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader
+          index="04 — Career"
+          eyebrow="Work experience"
+          title={<>My professional <span className="gradient-text">journey</span></>}
+          description="From classroom to enterprise — milestones that shaped how I architect and ship software."
+        />
 
-        {/* ── Section Header ─────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200/70 dark:border-blue-500/25 text-blue-700 dark:text-blue-300 text-[13px] font-medium mb-4"
-          >
-            <Sparkles size={12} />
-            Work Experience
-          </motion.span>
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
-            Professional Experience
-          </h2>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-blue-500" />
-            <div className="h-1 w-16 rounded-full bg-gradient-to-r from-blue-600 to-violet-600" />
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-violet-500" />
-          </div>
-          <p className="text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-            My journey in the software engineering industry
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-10">
-
-          {/* ── Experience Card ─────────────────────────── */}
+        <div className="grid lg:grid-cols-5 gap-8">
+          {/* ── Left: Main experience card (3 cols) ──── */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            viewport={{ once: true }}
-            className="glass-galaxy rounded-3xl p-8 lg:p-10 relative overflow-hidden group"
+            transition={{ duration: 0.7, ease: EASE.outExpo }}
+            viewport={{ once: true, amount: 0.2 }}
+            className="lg:col-span-3"
           >
-            {/* Ambient glows */}
-            <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
-            <div className="absolute bottom-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-[80px] -z-10 group-hover:bg-secondary/20 transition-colors duration-500" />
-
-            {/* Company header */}
-            <div className="flex items-start gap-5 mb-8">
-              <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary p-[1px] rounded-2xl shadow-lg group-hover:shadow-neon-purple transition-shadow duration-500 flex-shrink-0">
-                <div className="w-full h-full bg-surface/90 rounded-[15px] flex items-center justify-center backdrop-blur-xl">
-                  <Building className="w-6 h-6 text-white" />
+            <GlassCard glow="primary" gradientBorder className="p-7 sm:p-8 h-full">
+              {/* Header */}
+              <div className="flex items-start gap-4 mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary p-[1px] rounded-md shadow-neon-primary flex-shrink-0">
+                  <div className="w-full h-full bg-bg-1 rounded-[11px] flex items-center justify-center">
+                    <Building className="w-6 h-6 text-fg-0" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-fg-0 leading-snug tracking-tight">
+                    {experience.position}
+                  </h3>
+                  <p className="gradient-text-static font-bold text-[15px] mt-1">{experience.company}</p>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[12px] font-medium text-fg-3">
+                    <span className="inline-flex items-center gap-1.5">
+                      <MapPin size={12} className="text-primary" />
+                      {experience.location}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Calendar size={12} className="text-secondary" />
+                      {experience.startDate} – {experience.endDate}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white leading-snug tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-primary transition-all duration-300">{experience.position}</h3>
-                <p className="text-primary font-bold text-[16px] mt-1 glow">{experience.company}</p>
-                <div className="flex flex-wrap gap-4 mt-3 text-[12px] font-medium text-gray-400">
-                  <span className="flex items-center gap-1.5"><MapPin size={13} className="text-primary/70" />{experience.location}</span>
-                  <span className="flex items-center gap-1.5"><Calendar size={13} className="text-secondary/70" />{experience.startDate} – {experience.endDate}</span>
+
+              <p className="text-[14px] text-fg-2 font-medium leading-relaxed mb-7 pl-4 border-l-2 border-primary/40">
+                {experience.description}
+              </p>
+
+              {/* Responsibilities */}
+              <div className="mb-7">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-md bg-primary/10 text-primary border border-primary/30">
+                    <Code className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-[15px] font-bold text-fg-0 tracking-tight">Key Responsibilities</h4>
+                </div>
+                <ul className="space-y-2.5">
+                  {experience.responsibilities.map((r, i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, x: -12 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: i * 0.05, ease: EASE.outExpo }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-3 text-[13.5px] text-fg-2"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-secondary flex-shrink-0 mt-2" />
+                      {r}
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Technologies */}
+              <div className="mb-7">
+                <h4 className="text-[11.5px] font-bold uppercase tracking-wider text-fg-4 mb-3">Technologies used</h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {experience.technologies.map((tech) => (
+                    <Chip key={tech} tone="neutral" size="sm">{tech}</Chip>
+                  ))}
                 </div>
               </div>
-            </div>
 
-            <p className="text-[14px] md:text-[15px] text-gray-300 font-medium leading-relaxed mb-8 pl-5 border-l-2 border-primary/40 group-hover:border-primary transition-colors duration-300">
-              {experience.description}
-            </p>
-
-            {/* Responsibilities */}
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
-                  <Code className="w-4 h-4" />
+              {/* Achievements */}
+              <div className="pt-5 border-t border-line-soft">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-md bg-amber/10 text-amber border border-amber/30">
+                    <Trophy className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-[15px] font-bold text-fg-0 tracking-tight">Key Achievements</h4>
                 </div>
-                <h4 className="text-[16px] font-bold text-white tracking-tight">Key Responsibilities</h4>
+                <ul className="space-y-2.5">
+                  {experience.achievements.map((a, i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, x: -12 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: i * 0.05, ease: EASE.outExpo }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-3 text-[13.5px] text-fg-2 group/item"
+                    >
+                      <CheckCircle className="w-4 h-4 text-emerald flex-shrink-0 mt-0.5 group-hover/item:scale-110 transition-transform" />
+                      <span className="group-hover/item:text-fg-0 transition-colors">{a}</span>
+                    </motion.li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-3">
-                {experience.responsibilities.map((r, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: -12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: i * 0.06 }}
-                    viewport={{ once: true }}
-                    className="flex items-start gap-3 text-[14px] text-gray-300 font-medium"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-secondary flex-shrink-0 mt-2 shadow-neon-purple" />
-                    {r}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Technologies */}
-            <div className="mb-8">
-              <h4 className="text-[14px] font-bold uppercase tracking-wider text-gray-500 mb-4">Technologies Used</h4>
-              <div className="flex flex-wrap gap-2.5">
-                {experience.technologies.map((tech, i) => (
-                  <span key={i} className="px-3 py-1.5 bg-white/5 text-gray-300 border border-white/10 rounded-lg text-[12px] font-bold group-hover:border-primary/30 transition-colors duration-300 backdrop-blur-sm hover:bg-white/10 cursor-default">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Achievements */}
-            <div className="pt-6 border-t border-white/5">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20">
-                  <Trophy className="w-4 h-4" />
-                </div>
-                <h4 className="text-[16px] font-bold text-white tracking-tight">Key Achievements</h4>
-              </div>
-              <ul className="space-y-3">
-                {experience.achievements.map((a, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: -12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: i * 0.06 }}
-                    viewport={{ once: true }}
-                    className="flex items-start gap-3 text-[14px] text-gray-300 font-medium group/item"
-                  >
-                    <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5 group-hover/item:scale-110 transition-transform" />
-                    <span className="group-hover/item:text-white transition-colors">{a}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
+            </GlassCard>
           </motion.div>
 
-          {/* ── Right Column ────────────────────────────── */}
+          {/* ── Right column (2 cols) ─────────────── */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="space-y-6"
+            transition={{ duration: 0.7, ease: EASE.outExpo, delay: 0.1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            className="lg:col-span-2 space-y-5"
           >
-            {/* Skill bars */}
-            <div className="glass-galaxy rounded-3xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] -z-10 group-hover:bg-primary/15 transition-colors duration-500" />
-              <h3 className="text-[18px] font-bold text-white mb-6 tracking-tight">Professional Skills</h3>
-              <div className="space-y-5">
+            {/* Professional skills */}
+            <GlassCard className="p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <h3 className="text-[15px] font-bold text-fg-0 tracking-tight">Professional skills</h3>
+              </div>
+              <div className="space-y-4">
                 {skills.map((skill, i) => (
                   <motion.div
                     key={skill.name}
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: i * 0.08 }}
+                    transition={{ duration: 0.4, delay: i * 0.06, ease: EASE.outExpo }}
                     viewport={{ once: true }}
                   >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-[14px] font-bold text-gray-300 group-hover:text-white transition-colors">{skill.name}</span>
-                      <span className="text-[12px] font-bold text-gray-400">{skill.level}%</span>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-[13px] font-semibold text-fg-1">{skill.name}</span>
+                      <span className="text-[11px] font-mono text-fg-3">{skill.level}%</span>
                     </div>
-                    <div className="w-full bg-white/5 border border-white/10 rounded-full h-2.5 overflow-hidden backdrop-blur-sm">
+                    <div className="w-full h-1.5 rounded-full bg-bg-2 border border-line-soft overflow-hidden">
                       <motion.div
-                        className="h-full bg-gradient-to-r from-primary to-secondary rounded-full shadow-neon-purple"
+                        className="h-full rounded-full bg-gradient-to-r from-primary to-secondary"
                         initial={{ width: 0 }}
                         whileInView={{ width: `${skill.level}%` }}
-                        transition={{ duration: 1.2, delay: i * 0.08, ease: 'easeOut' }}
+                        transition={{ duration: 1.1, delay: i * 0.06, ease: EASE.outExpo }}
                         viewport={{ once: true }}
                       />
                     </div>
                   </motion.div>
                 ))}
               </div>
-            </div>
+            </GlassCard>
 
-            {/* Career Timeline */}
-            <div className="glass-galaxy rounded-3xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute top-0 left-0 w-32 h-32 bg-secondary/5 rounded-full blur-[40px] -z-10 group-hover:bg-secondary/15 transition-colors duration-500" />
-              <h3 className="text-[18px] font-bold text-white mb-6 tracking-tight">Career Timeline</h3>
+            {/* Timeline */}
+            <GlassCard className="p-6">
+              <h3 className="text-[15px] font-bold text-fg-0 tracking-tight mb-5">Career timeline</h3>
               <div className="relative pl-6">
-                {/* Vertical line */}
-                <div className="absolute left-2.5 top-2 bottom-2 w-px bg-gradient-to-b from-primary via-secondary to-pink-500 opacity-50" />
-                <div className="space-y-8">
+                <div className="absolute left-2 top-1 bottom-1 w-px bg-gradient-to-b from-primary via-secondary to-rose opacity-50" />
+                <div className="space-y-6">
                   {timeline.map((item, i) => (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, y: 12 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: i * 0.1 }}
+                      transition={{ duration: 0.4, delay: i * 0.1, ease: EASE.outExpo }}
                       viewport={{ once: true }}
-                      className="relative group/time"
+                      className="relative group"
                     >
-                      <div className={`absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full bg-gradient-to-br ${item.color} shadow-lg ring-4 ring-background group-hover/time:scale-125 transition-transform`} />
-                      <p className="text-[14px] font-bold text-white glow group-hover/time:text-primary transition-colors">{item.period}</p>
-                      <p className="text-[13.5px] font-bold text-gray-300 mt-1">{item.role}</p>
-                      <p className="text-[12px] font-medium text-gray-500 uppercase tracking-wider mt-0.5">{item.org}</p>
+                      <div className={[
+                        'absolute -left-[25px] top-1 w-3.5 h-3.5 rounded-full ring-4 ring-bg-0',
+                        'bg-gradient-to-br',
+                        item.color,
+                        'group-hover:scale-125 transition-transform duration-300',
+                      ].join(' ')} />
+                      <p className="text-[12.5px] font-mono text-fg-3">{item.period}</p>
+                      <p className="text-[13.5px] font-bold text-fg-0 mt-0.5 group-hover:text-primary transition-colors">
+                        {item.role}
+                      </p>
+                      <p className="text-[11.5px] text-fg-3 uppercase tracking-wider mt-0.5">{item.org}</p>
                     </motion.div>
                   ))}
                 </div>
               </div>
-            </div>
+            </GlassCard>
 
-            {/* Work Stats */}
-            <div className="glass-galaxy rounded-3xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute bottom-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-[40px] -z-10 group-hover:bg-emerald-500/15 transition-colors duration-500" />
-              <h3 className="text-[18px] font-bold text-white mb-8 text-center tracking-tight">Professional Growth</h3>
-              <div className="grid grid-cols-2 gap-6">
+            {/* Stats */}
+            <GlassCard className="p-6">
+              <h3 className="text-[15px] font-bold text-fg-0 tracking-tight mb-5 text-center">By the numbers</h3>
+              <div className="grid grid-cols-2 gap-4">
                 {workStats.map((s, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, delay: i * 0.08 }}
+                    transition={{ duration: 0.4, delay: i * 0.08, ease: EASE.outExpo }}
                     viewport={{ once: true }}
-                    className="text-center bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm group-hover:border-white/20 transition-colors"
+                    whileHover={{ y: -3 }}
+                    data-cursor="hover"
+                    className="text-center p-4 rounded-md bg-bg-2/60 border border-line-soft hover:border-primary/40 transition-colors"
                   >
-                    <div className={`text-3xl font-extrabold bg-gradient-to-r ${s.color} bg-clip-text text-transparent mb-1 glow`}>{s.value}</div>
-                    <div className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">{s.label}</div>
+                    <div className={[
+                      'text-2xl sm:text-3xl font-extrabold bg-gradient-to-br bg-clip-text text-transparent mb-1',
+                      toneClass[s.tone] ?? toneClass.primary,
+                    ].join(' ')}>
+                      {s.value}
+                    </div>
+                    <div className="text-[10.5px] font-bold text-fg-3 uppercase tracking-wider">{s.label}</div>
                   </motion.div>
                 ))}
               </div>
-            </div>
+            </GlassCard>
           </motion.div>
         </div>
       </div>

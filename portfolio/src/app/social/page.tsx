@@ -1,9 +1,12 @@
 'use client'
 
-import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { Github, Linkedin, Code2, Target, Zap, ExternalLink, Trophy, Twitter, ArrowLeft } from 'lucide-react'
+import { Github, Linkedin, Code2, Target, Zap, ExternalLink, Trophy, Twitter, ArrowLeft, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { GlassCard } from '@/components/ui/GlassCard'
+import { SectionHeader } from '@/components/ui/SectionHeader'
+import { Button } from '@/components/ui/Button'
+import { EASE } from '@/lib/motion'
 
 const socialPlatforms = [
   {
@@ -13,9 +16,7 @@ const socialPlatforms = [
     username: '@Aritradutta2002',
     description: 'Open source projects, portfolio codebases, and algorithm solutions.',
     stats: '710+ contributions',
-    gradient: 'from-gray-600 to-gray-800',
-    glow: 'rgba(156,163,175,0.15)',
-    border: 'rgba(156,163,175,0.2)',
+    tone: 'primary' as const,
   },
   {
     name: 'LinkedIn',
@@ -24,9 +25,7 @@ const socialPlatforms = [
     username: 'Aritra Dutta',
     description: 'Professional network — career milestones, posts, and tech discussions.',
     stats: 'Software Engineer @ TCS',
-    gradient: 'from-blue-600 to-blue-800',
-    glow: 'rgba(59,130,246,0.15)',
-    border: 'rgba(59,130,246,0.25)',
+    tone: 'sky' as const,
   },
   {
     name: 'Twitter (X)',
@@ -35,9 +34,7 @@ const socialPlatforms = [
     username: '@Aritra1Sept',
     description: 'Real-time tech updates, programming thoughts, and daily insights.',
     stats: 'Follow for tech content',
-    gradient: 'from-sky-500 to-sky-700',
-    glow: 'rgba(14,165,233,0.15)',
-    border: 'rgba(14,165,233,0.25)',
+    tone: 'sky' as const,
   },
   {
     name: 'LeetCode',
@@ -46,9 +43,7 @@ const socialPlatforms = [
     username: '@ari2002',
     description: 'Competitive programming solutions, weekly contests, and problem sets.',
     stats: '1672 Rating · 500+ Solved',
-    gradient: 'from-orange-500 to-orange-700',
-    glow: 'rgba(249,115,22,0.15)',
-    border: 'rgba(249,115,22,0.25)',
+    tone: 'amber' as const,
   },
   {
     name: 'CSES',
@@ -57,9 +52,7 @@ const socialPlatforms = [
     username: 'User 261539',
     description: 'Competitive programming problem set — 100+ problems solved.',
     stats: 'Algorithm challenges',
-    gradient: 'from-emerald-600 to-emerald-800',
-    glow: 'rgba(16,185,129,0.15)',
-    border: 'rgba(16,185,129,0.25)',
+    tone: 'emerald' as const,
   },
   {
     name: 'Codeforces',
@@ -68,177 +61,155 @@ const socialPlatforms = [
     username: 'aritradutta2001',
     description: 'Competitive programming contests, Div 2 participation and ratings.',
     stats: 'Rating 1046 · Div 2',
-    gradient: 'from-violet-600 to-violet-800',
-    glow: 'rgba(139,92,246,0.15)',
-    border: 'rgba(139,92,246,0.25)',
+    tone: 'rose' as const,
   },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.09 } },
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 48, scale: 0.95 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut" as const } },
+const toneGradient: Record<string, string> = {
+  primary: 'from-primary to-secondary',
+  sky: 'from-sky to-primary',
+  emerald: 'from-emerald to-sky',
+  amber: 'from-amber to-rose',
+  rose: 'from-rose to-amber',
 }
 
 export default function SocialPage() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: containerRef })
-  const headerY = useTransform(scrollYProgress, [0, 0.3], [0, -30])
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.6])
+  const { scrollYProgress } = useScroll()
+  const headerY = useTransform(scrollYProgress, [0, 0.3], [0, -20])
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.7])
 
   return (
-    <div ref={containerRef} className="min-h-screen relative"
-      style={{ background: 'linear-gradient(135deg, #040408 0%, #0a0514 50%, #04080f 100%)' }}>
-
-      {/* Ambient background blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <motion.div className="absolute top-[-15%] left-[-10%] w-[700px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.08), transparent 70%)', filter: 'blur(100px)' }}
-          animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
-        <motion.div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.07), transparent 70%)', filter: 'blur(90px)' }}
-          animate={{ scale: [1.1, 1, 1.1], opacity: [0.5, 0.9, 0.5] }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }} />
-        <motion.div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(236,72,153,0.05), transparent 70%)', filter: 'blur(70px)' }}
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} />
-        {/* Star dots */}
-        {[...Array(30)].map((_, i) => (
-          <motion.div key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.4 + 0.1,
-            }}
-            animate={{ opacity: [0.1, 0.5, 0.1], scale: [1, 1.5, 1] }}
-            transition={{ duration: 2 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3 }} />
-        ))}
-      </div>
-
-      {/* Sticky nav */}
-      <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/5"
-        style={{ background: 'rgba(4,4,8,0.85)' }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <Link href="/#social"
-            className="flex items-center gap-2 text-violet-400 hover:text-violet-300 transition-colors group text-sm font-medium">
+    <main className="min-h-screen relative">
+      {/* Sticky sub-header */}
+      <div className="sticky top-0 z-50 backdrop-blur-xl border-b border-line-soft bg-bg-0/70">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-primary hover:text-secondary transition-colors group"
+          >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Back to Portfolio
+            <span className="text-sm font-semibold">Back to Portfolio</span>
           </Link>
-          <span className="text-sm text-gray-500">Connect with Aritra</span>
+          <span className="text-sm text-fg-3">Connect with Aritra</span>
         </div>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-
-        {/* Hero heading */}
-        <motion.div style={{ y: headerY, opacity: headerOpacity }} className="text-center mb-20">
-          <motion.span
-            initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1, duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-sm font-medium mb-6">
-            ✦ Find me across the internet
-          </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }}
-            className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6">
-            Connect{' '}
-            <span className="bg-gradient-to-r from-violet-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-              With Me
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.6 }}
-            className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Follow my journey across different platforms — from competitive programming contests to professional updates.
-          </motion.p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <motion.div style={{ y: headerY, opacity: headerOpacity }}>
+          <SectionHeader
+            eyebrow="Across the internet"
+            title={<>Connect <span className="gradient-text">with me</span></>}
+            description="Follow my journey across different platforms — from competitive programming contests to professional updates."
+          />
         </motion.div>
 
         {/* Platform grid */}
-        <motion.div variants={containerVariants} initial="hidden" animate="visible"
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-          {socialPlatforms.map((platform) => (
-            <motion.div key={platform.name} variants={cardVariants}>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-16"
+        >
+          {socialPlatforms.map((platform) => {
+            const Icon = platform.icon
+            return (
               <motion.a
+                key={platform.name}
                 href={platform.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block relative overflow-hidden rounded-3xl border p-8 group transition-all duration-500 glass-galaxy hover:-translate-y-2"
-                style={{ borderColor: platform.border }}
-                whileTap={{ scale: 0.98 }}>
-                {/* Glow on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{ background: `radial-gradient(circle at 50% 0%, ${platform.glow}, transparent 60%)` }} />
+                variants={{
+                  hidden: { opacity: 0, y: 30, scale: 0.96 },
+                  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: EASE.outExpo } },
+                }}
+                whileHover={{ y: -6 }}
+                whileTap={{ scale: 0.98 }}
+                data-cursor="hover"
+                className="block group"
+              >
+                <GlassCard glow="primary" className="p-7 h-full relative overflow-hidden">
+                  {/* Top stripe */}
+                  <div className={[
+                    'absolute top-0 left-0 right-0 h-1 bg-gradient-to-r opacity-60 group-hover:opacity-100 transition-opacity',
+                    toneGradient[platform.tone] ?? toneGradient.primary,
+                  ].join(' ')} />
 
-                {/* Top stripe */}
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${platform.gradient} opacity-60 group-hover:opacity-100 transition-opacity`} />
-
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div className={`w-14 h-14 mb-6 rounded-2xl bg-gradient-to-br ${platform.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-neon-cyan transition-all duration-500`}>
-                    <platform.icon className="w-7 h-7 text-white" />
+                  {/* Hover orb */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                    <div className={[
+                      'absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-30',
+                      'bg-gradient-to-br',
+                      toneGradient[platform.tone] ?? toneGradient.primary,
+                    ].join(' ')} />
                   </div>
 
-                  {/* Info */}
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-primary transition-all">
-                      {platform.name}
-                    </h3>
-                    <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-primary transition-colors flex-shrink-0 mt-1" />
-                  </div>
+                  <div className="relative z-10">
+                    <div className={[
+                      'w-14 h-14 mb-5 rounded-md bg-gradient-to-br flex items-center justify-center shadow-lg',
+                      'group-hover:scale-110 transition-transform duration-500',
+                      toneGradient[platform.tone] ?? toneGradient.primary,
+                    ].join(' ')}>
+                      <Icon className="w-7 h-7 text-white" />
+                    </div>
 
-                  <p className="text-sm font-bold text-primary mb-4 glow">{platform.username}</p>
-                  <p className="text-[14.5px] text-gray-300 leading-relaxed mb-6 font-medium">{platform.description}</p>
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-xl font-bold text-fg-0 group-hover:gradient-text transition-all">
+                        {platform.name}
+                      </h3>
+                      <ExternalLink className="w-4 h-4 text-fg-4 group-hover:text-primary transition-colors flex-shrink-0 mt-1" />
+                    </div>
 
-                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold bg-gradient-to-r ${platform.gradient} text-white shadow-md`}>
-                    {platform.stats}
+                    <p className="text-sm font-bold text-primary mb-3">{platform.username}</p>
+                    <p className="text-[14px] text-fg-2 leading-relaxed mb-5">{platform.description}</p>
+
+                    <div className={[
+                      'inline-flex items-center gap-2 px-4 py-2 rounded-md text-[12.5px] font-bold text-white shadow-md',
+                      'bg-gradient-to-r',
+                      toneGradient[platform.tone] ?? toneGradient.primary,
+                    ].join(' ')}>
+                      {platform.stats}
+                    </div>
                   </div>
-                </div>
+                </GlassCard>
               </motion.a>
-            </motion.div>
-          ))}
+            )
+          })}
         </motion.div>
 
-        {/* CTA card */}
+        {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }} viewport={{ once: true }}
-          className="relative overflow-hidden rounded-3xl border border-violet-500/20 p-10 text-center"
-          style={{ background: 'rgba(139,92,246,0.06)' }}>
-          {/* Inner glow */}
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(circle at 50% 0%, rgba(139,92,246,0.12), transparent 60%)' }} />
-          <div className="relative z-10">
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: EASE.outExpo }}
+          viewport={{ once: true }}
+        >
+          <GlassCard gradientBorder gradientBorderAnimated className="p-10 text-center relative overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/15 rounded-full blur-3xl -z-10" />
+
             <motion.div
-              animate={{ rotate: [0, 10, -10, 0] }}
+              animate={{ rotate: [0, 8, -8, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="inline-block text-5xl mb-5">
-              <Trophy className="w-14 h-14 text-amber-400 mx-auto" />
+              className="inline-block mb-4"
+            >
+              <Trophy className="w-12 h-12 text-amber mx-auto" />
             </motion.div>
-            <h3 className="text-3xl font-extrabold text-white mb-4">Let&apos;s Collaborate!</h3>
-            <p className="text-gray-400 max-w-xl mx-auto mb-8">
-              Interested in working together, discussing tech, or just want to say hi? Feel free to reach out on any of these platforms or send a direct message.
+
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-fg-0 mb-3">
+              Let&apos;s <span className="gradient-text">collaborate</span>!
+            </h3>
+            <p className="text-fg-3 max-w-xl mx-auto mb-7 text-[14.5px]">
+              Interested in working together, discussing tech, or just want to say hi? Reach out on any of these platforms or send a direct message.
             </p>
+
             <Link href="/#contact">
-              <motion.span
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white shadow-lg shadow-violet-600/30 cursor-pointer"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #5b21b6)' }}>
-                Get In Touch
-                <ExternalLink className="w-4 h-4" />
-              </motion.span>
+              <Button variant="primary" size="lg" iconRight={<Sparkles size={15} />}>
+                Get in touch
+              </Button>
             </Link>
-          </div>
+          </GlassCard>
         </motion.div>
       </div>
-    </div>
+    </main>
   )
 }
