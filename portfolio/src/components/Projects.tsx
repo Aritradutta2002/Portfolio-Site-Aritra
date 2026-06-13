@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ExternalLink, Github, X, Sparkles, GitBranch, Star, GitCommit } from 'lucide-react'
+import { techLogos } from './TechIcon3D'
 
 type Project = {
   id: number
@@ -16,12 +17,12 @@ type Project = {
   featured?: boolean
 }
 
-const categoryEmoji: Record<string, string> = {
-  'Web Development': '🌐',
-  'Desktop Application': '💻',
-  'AI/ML': '🤖',
-  'Competitive Programming': '🏆',
-  'Backend Development': '⚙️',
+const categoryGradients: Record<string, { from: string; to: string; glow: string }> = {
+  'Web Development':        { from: '#06b6d4', to: '#3b82f6', glow: 'rgba(6,182,212,0.25)' },
+  'Desktop Application':    { from: '#8b5cf6', to: '#ec4899', glow: 'rgba(139,92,246,0.25)' },
+  'AI/ML':                  { from: '#ec4899', to: '#f43f5e', glow: 'rgba(236,72,153,0.25)' },
+  'Competitive Programming':{ from: '#f59e0b', to: '#ef4444', glow: 'rgba(245,158,11,0.25)' },
+  'Backend Development':    { from: '#10b981', to: '#14b8a6', glow: 'rgba(16,185,129,0.25)' },
 }
 
 const categoryColor: Record<string, string> = {
@@ -38,7 +39,7 @@ const projects: Project[] = [
     title: 'AlgoGuru – Programming Learning Platform',
     description: 'Full-stack competitive programming platform featuring a Java Playground, role-based authentication, and interactive problem sets.',
     longDescription: 'Designed, built, and deployed a full-stack competitive programming platform end-to-end — live at algoguru.online with a custom purchased domain and production deployment. Features a Java Playground, role-based authentication, user progress tracking, and interactive problem sets. Sole developer responsible for the complete product lifecycle — from architecture and implementation to deployment.',
-    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Java'],
+    technologies: ['React', 'TypeScript', 'Java', 'PostgreSQL'],
     category: 'Web Development',
     github: 'https://github.com/Aritradutta2002',
     demo: 'https://algoguru.online',
@@ -49,7 +50,7 @@ const projects: Project[] = [
     title: 'Algorithm Visualizer',
     description: 'Interactive platform for visualizing sorting algorithms including Bubble Sort, Merge Sort, Quick Sort, and Insertion Sort with dynamic animations.',
     longDescription: 'Developed a comprehensive platform for visualizing various sorting algorithms. The project helps students and developers understand how different sorting algorithms work through interactive visualizations. Features include speed controls, step-by-step execution, and comparison of algorithm performance.',
-    technologies: ['HTML', 'CSS', 'JavaScript'],
+    technologies: ['JavaScript', 'C++'],
     category: 'Web Development',
     github: 'https://github.com/Aritradutta2002/new_Sorting_Visualizer',
     demo: '#',
@@ -60,7 +61,7 @@ const projects: Project[] = [
     title: 'HuffZip - File Compressor',
     description: 'Advanced file compression tool using Huffman Coding algorithm with visualization of the Huffman Tree construction process.',
     longDescription: 'Implemented the Huffman Coding algorithm for efficient file compression. The project includes a visualization tool that shows how the Huffman Tree is constructed step by step. Built with C++ for backend processing and JavaScript for creating interactive visualizations.',
-    technologies: ['JavaScript', 'HTML', 'C++'],
+    technologies: ['C++', 'JavaScript'],
     category: 'Desktop Application',
     github: 'https://github.com/Aritradutta2002/File_Compressor',
     demo: '#',
@@ -71,7 +72,7 @@ const projects: Project[] = [
     title: 'ChatGPT Clone',
     description: 'Clean and intuitive web interface powered by Streamlit for interacting with GPT-4 model with customizable parameters.',
     longDescription: 'Created a ChatGPT clone using Streamlit in Python. Users can interact with the GPT-4 model through a simple and clean interface. Features include customizable temperature, max tokens, and other parameters for fine-tuning responses.',
-    technologies: ['Python', 'Streamlit', 'OpenAI API'],
+    technologies: ['Python'],
     category: 'AI/ML',
     github: 'https://github.com/Aritradutta2002/ChatGPT-clone',
     demo: '#',
@@ -81,7 +82,7 @@ const projects: Project[] = [
     title: 'LeetCode Directory',
     description: 'Comprehensive collection of LeetCode solutions with 537+ commits, organized by topics and difficulty levels.',
     longDescription: 'A well-organized repository containing solutions to various LeetCode problems. Each solution includes detailed explanations, time and space complexity analysis, and multiple approaches where applicable.',
-    technologies: ['Java', 'Python', 'C++'],
+    technologies: ['Java 17', 'Python', 'C++'],
     category: 'Competitive Programming',
     github: 'https://github.com/Aritradutta2002/LeetCode-Directory',
     demo: '#',
@@ -92,7 +93,7 @@ const projects: Project[] = [
     title: 'TIC-TAC-TOE Game',
     description: 'Modern implementation of the classic Tic-Tac-Toe game built with Angular and TypeScript featuring responsive design.',
     longDescription: 'A modern take on the classic Tic-Tac-Toe game built using Angular and TypeScript. Features include responsive design, score tracking, and smooth animations.',
-    technologies: ['Angular', 'TypeScript', 'CSS'],
+    technologies: ['Angular v20', 'TypeScript'],
     category: 'Web Development',
     github: 'https://github.com/Aritradutta2002/TIC-TAC-TOE-GAME',
     demo: '#',
@@ -102,7 +103,7 @@ const projects: Project[] = [
     title: 'SpringBoot Application',
     description: 'First SpringBoot application demonstrating RESTful APIs, database integration, and modern Java backend development practices.',
     longDescription: 'My first SpringBoot application showcasing RESTful API development, database integration with JPA/Hibernate, and modern Java backend development practices.',
-    technologies: ['Java', 'Spring Boot', 'MySQL', 'JPA'],
+    technologies: ['Java 17', 'Spring Boot 3', 'PostgreSQL'],
     category: 'Backend Development',
     github: 'https://github.com/Aritradutta2002/First-SpringBoot-App',
     demo: '#',
@@ -116,6 +117,110 @@ const githubStats = [
   { value: '1672', label: 'LeetCode Rating', icon: GitBranch, color: 'from-blue-600 to-blue-400' },
   { value: '1708', label: 'CodeChef Rating', icon: GitCommit, color: 'from-violet-600 to-violet-400' },
 ]
+
+/* ── Tech stack logo row for project cards ────────────────── */
+function TechStackLogos({ technologies }: { technologies: string[] }) {
+  return (
+    <div className="flex items-center gap-2 flex-wrap justify-center">
+      {technologies.slice(0, 4).map((tech) => {
+        const logo = techLogos[tech]
+        return logo ? (
+          <motion.div
+            key={tech}
+            className="w-8 h-8 glass-galaxy border border-white/10 rounded-lg flex items-center justify-center hover:border-white/30 hover:scale-110 transition-all duration-200"
+            title={tech}
+            whileHover={{ scale: 1.15 }}
+          >
+            <div className="w-5 h-5">{logo}</div>
+          </motion.div>
+        ) : (
+          <span
+            key={tech}
+            className="px-2 py-1 bg-white/5 text-gray-400 border border-white/8 rounded-md text-[10px] font-bold"
+          >
+            {tech}
+          </span>
+        )
+      })}
+    </div>
+  )
+}
+
+/* ── Project card thumbnail area ─────────────────────────── */
+function ProjectThumbnail({ project }: { project: Project }) {
+  const grad = categoryGradients[project.category] ?? { from: '#8b5cf6', to: '#06b6d4', glow: 'rgba(139,92,246,0.2)' }
+
+  return (
+    <div className="relative h-48 overflow-hidden border-b border-white/5" style={{ background: '#0a0a12' }}>
+      {/* Gradient mesh background */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          background: `radial-gradient(ellipse 80% 80% at 50% 50%, ${grad.from}50 0%, ${grad.to}30 50%, transparent 80%)`,
+        }}
+      />
+
+      {/* Grid pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `linear-gradient(${grad.from}30 1px, transparent 1px), linear-gradient(90deg, ${grad.from}30 1px, transparent 1px)`,
+          backgroundSize: '24px 24px',
+        }}
+      />
+
+      {/* Tech logos floating in the thumbnail */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="flex gap-3 items-center">
+          {project.technologies.slice(0, 3).map((tech, i) => {
+            const logo = techLogos[tech]
+            return logo ? (
+              <motion.div
+                key={tech}
+                className="w-12 h-12 glass-galaxy border border-white/15 rounded-xl flex items-center justify-center shadow-lg"
+                style={{
+                  boxShadow: `0 0 20px ${grad.glow}`,
+                  borderColor: `${grad.from}30`,
+                }}
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2.5 + i * 0.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
+              >
+                <div className="w-7 h-7">{logo}</div>
+              </motion.div>
+            ) : null
+          })}
+        </div>
+      </div>
+
+      {/* Hover overlay */}
+      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 backdrop-blur-[2px]">
+        <a
+          href={project.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all duration-200 hover:scale-110"
+          onClick={e => e.stopPropagation()}
+        >
+          <Github className="w-6 h-6 text-white" />
+        </a>
+        <button
+          className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all duration-200 hover:scale-110"
+        >
+          <ExternalLink className="w-6 h-6 text-white" />
+        </button>
+      </div>
+
+      {project.featured && (
+        <span className="absolute top-4 right-4 px-3 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[11px] font-bold rounded-full shadow-lg">
+          Featured
+        </span>
+      )}
+
+      {/* Bottom gradient fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#0a0a12] to-transparent" />
+    </div>
+  )
+}
 
 export function Projects() {
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -186,7 +291,7 @@ export function Projects() {
         {/* ── Projects Grid ───────────────────────────────── */}
         <motion.div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" layout>
           {filteredProjects.map((project, index) => {
-            const gradColor = categoryColor[project.category] ?? 'from-blue-500 to-violet-500'
+            const grad = categoryGradients[project.category] ?? { from: '#8b5cf6', to: '#06b6d4', glow: '' }
             return (
               <motion.div
                 key={project.id}
@@ -195,47 +300,31 @@ export function Projects() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.07 }}
                 viewport={{ once: true }}
-                className="glass-galaxy rounded-3xl overflow-hidden group hover:shadow-neon-purple hover:-translate-y-2 transition-all duration-500 relative"
+                className="glass-galaxy rounded-3xl overflow-hidden group hover:-translate-y-2 transition-all duration-500 relative cursor-pointer"
+                onClick={() => setSelectedProject(project)}
+                style={{
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+                }}
+                whileHover={{
+                  boxShadow: `0 8px 40px rgba(0,0,0,0.6), 0 0 20px ${grad.glow}`,
+                }}
               >
-                {/* Ambient glow */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[40px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
-
                 {/* Card top gradient bar */}
-                <div className={`h-1.5 w-full bg-gradient-to-r ${gradColor}`} />
+                <div
+                  className="h-1 w-full"
+                  style={{ background: `linear-gradient(90deg, ${grad.from}, ${grad.to})` }}
+                />
 
-                {/* Visual area */}
-                <div className="relative h-48 bg-surface/50 flex items-center justify-center overflow-hidden border-b border-white/5">
-                  <span className="text-6xl opacity-20 select-none group-hover:scale-110 transition-transform duration-500">{categoryEmoji[project.category]}</span>
-                  <div className={`absolute inset-0 bg-gradient-to-br ${gradColor} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                {/* Thumbnail with floating tech logos */}
+                <ProjectThumbnail project={project} />
 
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 backdrop-blur-[2px]">
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all duration-200 hover:scale-110"
-                      onClick={e => e.stopPropagation()}
-                    >
-                      <Github className="w-6 h-6 text-white" />
-                    </a>
-                    <button
-                      onClick={() => setSelectedProject(project)}
-                      className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all duration-200 hover:scale-110"
-                    >
-                      <ExternalLink className="w-6 h-6 text-white" />
-                    </button>
-                  </div>
-
-                  {project.featured && (
-                    <span className="absolute top-4 right-4 px-3 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[11px] font-bold rounded-full shadow-lg">
-                      Featured
-                    </span>
-                  )}
+                {/* Tech stack logos row */}
+                <div className="px-6 pt-4 pb-2">
+                  <TechStackLogos technologies={project.technologies} />
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
+                <div className="p-6 pt-3">
                   <h3 className="text-[18px] font-bold text-white mb-2.5 leading-snug group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-primary transition-all duration-300 line-clamp-2">
                     {project.title}
                   </h3>
@@ -317,7 +406,12 @@ export function Projects() {
               onClick={e => e.stopPropagation()}
             >
               {/* Top gradient bar */}
-              <div className={`h-1 w-full bg-gradient-to-r ${categoryColor[selectedProject.category] ?? 'from-blue-500 to-violet-500'} rounded-full mb-6`} />
+              <div
+                className="h-1 w-full rounded-full mb-6"
+                style={{
+                  background: `linear-gradient(90deg, ${categoryGradients[selectedProject.category]?.from ?? '#8b5cf6'}, ${categoryGradients[selectedProject.category]?.to ?? '#06b6d4'})`,
+                }}
+              />
 
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-2xl font-bold text-white pr-4 leading-snug drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]">
@@ -331,21 +425,29 @@ export function Projects() {
                 </button>
               </div>
 
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200/60 dark:border-blue-500/20 text-blue-700 dark:text-blue-300 text-xs font-medium mb-4">
-                {categoryEmoji[selectedProject.category]} {selectedProject.category}
-              </span>
+              {/* Tech logos in modal */}
+              <div className="flex gap-3 mb-5 flex-wrap">
+                {selectedProject.technologies.map((tech) => {
+                  const logo = techLogos[tech]
+                  return logo ? (
+                    <div
+                      key={tech}
+                      className="flex items-center gap-2 px-3 py-1.5 glass-galaxy border border-white/10 rounded-lg"
+                    >
+                      <div className="w-4 h-4">{logo}</div>
+                      <span className="text-[12px] text-gray-300 font-mono">{tech}</span>
+                    </div>
+                  ) : (
+                    <span key={tech} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[12px] font-mono">
+                      {tech}
+                    </span>
+                  )
+                })}
+              </div>
 
               <p className="text-gray-300 mb-6 leading-relaxed text-[14.5px] font-mono">
                 {selectedProject.longDescription}
               </p>
-
-              <div className="flex flex-wrap gap-2 mb-6">
-                {selectedProject.technologies.map((tech, i) => (
-                  <span key={i} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[12px] font-mono">
-                    {tech}
-                  </span>
-                ))}
-              </div>
 
               <div className="flex gap-3">
                 <a

@@ -11,6 +11,9 @@ const educationData = [
     duration: '2020 - 2024',
     grade: 'CGPA: 8.79/10',
     icon: GraduationCap,
+    color: '#6366f1',
+    colorTo: '#8b5cf6',
+    bgGrad: 'from-indigo-500/20 to-purple-500/20',
   },
   {
     degree: 'Higher Secondary (XII)',
@@ -19,6 +22,9 @@ const educationData = [
     duration: '2020',
     grade: 'Percentage: 92%',
     icon: Award,
+    color: '#06b6d4',
+    colorTo: '#3b82f6',
+    bgGrad: 'from-cyan-500/20 to-blue-500/20',
   },
   {
     degree: 'Secondary (X)',
@@ -27,16 +33,19 @@ const educationData = [
     duration: '2018',
     grade: 'Percentage: 90.30%',
     icon: Award,
+    color: '#10b981',
+    colorTo: '#06b6d4',
+    bgGrad: 'from-emerald-500/20 to-cyan-500/20',
   },
 ]
 
 const achievements = [
-  'TCS DEEP Ninja Certified DevOps Engineer — Recognized for expertise in DevOps tooling and practices',
-  'Competitive Programming: 554+ problems solved across platforms',
-  'LeetCode Rating 1672',
-  'Codeforces 1046 (Div 2)',
-  'CodeChef 1708 (3-Star)',
-  'Solved over 100 problems in CSES Problem Set',
+  { text: 'TCS DEEP Ninja Certified DevOps Engineer — Recognized for expertise in DevOps tooling and practices', color: '#06b6d4' },
+  { text: 'Competitive Programming: 554+ problems solved across platforms', color: '#f59e0b' },
+  { text: 'LeetCode Rating 1672', color: '#ea580c' },
+  { text: 'Codeforces 1046 (Div 2)', color: '#8b5cf6' },
+  { text: 'CodeChef 1708 (3-Star)', color: '#ec4899' },
+  { text: 'Solved over 100 problems in CSES Problem Set', color: '#10b981' },
 ]
 
 const interests = [
@@ -45,6 +54,33 @@ const interests = [
   { emoji: '🎵', label: 'Music' },
   { emoji: '💡', label: 'Learning' },
 ]
+
+/* ── 3D-style animated education degree icon ─────────────── */
+function DegreeIcon({ icon: Icon, color, colorTo }: { icon: React.ElementType; color: string; colorTo: string }) {
+  return (
+    <motion.div
+      className="relative w-14 h-14 flex-shrink-0"
+      whileHover={{ scale: 1.1, rotateY: 15 }}
+      style={{ perspective: '400px' }}
+    >
+      {/* Glow behind */}
+      <div
+        className="absolute inset-0 rounded-2xl blur-[10px] opacity-50"
+        style={{ background: `radial-gradient(circle, ${color}, transparent)` }}
+      />
+      {/* Gradient card */}
+      <div
+        className="relative w-full h-full rounded-2xl flex items-center justify-center shadow-lg border"
+        style={{
+          background: `linear-gradient(135deg, ${color}25, ${colorTo}15)`,
+          borderColor: `${color}40`,
+        }}
+      >
+        <Icon className="w-7 h-7" style={{ color }} />
+      </div>
+    </motion.div>
+  )
+}
 
 /* ── Shared section-header component ─────────────────────── */
 function SectionHeader({ label, title, subtitle }: { label: string; title: string; subtitle: string }) {
@@ -105,11 +141,25 @@ export function About() {
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-[80px] -z-10 group-hover:bg-secondary/20 transition-colors duration-500" />
 
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-[1px] shadow-neon-purple group-hover:shadow-neon-cyan transition-shadow duration-500">
-                <div className="w-full h-full bg-surface/90 rounded-[15px] flex items-center justify-center backdrop-blur-xl">
-                  <Code2 className="w-6 h-6 text-primary" />
-                </div>
-              </div>
+              {/* 3D-style icon */}
+              <motion.div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center relative"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.1))',
+                  border: '1px solid rgba(139,92,246,0.3)',
+                  boxShadow: '0 0 20px rgba(139,92,246,0.2)',
+                }}
+                whileHover={{ scale: 1.1, boxShadow: '0 0 30px rgba(139,92,246,0.4)' }}
+              >
+                <Code2 className="w-7 h-7 text-primary" />
+                {/* Shimmer */}
+                <motion.div
+                  className="absolute inset-0 rounded-2xl"
+                  style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%)' }}
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+              </motion.div>
               <h3 className="text-2xl font-bold text-white tracking-tight">Who I Am</h3>
             </div>
 
@@ -158,11 +208,17 @@ export function About() {
             viewport={{ once: true }}
           >
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 p-[1px] shadow-neon-cyan transition-shadow duration-500">
-                <div className="w-full h-full bg-surface/90 rounded-[15px] flex items-center justify-center backdrop-blur-xl">
-                  <GraduationCap className="w-6 h-6 text-emerald-400" />
-                </div>
-              </div>
+              <motion.div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,182,212,0.1))',
+                  border: '1px solid rgba(16,185,129,0.3)',
+                  boxShadow: '0 0 20px rgba(16,185,129,0.2)',
+                }}
+                whileHover={{ scale: 1.1, boxShadow: '0 0 30px rgba(16,185,129,0.4)' }}
+              >
+                <GraduationCap className="w-7 h-7 text-emerald-400" />
+              </motion.div>
               <h3 className="text-2xl font-bold text-white tracking-tight">Education</h3>
             </div>
 
@@ -175,23 +231,40 @@ export function About() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                   className="glass-galaxy rounded-2xl p-6 group transition-all duration-300 hover:-translate-y-1 relative overflow-hidden"
+                  whileHover={{ boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 20px ${item.color}20` }}
                 >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-[40px] -z-10 group-hover:bg-secondary/15 transition-colors duration-500" />
-                  
+                  {/* Background gradient */}
+                  <div
+                    className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-[40px] -z-10 opacity-30 group-hover:opacity-60 transition-opacity duration-500 bg-gradient-to-br ${item.bgGrad}`}
+                  />
+                  {/* Top color line */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ background: `linear-gradient(90deg, ${item.color}, ${item.colorTo})` }}
+                  />
+
                   <div className="flex items-start gap-5">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:border-primary/50 transition-all duration-300 shadow-lg">
-                      <item.icon className="w-6 h-6 text-primary group-hover:text-secondary transition-colors" />
-                    </div>
+                    <DegreeIcon icon={item.icon} color={item.color} colorTo={item.colorTo} />
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-white text-[16px] leading-snug mb-1.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">{item.degree}</h4>
+                      <h4 className="font-bold text-white text-[16px] leading-snug mb-1.5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
+                        {item.degree}
+                      </h4>
                       <p className="text-[14px] text-gray-400 mb-3 font-medium">{item.institution}</p>
                       <div className="flex flex-wrap gap-4 text-[12px] text-gray-500 mb-4 font-medium">
                         <span className="flex items-center gap-1.5"><MapPin size={13} className="text-primary/70" />{item.location}</span>
                         <span className="flex items-center gap-1.5"><Calendar size={13} className="text-secondary/70" />{item.duration}</span>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-primary text-[12px] font-bold group-hover:bg-primary/20 group-hover:border-primary/40 transition-colors">
+                      <motion.span
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[12px] font-bold border transition-all duration-300"
+                        style={{
+                          background: `${item.color}15`,
+                          borderColor: `${item.color}30`,
+                          color: item.color,
+                        }}
+                        whileHover={{ background: `${item.color}25`, borderColor: `${item.color}50` }}
+                      >
                         <Trophy size={13} />{item.grade}
-                      </span>
+                      </motion.span>
                     </div>
                   </div>
                 </motion.div>
@@ -209,9 +282,17 @@ export function About() {
           className="mt-20"
         >
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
-              <Trophy className="w-5 h-5 text-white" />
-            </div>
+            <motion.div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, rgba(245,158,11,0.25), rgba(239,68,68,0.15))',
+                border: '1px solid rgba(245,158,11,0.3)',
+                boxShadow: '0 0 20px rgba(245,158,11,0.2)',
+              }}
+              whileHover={{ scale: 1.1, boxShadow: '0 0 30px rgba(245,158,11,0.4)' }}
+            >
+              <Trophy className="w-6 h-6 text-amber-400" />
+            </motion.div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Key Achievements</h3>
           </div>
 
@@ -223,13 +304,28 @@ export function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.07 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -3 }}
-                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-gray-200/50 dark:border-gray-700/50 flex items-start gap-3 group hover:shadow-lg transition-all duration-300"
+                whileHover={{ y: -4 }}
+                className="glass-galaxy rounded-xl p-4 shadow-md flex items-start gap-3 group hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+                style={{ borderColor: `${achievement.color}20` }}
               >
-                <div className="w-7 h-7 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                  <Target className="w-3.5 h-3.5 text-white" />
-                </div>
-                <p className="text-[13.5px] text-gray-700 dark:text-gray-300 leading-relaxed">{achievement}</p>
+                {/* Color accent bar */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: `linear-gradient(180deg, ${achievement.color}, transparent)` }}
+                />
+                {/* Hover glow */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: `radial-gradient(ellipse at top left, ${achievement.color}10 0%, transparent 70%)` }}
+                />
+                <motion.div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                  style={{ background: `${achievement.color}20`, border: `1px solid ${achievement.color}40` }}
+                  whileHover={{ scale: 1.1 }}
+                >
+                  <Target className="w-4 h-4" style={{ color: achievement.color }} />
+                </motion.div>
+                <p className="text-[13.5px] text-gray-300 leading-relaxed group-hover:text-white transition-colors duration-300">{achievement.text}</p>
               </motion.div>
             ))}
           </div>

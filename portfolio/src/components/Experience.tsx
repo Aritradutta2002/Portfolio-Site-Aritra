@@ -1,7 +1,54 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { MapPin, Calendar, Building, Code, Trophy, Sparkles, CheckCircle } from 'lucide-react'
+import { MapPin, Calendar, Code, Trophy, Sparkles, CheckCircle, Zap, Server, Database } from 'lucide-react'
+import { techLogos } from './TechIcon3D'
+import { FloatingBadge } from './FloatingBadge'
+
+/* ── Inline TCS logo SVG ──────────────────────────────────── */
+function TCSLogo({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 40" className={className} aria-label="TCS Logo">
+      {/* Background blue pill */}
+      <rect width="120" height="40" rx="6" fill="#003087" />
+      {/* TCS text */}
+      <text
+        x="12"
+        y="27"
+        fontFamily="Arial, sans-serif"
+        fontWeight="bold"
+        fontSize="20"
+        fill="white"
+        letterSpacing="1"
+      >
+        TCS
+      </text>
+      {/* Tata small text */}
+      <text
+        x="62"
+        y="18"
+        fontFamily="Arial, sans-serif"
+        fontSize="8"
+        fill="#99bbdd"
+        letterSpacing="1"
+      >
+        TATA
+      </text>
+      <text
+        x="62"
+        y="30"
+        fontFamily="Arial, sans-serif"
+        fontSize="7"
+        fill="#99bbdd"
+        letterSpacing="0.5"
+      >
+        CONSULTANCY
+      </text>
+      {/* Decorative line */}
+      <line x1="56" y1="8" x2="56" y2="32" stroke="#0066cc" strokeWidth="1.5" />
+    </svg>
+  )
+}
 
 const experience = {
   company: 'Tata Consultancy Services',
@@ -20,7 +67,7 @@ const experience = {
     'Built robust backend services for Patent & Trademark lifecycle modules using Core Java and Spring Boot',
     'Optimized SQL queries and APIs achieving up to 30x faster response times in critical workflows',
   ],
-  technologies: ['Java 17', 'Spring Boot 3', 'PostgreSQL', 'Oracle', 'Angular v20', 'TypeScript', 'Azure PaaS', 'Jenkins', 'Docker', 'Git'],
+  technologies: ['Java 17', 'Spring Boot 3', 'PostgreSQL', 'Angular v20', 'TypeScript', 'Azure PaaS', 'Jenkins', 'Docker', 'Git'],
   achievements: [
     'Achieved 20-30x performance improvement through query optimization and database schema design',
     'Delivered zero-downtime production migration for 10K+ daily users',
@@ -61,10 +108,10 @@ const timeline = [
 ]
 
 const workStats = [
-  { value: '1.5yr+',  label: 'at TCS',                color: 'from-blue-600 to-blue-400' },
-  { value: '10+',   label: 'Technologies Mastered',  color: 'from-violet-600 to-violet-400' },
-  { value: '100%',  label: 'Training Completion',    color: 'from-emerald-600 to-emerald-400' },
-  { value: '20+',   label: 'REST APIs Built',        color: 'from-orange-600 to-orange-400' },
+  { value: '1.5yr+',  label: 'at TCS',                color: 'from-blue-600 to-blue-400',    glow: 'rgba(59,130,246,0.4)' },
+  { value: '10+',   label: 'Technologies Mastered',  color: 'from-violet-600 to-violet-400', glow: 'rgba(139,92,246,0.4)' },
+  { value: '100%',  label: 'Training Completion',    color: 'from-emerald-600 to-emerald-400', glow: 'rgba(16,185,129,0.4)' },
+  { value: '20+',   label: 'REST APIs Built',        color: 'from-orange-600 to-orange-400', glow: 'rgba(249,115,22,0.4)' },
 ]
 
 export function Experience() {
@@ -117,11 +164,20 @@ export function Experience() {
             <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
             <div className="absolute bottom-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-[80px] -z-10 group-hover:bg-secondary/20 transition-colors duration-500" />
 
-            {/* Company header */}
+            {/* Company header — with TCS logo */}
             <div className="flex items-start gap-5 mb-8">
-              <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary p-[1px] rounded-2xl shadow-lg group-hover:shadow-neon-purple transition-shadow duration-500 flex-shrink-0">
-                <div className="w-full h-full bg-surface/90 rounded-[15px] flex items-center justify-center backdrop-blur-xl">
-                  <Building className="w-6 h-6 text-white" />
+              <div className="flex-shrink-0">
+                {/* TCS logo card */}
+                <motion.div
+                  className="w-20 h-14 glass-galaxy border border-blue-500/30 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden"
+                  whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(0,48,135,0.5)' }}
+                >
+                  <TCSLogo className="w-16 h-10" />
+                </motion.div>
+                {/* Live dot */}
+                <div className="flex items-center gap-1.5 mt-2 justify-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)] animate-pulse" />
+                  <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Active</span>
                 </div>
               </div>
               <div>
@@ -163,15 +219,23 @@ export function Experience() {
               </ul>
             </div>
 
-            {/* Technologies */}
+            {/* Technologies with actual logos */}
             <div className="mb-8">
               <h4 className="text-[14px] font-bold uppercase tracking-wider text-gray-500 mb-4">Technologies Used</h4>
-              <div className="flex flex-wrap gap-2.5">
-                {experience.technologies.map((tech, i) => (
-                  <span key={i} className="px-3 py-1.5 bg-white/5 text-gray-300 border border-white/10 rounded-lg text-[12px] font-bold group-hover:border-primary/30 transition-colors duration-300 backdrop-blur-sm hover:bg-white/10 cursor-default">
-                    {tech}
-                  </span>
-                ))}
+              <div className="flex flex-wrap gap-3">
+                {experience.technologies.map((tech, i) => {
+                  const logo = techLogos[tech]
+                  return (
+                    <motion.div
+                      key={i}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl group-hover:border-primary/30 transition-colors duration-300 backdrop-blur-sm hover:bg-white/10 cursor-default"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                    >
+                      {logo && <div className="w-4 h-4 flex-shrink-0">{logo}</div>}
+                      <span className="text-[12px] font-bold text-gray-300">{tech}</span>
+                    </motion.div>
+                  )
+                })}
               </div>
             </div>
 
@@ -209,6 +273,49 @@ export function Experience() {
             viewport={{ once: true }}
             className="space-y-6"
           >
+            {/* Achievement floating badges row */}
+            <div className="glass-galaxy rounded-3xl p-6 relative overflow-visible">
+              <h3 className="text-[16px] font-bold text-white mb-6 tracking-tight flex items-center gap-2">
+                <Zap className="w-4 h-4 text-amber-400" />
+                Impact Highlights
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { icon: <Zap size={12} />, label: '30x Faster', sub: 'API Performance', color: '#f59e0b', colorTo: '#ef4444' },
+                  { icon: <Server size={12} />, label: '10K+ Users', sub: 'Daily Active', color: '#06b6d4', colorTo: '#8b5cf6' },
+                  { icon: <Database size={12} />, label: 'Oracle→PG', sub: 'DB Migration', color: '#10b981', colorTo: '#06b6d4' },
+                ].map((badge, i) => (
+                  <motion.div
+                    key={badge.label}
+                    className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl glass-galaxy border cursor-default"
+                    style={{ borderColor: `${badge.color}30` }}
+                    initial={{ opacity: 0, y: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    whileHover={{ scale: 1.05, boxShadow: `0 0 16px ${badge.color}40` }}
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }}
+                  >
+                    <div
+                      className="w-8 h-8 rounded-xl flex items-center justify-center text-white"
+                      style={{ background: `linear-gradient(135deg, ${badge.color}, ${badge.colorTo})` }}
+                    >
+                      {badge.icon}
+                    </div>
+                    <div>
+                      <div
+                        className="text-[13px] font-extrabold"
+                        style={{ background: `linear-gradient(90deg, ${badge.color}, ${badge.colorTo})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+                      >
+                        {badge.label}
+                      </div>
+                      <div className="text-[10px] text-gray-500 uppercase tracking-wide">{badge.sub}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
             {/* Skill bars */}
             <div className="glass-galaxy rounded-3xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] -z-10 group-hover:bg-primary/15 transition-colors duration-500" />
@@ -279,8 +386,13 @@ export function Experience() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4, delay: i * 0.08 }}
                     viewport={{ once: true }}
-                    className="text-center bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm group-hover:border-white/20 transition-colors"
+                    className="text-center bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm group-hover:border-white/20 transition-colors relative overflow-hidden"
+                    whileHover={{ scale: 1.04 }}
                   >
+                    <div
+                      className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-2xl"
+                      style={{ boxShadow: `inset 0 0 20px ${s.glow}` }}
+                    />
                     <div className={`text-3xl font-extrabold bg-gradient-to-r ${s.color} bg-clip-text text-transparent mb-1 glow`}>{s.value}</div>
                     <div className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">{s.label}</div>
                   </motion.div>

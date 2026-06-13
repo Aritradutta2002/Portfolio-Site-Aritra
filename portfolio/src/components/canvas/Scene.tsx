@@ -1,9 +1,9 @@
 'use client'
 
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { Suspense, useRef, useState, useCallback, useMemo } from 'react'
 import Particles from './Particles'
-import { Environment, Stars } from '@react-three/drei'
+import { Environment, Stars, MeshDistortMaterial, Sphere } from '@react-three/drei'
 import * as THREE from 'three'
 
 function RippleBurst({ position }: { position: THREE.Vector3 }) {
@@ -48,10 +48,62 @@ function ShootingStar() {
   )
 }
 
+/* ── Rotating Torus for depth ──────────────────────────────── */
+function DepthTorus() {
+  const torusRef = useRef<THREE.Mesh>(null!)
+  const torusKnotRef = useRef<THREE.Mesh>(null!)
+
+  useFrame((state) => {
+    if (torusRef.current) {
+      torusRef.current.rotation.x = state.clock.elapsedTime * 0.08
+      torusRef.current.rotation.y = state.clock.elapsedTime * 0.05
+      torusRef.current.rotation.z = state.clock.elapsedTime * 0.03
+    }
+    if (torusKnotRef.current) {
+      torusKnotRef.current.rotation.x = state.clock.elapsedTime * 0.04
+      torusKnotRef.current.rotation.y = -state.clock.elapsedTime * 0.07
+    }
+  })
+
+  return (
+    <>
+      {/* Large ambient torus ring — right side of scene */}
+      <mesh ref={torusRef} position={[5, 0, -8]}>
+        <torusGeometry args={[3, 0.08, 16, 100]} />
+        <meshBasicMaterial color="#8b5cf6" transparent opacity={0.12} />
+      </mesh>
+
+      {/* Second thinner torus — left side */}
+      <mesh position={[-6, 1, -10]} rotation={[Math.PI / 4, 0, Math.PI / 6]}>
+        <torusGeometry args={[2.5, 0.05, 12, 80]} />
+        <meshBasicMaterial color="#06b6d4" transparent opacity={0.09} />
+      </mesh>
+
+      {/* Wireframe floating sphere */}
+      <mesh ref={torusKnotRef} position={[-3, 2.5, -6]}>
+        <sphereGeometry args={[1.4, 12, 12]} />
+        <meshBasicMaterial color="#ec4899" transparent opacity={0.06} wireframe />
+      </mesh>
+
+      {/* Distort sphere — glowing orb */}
+      <Sphere args={[0.7, 64, 64]} position={[7, -2, -5]}>
+        <MeshDistortMaterial
+          color="#8b5cf6"
+          transparent
+          opacity={0.15}
+          distort={0.4}
+          speed={2}
+          roughness={0.1}
+          metalness={0.8}
+        />
+      </Sphere>
+    </>
+  )
+}
+
 function CameraRig({ mouse }: { mouse: React.MutableRefObject<{ x: number; y: number }> }) {
-  const { camera } = useThree()
   const target = useRef(new THREE.Vector3(0, 0, 5))
-  useFrame(() => {
+  useFrame(({ camera }) => {
     target.current.x += (mouse.current.x * 2.0 - target.current.x) * 0.04
     target.current.y += (mouse.current.y * 1.2 - target.current.y) * 0.04
     target.current.z = 5
@@ -86,9 +138,13 @@ function SceneInner({
       <directionalLight position={[10, 10, 10]} intensity={0.8} color="#8b5cf6" />
       <directionalLight position={[-10, -10, -10]} intensity={0.4} color="#06b6d4" />
       <pointLight position={[0, 0, 3]} intensity={0.6} color="#ec4899" distance={10} />
+      {/* Accent point lights for torus */}
+      <pointLight position={[5, 0, -8]} intensity={0.3} color="#8b5cf6" distance={8} />
+      <pointLight position={[-6, 1, -10]} intensity={0.2} color="#06b6d4" distance={6} />
       <Suspense fallback={null}>
         <Particles count={18000} mouse={mouse} />
         <Stars radius={50} depth={30} count={3000} factor={2} saturation={0.5} fade speed={0.5} />
+        <DepthTorus />
         {ripples.map(r => <RippleBurst key={r.id} position={r.pos} />)}
         {shootingStars.map(s => <ShootingStar key={s.id} />)}
         <Environment preset="night" />

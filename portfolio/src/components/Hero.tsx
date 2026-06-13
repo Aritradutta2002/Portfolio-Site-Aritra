@@ -2,8 +2,10 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { ChevronDown, Download, Github, Linkedin, Code2, Globe } from 'lucide-react'
+import { ChevronDown, Download, Github, Linkedin, Code2, Globe, Zap, Cloud, Trophy } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { TechIconCard } from './TechIcon3D'
+import { FloatingBadge } from './FloatingBadge'
 
 /* ── Typewriter ─────────────────────────────────────────────── */
 const TypewriterText = ({ texts }: { texts: string[] }) => {
@@ -75,6 +77,51 @@ const socials = [
   { icon: Linkedin, href: 'https://www.linkedin.com/in/aritra-dutta-rick20/',    label: 'LinkedIn' },
   { icon: Code2,    href: 'https://leetcode.com/u/ari2002/',                     label: 'LeetCode' },
 ]
+
+/* ── Orbiting tech stack around the profile photo ───────────── */
+const orbitTechs: { name: string; angle: number; radius: number; duration: number; color: string }[] = [
+  { name: 'Java 17',       angle: 0,    radius: 0, duration: 22, color: '#EA2D2E' },
+  { name: 'Spring Boot 3', angle: 60,   radius: 0, duration: 28, color: '#6DB33F' },
+  { name: 'TypeScript',    angle: 120,  radius: 0, duration: 20, color: '#007ACC' },
+  { name: 'Docker',        angle: 180,  radius: 0, duration: 25, color: '#2396ED' },
+  { name: 'Azure PaaS',    angle: 240,  radius: 0, duration: 18, color: '#0078D4' },
+  { name: 'PostgreSQL',    angle: 300,  radius: 0, duration: 30, color: '#336791' },
+]
+
+/* ── Single orbit ring item ─────────────────────────────────── */
+function OrbitItem({ name, angleStart, orbitRadius, duration, color, orbitDir = 1 }: {
+  name: string; angleStart: number; orbitRadius: number; duration: number; color: string; orbitDir?: 1 | -1
+}) {
+  return (
+    <motion.div
+      className="absolute"
+      style={{ top: '50%', left: '50%', width: 0, height: 0 }}
+      animate={{ rotate: 360 * orbitDir }}
+      transition={{ duration, repeat: Infinity, ease: 'linear' }}
+    >
+      <motion.div
+        style={{
+          position: 'absolute',
+          left: `${orbitRadius * Math.cos((angleStart * Math.PI) / 180)}px`,
+          top: `${orbitRadius * Math.sin((angleStart * Math.PI) / 180)}px`,
+          transform: 'translate(-50%,-50%)',
+        }}
+        animate={{ rotate: -360 * orbitDir }}
+        transition={{ duration, repeat: Infinity, ease: 'linear' }}
+      >
+        <motion.div
+          className="w-10 h-10 rounded-xl glass-galaxy border flex items-center justify-center shadow-lg"
+          style={{ borderColor: `${color}40` }}
+          whileHover={{ scale: 1.25, boxShadow: `0 0 18px ${color}60` }}
+        >
+          <div className="w-6 h-6">
+            <TechIconCard name={name} showName={false} size="sm" ringColor={color} />
+          </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  )
+}
 
 /* ── Hero ───────────────────────────────────────────────────── */
 export function Hero() {
@@ -247,14 +294,104 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* ── RIGHT: Profile Image ───────────────────────── */}
-          <div className="order-1 lg:order-2 flex justify-center lg:justify-start lg:pl-4 lg:-mt-24">
+          {/* ── RIGHT: Profile Photo + Orbiting Tech Icons ─── */}
+          <div className="order-1 lg:order-2 flex justify-center lg:justify-center relative">
             <motion.div
               initial={{ opacity: 0, scale: 0.85, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
               className="relative"
             >
+              {/* ── Floating Achievement Badges ── */}
+              <FloatingBadge
+                icon={<Zap size={14} />}
+                label="30x Faster"
+                sublabel="API Performance"
+                color="#f59e0b"
+                colorTo="#ef4444"
+                className="-top-6 -right-6 lg:-right-14"
+                delay={1.2}
+                floatOffset={7}
+              />
+              <FloatingBadge
+                icon={<Cloud size={14} />}
+                label="Azure PaaS"
+                sublabel="Cloud Migration"
+                color="#06b6d4"
+                colorTo="#8b5cf6"
+                className="-bottom-6 -left-6 lg:-left-14"
+                delay={1.5}
+                floatOffset={6}
+              />
+              <FloatingBadge
+                icon={<Trophy size={14} />}
+                label="1672 LC"
+                sublabel="LeetCode Rating"
+                color="#10b981"
+                colorTo="#06b6d4"
+                className="top-1/2 -translate-y-1/2 -right-12 lg:-right-28"
+                delay={1.8}
+                floatOffset={5}
+              />
+
+              {/* ── Outer orbit ring (6 icons) ── */}
+              <motion.div
+                className="absolute"
+                style={{
+                  top: '50%',
+                  left: '50%',
+                  width: '1px',
+                  height: '1px',
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2, duration: 0.8 }}
+              >
+                {/* Orbit path visual ring */}
+                <div
+                  className="absolute rounded-full border border-dashed pointer-events-none"
+                  style={{
+                    width: '340px',
+                    height: '340px',
+                    top: '-170px',
+                    left: '-170px',
+                    borderColor: 'rgba(139,92,246,0.15)',
+                  }}
+                />
+                {orbitTechs.map((tech, i) => (
+                  <motion.div
+                    key={tech.name}
+                    className="absolute"
+                    style={{ top: '0px', left: '0px' }}
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: tech.duration, repeat: Infinity, ease: 'linear' }}
+                  >
+                    <motion.div
+                      style={{
+                        position: 'absolute',
+                        left: `${170 * Math.cos(((i * 60 + 0) * Math.PI) / 180)}px`,
+                        top: `${170 * Math.sin(((i * 60 + 0) * Math.PI) / 180)}px`,
+                        transform: 'translate(-50%, -50%)',
+                      }}
+                      animate={{ rotate: -360 }}
+                      transition={{ duration: tech.duration, repeat: Infinity, ease: 'linear' }}
+                    >
+                      <motion.div
+                        className="w-11 h-11 rounded-xl glass-galaxy border flex items-center justify-center cursor-default"
+                        style={{ borderColor: `${tech.color}35`, boxShadow: `0 0 12px ${tech.color}20` }}
+                        whileHover={{ scale: 1.3, boxShadow: `0 0 20px ${tech.color}60` }}
+                        title={tech.name}
+                      >
+                        <div className="w-7 h-7 pointer-events-none">
+                          {/* Render logo SVG from TechIconCard logic */}
+                          <TechIconCard name={tech.name} showName={false} size="sm" ringColor={tech.color} />
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
               {/* Outer ambient glow */}
               <motion.div
                 className="absolute -inset-8 rounded-full opacity-60"
@@ -304,7 +441,7 @@ export function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-t from-violet-900/10 via-transparent to-blue-900/5 pointer-events-none" />
               </div>
 
-              {/* Dashed orbit ring */}
+              {/* Inner dashed orbit ring */}
               <motion.div
                 className="absolute -inset-5 rounded-full border border-dashed border-blue-300/30 dark:border-blue-500/20 pointer-events-none"
                 animate={{ rotate: 360 }}
