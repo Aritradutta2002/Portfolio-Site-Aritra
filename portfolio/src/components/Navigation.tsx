@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Sun, Moon } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -26,12 +25,6 @@ export function Navigation() {
   const [isOpen,   setIsOpen]   = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [active,   setActive]   = useState('home')
-  const [mounted,  setMounted]  = useState(false)
-  const { theme, setTheme } = useTheme()
-
-  useEffect(() => { setMounted(true) }, [])
-
-  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
 
   /* ── Scroll + active-section tracking ─────────────────────── */
   useEffect(() => {
@@ -199,38 +192,9 @@ export function Navigation() {
               </span>
             </motion.button>
 
-            {/* Theme toggle — compact icon button */}
-            {mounted && (
-              <motion.button
-                onClick={toggleTheme}
-                className="w-9 h-9 rounded-lg glass-panel flex items-center justify-center text-gray-400 hover:text-primary hover:shadow-neon-purple hover:border-primary/50 transition-all duration-300"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                aria-label="Toggle theme"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-              >
-                {theme === 'dark'
-                  ? <Sun size={16} className="text-amber-400" />
-                  : <Moon size={16} className="text-blue-400" />}
-              </motion.button>
-            )}
           </div>
 
-          {/* ── Mobile Controls ───────────────────────────────── */}
           <div className="md:hidden flex items-center gap-2">
-            {mounted && (
-              <button
-                onClick={toggleTheme}
-                className="w-9 h-9 rounded-lg glass-panel flex items-center justify-center text-gray-400 hover:text-primary transition-all duration-300"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark'
-                  ? <Sun size={16} className="text-amber-400" />
-                  : <Moon size={16} className="text-blue-400" />}
-              </button>
-            )}
             <motion.button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"

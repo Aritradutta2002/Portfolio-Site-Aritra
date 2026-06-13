@@ -49,9 +49,6 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#8b5cf6" />
-        <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
-        <link rel="shortcut icon" href="/favicon.png" />
       </head>
       <body
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased transition-colors duration-500`}
@@ -61,8 +58,9 @@ export default function RootLayout({
             <ThemeProvider
               attribute="class"
               defaultTheme="dark"
+              forcedTheme="dark"
               enableSystem={false}
-              disableTransitionOnChange={false}
+              disableTransitionOnChange={true}
             >
               <SmoothScroll>
                 {children}
