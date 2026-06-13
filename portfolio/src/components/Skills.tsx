@@ -49,6 +49,7 @@ const skillCategories = [
     glowColor: '#8b5cf6',
     skills: [
       { name: 'Azure PaaS', level: 85, color: '#0078D4' },
+      { name: 'AWS',        level: 80, color: '#FF9900' },
     ],
   },
 ]
@@ -177,7 +178,7 @@ export function Skills() {
         >
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-5 text-center">Also experienced with</p>
           <div className="flex flex-wrap gap-3 justify-center">
-            {['REST APIs', 'Microservices', 'CI/CD Pipelines', 'Hibernate', 'Oracle Database', 'Express.js', 'Spring Security', 'JUnit 5', 'Maven', 'Postman', 'Linux', 'Kafka'].map((tech) => (
+            {['REST APIs', 'Microservices', 'CI/CD Pipelines', 'Hibernate', 'Oracle Database', 'MySQL', 'Spring Security', 'JUnit 5', 'Mockito', 'Maven', 'Tomcat', 'JBoss', 'Kafka', 'Tailwind CSS', 'Agile/Scrum', 'GitHub Copilot'].map((tech) => (
               <motion.span
                 key={tech}
                 whileHover={{ y: -2, scale: 1.05 }}

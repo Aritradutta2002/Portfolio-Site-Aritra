@@ -33,7 +33,7 @@ const projects: Project[] = [
     title: 'AlgoGuru – Programming Learning Platform',
     description: 'Full-stack competitive programming platform featuring a Java Playground, role-based authentication, and interactive problem sets.',
     longDescription: 'Designed, built, and deployed a full-stack competitive programming platform end-to-end — live at algoguru.online with a custom purchased domain and production deployment. Features a Java Playground, role-based authentication, user progress tracking, and interactive problem sets. Sole developer responsible for the complete product lifecycle — from architecture and implementation to deployment.',
-    technologies: ['React', 'TypeScript', 'Java', 'PostgreSQL'],
+    technologies: ['React', 'TypeScript', 'Java', 'Tailwind CSS', 'Supabase', 'PostgreSQL'],
     category: 'Web Development',
     github: 'https://github.com/Aritradutta2002',
     demo: 'https://algoguru.online',

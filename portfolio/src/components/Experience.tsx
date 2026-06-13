@@ -57,8 +57,10 @@ const experience = {
   startDate: 'Sep 2024',
   endDate: 'Present',
   description:
-    'Architecting high-performance Java/Spring Boot microservices for the Ultimatix platform. Delivering up to 30x API performance gains, leading cloud migrations to Azure PaaS, and building AI-powered full-stack platforms end-to-end.',
+    'Architecting high-performance Java/Spring Boot microservices for the Ultimatix platform and modernizing legacy applications. Delivering up to 30x API performance gains, leading cloud migrations to Azure PaaS, and executing backend modernization (Java 8 to 21) for enterprise clients like Element Fleet Management.',
   responsibilities: [
+    'Migrating backend services for Element Fleet Management from Java 8 to Java 21 and Spring Boot 1.x to 3.x to improve maintainability',
+    'Developing Java microservices on AWS VM-based client infrastructure using AWS Transform for remediation and incident stabilization',
     'Migrated critical infrastructure from legacy JBoss server to Azure Tomcat PaaS, configuring health checks and ensuring high availability',
     'Refactored the iDeclare module from a legacy monolith into a standalone Spring Boot microservice serving 10K+ daily users',
     'Engineered backend solutions with Java 8 & Spring Boot 3, leveraging GitHub Copilot for modular, reusable code design',
@@ -67,7 +69,7 @@ const experience = {
     'Built robust backend services for Patent & Trademark lifecycle modules using Core Java and Spring Boot',
     'Optimized SQL queries and APIs achieving up to 30x faster response times in critical workflows',
   ],
-  technologies: ['Java 17', 'Spring Boot 3', 'PostgreSQL', 'Angular v20', 'TypeScript', 'Azure PaaS', 'Jenkins', 'Docker', 'Git'],
+  technologies: ['Java 21', 'Java 17', 'Java 8', 'Spring Boot 3', 'PostgreSQL', 'Oracle', 'AWS', 'Azure PaaS', 'Jenkins', 'Docker', 'Tomcat', 'JBoss'],
   achievements: [
     'Achieved 20-30x performance improvement through query optimization and database schema design',
     'Delivered zero-downtime production migration for 10K+ daily users',

@@ -171,8 +171,8 @@ export function About() {
                 <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Tata Consultancy Services (TCS)</span> in Bhubaneswar, India.
               </p>
               <p className="pl-5 border-l-2 border-secondary/40 group-hover:border-secondary transition-colors duration-300">
-                Currently building enterprise microservices serving 10K+ daily users with{' '}
-                <span className="font-bold text-white glow">Java 17, Spring Boot 3, PostgreSQL, and Azure PaaS</span>. Delivered up to 30x API performance gains and led cloud migrations.
+                Currently modernizing enterprise backends serving 10K+ daily users with{' '}
+                <span className="font-bold text-white glow">Java (8 to 21), Spring Boot 3, PostgreSQL, AWS, and Azure PaaS</span>. Executing remediation and cloud migrations for clients like Element Fleet Management.
               </p>
               <p className="pl-5 border-l-2 border-pink-500/40 group-hover:border-pink-500 transition-colors duration-300">
                 Driven by a love for <span className="font-bold text-white">competitive programming</span> — 554+ problems solved, LeetCode rating{' '}
