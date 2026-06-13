@@ -19,8 +19,8 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "Aritra Dutta - Software Engineer | Portfolio",
-  description: "Passionate coder & problem solver building robust software. Software Engineer at TCS specializing in Java, Angular, and competitive programming.",
+  title: "Aritra Dutta | Portfolio",
+  description: "Backend Engineer at TCS specializing in Java, Spring Boot, and cloud microservices. 554+ problems solved, LeetCode 1672.",
   keywords: "Aritra Dutta, Software Engineer, Java, Angular, Spring Boot, Portfolio, TCS, Competitive Programming, LeetCode",
   authors: [{ name: "Aritra Dutta" }],
   creator: "Aritra Dutta",
@@ -28,14 +28,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://aritradutta.dev",
-    title: "Aritra Dutta - Software Engineer Portfolio",
-    description: "Passionate coder & problem solver building robust software, keen on clean code, algorithms, and technology.",
+    title: "Aritra Dutta | Backend Engineer Portfolio",
+    description: "Backend Engineer at TCS. Building enterprise microservices, 30x API performance gains, Azure cloud migrations.",
     siteName: "Aritra Dutta Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aritra Dutta - Software Engineer Portfolio",
-    description: "Passionate coder & problem solver building robust software, keen on clean code, algorithms, and technology.",
+    title: "Aritra Dutta | Backend Engineer Portfolio",
+    description: "Backend Engineer at TCS. Building enterprise microservices, 30x API performance gains, Azure cloud migrations.",
   },
 };
 
@@ -48,7 +48,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta name="theme-color" content="#8b5cf6" />
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="shortcut icon" href="/favicon.png" />
       </head>
       <body
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased transition-colors duration-500`}

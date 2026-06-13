@@ -1,5 +1,7 @@
 'use client'
 
+import type { LucideIcon } from 'lucide-react'
+
 import { motion } from 'framer-motion'
 import { GraduationCap, MapPin, Calendar, Award, Trophy, Code2, Target, Sparkles } from 'lucide-react'
 
@@ -56,7 +58,7 @@ const interests = [
 ]
 
 /* ── 3D-style animated education degree icon ─────────────── */
-function DegreeIcon({ icon: Icon, color, colorTo }: { icon: React.ElementType; color: string; colorTo: string }) {
+function DegreeIcon({ icon: Icon, color, colorTo }: { icon: LucideIcon; color: string; colorTo: string }) {
   return (
     <motion.div
       className="relative w-14 h-14 flex-shrink-0"

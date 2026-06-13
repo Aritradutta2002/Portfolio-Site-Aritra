@@ -88,40 +88,6 @@ const orbitTechs: { name: string; angle: number; radius: number; duration: numbe
   { name: 'PostgreSQL',    angle: 300,  radius: 0, duration: 30, color: '#336791' },
 ]
 
-/* ── Single orbit ring item ─────────────────────────────────── */
-function OrbitItem({ name, angleStart, orbitRadius, duration, color, orbitDir = 1 }: {
-  name: string; angleStart: number; orbitRadius: number; duration: number; color: string; orbitDir?: 1 | -1
-}) {
-  return (
-    <motion.div
-      className="absolute"
-      style={{ top: '50%', left: '50%', width: 0, height: 0 }}
-      animate={{ rotate: 360 * orbitDir }}
-      transition={{ duration, repeat: Infinity, ease: 'linear' }}
-    >
-      <motion.div
-        style={{
-          position: 'absolute',
-          left: `${orbitRadius * Math.cos((angleStart * Math.PI) / 180)}px`,
-          top: `${orbitRadius * Math.sin((angleStart * Math.PI) / 180)}px`,
-          transform: 'translate(-50%,-50%)',
-        }}
-        animate={{ rotate: -360 * orbitDir }}
-        transition={{ duration, repeat: Infinity, ease: 'linear' }}
-      >
-        <motion.div
-          className="w-10 h-10 rounded-xl glass-galaxy border flex items-center justify-center shadow-lg"
-          style={{ borderColor: `${color}40` }}
-          whileHover={{ scale: 1.25, boxShadow: `0 0 18px ${color}60` }}
-        >
-          <div className="w-6 h-6">
-            <TechIconCard name={name} showName={false} size="sm" ringColor={color} />
-          </div>
-        </motion.div>
-      </motion.div>
-    </motion.div>
-  )
-}
 
 /* ── Hero ───────────────────────────────────────────────────── */
 export function Hero() {

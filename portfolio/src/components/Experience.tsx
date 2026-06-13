@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { MapPin, Calendar, Code, Trophy, Sparkles, CheckCircle, Zap, Server, Database } from 'lucide-react'
 import { techLogos } from './TechIcon3D'
-import { FloatingBadge } from './FloatingBadge'
+
 
 /* ── Inline TCS logo SVG ──────────────────────────────────── */
 function TCSLogo({ className = '' }: { className?: string }) {

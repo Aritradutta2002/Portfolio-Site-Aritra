@@ -25,13 +25,7 @@ const categoryGradients: Record<string, { from: string; to: string; glow: string
   'Backend Development':    { from: '#10b981', to: '#14b8a6', glow: 'rgba(16,185,129,0.25)' },
 }
 
-const categoryColor: Record<string, string> = {
-  'Web Development':        'from-cyan-500 to-blue-500',
-  'Desktop Application':    'from-violet-500 to-purple-500',
-  'AI/ML':                  'from-pink-500 to-rose-500',
-  'Competitive Programming':'from-amber-500 to-orange-500',
-  'Backend Development':    'from-emerald-500 to-teal-500',
-}
+
 
 const projects: Project[] = [
   {
