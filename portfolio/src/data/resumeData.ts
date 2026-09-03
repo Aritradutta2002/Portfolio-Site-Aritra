@@ -16,16 +16,16 @@ export const resumeData = {
 
   /* ── Summary ───────────────────────────────────────────────────────── */
   summary:
-    'Results-driven Backend Engineer with 1.5+ years at TCS architecting high-performance Java/Spring Boot microservices serving 10K+ daily users. Delivered up to 30x API performance gains, led cloud migrations to Azure PaaS, and built AI-powered full-stack platforms end-to-end. Competitive programmer with 554+ problems solved (LeetCode 1672) and a passion for clean, scalable, production-grade systems.',
+    'Full Stack Application Engineer with 2+ years of experience building scalable Java microservices, end-to-end web applications, and AI-powered features (Java, Spring Boot, Python, LangChain, React, AWS).',
 
   /* ── Technical Skills ──────────────────────────────────────────────── */
   skills: [
-    { category: 'Languages',           items: 'Java (8/11/17), TypeScript, Python, SQL' },
-    { category: 'Backend',             items: 'Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, RESTful APIs, Microservices' },
-    { category: 'Databases',           items: 'PostgreSQL, Oracle, MySQL, Apache Kafka, Query Optimization, pgvector' },
-    { category: 'DevOps & Cloud',      items: 'Docker, Jenkins, Git, Maven, SonarQube, Microsoft Azure (PaaS, App Services), Tomcat, JBoss, CI/CD' },
-    { category: 'Frontend',            items: 'React, Angular, TypeScript, Tailwind CSS' },
-    { category: 'Testing & Practices', items: 'JUnit, Mockito, Agile/Scrum, GitHub Copilot (AI-Assisted Development)' },
+    { category: 'Languages',           items: 'Java, Python, TypeScript, SQL · Spoken: English, Hindi, Bengali' },
+    { category: 'Frameworks & Libs',   items: 'Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, REST APIs, Microservices, LangChain, React, Angular, Tailwind CSS' },
+    { category: 'AI',                  items: 'Generative AI, RAG, LangChain, LLM Integration' },
+    { category: 'Databases',           items: 'PostgreSQL, Oracle, MySQL, Apache Kafka' },
+    { category: 'Tools & Platforms',   items: 'AWS, AWS Transform, Azure PaaS, Docker, Jenkins, Git, Maven, SonarQube, Tomcat, JBoss, GitHub Copilot, CI/CD' },
+    { category: 'Methodologies',       items: 'Agile, Scrum, Jira, Jile, Code Review' },
   ],
 
   /* ── Experience ────────────────────────────────────────────────────── */
@@ -33,27 +33,26 @@ export const resumeData = {
     {
       company:   'Tata Consultancy Services (TCS)',
       dateRange: 'Sep 2024 – Present',
-      role:      'Assistant System Engineer',
+      role:      'System Engineer',
       location:  'Bhubaneswar, India',
       projects: [
         {
-          name: 'iDeclare — Ultimatix Platform',
+          name: 'Element Fleet Management — Application Developer (Apr 2026 – Present)',
           bullets: [
-            'Migrated critical infrastructure from legacy JBoss server to <strong>Azure Tomcat PaaS</strong>, configuring health checks and ensuring high availability in production environments.',
-            'Refactored the iDeclare module from a <strong>legacy monolith into a standalone Spring Boot microservice</strong> with an independent login portal, now serving <strong>10K+ daily users</strong>.',
-            'Engineered backend solutions with <strong>Java 8 &amp; Spring Boot 3</strong>, leveraging GitHub Copilot for modular, reusable code design; significantly boosted overall application efficiency.',
-            'Built end-to-end <strong>Jenkins CI/CD pipelines</strong>, integrated Docker deployments, and authored <strong>12+ JUnit test cases</strong> to enforce code quality across production rollouts.',
-            'Optimized SQL queries and APIs achieving up to <strong>20x faster response times</strong> in critical workflows.',
-            'Participated in Agile ceremonies (stand-ups, sprint planning) ensuring tight alignment with product requirements.',
+            'Modernized microservices from <strong>Java 8 / Spring Boot 1.x to Java 21 / Spring Boot 3.x</strong> using <strong>AWS Transform</strong>.',
+            'Migrated infrastructure from <strong>JBoss to Azure Tomcat PaaS</strong>; refactored the <strong>iDeclare monolith into a standalone Spring Boot microservice</strong> with JWT-based Spring Security.',
+            'Built <strong>Jenkins CI/CD pipelines</strong> with Docker deployments and authored <strong>2,000+ JUnit test cases</strong>.',
+            'Optimized SQL queries and APIs, achieving up to <strong>20x faster response times</strong>.',
+            'Utilized <strong>GitHub Copilot, Jira, and Jile</strong> within Agile workflows.',
           ],
         },
         {
-          name: 'IP Rights Management System — Ultimatix Platform',
+          name: 'Ultimatix Platform — Application Developer (Sep 2024 – Mar 2026)',
           bullets: [
-            'Executed a complex <strong>database migration from Oracle to PostgreSQL</strong>, redesigning normalized schemas and eliminating redundant query calls, improving data access efficiency.',
-            'Built robust backend services for <strong>Patent &amp; Trademark lifecycle modules</strong> using Core Java and Spring Boot, engineering multi-stage approval workflows with complete audit trails.',
-            'Troubleshot and optimized <strong>7+ critical APIs</strong>, achieving a <strong>30x performance improvement</strong> under heavy production load.',
-            'Conducted <strong>technical interviews</strong> and led Knowledge Transfer (KT) sessions, successfully onboarding new team members.',
+            'Executed <strong>database migration from Oracle to PostgreSQL</strong>.',
+            'Developed <strong>patent and trademark lifecycle modules</strong> using Core Java and Spring Boot.',
+            'Optimized <strong>7+ critical APIs</strong>, improving performance up to <strong>30x</strong> under production load.',
+            'Conducted <strong>technical interviews</strong> and onboarding knowledge transfers.',
           ],
         },
       ],
@@ -64,12 +63,13 @@ export const resumeData = {
   projects: [
     {
       title:  'AlgoGuru – Programming Learning Platform',
-      stack:  'React, TypeScript, Tailwind CSS, Supabase, Java',
+      stack:  'React, TypeScript, Tailwind CSS, Supabase, Java, Python, LangChain',
       liveUrl:   'https://www.algoguru.online/',
       githubUrl: 'https://github.com/Aritradutta2002',
       bullets: [
         'Designed, built, and deployed a <strong>full-stack competitive programming platform</strong> end-to-end — live at <a href="https://www.algoguru.online/">algoguru.online</a> with a custom purchased domain and production deployment.',
         'Features a <strong>Java Playground</strong>, <strong>role-based authentication</strong>, user progress tracking, and interactive problem sets built with React, TypeScript, Tailwind CSS, and a Supabase backend.',
+        'Integrated an AI-powered <strong>"Guru Bot"</strong> using <strong>Python, LangChain, and RAG</strong> for contextual problem-solving guidance.',
         'Sole developer responsible for the complete product lifecycle — from architecture and implementation to deployment and domain configuration.',
       ],
     },
@@ -94,7 +94,7 @@ export const resumeData = {
     },
     {
       title: 'Competitive Programming',
-      detail: '554+ problems solved across platforms — <a href="https://leetcode.com/u/Ari2001/">LeetCode</a> Rating <strong>1672</strong> · <a href="https://codeforces.com">Codeforces</a> <strong>1046 (Div 2)</strong> · <a href="https://www.codechef.com/users/interover01">CodeChef</a> <strong>1708 (3-Star)</strong> · CSES Problem Set.',
+      detail: '700+ problems solved across platforms — <a href="https://leetcode.com/u/Ari2001/">LeetCode</a> Rating <strong>1672</strong> · <a href="https://codeforces.com">Codeforces</a> <strong>1046 (Div 2)</strong> · <a href="https://www.codechef.com/users/interover01">CodeChef</a> <strong>1708 (3-Star)</strong> · CSES Problem Set.',
     },
   ],
 }

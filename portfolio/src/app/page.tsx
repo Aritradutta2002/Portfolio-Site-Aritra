@@ -7,22 +7,20 @@ import { Experience } from '@/components/Experience'
 import { Blog } from '@/components/Blog'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
-import Scene from '@/components/canvas/Scene'
+import { IntroCurtain } from '@/components/IntroCurtain'
 export default function Home() {
   return (
-    <main className="min-h-screen relative overflow-x-hidden">
-      <Scene />
-      <div className="relative z-10">
-        <Navigation />
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Blog />
-        <Contact />
-        <Footer />
-      </div>
+    <main className="min-h-screen relative bg-background text-ink overflow-x-hidden">
+      <IntroCurtain />
+      <Navigation />
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Experience />
+      <Blog />
+      <Contact />
+      <Footer />
     </main>
   )
 }

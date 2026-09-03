@@ -1,75 +1,21 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
-import { ChevronDown, Download, Github, Linkedin, Code2, Globe, Zap, Cloud, Trophy } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import { TechIconCard } from './TechIcon3D'
-import { FloatingBadge } from './FloatingBadge'
-
-/* ── Typewriter ─────────────────────────────────────────────── */
-const TypewriterText = ({ texts }: { texts: string[] }) => {
-  const [currentText, setCurrentText] = useState('')
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [charIndex, setCharIndex] = useState(0)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  useEffect(() => {
-    let mounted = true
-    const current = texts[currentIndex] ?? ''
-    const speed = isDeleting ? 45 : 95
-
-    const handle = setTimeout(() => {
-      if (!mounted) return
-      if (!isDeleting && charIndex < current.length) {
-        setCurrentText(current.slice(0, charIndex + 1))
-        setCharIndex(c => c + 1)
-      } else if (!isDeleting && charIndex === current.length) {
-        setTimeout(() => { if (mounted) setIsDeleting(true) }, 2200)
-      } else if (isDeleting && charIndex > 0) {
-        setCurrentText(current.slice(0, charIndex - 1))
-        setCharIndex(c => c - 1)
-      } else if (isDeleting && charIndex === 0) {
-        setIsDeleting(false)
-        setCurrentIndex(i => (i + 1) % texts.length)
-      }
-    }, speed)
-
-    return () => { mounted = false; clearTimeout(handle) }
-  }, [charIndex, currentIndex, isDeleting, texts])
-
-  return (
-    <span className="inline-flex items-baseline">
-      <span
-        className="font-black bg-clip-text text-transparent"
-        style={{
-          backgroundImage: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 40%, #ec4899 80%, #f59e0b 100%)',
-          WebkitBackgroundClip: 'text',
-          backgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          filter: 'drop-shadow(0 2px 12px rgba(139,92,246,0.35))',
-        }}
-      >
-        {currentText || '\u00A0'}
-      </span>
-      {/* Caret */}
-      <motion.span
-        aria-hidden
-        animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.65, repeat: Infinity, repeatType: 'reverse' }}
-        className="inline-block w-[3px] h-[0.85em] ml-1 align-middle rounded-sm"
-        style={{ background: 'linear-gradient(180deg,#8b5cf6,#ec4899)', boxShadow: '0 0 12px rgba(139,92,246,0.7)' }}
-      />
-    </span>
-  )
-}
+import { ChevronDown, Download, Github, Linkedin, Code2, ArrowUpRight, ArrowDown } from 'lucide-react'
+import { Marquee } from './Marquee'
+import { CountUp } from './CountUp'
+import { useSpotlight, useMagnetic, useTilt, useIntroReady } from '@/lib/interactions'
 
 /* ── Stats ──────────────────────────────────────────────────── */
 const stats = [
-  { value: '554+',  label: 'Problems Solved' },
-  { value: '1672',  label: 'LeetCode Rating' },
-  { value: '1.5yr+',  label: 'at TCS' },
+  { to: 700,  suffix: '+',   label: 'Problems Solved' },
+  { to: 1672, suffix: '',    label: 'LeetCode Rating' },
+  { to: 2,    suffix: 'yr+', label: 'at TCS' },
 ]
+
+/* ── Roles (previously typewriter) ──────────────────────────── */
+const roles = ['Full Stack Engineer', 'Problem Solver', 'Full Stack Dev']
 
 /* ── Social quick-links ─────────────────────────────────────── */
 const socials = [
@@ -78,361 +24,236 @@ const socials = [
   { icon: Code2,    href: 'https://leetcode.com/u/ari2002/',                     label: 'LeetCode' },
 ]
 
-/* ── Orbiting tech stack around the profile photo ───────────── */
-const orbitTechs: { name: string; angle: number; radius: number; duration: number; color: string }[] = [
-  { name: 'Java 17',       angle: 0,    radius: 0, duration: 22, color: '#EA2D2E' },
-  { name: 'Spring Boot 3', angle: 60,   radius: 0, duration: 28, color: '#6DB33F' },
-  { name: 'TypeScript',    angle: 120,  radius: 0, duration: 20, color: '#007ACC' },
-  { name: 'Docker',        angle: 180,  radius: 0, duration: 25, color: '#2396ED' },
-  { name: 'Azure PaaS',    angle: 240,  radius: 0, duration: 18, color: '#0078D4' },
-  { name: 'PostgreSQL',    angle: 300,  radius: 0, duration: 30, color: '#336791' },
+const marqueeItems = [
+  'Java 21', 'Spring Boot 3', 'PostgreSQL', 'Azure PaaS',
+  'Microservices', 'Docker', 'REST APIs', 'Jenkins',
 ]
 
+/* ── Portrait with tilt ─────────────────────────────────────── */
+function Portrait() {
+  const { targetRef } = useTilt<HTMLDivElement>(8)
+  return (
+    <div ref={targetRef} data-tilt className="relative rounded-2xl border border-line/10 bg-surface overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-line/10 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+        <span>Profile — 001</span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-acid animate-pulse" />
+          Open
+        </span>
+      </div>
+      <Image
+        src="/aritra-profile-picture.png"
+        alt="Aritra Dutta – Software Engineer"
+        width={640}
+        height={640}
+        className="w-full aspect-square object-cover grayscale-[35%] contrast-[1.05]"
+        priority
+      />
+      <div className="flex items-center justify-between px-5 py-3 border-t border-line/10 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+        <span>Bhubaneswar, IN</span>
+        <span className="text-acidstrong">EST. 2024</span>
+      </div>
+    </div>
+  )
+}
 
 /* ── Hero ───────────────────────────────────────────────────── */
 export function Hero() {
   const scrollToAbout = () =>
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
 
+  const { containerRef: heroRef } = useSpotlight<HTMLElement>()
+  const { targetRef: primaryCtaRef } = useMagnetic<HTMLButtonElement>(0.3)
+  const { targetRef: resumeCtaRef } = useMagnetic<HTMLAnchorElement>(0.25)
+
+  /* Gentle parallax — portrait drifts down as the hero scrolls away */
+  const { scrollY } = useScroll()
+  const portraitY = useTransform(scrollY, [0, 700], [0, 70])
+
+  /* Entrances wait for the intro curtain (instant when curtain is
+     skipped: reduced-motion or repeat visit) */
+  const ready = useIntroReady()
+
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center relative pt-16 lg:pt-20 overflow-hidden"
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ref={heroRef as any}
+      className="spotlight-container relative overflow-hidden pt-[72px]"
     >
-      {/* Minimalist Tech Gradient Glow */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 60% at 50% 10%, rgba(139,92,246,0.15) 0%, transparent 60%)',
-        }}
-      />
+      {/* Spotlight glow — position driven by useSpotlight via translate3d */}
+      <div data-spotlight className="z-0" aria-hidden="true" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 py-16 lg:py-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full relative z-10 pt-16 pb-20 md:pt-24 md:pb-28">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-end">
 
-          {/* ── LEFT: Text Content ─────────────────────────── */}
-          <div className="order-2 lg:order-1 text-center lg:text-left">
-
+          {/* ── LEFT: Statement ─────────────────────────────── */}
+          <div className="lg:col-span-7">
             <motion.p
               initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg sm:text-xl text-gray-400 font-mono tracking-wide mb-2 uppercase"
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="inline-flex items-center gap-2.5 rounded-full border border-line/12 bg-line/[0.03] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted mb-8"
             >
-              &lt;hello world /&gt; I&apos;m
+              <span className="w-1.5 h-1.5 rounded-full bg-acid animate-pulse" />
+              Full Stack Engineer @ TCS
             </motion.p>
 
-            {/* Name */}
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-4 leading-[1.05]"
+              initial={{ opacity: 0, y: 28 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="hero-display font-bold text-ink mb-6"
             >
-              Aritra{' '}
-              <span className="bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent filter drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
-                Dutta
-              </span>
+              Aritra Dutta<span className="text-acidstrong">.</span>
             </motion.h1>
 
-            {/* Typewriter role */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.45 }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-200 mb-6 min-h-[1.3em]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-wrap gap-2.5 mb-8"
             >
-              <TypewriterText
-                texts={['Backend Engineer', 'Problem Solver', 'Full Stack Dev']}
-              />
-            </motion.div>
-
-            {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.55 }}
-              className="text-base sm:text-lg text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8"
-            >
-              Building enterprise microservices at{' '}
-              <span className="font-semibold text-secondary glow">TCS</span>.
-              {' '}Delivered up to{' '}
-              <span className="font-semibold text-primary glow">30x API performance gains</span> and led cloud migrations to Azure PaaS.
-            </motion.p>
-
-            {/* Stats row */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.65 }}
-              className="flex items-center gap-6 justify-center lg:justify-start mb-10"
-            >
-              {stats.map((s, i) => (
-                <div key={i} className="glass-panel px-4 py-3 rounded-lg text-center lg:text-left min-w-[120px] transition-transform hover:scale-105">
-                  <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-none drop-shadow-[0_0_5px_rgba(6,182,212,0.5)]">
-                    {s.value}
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">
-                    {s.label}
-                  </div>
-                </div>
+              {roles.map((role) => (
+                <span
+                  key={role}
+                  className="px-4 py-2 rounded-full border border-line/12 font-mono text-xs uppercase tracking-[0.16em] text-ink/80"
+                >
+                  {role}
+                </span>
               ))}
             </motion.div>
 
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.75 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10"
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="text-base md:text-lg leading-relaxed text-muted max-w-xl mb-10"
             >
-              {/* Primary */}
+              Building enterprise microservices at{' '}
+              <span className="font-semibold text-ink">TCS</span>.
+              {' '}Delivered up to{' '}
+              <span className="font-semibold text-acidstrong">30x API performance gains</span> and led cloud migrations to Azure PaaS.
+            </motion.p>
+
+            {/* CTA row */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-3.5 mb-12"
+            >
               <motion.button
+                ref={primaryCtaRef}
                 onClick={scrollToAbout}
-                className="group relative px-8 py-3.5 bg-primary/20 text-white rounded-lg font-mono text-[14px] shadow-neon-purple border border-primary/50 hover:bg-primary/30 backdrop-blur-md transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="magnetic magnetic-glow inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-acid text-[#101204] font-bold text-sm"
               >
-                <span className="relative z-10 flex items-center gap-2 tracking-wider">
-                  [ ABOUT_ME ]
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </span>
+                More about me
+                <ArrowDown size={16} />
               </motion.button>
 
-              {/* Secondary */}
               <motion.a
+                ref={resumeCtaRef}
                 href="/resume"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative px-8 py-3.5 rounded-lg font-mono text-[14px] border border-gray-700 text-gray-300 hover:border-secondary/50 hover:text-secondary hover:shadow-neon-cyan glass-panel transition-all duration-300 flex items-center justify-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="magnetic magnetic-glow inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-line/15 text-ink font-bold text-sm hover:border-acid/60 hover:text-acidstrong"
               >
-                <span className="flex items-center gap-2 tracking-wider">
-                  <Download className="w-4 h-4 group-hover:animate-bounce" />
-                  RESUME.PDF
-                </span>
+                <Download size={16} />
+                Resume
               </motion.a>
 
-              {/* Tertiary */}
-              <motion.a
+              <a
                 href="https://www.algoguru.online/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative px-8 py-3.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-white rounded-lg font-mono text-[14px] shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-500/50 hover:from-emerald-500/30 hover:to-teal-500/30 backdrop-blur-md transition-all duration-300 flex items-center justify-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-line/15 text-ink font-bold text-sm hover:border-acid/60 hover:text-acidstrong transition-colors duration-300"
               >
-                <span className="relative z-10 flex items-center gap-2 tracking-wider">
-                  <Globe className="w-4 h-4 group-hover:text-emerald-400 transition-colors" />
-                  VISIT_ALGOGURU
-                </span>
-              </motion.a>
+                AlgoGuru
+                <ArrowUpRight size={16} />
+              </a>
             </motion.div>
 
-            {/* Social links */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.85 }}
-              className="flex items-center gap-4 justify-center lg:justify-start"
+            {/* Stats band */}
+            <motion.dl
+              initial={{ opacity: 0, y: 20 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="grid grid-cols-3 border-t border-line/10 pt-7 gap-6"
             >
-              <span className="text-xs text-gray-500 font-mono uppercase tracking-widest">&gt; Connect</span>
-              <div className="flex gap-3">
-                {socials.map(({ icon: Icon, href, label }) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center glass-panel text-gray-400 hover:text-primary hover:shadow-neon-purple hover:border-primary/50 transition-all duration-300"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Icon size={18} />
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
+              {stats.map((s) => (
+                <div key={s.label}>
+                  <dt className="order-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted mt-1.5">
+                    {s.label}
+                  </dt>
+                  <dd className="order-1 text-3xl md:text-4xl font-bold tracking-tight text-ink">
+                    <CountUp to={s.to} suffix={s.suffix} />
+                  </dd>
+                </div>
+              ))}
+            </motion.dl>
           </div>
 
-          {/* ── RIGHT: Profile Photo + Orbiting Tech Icons ─── */}
-          <div className="order-1 lg:order-2 flex justify-center lg:justify-center relative">
+          {/* ── RIGHT: Portrait + socials ───────────────────── */}
+          <div className="lg:col-span-5">
             <motion.div
-              initial={{ opacity: 0, scale: 0.85, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-              className="relative"
+              initial={{ opacity: 0, y: 28 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* ── Floating Achievement Badges ── */}
-              <FloatingBadge
-                icon={<Zap size={14} />}
-                label="30x Faster"
-                sublabel="API Performance"
-                color="#f59e0b"
-                colorTo="#ef4444"
-                className="-top-6 -right-6 lg:-right-14"
-                delay={1.2}
-                floatOffset={7}
-              />
-              <FloatingBadge
-                icon={<Cloud size={14} />}
-                label="Azure PaaS"
-                sublabel="Cloud Migration"
-                color="#06b6d4"
-                colorTo="#8b5cf6"
-                className="-bottom-6 -left-6 lg:-left-14"
-                delay={1.5}
-                floatOffset={6}
-              />
-              <FloatingBadge
-                icon={<Trophy size={14} />}
-                label="1672 LC"
-                sublabel="LeetCode Rating"
-                color="#10b981"
-                colorTo="#06b6d4"
-                className="top-1/2 -translate-y-1/2 -right-12 lg:-right-28"
-                delay={1.8}
-                floatOffset={5}
-              />
-
-              {/* ── Outer orbit ring (6 icons) ── */}
-              <motion.div
-                className="absolute"
-                style={{
-                  top: '50%',
-                  left: '50%',
-                  width: '1px',
-                  height: '1px',
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2, duration: 0.8 }}
-              >
-                {/* Orbit path visual ring */}
-                <div
-                  className="absolute rounded-full border border-dashed pointer-events-none"
-                  style={{
-                    width: '340px',
-                    height: '340px',
-                    top: '-170px',
-                    left: '-170px',
-                    borderColor: 'rgba(139,92,246,0.15)',
-                  }}
-                />
-                {orbitTechs.map((tech, i) => (
-                  <motion.div
-                    key={tech.name}
-                    className="absolute"
-                    style={{ top: '0px', left: '0px' }}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: tech.duration, repeat: Infinity, ease: 'linear' }}
-                  >
-                    <motion.div
-                      style={{
-                        position: 'absolute',
-                        left: `${170 * Math.cos(((i * 60 + 0) * Math.PI) / 180)}px`,
-                        top: `${170 * Math.sin(((i * 60 + 0) * Math.PI) / 180)}px`,
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                      animate={{ rotate: -360 }}
-                      transition={{ duration: tech.duration, repeat: Infinity, ease: 'linear' }}
-                    >
-                      <motion.div
-                        className="w-11 h-11 rounded-xl glass-galaxy border flex items-center justify-center cursor-default"
-                        style={{ borderColor: `${tech.color}35`, boxShadow: `0 0 12px ${tech.color}20` }}
-                        whileHover={{ scale: 1.3, boxShadow: `0 0 20px ${tech.color}60` }}
-                        title={tech.name}
-                      >
-                        <div className="w-7 h-7 pointer-events-none">
-                          {/* Render logo SVG from TechIconCard logic */}
-                          <TechIconCard name={tech.name} showName={false} size="sm" ringColor={tech.color} />
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  </motion.div>
-                ))}
+              <motion.div style={{ y: portraitY }}>
+                <Portrait />
               </motion.div>
+            </motion.div>
 
-              {/* Outer ambient glow */}
-              <motion.div
-                className="absolute -inset-8 rounded-full opacity-60"
-                style={{
-                  background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(6,182,212,0.15) 40%, transparent 70%)',
-                  filter: 'blur(30px)',
-                }}
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.9, 0.5] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              />
-
-              {/* Rotating gradient ring */}
-              <motion.div
-                className="absolute -inset-[6px] rounded-full"
-                style={{
-                  background: 'conic-gradient(from 0deg, transparent, #8b5cf6, transparent, #06b6d4, transparent)',
-                  padding: '3px',
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-              >
-                <div className="w-full h-full rounded-full bg-surface" />
-              </motion.div>
-
-              {/* Static gradient border (always visible) */}
-              <div
-                className="absolute -inset-[3px] rounded-full"
-                style={{
-                  background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)',
-                  padding: '2px',
-                }}
-              >
-                <div className="w-full h-full rounded-full bg-surface" />
-              </div>
-
-              {/* Image */}
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden shadow-2xl">
-                <Image
-                  src="/aritra-profile-picture.png"
-                  alt="Aritra Dutta – Software Engineer"
-                  width={320}
-                  height={320}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-                  priority
-                />
-                {/* Subtle overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-violet-900/10 via-transparent to-blue-900/5 pointer-events-none" />
-              </div>
-
-              {/* Inner dashed orbit ring */}
-              <motion.div
-                className="absolute -inset-5 rounded-full border border-dashed border-blue-300/30 dark:border-blue-500/20 pointer-events-none"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-              />
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.8 }}
+              className="flex items-center gap-3 mt-6"
+            >
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Connect</span>
+              <span className="h-px flex-1 bg-line/10" aria-hidden="true" />
+              {socials.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-10 h-10 rounded-full flex items-center justify-center border border-line/12 text-muted hover:text-[#101204] hover:bg-acid hover:border-acid transition-colors duration-300"
+                >
+                  <Icon size={17} />
+                </a>
+              ))}
             </motion.div>
           </div>
         </div>
       </div>
 
-      {/* ── Scroll indicator ──────────────────────────────────── */}
+      {/* ── Tech marquee ─────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={ready ? { opacity: 1 } : {}}
+        transition={{ duration: 0.6, delay: 0.9 }}
+      >
+        <Marquee items={marqueeItems} />
+      </motion.div>
+
+      {/* ── Scroll cue ───────────────────────────────────────── */}
       <motion.button
         onClick={scrollToAbout}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-gray-400 dark:text-gray-600 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 group"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.4, duration: 0.5 }}
+        className="absolute bottom-20 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-1.5 text-muted hover:text-acidstrong transition-colors duration-300"
+        initial={{ opacity: 0 }}
+        animate={ready ? { opacity: 1 } : {}}
+        transition={{ delay: 1.2, duration: 0.5 }}
         aria-label="Scroll to About"
       >
-        <span className="text-[11px] font-medium uppercase tracking-widest">Scroll</span>
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <ChevronDown size={20} className="group-hover:text-blue-500 transition-colors" />
+          <ChevronDown size={18} />
         </motion.div>
       </motion.button>
     </section>

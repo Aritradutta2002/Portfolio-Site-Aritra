@@ -1,9 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Calendar, Clock, ArrowRight, Tag, Sparkles } from 'lucide-react'
-import { useState } from 'react'
+import { Calendar, Clock, ArrowRight, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
+import { SectionHeading } from './SectionHeading'
+import { CursorTag } from './CursorTag'
+import { useMagnetic } from '@/lib/interactions'
 
 type BlogPost = {
   id: number
@@ -20,7 +22,7 @@ const blogPosts: BlogPost[] = [
   {
     id: 1,
     title: "Mastering Data Structures and Algorithms: A Competitive Programmer's Journey",
-    excerpt: 'My experience solving 500+ problems across LeetCode, CodeForces, and CodeChef. Key insights and strategies that helped me achieve a 1750 rating.',
+    excerpt: 'My experience solving 700+ problems across LeetCode, CodeForces, and CodeChef. Key insights and strategies that helped me achieve a 1672 rating.',
     date: '2024-12-15',
     readTime: '8 min read',
     tags: ['Competitive Programming', 'DSA', 'LeetCode'],
@@ -57,185 +59,117 @@ const blogPosts: BlogPost[] = [
   },
 ]
 
-const categoryColor: Record<string, string> = {
-  'Programming':        'from-blue-500 to-violet-500',
-  'Backend Development':'from-emerald-500 to-teal-500',
-  'Web Development':    'from-cyan-500 to-blue-500',
-  'Career':             'from-amber-500 to-orange-500',
-}
-
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+function PostRow({ post, index }: { post: BlogPost; index: number }) {
+  const { targetRef } = useMagnetic<HTMLAnchorElement>(0.1, { maxX: 12, maxY: 8 })
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: Math.min(index * 0.07, 0.3) }}
+      viewport={{ once: true }}
+      className="group border-b border-line/10 hover:bg-line/[0.03] transition-colors duration-300"
+      data-cursor
+    >
+      <Link href="/blog" ref={targetRef} className="magnetic flex items-start gap-5 md:gap-8 py-7 px-2 md:px-4">
+        <span className="font-mono text-xs text-muted pt-1.5 w-8 flex-shrink-0 group-hover:text-acidstrong transition-colors duration-300">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-[0.16em] text-muted mb-2.5">
+            <span className="inline-flex items-center gap-1.5">
+              <Calendar size={11} />{formatDate(post.date)}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Clock size={11} />{post.readTime}
+            </span>
+            <span className="text-acidstrong">{post.category}</span>
+          </div>
+          <h4 className="text-xl md:text-2xl font-bold tracking-tight text-ink leading-snug mb-2 group-hover:text-acidstrong transition-colors duration-300">
+            {post.title}
+          </h4>
+          <p className="text-[15px] text-muted leading-relaxed max-w-2xl mb-3.5">
+            {post.excerpt}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <span key={tag} className="px-3 py-1 rounded-full border border-line/12 font-mono text-[11px] text-ink/70">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+        <span className="hidden sm:flex w-10 h-10 rounded-full border border-line/12 items-center justify-center text-muted group-hover:text-[#101204] group-hover:bg-acid group-hover:border-acid transition-colors duration-300 flex-shrink-0 mt-1">
+          <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
+        </span>
+      </Link>
+    </motion.article>
+  )
+}
+
 export function Blog() {
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
   const featuredPosts = blogPosts.filter(p => p.featured)
   const recentPosts   = blogPosts.slice(0, 3)
 
   return (
-    <section id="blog" className="py-24 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="blog" className="relative">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
-        {/* ── Section Header ─────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200/70 dark:border-blue-500/25 text-blue-700 dark:text-blue-300 text-[13px] font-medium mb-4"
-          >
-            <Sparkles size={12} />
-            Writing
-          </motion.span>
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
-            Latest Blog Posts
-          </h2>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-blue-500" />
-            <div className="h-1 w-16 rounded-full bg-gradient-to-r from-blue-600 to-violet-600" />
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-violet-500" />
-          </div>
-          <p className="text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-            Sharing insights on programming, technology, and lessons from my development journey
-          </p>
-        </motion.div>
+        <SectionHeading
+          index="05"
+          eyebrow="Writing"
+          title="Latest Blog Posts"
+          blurb="Sharing insights on programming, technology, and lessons from my development journey"
+        />
 
-        {/* ── Featured Posts ──────────────────────────────── */}
-        <div className="mb-16">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <span className="w-1 h-5 rounded-full bg-gradient-to-b from-blue-600 to-violet-600" />
-            Featured Posts
-          </h3>
-          <div className="grid md:grid-cols-2 gap-6">
-            {featuredPosts.map((post, i) => (
-              <motion.article
-                key={post.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                viewport={{ once: true }}
-                onHoverStart={() => setHoveredId(post.id)}
-                onHoverEnd={() => setHoveredId(null)}
-                whileHover={{ y: -5 }}
-                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
-              >
-                <div className={`h-1 w-full bg-gradient-to-r ${categoryColor[post.category] ?? 'from-blue-500 to-violet-500'}`} />
-                <div className="p-6">
-                  <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500 mb-4">
-                    <span className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                      <Calendar size={11} />{formatDate(post.date)}
-                    </span>
-                    <span className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                      <Clock size={11} />{post.readTime}
-                    </span>
-                  </div>
-                  <h4 className="text-[16px] font-bold text-gray-900 dark:text-white mb-3 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
-                    {post.title}
-                  </h4>
-                  <p className="text-[13.5px] text-gray-500 dark:text-gray-400 mb-4 leading-relaxed line-clamp-2">
-                    {post.excerpt}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 mb-5">
-                    {post.tags.map((tag, ti) => (
-                      <span key={ti} className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-500/20 rounded-lg text-[11px] font-medium">
-                        <Tag size={9} />{tag}
-                      </span>
-                    ))}
-                  </div>
-                  <Link href="/blog">
-                    <motion.div
-                      className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 text-[13px] font-semibold"
-                      animate={{ x: hoveredId === post.id ? 4 : 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      Read Article <ArrowRight size={14} />
-                    </motion.div>
-                  </Link>
-                </div>
-              </motion.article>
-            ))}
-          </div>
+        {/* ── Featured ─────────────────────────────────────── */}
+        <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-2">Featured Posts</h3>
+        <div className="border-t border-line/10 mb-14">
+          {featuredPosts.map((post, i) => (
+            <PostRow key={post.id} post={post} index={i} />
+          ))}
         </div>
 
-        {/* ── Recent Posts ────────────────────────────────── */}
-        <div className="mb-16">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <span className="w-1 h-5 rounded-full bg-gradient-to-b from-emerald-500 to-teal-500" />
-            Recent Posts
-          </h3>
-          <div className="grid md:grid-cols-3 gap-5">
-            {recentPosts.map((post, i) => (
-              <motion.article
-                key={post.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -4 }}
-                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
-              >
-                <div className={`h-1 w-full bg-gradient-to-r ${categoryColor[post.category] ?? 'from-blue-500 to-violet-500'}`} />
-                <div className="p-5">
-                  <span className="flex items-center gap-1.5 text-[11px] text-gray-400 dark:text-gray-500 mb-3">
-                    <Calendar size={10} />{formatDate(post.date)}
-                  </span>
-                  <h4 className="text-[14px] font-bold text-gray-900 dark:text-white mb-2 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 line-clamp-2">
-                    {post.title}
-                  </h4>
-                  <p className="text-[12.5px] text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 leading-relaxed">
-                    {post.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
-                    <span className="flex items-center gap-1 text-[11px] text-gray-400"><Clock size={10} />{post.readTime}</span>
-                    <Link href="/blog">
-                      <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400 text-[12px] font-semibold">
-                        Read <ArrowRight size={12} />
-                      </span>
-                    </Link>
-                  </div>
-                </div>
-              </motion.article>
-            ))}
-          </div>
+        {/* ── Recent ───────────────────────────────────────── */}
+        <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-2">Recent Posts</h3>
+        <div className="border-t border-line/10 mb-14">
+          {recentPosts.map((post, i) => (
+            <PostRow key={post.id} post={post} index={i} />
+          ))}
         </div>
 
-        {/* ── CTA ─────────────────────────────────────────── */}
+        {/* ── CTA band ─────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center"
+          transition={{ duration: 0.55 }}
+          viewport={{ once: true, margin: '-64px' }}
+          className="rounded-2xl bg-acid text-[#101204] p-10 md:p-14 relative overflow-hidden"
         >
-          <div className="bg-gradient-to-r from-blue-600 via-violet-600 to-purple-600 rounded-2xl p-10 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-            <div className="relative z-10">
-              <h3 className="text-2xl font-bold text-white mb-3">Want to Read More?</h3>
-              <p className="text-white/80 text-[14.5px] mb-6 max-w-xl mx-auto">
-                Follow me for more insights, updates, and content about technology and development.
-              </p>
-              <Link href="/blog">
-                <motion.button
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="px-8 py-3 bg-white text-violet-600 rounded-xl font-bold text-[14px] shadow-xl inline-flex items-center gap-2"
-                >
-                  View All Posts <ArrowRight size={15} />
-                </motion.button>
-              </Link>
-            </div>
+          <div className="relative z-10 max-w-xl">
+            <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">Want to Read More?</h3>
+            <p className="text-[#101204]/70 text-[15px] mb-7 leading-relaxed">
+              Follow me for more insights, updates, and content about technology and development.
+            </p>
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#101204] text-[#BEF264] font-bold text-sm hover:shadow-[0_8px_32px_rgba(16,18,4,0.4)] transition-shadow duration-300"
+            >
+              View All Posts <ArrowRight size={15} />
+            </Link>
           </div>
+          <span className="absolute -bottom-8 -right-2 font-bold tracking-[-0.04em] leading-none text-[10rem] md:text-[14rem] text-[#101204]/10 select-none" aria-hidden="true">
+            Aa
+          </span>
         </motion.div>
 
       </div>
+
+      {/* Cursor follower pill over article rows (desktop only) */}
+      <CursorTag text="Read" />
     </section>
   )
 }

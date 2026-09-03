@@ -40,30 +40,30 @@ const PRINT_STYLES = `
   .btn-download {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 9px 22px;
-    background: #1a1a2e;
-    color: #fff;
+    background: #BEF264;
+    color: #101204;
     border: none;
-    border-radius: 8px;
+    border-radius: 999px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: background .2s;
     text-decoration: none;
   }
-  .btn-download:hover { background: #8b5cf6; }
+  .btn-download:hover { background: #a5dd2e; }
   .btn-back {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 9px 16px;
     background: transparent;
     color: #555;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 999px;
     font-size: 13px;
     cursor: pointer;
     text-decoration: none;
-    transition: border-color .2s;
+    transition: border-color .2s, color .2s;
   }
-  .btn-back:hover { border-color: #8b5cf6; color: #8b5cf6; }
+  .btn-back:hover { border-color: #65A30D; color: #3F6212; }
 
   /* Resume card */
   .resume {

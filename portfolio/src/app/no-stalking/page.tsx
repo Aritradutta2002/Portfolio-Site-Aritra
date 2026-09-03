@@ -31,20 +31,12 @@ export default function NoStalkingPage() {
 
   return (
     <main
-      className="min-h-screen flex items-center justify-center"
-      style={{ background: '#050505', fontFamily: 'monospace' }}
+      className="min-h-screen flex items-center justify-center bg-background text-ink"
+      style={{ fontFamily: 'monospace' }}
     >
-      {/* Ambient glow */}
-      <div
-        style={{
-          position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
-          background: 'radial-gradient(ellipse 60% 60% at 50% 50%, rgba(139,92,246,0.12) 0%, transparent 70%)',
-        }}
-      />
-
       <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '2rem', maxWidth: '600px' }}>
 
-        {/* Glitchy status code */}
+        {/* Status code */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -52,16 +44,13 @@ export default function NoStalkingPage() {
           style={{ marginBottom: '1.5rem' }}
         >
           <motion.span
-            animate={{ opacity: [1, 0.4, 1], x: [0, -2, 2, 0] }}
+            animate={{ opacity: [1, 0.4, 1] }}
             transition={{ duration: 0.15, repeat: Infinity, repeatDelay: 2.5 }}
             style={{
               fontSize: 'clamp(5rem, 20vw, 9rem)',
               fontWeight: 900,
               letterSpacing: '-0.05em',
-              background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              filter: 'drop-shadow(0 0 30px rgba(139,92,246,0.6))',
+              color: 'rgb(var(--acidtext))',
               display: 'block',
             }}
           >
@@ -74,19 +63,16 @@ export default function NoStalkingPage() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
+          className="rounded-2xl border border-line/15 bg-surface"
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(139,92,246,0.3)',
-            borderRadius: '12px',
             padding: '1.5rem 2rem',
             marginBottom: '2rem',
-            backdropFilter: 'blur(10px)',
           }}
         >
-          <p style={{ color: '#06b6d4', fontSize: '0.75rem', marginBottom: '0.5rem', textAlign: 'left', opacity: 0.7 }}>
+          <p className="font-mono text-muted" style={{ fontSize: '0.75rem', marginBottom: '0.5rem', textAlign: 'left', opacity: 0.7 }}>
             {'>'} SYSTEM OUTPUT
           </p>
-          <p style={{ color: '#22c55e', fontSize: '0.8rem', textAlign: 'left', marginBottom: '0.75rem' }}>
+          <p style={{ color: 'rgb(var(--acidtext))', fontSize: '0.8rem', textAlign: 'left', marginBottom: '0.75rem' }}>
             $ curl -X GET /aritra-profile-picture.png
           </p>
           <motion.p
@@ -109,8 +95,8 @@ export default function NoStalkingPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
+          className="text-ink"
           style={{
-            color: '#e2e8f0',
             fontSize: 'clamp(1rem, 3vw, 1.3rem)',
             fontWeight: 600,
             marginBottom: '0.75rem',
@@ -124,7 +110,8 @@ export default function NoStalkingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1 }}
-          style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '2.5rem' }}
+          className="text-muted"
+          style={{ fontSize: '0.8rem', marginBottom: '2.5rem' }}
         >
           My face is available exclusively on the portfolio. Very exclusive. Very fancy.
         </motion.p>
@@ -138,20 +125,17 @@ export default function NoStalkingPage() {
         >
           <Link
             href="/"
+            className="bg-acid text-[#101204] hover:shadow-acid-glow"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
               padding: '10px 24px',
-              background: 'rgba(139,92,246,0.2)',
-              border: '1px solid rgba(139,92,246,0.5)',
-              borderRadius: '10px',
-              color: '#fff',
+              borderRadius: '999px',
               textDecoration: 'none',
               fontSize: '0.85rem',
-              fontWeight: 600,
-              boxShadow: '0 0 15px rgba(139,92,246,0.3)',
-              transition: 'all 0.2s',
+              fontWeight: 700,
+              transition: 'box-shadow 0.2s',
             }}
           >
             ← View the actual portfolio
