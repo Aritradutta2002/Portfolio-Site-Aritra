@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { MapPin, Calendar, CheckCircle } from 'lucide-react'
 import { SectionHeading } from './SectionHeading'
 import { CountUp } from './CountUp'
+import { GlassCard } from './GlassCard'
 
 
 /* ── Inline TCS logo ──────────────────────────────────────── */
@@ -140,95 +141,97 @@ export function Experience() {
           blurb="My journey in the software engineering industry"
         />
 
-        {/* ── Role dossier ─────────────────────────────────── */}
+        {/* ── Role dossier — glass ───────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true, margin: '-64px' }}
-          className="rounded-2xl border border-line/10 bg-surface p-8 md:p-10 mb-10"
+          className="mb-10"
         >
-          {/* Company header */}
-          <div className="flex flex-col sm:flex-row sm:items-start gap-6 mb-8 pb-8 border-b border-line/10">
-            <div className="flex-shrink-0">
-              <div className="w-28 h-16 rounded-xl border border-line/10 bg-line/[0.03] flex items-center justify-center overflow-hidden px-2">
-                <TCSLogo className="w-full h-auto" />
+          <GlassCard hover className="p-8 md:p-10">
+            {/* Company header */}
+            <div className="flex flex-col sm:flex-row sm:items-start gap-6 mb-8 pb-8 border-b border-aurora/10">
+              <div className="flex-shrink-0">
+                <div className="w-28 h-16 rounded-xl border border-aurora/10 bg-aurora/[0.04] flex items-center justify-center overflow-hidden px-2">
+                  <TCSLogo className="w-full h-auto" />
+                </div>
+                <div className="flex items-center gap-1.5 mt-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-aurora-2 animate-pulse" />
+                  <span className="font-mono text-[10px] text-aurorastrong font-bold uppercase tracking-[0.18em]">Active</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5 mt-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-acid animate-pulse" />
-                <span className="font-mono text-[10px] text-acidstrong font-bold uppercase tracking-[0.18em]">Active</span>
+              <div>
+                <h3 className="font-display text-2xl font-bold tracking-tight text-ink leading-snug">{experience.position}</h3>
+                <p className="text-aurorastrong font-semibold text-base mt-1">{experience.company}</p>
+                <div className="flex flex-wrap gap-x-5 gap-y-1.5 mt-3 font-mono text-xs text-muted">
+                  <span className="inline-flex items-center gap-1.5"><MapPin size={12} />{experience.location}</span>
+                  <span className="inline-flex items-center gap-1.5"><Calendar size={12} />{experience.startDate} – {experience.endDate}</span>
+                </div>
               </div>
             </div>
-            <div>
-              <h3 className="text-2xl font-bold tracking-tight text-ink leading-snug">{experience.position}</h3>
-              <p className="text-acidstrong font-semibold text-base mt-1">{experience.company}</p>
-              <div className="flex flex-wrap gap-x-5 gap-y-1.5 mt-3 font-mono text-xs text-muted">
-                <span className="inline-flex items-center gap-1.5"><MapPin size={12} />{experience.location}</span>
-                <span className="inline-flex items-center gap-1.5"><Calendar size={12} />{experience.startDate} – {experience.endDate}</span>
+
+            <p className="text-[15px] md:text-base text-muted leading-relaxed mb-10 max-w-3xl">
+              {experience.description}
+            </p>
+
+            {/* Assignments */}
+            {experience.assignments.map((assignment) => (
+              <div key={assignment.client} className="mb-10 last:mb-0">
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-2">
+                  <h4 className="font-display text-lg font-bold tracking-tight text-ink">{assignment.client}</h4>
+                  <p className="font-mono text-xs text-aurorastrong uppercase tracking-[0.16em]">{assignment.period}</p>
+                </div>
+                <p className="text-sm text-muted mb-2">{assignment.role}</p>
+                <ul className="border-t border-aurora/10">
+                  {assignment.bullets.map((b, i) => (
+                    <motion.li
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, delay: Math.min(i * 0.04, 0.3) }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-3.5 py-3.5 border-b border-aurora/10 text-[15px] text-ink/80"
+                    >
+                      <span className="w-1.5 h-1.5 bg-aurora rounded-full flex-shrink-0 mt-2" aria-hidden="true" />
+                      {b}
+                    </motion.li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          </div>
-
-          <p className="text-[15px] md:text-base text-muted leading-relaxed mb-10 max-w-3xl">
-            {experience.description}
-          </p>
-
-          {/* Assignments */}
-          {experience.assignments.map((assignment) => (
-            <div key={assignment.client} className="mb-10 last:mb-0">
-              <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-2">
-                <h4 className="text-lg font-bold tracking-tight text-ink">{assignment.client}</h4>
-                <p className="font-mono text-xs text-acidstrong uppercase tracking-[0.16em]">{assignment.period}</p>
-              </div>
-              <p className="text-sm text-muted mb-2">{assignment.role}</p>
-              <ul className="border-t border-line/10">
-                {assignment.bullets.map((b, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: Math.min(i * 0.04, 0.3) }}
-                    viewport={{ once: true }}
-                    className="flex items-start gap-3.5 py-3.5 border-b border-line/10 text-[15px] text-ink/80"
-                  >
-                    <span className="w-1.5 h-1.5 bg-acid flex-shrink-0 mt-2" aria-hidden="true" />
-                    {b}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          ))}
-
-          {/* Technologies */}
-          <h4 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mt-10 mb-4">Technologies Used</h4>
-          <div className="flex flex-wrap gap-2.5 mb-10">
-            {experience.technologies.map((tech) => (
-              <span
-                key={tech}
-                className="px-3.5 py-1.5 rounded-full border border-line/12 font-mono text-xs text-ink/75"
-              >
-                {tech}
-              </span>
             ))}
-          </div>
 
-          {/* Achievements */}
-          <h4 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-2">Key Achievements</h4>
-          <ul className="border-t border-line/10">
-            {experience.achievements.map((a, i) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: Math.min(i * 0.05, 0.25) }}
-                viewport={{ once: true }}
-                className="flex items-start gap-3.5 py-3.5 border-b border-line/10 text-[15px] text-ink/80"
-              >
-                <CheckCircle size={16} className="text-acidstrong flex-shrink-0 mt-1" />
-                {a}
-              </motion.li>
-            ))}
-          </ul>
+            {/* Technologies */}
+            <h4 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mt-10 mb-4">Technologies Used</h4>
+            <div className="flex flex-wrap gap-2.5 mb-10">
+              {experience.technologies.map((tech) => (
+                <span
+                  key={tech}
+                  className="px-3.5 py-1.5 rounded-full border border-aurora/20 font-mono text-xs text-ink/75"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            {/* Achievements */}
+            <h4 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-2">Key Achievements</h4>
+            <ul className="border-t border-aurora/10">
+              {experience.achievements.map((a, i) => (
+                <motion.li
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: Math.min(i * 0.05, 0.25) }}
+                  viewport={{ once: true }}
+                  className="flex items-start gap-3.5 py-3.5 border-b border-aurora/10 text-[15px] text-ink/80"
+                >
+                  <CheckCircle size={16} className="text-aurorastrong flex-shrink-0 mt-1" />
+                  {a}
+                </motion.li>
+              ))}
+            </ul>
+          </GlassCard>
         </motion.div>
 
         <div className="grid lg:grid-cols-12 gap-10">
@@ -240,8 +243,8 @@ export function Experience() {
             viewport={{ once: true, margin: '-64px' }}
             className="lg:col-span-7"
           >
-            <h3 className="text-2xl font-bold tracking-tight text-ink mb-6">Professional Skills</h3>
-            <div className="border-t border-line/10">
+            <h3 className="font-display text-2xl font-bold tracking-tight text-ink mb-6">Professional Skills</h3>
+            <div className="border-t border-aurora/10">
               {skills.map((skill, i) => (
                 <motion.div
                   key={skill.name}
@@ -249,7 +252,7 @@ export function Experience() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: Math.min(i * 0.06, 0.3) }}
                   viewport={{ once: true }}
-                  className="py-4 border-b border-line/10"
+                  className="py-4 border-b border-aurora/10"
                 >
                   <div className="flex justify-between items-baseline mb-2">
                     <span className="text-[15px] font-semibold text-ink">{skill.name}</span>
@@ -257,7 +260,7 @@ export function Experience() {
                   </div>
                   <div className="h-1 rounded-full bg-line/10 overflow-hidden">
                     <motion.div
-                      className="h-full rounded-full bg-acid"
+                      className="meter-fill h-full rounded-full"
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skill.level}%` }}
                       transition={{ duration: 1, delay: i * 0.06, ease: 'easeOut' }}
@@ -277,9 +280,10 @@ export function Experience() {
             viewport={{ once: true, margin: '-64px' }}
             className="lg:col-span-5"
           >
-            <h3 className="text-2xl font-bold tracking-tight text-ink mb-6">Career Timeline</h3>
+            <h3 className="font-display text-2xl font-bold tracking-tight text-ink mb-6">Career Timeline</h3>
             <div className="relative pl-7 mb-10">
-              <div className="absolute left-[5px] top-2 bottom-2 w-px bg-line/15" aria-hidden="true" />
+              {/* Aurora timeline spine */}
+              <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-aurora/60 via-aurora/25 to-transparent" aria-hidden="true" />
               <div className="space-y-7">
                 {timeline.map((item, i) => (
                   <motion.div
@@ -290,8 +294,11 @@ export function Experience() {
                     viewport={{ once: true }}
                     className="relative"
                   >
-                    <span className="absolute -left-7 top-1.5 w-[11px] h-[11px] rounded-full bg-acid ring-4 ring-background" aria-hidden="true" />
-                    <p className="font-mono text-xs text-acidstrong uppercase tracking-[0.16em]">{item.period}</p>
+                    <span
+                      className="absolute -left-7 top-1.5 w-[11px] h-[11px] rounded-full bg-aurora ring-4 ring-background shadow-[0_0_10px_rgba(139,92,246,0.6)]"
+                      aria-hidden="true"
+                    />
+                    <p className="font-mono text-xs text-aurorastrong uppercase tracking-[0.16em]">{item.period}</p>
                     <p className="text-[15px] font-bold text-ink mt-1">{item.role}</p>
                     <p className="font-mono text-[11px] text-muted uppercase tracking-[0.14em] mt-0.5">{item.org}</p>
                   </motion.div>
@@ -299,7 +306,7 @@ export function Experience() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 border-t border-l border-line/10">
+            <div className="grid grid-cols-2 gap-3">
               {workStats.map((s, i) => (
                 <motion.div
                   key={s.label}
@@ -307,9 +314,9 @@ export function Experience() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: i * 0.07 }}
                   viewport={{ once: true }}
-                  className="border-b border-r border-line/10 p-5"
+                  className="glass-card glass-hover p-5"
                 >
-                  <div className="text-3xl font-bold tracking-tight text-ink mb-1"><CountUp to={s.to} suffix={s.suffix} /></div>
+                  <div className="font-display text-3xl font-bold tracking-tight text-ink mb-1"><CountUp to={s.to} suffix={s.suffix} /></div>
                   <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">{s.label}</div>
                 </motion.div>
               ))}

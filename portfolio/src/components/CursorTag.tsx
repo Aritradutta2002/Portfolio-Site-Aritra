@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 
-/* Awwwards-style cursor follower — a small acid pill (e.g. "View →")
+/* Awwwards-style cursor follower — a small aurora pill (e.g. "View →")
    that trails the cursor over any element marked with `data-cursor`.
    Single global mousemove listener, lerped rAF loop, transform-only
    writes. Renders nothing on touch devices or reduced-motion. */
@@ -79,7 +79,7 @@ export function CursorTag({ text }: { text: string }) {
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-[80] hidden md:block opacity-0 font-mono text-[11px] font-bold uppercase tracking-[0.16em] bg-acid text-[#101204] px-4 py-2 rounded-full whitespace-nowrap"
+      className="pointer-events-none fixed left-0 top-0 z-[80] hidden md:block opacity-0 font-mono text-[11px] font-bold uppercase tracking-[0.16em] bg-aurora text-[#0B0616] px-4 py-2 rounded-full whitespace-nowrap"
       style={{ transition: 'opacity 0.25s ease, scale 0.25s ease', scale: '0.8' }}
     >
       {text} →

@@ -49,9 +49,11 @@ export default function NoStalkingPage() {
             style={{
               fontSize: 'clamp(5rem, 20vw, 9rem)',
               fontWeight: 900,
-              letterSpacing: '-0.05em',
-              color: 'rgb(var(--acidtext))',
               display: 'block',
+              backgroundImage: 'linear-gradient(120deg, var(--aurora-1), var(--aurora-2))',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
             }}
           >
             403
@@ -63,7 +65,7 @@ export default function NoStalkingPage() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-2xl border border-line/15 bg-surface"
+          className="rounded-2xl border border-aurora/15 bg-surface"
           style={{
             padding: '1.5rem 2rem',
             marginBottom: '2rem',
@@ -72,7 +74,7 @@ export default function NoStalkingPage() {
           <p className="font-mono text-muted" style={{ fontSize: '0.75rem', marginBottom: '0.5rem', textAlign: 'left', opacity: 0.7 }}>
             {'>'} SYSTEM OUTPUT
           </p>
-          <p style={{ color: 'rgb(var(--acidtext))', fontSize: '0.8rem', textAlign: 'left', marginBottom: '0.75rem' }}>
+          <p style={{ color: 'var(--aurora-text)', fontSize: '0.8rem', textAlign: 'left', marginBottom: '0.75rem' }}>
             $ curl -X GET /aritra-profile-picture.png
           </p>
           <motion.p
@@ -125,7 +127,7 @@ export default function NoStalkingPage() {
         >
           <Link
             href="/"
-            className="bg-acid text-[#101204] hover:shadow-acid-glow"
+            className="bg-aurora text-[#0B0616] hover:shadow-aurora-glow"
             style={{
               display: 'inline-flex',
               alignItems: 'center',

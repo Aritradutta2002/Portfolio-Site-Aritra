@@ -20,7 +20,7 @@ export function ThemeToggle() {
     if (!mounted) return
     const meta = document.querySelector('meta[name="theme-color"]')
     if (meta) {
-      meta.setAttribute('content', resolvedTheme === 'light' ? '#FAFAF7' : '#0B0B0C')
+      meta.setAttribute('content', resolvedTheme === 'light' ? '#F5F6FA' : '#050508')
     }
   }, [mounted, resolvedTheme])
 
@@ -33,7 +33,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isLight ? 'dark' : 'light')}
-      className="relative w-9 h-9 rounded-full border border-line/10 flex items-center justify-center text-muted hover:text-acidstrong hover:border-acidstrong/50 transition-colors duration-300 flex-shrink-0"
+      className="relative w-9 h-9 rounded-full border border-line/10 flex items-center justify-center text-muted hover:text-aurorastrong hover:border-aurora/50 transition-colors duration-300 flex-shrink-0"
       aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
       title={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
     >

@@ -7,6 +7,7 @@ import { useMagnetic } from '@/lib/interactions'
 import { SectionHeading } from './SectionHeading'
 import { CountUp } from './CountUp'
 import { CursorTag } from './CursorTag'
+import { GlassCard } from './GlassCard'
 
 type Project = {
   id: number
@@ -108,7 +109,8 @@ const githubStats = [
 /* Project index row — outer motion.article owns layout + enter
    animations; the inner content layer owns ONLY the magnetic pull
    (strength 0.1, clamped ±12/±8px so full-bleed rows never drift
-   out of alignment), resetting smoothly on mouseleave. */
+   out of alignment), resetting smoothly on mouseleave. An aurora
+   gradient sweep underlines the row on hover. */
 function ProjectRow({ project, index, onOpen }: { project: Project; index: number; onOpen: () => void }) {
   const { targetRef } = useMagnetic<HTMLDivElement>(0.1, { maxX: 12, maxY: 8 })
   return (
@@ -118,21 +120,26 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.45, delay: Math.min(index * 0.06, 0.3) }}
-      className="group relative border-b border-line/10 hover:bg-line/[0.03] transition-colors duration-300 cursor-pointer"
+      className="group relative border-b border-aurora/10 hover:bg-aurora/[0.03] transition-colors duration-300 cursor-pointer"
       onClick={onOpen}
       data-cursor
     >
+      {/* Aurora gradient sweep — scaleX on hover, origin left */}
+      <span
+        className="absolute bottom-0 left-0 right-0 h-px bg-aurora origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out"
+        aria-hidden="true"
+      />
       <div ref={targetRef} className="magnetic flex items-start gap-5 md:gap-8 py-7 md:py-8 px-2 md:px-4">
-        <span className="font-mono text-xs text-muted pt-1.5 w-8 flex-shrink-0 group-hover:text-acidstrong transition-colors duration-300">
+        <span className="font-mono text-xs text-muted pt-1.5 w-8 flex-shrink-0 group-hover:text-aurorastrong transition-colors duration-300">
           {String(index + 1).padStart(2, '0')}
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap mb-2">
-            <h3 className="text-xl md:text-2xl font-bold tracking-tight text-ink group-hover:text-acidstrong transition-colors duration-300">
+            <h3 className="font-display text-xl md:text-2xl font-bold tracking-tight text-ink group-hover:text-aurorastrong transition-colors duration-300">
               {project.title}
             </h3>
             {project.featured && (
-              <span className="px-2.5 py-0.5 rounded-full bg-acid text-[#101204] font-mono text-[10px] font-bold uppercase tracking-[0.14em]">
+              <span className="px-2.5 py-0.5 rounded-full bg-aurora text-[#0B0616] font-mono text-[10px] font-bold uppercase tracking-[0.14em]">
                 Featured
               </span>
             )}
@@ -144,7 +151,7 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1 rounded-full border border-line/12 font-mono text-[11px] text-ink/70"
+                className="px-3 py-1 rounded-full border border-aurora/20 font-mono text-[11px] text-ink/70"
               >
                 {tech}
               </span>
@@ -158,11 +165,11 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
             rel="noopener noreferrer"
             aria-label={`${project.title} on GitHub`}
             onClick={e => e.stopPropagation()}
-            className="w-10 h-10 rounded-full border border-line/12 flex items-center justify-center text-muted hover:text-[#101204] hover:bg-acid hover:border-acid transition-colors duration-300"
+            className="w-10 h-10 rounded-full border border-aurora/25 flex items-center justify-center text-muted hover:text-[#0B0616] hover:bg-aurora hover:border-aurora transition-colors duration-300"
           >
             <Github size={16} />
           </a>
-          <span className="w-10 h-10 rounded-full border border-line/12 flex items-center justify-center text-muted group-hover:text-[#101204] group-hover:bg-acid group-hover:border-acid transition-colors duration-300">
+          <span className="w-10 h-10 rounded-full border border-aurora/25 flex items-center justify-center text-muted group-hover:text-[#0B0616] group-hover:bg-aurora group-hover:border-aurora transition-colors duration-300">
             <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
           </span>
         </span>
@@ -190,7 +197,7 @@ export function Projects() {
           blurb="Projects showcasing my skills across various technologies and domains"
         />
 
-        {/* ── Filter tabs ──────────────────────────────────── */}
+        {/* ── Filter tabs — layout-animated aurora underline ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -198,23 +205,31 @@ export function Projects() {
           viewport={{ once: true }}
           className="flex flex-wrap gap-x-7 gap-y-3 mb-10"
         >
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`font-mono text-xs uppercase tracking-[0.16em] pb-1.5 border-b-2 transition-colors duration-200 ${
-                selectedCategory === cat
-                  ? 'text-acidstrong border-acid'
-                  : 'text-muted border-transparent hover:text-ink'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const active_ = selectedCategory === cat
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`relative font-mono text-xs uppercase tracking-[0.16em] pb-1.5 transition-colors duration-200 ${
+                  active_ ? 'text-aurorastrong' : 'text-muted border-transparent hover:text-ink'
+                }`}
+              >
+                {cat}
+                {active_ && (
+                  <motion.span
+                    layoutId="project-filter-underline"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-aurora"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </button>
+            )
+          })}
         </motion.div>
 
         {/* ── Project index rows ───────────────────────────── */}
-        <motion.div layout className="border-t border-line/10">
+        <motion.div layout className="border-t border-aurora/10">
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
               <ProjectRow key={project.id} project={project} index={index} onOpen={() => setSelectedProject(project)} />
@@ -228,27 +243,29 @@ export function Projects() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55 }}
           viewport={{ once: true, margin: '-64px' }}
-          className="mt-16 md:mt-20 rounded-2xl border border-line/10 bg-surface p-8 md:p-10"
+          className="mt-16 md:mt-20"
         >
-          <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-muted mb-8 text-center">
-            Platform Statistics
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-            {githubStats.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-                viewport={{ once: true }}
-              >
-                <div className="text-4xl md:text-5xl font-bold tracking-tight text-ink mb-2">
-                  <CountUp to={s.to} suffix={s.suffix} />
-                </div>
-                <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">{s.label}</div>
-              </motion.div>
-            ))}
-          </div>
+          <GlassCard hover className="p-8 md:p-10">
+            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-muted mb-8 text-center">
+              Platform Statistics
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+              {githubStats.map((s, i) => (
+                <motion.div
+                  key={s.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.08 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="font-display text-4xl md:text-5xl font-bold tracking-tight text-gradient mb-2">
+                    <CountUp to={s.to} suffix={s.suffix} />
+                  </div>
+                  <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">{s.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </GlassCard>
         </motion.div>
       </div>
 
@@ -270,26 +287,26 @@ export function Projects() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 32, opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-2xl border border-line/12 bg-surface max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="glass-card max-w-2xl w-full max-h-[90vh] overflow-y-auto overflow-x-hidden"
               onClick={e => e.stopPropagation()}
               role="dialog"
               aria-modal="true"
               aria-label={selectedProject.title}
             >
-              <div className="h-1 w-full bg-acid rounded-t-2xl" />
+              <div className="h-1 w-full bg-aurora" />
               <div className="p-8">
                 <div className="flex justify-between items-start gap-4 mb-5">
                   <div>
-                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-acidstrong mb-2">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-aurorastrong mb-2">
                       {selectedProject.category}
                     </p>
-                    <h3 className="text-2xl font-bold tracking-tight text-ink leading-snug">
+                    <h3 className="font-display text-2xl font-bold tracking-tight text-ink leading-snug">
                       {selectedProject.title}
                     </h3>
                   </div>
                   <button
                     onClick={() => setSelectedProject(null)}
-                    className="p-2 rounded-full border border-line/12 text-muted hover:text-ink hover:border-line/30 transition-colors duration-200 flex-shrink-0"
+                    className="p-2 rounded-full border border-aurora/25 text-muted hover:text-ink hover:border-aurora/60 transition-colors duration-200 flex-shrink-0"
                     aria-label="Close details"
                   >
                     <X size={16} />
@@ -298,7 +315,7 @@ export function Projects() {
 
                 <div className="flex gap-2 mb-5 flex-wrap">
                   {selectedProject.technologies.map((tech) => (
-                    <span key={tech} className="px-3 py-1 rounded-full border border-line/12 font-mono text-[11px] text-ink/75">
+                    <span key={tech} className="px-3 py-1 rounded-full border border-aurora/20 font-mono text-[11px] text-ink/75">
                       {tech}
                     </span>
                   ))}
@@ -313,7 +330,7 @@ export function Projects() {
                     href={selectedProject.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-line/15 text-ink font-bold text-sm hover:border-acid/60 hover:text-acidstrong transition-colors duration-300"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-aurora/40 bg-aurora/5 text-ink font-bold text-sm hover:border-aurora/70 hover:text-aurorastrong transition-colors duration-300"
                   >
                     <Github size={16} />
                     View Code
@@ -323,7 +340,7 @@ export function Projects() {
                       href={selectedProject.demo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-acid text-[#101204] font-bold text-sm hover:shadow-acid-glow transition-shadow duration-300"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-aurora text-[#0B0616] font-bold text-sm hover:shadow-aurora-glow transition-shadow duration-300"
                     >
                       <ExternalLink size={16} />
                       Live Demo

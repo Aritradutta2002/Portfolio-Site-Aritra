@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { SectionHeading } from './SectionHeading'
 import { CountUp } from './CountUp'
+import { GlassCard } from './GlassCard'
 
 /* ── Skill data ─────────────────────────────────────────────── */
 const skillCategories = [
@@ -72,8 +73,8 @@ export function Skills() {
           blurb="Technologies and tools I work with to bring ideas to life"
         />
 
-        {/* ── Skill groups — meter rows ──────────────────────── */}
-        <div className="grid md:grid-cols-2 gap-x-12 gap-y-10 mb-16 md:mb-20">
+        {/* ── Skill groups — glass cards with aurora meter rows ── */}
+        <div className="grid md:grid-cols-2 gap-6 mb-16 md:mb-20">
           {skillCategories.map((category, ci) => (
             <motion.div
               key={category.title}
@@ -82,29 +83,31 @@ export function Skills() {
               transition={{ duration: 0.55, delay: (ci % 2) * 0.08 }}
               viewport={{ once: true, margin: '-64px' }}
             >
-              <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-5 flex items-center gap-3">
-                <span className="w-6 h-px bg-acid" aria-hidden="true" />
-                {category.title}
-              </h3>
-              <div className="border-t border-line/10">
-                {category.skills.map((skill, si) => (
-                  <div key={skill.name} className="py-3.5 border-b border-line/10">
-                    <div className="flex justify-between items-baseline mb-2">
-                      <span className="text-[15px] font-semibold text-ink">{skill.name}</span>
-                      <span className="font-mono text-xs text-muted">{skill.level}%</span>
+              <GlassCard hover className="p-7">
+                <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-5 flex items-center gap-3">
+                  <span className="w-6 h-px bg-aurora" aria-hidden="true" />
+                  {category.title}
+                </h3>
+                <div className="border-t border-aurora/10">
+                  {category.skills.map((skill, si) => (
+                    <div key={skill.name} className="py-3.5 border-b border-aurora/10 last:border-b-0">
+                      <div className="flex justify-between items-baseline mb-2">
+                        <span className="text-[15px] font-semibold text-ink">{skill.name}</span>
+                        <span className="font-mono text-xs text-muted">{skill.level}%</span>
+                      </div>
+                      <div className="h-1 rounded-full bg-line/10 overflow-hidden">
+                        <motion.div
+                          className="meter-fill h-full rounded-full"
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.level}%` }}
+                          transition={{ duration: 1, delay: si * 0.06, ease: 'easeOut' }}
+                          viewport={{ once: true }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-1 rounded-full bg-line/10 overflow-hidden">
-                      <motion.div
-                        className="h-full rounded-full bg-acid"
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        transition={{ duration: 1, delay: si * 0.06, ease: 'easeOut' }}
-                        viewport={{ once: true }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </GlassCard>
             </motion.div>
           ))}
         </div>
@@ -122,7 +125,7 @@ export function Skills() {
             {extraTech.map((tech) => (
               <span
                 key={tech}
-                className="px-4 py-2 rounded-full border border-line/12 font-mono text-xs text-ink/75 hover:border-acid/60 hover:text-acidstrong transition-colors duration-300 cursor-default"
+                className="px-4 py-2 rounded-full border border-aurora/20 font-mono text-xs text-ink/75 hover:border-aurora/60 hover:text-aurorastrong transition-colors duration-300 cursor-default"
               >
                 {tech}
               </span>
@@ -144,7 +147,7 @@ export function Skills() {
             {aiTech.map((tech) => (
               <span
                 key={tech}
-                className="px-4 py-2 rounded-full bg-acid text-[#101204] font-mono text-xs font-bold cursor-default"
+                className="px-4 py-2 rounded-full bg-aurora text-[#0B0616] font-mono text-xs font-bold cursor-default"
               >
                 {tech}
               </span>
@@ -152,7 +155,7 @@ export function Skills() {
           </div>
         </motion.div>
 
-        {/* ── Competitive Programming ─────────────────────────── */}
+        {/* ── Competitive Programming — gradient-border grid ── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -160,8 +163,8 @@ export function Skills() {
           viewport={{ once: true, margin: '-64px' }}
           className="mb-16 md:mb-20"
         >
-          <h3 className="text-2xl font-bold tracking-tight text-ink mb-8">Competitive Programming</h3>
-          <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-l border-line/10">
+          <h3 className="font-display text-2xl font-bold tracking-tight text-ink mb-8">Competitive Programming</h3>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {cpStats.map((s, i) => (
               <motion.div
                 key={s.label}
@@ -169,9 +172,9 @@ export function Skills() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.07 }}
                 viewport={{ once: true }}
-                className="border-b border-r border-line/10 p-6 hover:bg-line/[0.03] transition-colors duration-300"
+                className="glass-card glass-hover p-6"
               >
-                <div className="text-4xl font-bold tracking-tight text-acidstrong mb-2">
+                <div className="font-display text-3xl md:text-4xl font-bold tracking-tight text-gradient mb-2">
                   <CountUp to={s.to} suffix={s.suffix} />
                 </div>
                 <div className="text-sm font-semibold text-ink">{s.label}</div>
@@ -188,8 +191,8 @@ export function Skills() {
           transition={{ duration: 0.55 }}
           viewport={{ once: true, margin: '-64px' }}
         >
-          <h3 className="text-2xl font-bold tracking-tight text-ink mb-8">Certifications</h3>
-          <div className="border-t border-line/10">
+          <h3 className="font-display text-2xl font-bold tracking-tight text-ink mb-8">Certifications</h3>
+          <div className="border-t border-aurora/10">
             {certifications.map((cert, i) => (
               <motion.div
                 key={cert.text}
@@ -197,12 +200,12 @@ export function Skills() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: Math.min(i * 0.06, 0.3) }}
                 viewport={{ once: true }}
-                className="flex items-center justify-between gap-4 py-4 border-b border-line/10 group px-2 -mx-2 hover:bg-line/[0.02] transition-colors duration-300"
+                className="flex items-center justify-between gap-4 py-4 border-b border-aurora/10 group px-2 -mx-2 hover:bg-aurora/[0.03] transition-colors duration-300"
               >
                 <p className="text-[15px] font-medium text-ink/85 group-hover:text-ink transition-colors duration-300">
                   {cert.text}
                 </p>
-                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-acidstrong border border-acid/30 rounded-full px-3 py-1 flex-shrink-0">
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-aurorastrong border border-aurora/30 rounded-full px-3 py-1 flex-shrink-0">
                   {cert.issuer}
                 </span>
               </motion.div>

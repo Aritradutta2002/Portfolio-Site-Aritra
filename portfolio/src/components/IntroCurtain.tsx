@@ -6,8 +6,8 @@ import { markIntroSeen } from '@/lib/interactions'
 
 /* Page-load intro curtain — full-screen takeover on FIRST visit only.
    Counter 0→100 (~1.2s), then a double-panel exit: ink panel lifts
-   first, acid trailer follows 90ms behind. Skipped entirely for
-   reduced-motion users and repeat visits this session (sessionStorage).
+   first, aurora gradient trailer follows 90ms behind. Skipped entirely
+   for reduced-motion users and repeat visits this session (sessionStorage).
    Scroll is locked while it plays; hero entrances wait on the
    'ad-intro-done' broadcast via useIntroReady(). */
 export function IntroCurtain() {
@@ -59,9 +59,9 @@ export function IntroCurtain() {
 
   return (
     <div className="fixed inset-0 z-[200]" aria-hidden="true">
-      {/* Acid trailer panel — exits 90ms behind the ink panel */}
+      {/* Aurora trailer panel — exits 90ms behind the ink panel */}
       <motion.div
-        className="absolute inset-0 bg-acid"
+        className="absolute inset-0 bg-aurora"
         initial={{ y: 0 }}
         animate={exiting ? { y: '-100%' } : { y: 0 }}
         transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1], delay: exiting ? 0.09 : 0 }}
@@ -95,12 +95,12 @@ export function IntroCurtain() {
         >
           <span className="block overflow-hidden">
             <motion.span
-              className="block font-bold tracking-[-0.035em] leading-[0.95] text-ink text-[16vw] sm:text-[11vw] lg:text-[8.5rem]"
+              className="block font-display font-bold tracking-[-0.035em] leading-[0.95] text-ink text-[16vw] sm:text-[11vw] lg:text-[8.5rem]"
               initial={{ y: '110%' }}
               animate={{ y: '0%' }}
               transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             >
-              Aritra Dutta<span className="text-acidstrong">.</span>
+              Aritra Dutta<span className="text-gradient">.</span>
             </motion.span>
           </span>
           <motion.p
@@ -113,7 +113,7 @@ export function IntroCurtain() {
           </motion.p>
         </motion.div>
 
-        {/* Bottom counter + progress hairline */}
+        {/* Bottom counter + aurora progress hairline */}
         <motion.div
           animate={exiting ? { opacity: 0, y: 28 } : { opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
@@ -122,13 +122,13 @@ export function IntroCurtain() {
             <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
               {exiting ? 'Welcome' : 'Compiling portfolio'}
             </span>
-            <span className="font-bold tabular-nums tracking-tight text-ink text-6xl sm:text-7xl leading-none">
+            <span className="font-display font-bold tabular-nums tracking-tight text-gradient text-6xl sm:text-7xl leading-none">
               {count}
             </span>
           </div>
           <div className="h-px w-full bg-line/15 overflow-hidden">
             <div
-              className="h-full w-full bg-acid origin-left"
+              className="h-full w-full bg-aurora origin-left"
               style={{ transform: `scaleX(${count / 100})` }}
             />
           </div>

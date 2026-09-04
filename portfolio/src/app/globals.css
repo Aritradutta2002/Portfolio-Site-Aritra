@@ -2,21 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design tokens — "Acid Editorial" (single source of truth) ──
+/* ── Design tokens — "Aurora Glass" (single source of truth) ──
    Colors are RGB triplets consumed via Tailwind's <alpha-value> pattern,
    so opacity modifiers keep working. :root = light theme, .dark = dark. */
 :root {
   color-scheme: light;
-  --bg: 250 250 247;
+  --bg: 245 246 250;
   --surface: 255 255 255;
-  --ink: 13 13 15;
-  --muted: 93 93 102;
-  --line: 13 13 15;
-  --acidtext: 77 124 15;
-  --background: #FAFAF7;
-  --foreground: #0D0D0F;
-  --acid: #BEF264;
-  --acid-ink: #101204;
+  --ink: 12 14 24;
+  --muted: 92 98 118;
+  --line: 12 14 24;
+  --background: #F5F6FA;
+  --foreground: #0C0E18;
+
+  /* Aurora accents */
+  --aurora-1: #8B5CF6; /* violet */
+  --aurora-2: #22D3EE; /* cyan   */
+  --aurora-3: #F472B6; /* pink   */
+  --aurora-text: #6D28D9; /* text-safe accent in light */
+
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-shadow: 0 8px 32px rgba(13, 16, 40, 0.10);
 
   /* Modular type scale (1.25 ratio) */
   --text-xs: 0.8rem;
@@ -39,15 +47,24 @@
 
 .dark {
   color-scheme: dark;
-  --bg: 11 11 12;
-  --surface: 20 20 23;
-  --ink: 250 250 248;
-  --muted: 163 163 171;
+  --bg: 5 5 8;
+  --surface: 20 21 28;
+  --ink: 237 238 244;
+  --muted: 148 152 168;
   --line: 255 255 255;
-  --acidtext: 190 242 100;
-  --background: #0B0B0C;
-  --foreground: #FAFAF8;
-  --acid: #BEF264;
+  --background: #050508;
+  --foreground: #EDEEF4;
+
+  /* Aurora accents (same hues, readable on near-black) */
+  --aurora-1: #8B5CF6;
+  --aurora-2: #22D3EE;
+  --aurora-3: #F472B6;
+  --aurora-text: #A78BFA;
+
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
 /* Lenis recommends auto for smooth scrolling */
@@ -79,11 +96,7 @@ html.lenis {
   }
 }
 
-/* OS-level reduced-motion + high-contrast support lives in the
-   @media block above. (The old in-app Accessibility Settings widget
-   and its helper classes were removed.) */
-
-/* Body — off-white on near-black, 1.6–1.8 rhythm */
+/* Body — porcelain light / near-black dark, 1.6–1.8 rhythm */
 body {
   background: var(--background);
   color: var(--foreground);
@@ -120,15 +133,127 @@ section[id] {
   text-wrap: balance;
 }
 
-/* Subtle film-grain over dark backgrounds (SVG turbulence, zero JS) */
+/* Subtle film-grain (SVG turbulence, zero JS) */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Aurora gradient text / fills ──────────────────────────── */
+.text-gradient {
+  background: linear-gradient(120deg, var(--aurora-1), var(--aurora-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-gradient-3 {
+  background: linear-gradient(120deg, var(--aurora-1), var(--aurora-3), var(--aurora-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.bg-aurora {
+  background-image: linear-gradient(135deg, var(--aurora-1), var(--aurora-2));
+}
+.bg-aurora-3 {
+  background-image: linear-gradient(135deg, var(--aurora-1), var(--aurora-3), var(--aurora-2));
+}
+
+/* ── Glass card (GlassCard.tsx) ──────────────────────────────
+   Gradient hairline border via a masked background layer + blur. */
+.glass-card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1.25rem;
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.45),
+    rgba(255, 255, 255, 0.06) 40%,
+    rgba(34, 211, 238, 0.35)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.glass-card::after {
+  /* Inner top highlight */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.07),
+    transparent 30%
+  );
+}
+.glass-hover {
+  transition:
+    box-shadow 0.4s ease,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.glass-hover:hover {
+  box-shadow:
+    0 0 0 1px rgba(139, 92, 246, 0.25),
+    0 8px 40px rgba(139, 92, 246, 0.22),
+    0 8px 32px rgba(0, 0, 0, 0.30);
+}
+
+/* ── Aurora orbs (GradientOrbs.tsx) ──────────────────────────
+   Blurred radial divs drifting on slow GPU-only keyframes. */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform;
+  pointer-events: none;
+}
+.orb-1 {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.32), transparent 70%);
+  animation: orb-drift-1 26s ease-in-out infinite alternate;
+}
+.orb-2 {
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.24), transparent 70%);
+  animation: orb-drift-2 32s ease-in-out infinite alternate;
+}
+.orb-3 {
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.18), transparent 70%);
+  animation: orb-drift-3 38s ease-in-out infinite alternate;
+}
+@keyframes orb-drift-1 {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(6vw, -4vh, 0) scale(1.15); }
+}
+@keyframes orb-drift-2 {
+  0%   { transform: translate3d(0, 0, 0) scale(1.1); }
+  100% { transform: translate3d(-5vw, 6vh, 0) scale(0.95); }
+}
+@keyframes orb-drift-3 {
+  0%   { transform: translate3d(0, 0, 0) scale(0.9); }
+  100% { transform: translate3d(4vw, 5vh, 0) scale(1.1); }
+}
+:root:not(.dark) .orb-1 { opacity: 0.55; }
+:root:not(.dark) .orb-2 { opacity: 0.45; }
+:root:not(.dark) .orb-3 { opacity: 0.35; }
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; }
 }
 
 /* ── Spotlight (useSpotlight) ─────────────────────────────── */
@@ -149,8 +274,8 @@ body::after {
   transition: opacity 0.5s ease;
   background: radial-gradient(
     closest-side,
-    rgba(190, 242, 100, 0.1),
-    rgba(190, 242, 100, 0.03),
+    rgba(139, 92, 246, 0.12),
+    rgba(34, 211, 238, 0.05),
     transparent 70%
   );
   filter: blur(10px);
@@ -171,9 +296,9 @@ body::after {
 }
 .magnetic-glow:hover {
   box-shadow:
-    0 0 0 1px rgba(190, 242, 100, 0.5),
-    0 0 28px rgba(190, 242, 100, 0.28),
-    0 8px 32px rgba(0, 0, 0, 0.45);
+    0 0 0 1px rgba(139, 92, 246, 0.5),
+    0 0 28px rgba(139, 92, 246, 0.30),
+    0 8px 32px rgba(0, 0, 0, 0.40);
 }
 
 /* ── Tilt cards (useTilt) ─────────────────────────────────── */
@@ -186,7 +311,7 @@ body::after {
   transform: perspective(600px) rotateY(0deg) rotateX(0deg);
 }
 [data-tilt]:hover {
-  border-color: rgba(190, 242, 100, 0.4);
+  border-color: rgba(139, 92, 246, 0.4);
 }
 
 /* ── Scroll reveal (useReveal, no-JS-motion fallback) ─────── */
@@ -232,7 +357,13 @@ body::after {
   }
 }
 
-/* Scrollbar — dark default, acid accent */
+/* ── Aurora meter fill (skill bars) ───────────────────────── */
+.meter-fill {
+  background-image: linear-gradient(90deg, var(--aurora-1), var(--aurora-2));
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.35);
+}
+
+/* Scrollbar — dark default, aurora accent */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -242,23 +373,23 @@ body::after {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(190, 242, 100, 0.4);
+  background: rgba(139, 92, 246, 0.4);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(190, 242, 100, 0.7);
+  background: rgba(139, 92, 246, 0.7);
 }
 
-/* Selection — acid accent */
+/* Selection — aurora accent */
 ::selection {
-  background-color: rgba(190, 242, 100, 0.85);
-  color: #101204;
+  background-color: rgba(139, 92, 246, 0.85);
+  color: #FFFFFF;
 }
 
 /* Focus — theme-safe accent, visible on both backgrounds */
 :focus-visible {
-  outline: 2px solid rgb(var(--acidtext));
+  outline: 2px solid var(--aurora-text);
   outline-offset: 2px;
 }
 
@@ -279,3 +410,151 @@ img {
   opacity: 0.7;
   pointer-events: none;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   PREMIUM MOTION WIDGETS
+   ───────────────────────────────────────────────────────────── */
+
+/* ── RippleButton shimmer sweep ──────────────────────────────
+   A diagonal aurora gradient that travels across the button on
+   hover. The whole pseudo is positioned off-screen at rest so it
+   doesn't tint the button when idle. */
+.ripple-shimmer {
+  inset: -2px;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: inherit;
+  mix-blend-mode: overlay;
+}
+[data-variant='glass'] .ripple-shimmer {
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(139, 92, 246, 0.35) 50%,
+    transparent 70%,
+    transparent 100%
+  );
+  mix-blend-mode: normal;
+}
+/* Hover plays the shimmer once. Also re-plays on focus-visible
+   for keyboard users. */
+.group\/ripple:hover .ripple-shimmer,
+.group\/ripple:focus-visible .ripple-shimmer {
+  transform: translateX(120%);
+}
+
+/* ── ShineBorder (conic gradient rotation) ───────────────────
+   Driving the angle via a CSS custom property keeps the keyframe
+   trivial — we just animate --shine-angle from 0 to 360deg. */
+.shine-border {
+  --shine-angle: 0deg;
+}
+@keyframes shine-spin {
+  to {
+    --shine-angle: 360deg;
+  }
+}
+@property --shine-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@supports not (background: conic-gradient(from 0deg, red, red)) {
+  /* Fallback for browsers that don't support animated conic-gradient
+     via custom prop — fall back to a static gradient border. */
+  .shine-border {
+    background: linear-gradient(135deg, #8B5CF6, #22D3EE, #F472B6) !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shine-border {
+    animation: none !important;
+  }
+}
+
+/* ── GlowCard (cursor-tracked radial glow) ────────────────── */
+.glow-card {
+  /* Sets a fresh stacking context so the absolute glow stays clipped
+     to this card's rounded box-shadow region. */
+  isolation: isolate;
+}
+
+/* ── Button press feedback (used by Hero CTAs etc.) ───────── */
+.btn-press {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s ease;
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* ── Animated aurora underline (nav, section dividers) ────── */
+.aurora-underline {
+  position: relative;
+}
+.aurora-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1.5px;
+  width: 100%;
+  background: linear-gradient(90deg,
+    var(--aurora-1),
+    var(--aurora-2),
+    var(--aurora-3),
+    var(--aurora-1));
+  background-size: 200% 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 9999px;
+}
+.aurora-underline:hover::after,
+.aurora-underline:focus-visible::after {
+  transform: scaleX(1);
+  animation: aurora-flow 3s linear infinite;
+}
+@keyframes aurora-flow {
+  to { background-position: 200% 0; }
+}
+
+/* ── Pulsing glow ring (achievement badges etc.) ──────────── */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.45),
+                0 0 0 0 rgba(34, 211, 238, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0),
+                0 0 24px 4px rgba(34, 211, 238, 0.25);
+  }
+}
+.pulse-glow {
+  animation: pulse-glow 3.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse-glow,
+  .ripple-shimmer,
+  .aurora-underline::after {
+    animation: none !important;
+  }
+}
+
+/* ── Floating tag dots (hero pill indicators) ─────────────── */
+@keyframes float-dot {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50%      { transform: translateY(-3px); opacity: 0.7; }
+}
+.float-dot { animation: float-dot 2.4s ease-in-out infinite; }
+.float-dot-delay-1 { animation-delay: 0.2s; }
+.float-dot-delay-2 { animation-delay: 0.4s; }

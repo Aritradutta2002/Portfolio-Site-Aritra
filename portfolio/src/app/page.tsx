@@ -8,9 +8,11 @@ import { Blog } from '@/components/Blog'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
 import { IntroCurtain } from '@/components/IntroCurtain'
+import { GradientOrbs } from '@/components/GradientOrbs'
 export default function Home() {
   return (
     <main className="min-h-screen relative bg-background text-ink overflow-x-hidden">
+      <GradientOrbs />
       <IntroCurtain />
       <Navigation />
       <Hero />

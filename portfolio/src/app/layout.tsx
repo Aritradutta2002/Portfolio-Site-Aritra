@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Fira_Code, Geist, Geist_Mono } from "next/font/google";
+import { Inter, Fira_Code, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
@@ -14,6 +14,12 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
   display: 'swap',
 });
@@ -49,6 +55,13 @@ export const metadata: Metadata = {
     title: "Aritra Dutta | Full Stack Engineer Portfolio",
     description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 30x API performance gains.",
   },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "512x512", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({
@@ -60,10 +73,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#BEF264" />
+        <meta name="theme-color" content="#050508" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${firaCode.variable} font-sans antialiased transition-colors duration-500`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} ${firaCode.variable} font-sans antialiased transition-colors duration-500`}
       >
         <ErrorBoundary>
           <ThemeProvider

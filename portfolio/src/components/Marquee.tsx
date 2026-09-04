@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Asterisk } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 
 /* Infinite mono marquee strip — CSS-only loop (pauses on hover,
    static under prefers-reduced-motion) + framer-motion entrance.
@@ -15,14 +15,14 @@ export function Marquee({ items }: { items: string[] }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: true, margin: '-48px' }}
-      className="marquee overflow-hidden border-y border-line/10 bg-line/[0.02] py-4 select-none"
+      className="marquee overflow-hidden border-y border-aurora/10 bg-aurora/[0.02] py-4 select-none"
       aria-hidden="true"
     >
       <div className="marquee-track flex w-max items-center gap-8 pr-8">
         {row.map((item, i) => (
           <span key={i} className="flex items-center gap-8 font-mono text-sm uppercase tracking-[0.2em] text-muted whitespace-nowrap">
             {item}
-            <Asterisk size={16} className="text-acidstrong" />
+            <Sparkles size={16} className="text-aurorastrong" />
           </span>
         ))}
       </div>

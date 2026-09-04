@@ -71,11 +71,16 @@ function PostRow({ post, index }: { post: BlogPost; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: Math.min(index * 0.07, 0.3) }}
       viewport={{ once: true }}
-      className="group border-b border-line/10 hover:bg-line/[0.03] transition-colors duration-300"
+      className="group relative border-b border-aurora/10 hover:bg-aurora/[0.03] transition-colors duration-300"
       data-cursor
     >
+      {/* Aurora gradient sweep — scaleX on hover, origin left */}
+      <span
+        className="absolute bottom-0 left-0 right-0 h-px bg-aurora origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out"
+        aria-hidden="true"
+      />
       <Link href="/blog" ref={targetRef} className="magnetic flex items-start gap-5 md:gap-8 py-7 px-2 md:px-4">
-        <span className="font-mono text-xs text-muted pt-1.5 w-8 flex-shrink-0 group-hover:text-acidstrong transition-colors duration-300">
+        <span className="font-mono text-xs text-muted pt-1.5 w-8 flex-shrink-0 group-hover:text-aurorastrong transition-colors duration-300">
           {String(index + 1).padStart(2, '0')}
         </span>
         <div className="flex-1 min-w-0">
@@ -86,9 +91,9 @@ function PostRow({ post, index }: { post: BlogPost; index: number }) {
             <span className="inline-flex items-center gap-1.5">
               <Clock size={11} />{post.readTime}
             </span>
-            <span className="text-acidstrong">{post.category}</span>
+            <span className="text-aurorastrong">{post.category}</span>
           </div>
-          <h4 className="text-xl md:text-2xl font-bold tracking-tight text-ink leading-snug mb-2 group-hover:text-acidstrong transition-colors duration-300">
+          <h4 className="font-display text-xl md:text-2xl font-bold tracking-tight text-ink leading-snug mb-2 group-hover:text-aurorastrong transition-colors duration-300">
             {post.title}
           </h4>
           <p className="text-[15px] text-muted leading-relaxed max-w-2xl mb-3.5">
@@ -96,13 +101,13 @@ function PostRow({ post, index }: { post: BlogPost; index: number }) {
           </p>
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
-              <span key={tag} className="px-3 py-1 rounded-full border border-line/12 font-mono text-[11px] text-ink/70">
+              <span key={tag} className="px-3 py-1 rounded-full border border-aurora/20 font-mono text-[11px] text-ink/70">
                 {tag}
               </span>
             ))}
           </div>
         </div>
-        <span className="hidden sm:flex w-10 h-10 rounded-full border border-line/12 items-center justify-center text-muted group-hover:text-[#101204] group-hover:bg-acid group-hover:border-acid transition-colors duration-300 flex-shrink-0 mt-1">
+        <span className="hidden sm:flex w-10 h-10 rounded-full border border-aurora/25 items-center justify-center text-muted group-hover:text-[#0B0616] group-hover:bg-aurora group-hover:border-aurora transition-colors duration-300 flex-shrink-0 mt-1">
           <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
         </span>
       </Link>
@@ -127,7 +132,7 @@ export function Blog() {
 
         {/* ── Featured ─────────────────────────────────────── */}
         <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-2">Featured Posts</h3>
-        <div className="border-t border-line/10 mb-14">
+        <div className="border-t border-aurora/10 mb-14">
           {featuredPosts.map((post, i) => (
             <PostRow key={post.id} post={post} index={i} />
           ))}
@@ -135,33 +140,33 @@ export function Blog() {
 
         {/* ── Recent ───────────────────────────────────────── */}
         <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-2">Recent Posts</h3>
-        <div className="border-t border-line/10 mb-14">
+        <div className="border-t border-aurora/10 mb-14">
           {recentPosts.map((post, i) => (
             <PostRow key={post.id} post={post} index={i} />
           ))}
         </div>
 
-        {/* ── CTA band ─────────────────────────────────────── */}
+        {/* ── CTA band — aurora gradient panel ─────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55 }}
           viewport={{ once: true, margin: '-64px' }}
-          className="rounded-2xl bg-acid text-[#101204] p-10 md:p-14 relative overflow-hidden"
+          className="rounded-2xl bg-aurora text-[#0B0616] p-10 md:p-14 relative overflow-hidden"
         >
           <div className="relative z-10 max-w-xl">
-            <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">Want to Read More?</h3>
-            <p className="text-[#101204]/70 text-[15px] mb-7 leading-relaxed">
+            <h3 className="font-display text-3xl md:text-4xl font-bold tracking-tight mb-3">Want to Read More?</h3>
+            <p className="text-[#0B0616]/70 text-[15px] mb-7 leading-relaxed">
               Follow me for more insights, updates, and content about technology and development.
             </p>
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#101204] text-[#BEF264] font-bold text-sm hover:shadow-[0_8px_32px_rgba(16,18,4,0.4)] transition-shadow duration-300"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#0B0616] text-white font-bold text-sm hover:shadow-[0_8px_32px_rgba(11,6,22,0.4)] transition-shadow duration-300"
             >
               View All Posts <ArrowRight size={15} />
             </Link>
           </div>
-          <span className="absolute -bottom-8 -right-2 font-bold tracking-[-0.04em] leading-none text-[10rem] md:text-[14rem] text-[#101204]/10 select-none" aria-hidden="true">
+          <span className="absolute -bottom-8 -right-2 font-display font-bold tracking-[-0.04em] leading-none text-[10rem] md:text-[14rem] text-[#0B0616]/10 select-none" aria-hidden="true">
             Aa
           </span>
         </motion.div>

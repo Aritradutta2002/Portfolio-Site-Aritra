@@ -40,17 +40,17 @@ const PRINT_STYLES = `
   .btn-download {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 9px 22px;
-    background: #BEF264;
-    color: #101204;
+    background: linear-gradient(135deg, #8B5CF6, #22D3EE);
+    color: #0B0616;
     border: none;
     border-radius: 999px;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    transition: background .2s;
+    transition: box-shadow .2s;
     text-decoration: none;
   }
-  .btn-download:hover { background: #a5dd2e; }
+  .btn-download:hover { box-shadow: 0 0 0 1px rgba(139,92,246,.5), 0 0 28px rgba(139,92,246,.3); }
   .btn-back {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 9px 16px;
@@ -63,7 +63,7 @@ const PRINT_STYLES = `
     text-decoration: none;
     transition: border-color .2s, color .2s;
   }
-  .btn-back:hover { border-color: #65A30D; color: #3F6212; }
+  .btn-back:hover { border-color: #8B5CF6; color: #6D28D9; }
 
   /* Resume card */
   .resume {

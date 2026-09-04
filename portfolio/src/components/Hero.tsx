@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { ChevronDown, Download, Github, Linkedin, Code2, ArrowUpRight, ArrowDown } from 'lucide-react'
 import { Marquee } from './Marquee'
 import { CountUp } from './CountUp'
+import { RippleButton } from './RippleButton'
 import { useSpotlight, useMagnetic, useTilt, useIntroReady } from '@/lib/interactions'
 
 /* ── Stats ──────────────────────────────────────────────────── */
@@ -15,7 +16,7 @@ const stats = [
 ]
 
 /* ── Roles (previously typewriter) ──────────────────────────── */
-const roles = ['Full Stack Engineer', 'Problem Solver', 'Full Stack Dev']
+const roles = ['Full Stack Engineer', 'GenAI Builder', 'Problem Solver']
 
 /* ── Social quick-links ─────────────────────────────────────── */
 const socials = [
@@ -33,11 +34,11 @@ const marqueeItems = [
 function Portrait() {
   const { targetRef } = useTilt<HTMLDivElement>(8)
   return (
-    <div ref={targetRef} data-tilt className="relative rounded-2xl border border-line/10 bg-surface overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3 border-b border-line/10 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+    <div ref={targetRef} data-tilt className="glass-card overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-muted border-b border-aurora/10">
         <span>Profile — 001</span>
         <span className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-acid animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-aurora-2 animate-pulse" />
           Open
         </span>
       </div>
@@ -46,12 +47,12 @@ function Portrait() {
         alt="Aritra Dutta – Software Engineer"
         width={640}
         height={640}
-        className="w-full aspect-square object-cover grayscale-[35%] contrast-[1.05]"
+        className="w-full aspect-square object-cover"
         priority
       />
-      <div className="flex items-center justify-between px-5 py-3 border-t border-line/10 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+      <div className="flex items-center justify-between px-5 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-muted border-t border-aurora/10">
         <span>Bhubaneswar, IN</span>
-        <span className="text-acidstrong">EST. 2024</span>
+        <span className="text-aurorastrong">EST. 2024</span>
       </div>
     </div>
   )
@@ -63,8 +64,7 @@ export function Hero() {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
 
   const { containerRef: heroRef } = useSpotlight<HTMLElement>()
-  const { targetRef: primaryCtaRef } = useMagnetic<HTMLButtonElement>(0.3)
-  const { targetRef: resumeCtaRef } = useMagnetic<HTMLAnchorElement>(0.25)
+  const { targetRef: algoguruCtaRef } = useMagnetic<HTMLAnchorElement>(0.25)
 
   /* Gentle parallax — portrait drifts down as the hero scrolls away */
   const { scrollY } = useScroll()
@@ -79,7 +79,7 @@ export function Hero() {
       id="home"
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ref={heroRef as any}
-      className="spotlight-container relative overflow-hidden pt-[72px]"
+      className="spotlight-container relative overflow-hidden pt-[88px]"
     >
       {/* Spotlight glow — position driven by useSpotlight via translate3d */}
       <div data-spotlight className="z-0" aria-hidden="true" />
@@ -93,9 +93,9 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="inline-flex items-center gap-2.5 rounded-full border border-line/12 bg-line/[0.03] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted mb-8"
+              className="inline-flex items-center gap-2.5 rounded-full border border-aurora/25 bg-aurora/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted mb-8"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-acid animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-aurora-2 float-dot" />
               Full Stack Engineer @ TCS
             </motion.p>
 
@@ -103,9 +103,9 @@ export function Hero() {
               initial={{ opacity: 0, y: 28 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="hero-display font-bold text-ink mb-6"
+              className="hero-display font-display font-bold text-ink mb-6"
             >
-              Aritra Dutta<span className="text-acidstrong">.</span>
+              Aritra Dutta<span className="text-gradient">.</span>
             </motion.h1>
 
             <motion.div
@@ -117,7 +117,7 @@ export function Hero() {
               {roles.map((role) => (
                 <span
                   key={role}
-                  className="px-4 py-2 rounded-full border border-line/12 font-mono text-xs uppercase tracking-[0.16em] text-ink/80"
+                  className="px-4 py-2 rounded-full border border-aurora/25 bg-aurora/5 font-mono text-xs uppercase tracking-[0.16em] text-ink/80"
                 >
                   {role}
                 </span>
@@ -130,10 +130,11 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="text-base md:text-lg leading-relaxed text-muted max-w-xl mb-10"
             >
-              Building enterprise microservices at{' '}
-              <span className="font-semibold text-ink">TCS</span>.
-              {' '}Delivered up to{' '}
-              <span className="font-semibold text-acidstrong">30x API performance gains</span> and led cloud migrations to Azure PaaS.
+              Full Stack Engineer building intelligent, large-scale systems at{' '}
+              <span className="font-semibold text-ink">TCS</span> — Java microservices with{' '}
+              <span className="font-semibold text-gradient">30x performance gains</span>,
+              zero-downtime Azure migrations, and{' '}
+              <span className="font-semibold text-gradient">GenAI in production</span>.
             </motion.p>
 
             {/* CTA row */}
@@ -143,50 +144,60 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.6 }}
               className="flex flex-col sm:flex-row gap-3.5 mb-12"
             >
-              <motion.button
-                ref={primaryCtaRef}
+              <RippleButton
+                variant="aurora"
+                className="btn-press"
                 onClick={scrollToAbout}
-                className="magnetic magnetic-glow inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-acid text-[#101204] font-bold text-sm"
               >
-                More about me
+                <motion.span
+                  className="inline-flex"
+                  animate={{ y: [0, 2, 0] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  More about me
+                </motion.span>
                 <ArrowDown size={16} />
-              </motion.button>
+              </RippleButton>
 
-              <motion.a
-                ref={resumeCtaRef}
+              <RippleButton
+                variant="glass"
+                className="btn-press"
                 href="/resume"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="magnetic magnetic-glow inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-line/15 text-ink font-bold text-sm hover:border-acid/60 hover:text-acidstrong"
               >
                 <Download size={16} />
                 Resume
-              </motion.a>
+              </RippleButton>
 
               <a
+                ref={algoguruCtaRef}
                 href="https://www.algoguru.online/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-line/15 text-ink font-bold text-sm hover:border-acid/60 hover:text-acidstrong transition-colors duration-300"
+                className="magnetic aurora-underline inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-line/15 text-ink font-bold text-sm hover:border-aurora/60 hover:text-aurorastrong transition-colors duration-300"
               >
                 AlgoGuru
                 <ArrowUpRight size={16} />
               </a>
             </motion.div>
 
-            {/* Stats band */}
+            {/* Stats band — glass mini-cards */}
             <motion.dl
               initial={{ opacity: 0, y: 20 }}
               animate={ready ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="grid grid-cols-3 border-t border-line/10 pt-7 gap-6"
+              className="grid grid-cols-3 gap-3"
             >
               {stats.map((s) => (
-                <div key={s.label}>
-                  <dt className="order-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted mt-1.5">
+                <div
+                  key={s.label}
+                  className="glass-card glass-hover p-4 sm:p-5"
+                >
+                  <dt className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
                     {s.label}
                   </dt>
-                  <dd className="order-1 text-3xl md:text-4xl font-bold tracking-tight text-ink">
+                  <dd className="font-display text-2xl md:text-4xl font-bold tracking-tight text-gradient mt-1">
                     <CountUp to={s.to} suffix={s.suffix} />
                   </dd>
                 </div>
@@ -213,18 +224,33 @@ export function Hero() {
               className="flex items-center gap-3 mt-6"
             >
               <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Connect</span>
-              <span className="h-px flex-1 bg-line/10" aria-hidden="true" />
-              {socials.map(({ icon: Icon, href, label }) => (
-                <a
+              <span className="h-px flex-1 bg-gradient-to-r from-aurora/30 to-transparent" aria-hidden="true" />
+              {socials.map(({ icon: Icon, href, label }, i) => (
+                <motion.a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-10 h-10 rounded-full flex items-center justify-center border border-line/12 text-muted hover:text-[#101204] hover:bg-acid hover:border-acid transition-colors duration-300"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={ready ? { opacity: 1, scale: 1 } : {}}
+                  transition={{ duration: 0.4, delay: 0.85 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.92 }}
+                  className="group relative w-10 h-10 rounded-full flex items-center justify-center border border-aurora/25 text-muted hover:text-[#0B0616] transition-colors duration-300 overflow-hidden"
                 >
-                  <Icon size={17} />
-                </a>
+                  {/* Hover fill — gradient that scales in from center */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-aurora scale-0 group-hover:scale-100 transition-transform duration-300 ease-out rounded-full"
+                  />
+                  {/* Glow ring on hover */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_18px_rgba(139,92,246,0.55)]"
+                  />
+                  <Icon size={17} className="relative z-10 transition-transform duration-300 group-hover:rotate-[8deg]" />
+                </motion.a>
               ))}
             </motion.div>
           </div>
@@ -243,7 +269,7 @@ export function Hero() {
       {/* ── Scroll cue ───────────────────────────────────────── */}
       <motion.button
         onClick={scrollToAbout}
-        className="absolute bottom-20 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-1.5 text-muted hover:text-acidstrong transition-colors duration-300"
+        className="absolute bottom-20 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-1.5 text-muted hover:text-aurorastrong transition-colors duration-300"
         initial={{ opacity: 0 }}
         animate={ready ? { opacity: 1 } : {}}
         transition={{ delay: 1.2, duration: 0.5 }}

@@ -16,14 +16,19 @@ module.exports = {
         ink: 'rgb(var(--ink) / <alpha-value>)',
         muted: 'rgb(var(--muted) / <alpha-value>)',
         line: 'rgb(var(--line) / <alpha-value>)',
-        acid: '#BEF264', // Signature fills — vivid lime in both themes
-        acidstrong: 'rgb(var(--acidtext) / <alpha-value>)', // Text-safe accent per theme
-        'glass-white': 'rgba(250, 250, 250, 0.05)',
-        'glass-black': 'rgba(0, 0, 0, 0.4)',
+        /* Aurora accents — vivid in both themes */
+        aurora: {
+          DEFAULT: '#8B5CF6', // violet — plain `aurora` for opacity modifiers
+          1: '#8B5CF6', // violet
+          2: '#22D3EE', // cyan
+          3: '#F472B6', // pink
+        },
+        aurorastrong: 'var(--aurora-text)', // text-safe accent per theme
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-geist-mono)', 'var(--font-fira-code)', 'monospace'],
+        display: ['var(--font-display)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
       },
       /* Modular type scale — 1.25 ratio */
       fontSize: {
@@ -38,10 +43,9 @@ module.exports = {
         '5xl': ['4.768rem', { lineHeight: '1.05' }],
       },
       boxShadow: {
-        'glass': '0 4px 30px rgba(0, 0, 0, 0.5)',
-        'neon-purple': '0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3)',
-        'neon-cyan': '0 0 10px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.3)',
-        'acid-glow': '0 0 0 1px rgba(190, 242, 100, 0.4), 0 0 28px rgba(190, 242, 100, 0.25)',
+        'glass': '0 8px 32px rgba(13, 16, 40, 0.12)',
+        'aurora-glow': '0 0 0 1px rgba(139, 92, 246, 0.4), 0 0 28px rgba(139, 92, 246, 0.25)',
+        'aurora-glow-cyan': '0 0 0 1px rgba(34, 211, 238, 0.4), 0 0 28px rgba(34, 211, 238, 0.25)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

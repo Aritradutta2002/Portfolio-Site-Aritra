@@ -41,16 +41,18 @@ const badges = [
   { value: 'CodeForces Rank: 1046' },
 ]
 
-/* Back-to-top button wrapped in a scroll-progress ring — the acid
+/* Back-to-top button wrapped in a scroll-progress ring — the aurora
    arc fills as you read down the page (framer pathLength motion
    value, no listeners, no reflows). */
 function TopProgressButton({ onTop }: { onTop: () => void }) {
   const { scrollYProgress } = useScroll()
   return (
-    <button
+    <motion.button
       onClick={onTop}
-      className="relative ml-1 w-11 h-11 rounded-full bg-acid text-[#101204] flex items-center justify-center hover:shadow-acid-glow transition-shadow duration-300 flex-shrink-0"
+      className="group/top relative ml-1 w-11 h-11 rounded-full bg-aurora text-[#0B0616] flex items-center justify-center hover:shadow-aurora-glow transition-shadow duration-300 flex-shrink-0 overflow-hidden btn-press"
       aria-label="Scroll to top"
+      whileHover={{ scale: 1.06 }}
+      whileTap={{ scale: 0.94 }}
     >
       <svg viewBox="0 0 44 44" className="absolute -inset-[3px] w-[50px] h-[50px] -rotate-90 pointer-events-none" aria-hidden="true">
         <circle cx="22" cy="22" r="20" fill="none" stroke="rgba(128,128,128,0.3)" strokeWidth="2" />
@@ -59,14 +61,20 @@ function TopProgressButton({ onTop }: { onTop: () => void }) {
           cy="22"
           r="20"
           fill="none"
-          stroke="#BEF264"
+          stroke="#FFFFFF"
           strokeWidth="2"
           strokeLinecap="round"
           style={{ pathLength: scrollYProgress }}
         />
       </svg>
-      <ArrowUp size={17} />
-    </button>
+      <motion.span
+        className="relative z-10 inline-flex"
+        animate={{ y: [0, -2, 0] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <ArrowUp size={17} />
+      </motion.span>
+    </motion.button>
   )
 }
 
@@ -83,18 +91,18 @@ export function Footer() {
   }
 
   return (
-    <footer className="relative border-t border-line/10 text-ink overflow-hidden">
+    <footer className="relative border-t border-aurora/10 text-ink overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 md:pt-20 pb-8">
 
-        {/* ── Wordmark ─────────────────────────────────────── */}
+        {/* ── Wordmark — gradient ink ───────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <p className="font-bold tracking-[-0.035em] leading-none text-[17vw] md:text-[9rem] select-none">
-            Aritra<span className="text-acidstrong">.</span>
+          <p className="font-display font-bold tracking-[-0.035em] leading-none text-[17vw] md:text-[9rem] select-none text-gradient">
+            Aritra<span className="text-ink">.</span>
           </p>
           <p className="text-[15px] text-muted leading-relaxed max-w-xl mt-6">
             <span className="font-semibold text-ink">Passionate Software Engineer</span> at{' '}
@@ -106,7 +114,7 @@ export function Footer() {
         </motion.div>
 
         {/* ── Columns ──────────────────────────────────────── */}
-        <div className="grid md:grid-cols-12 gap-10 mt-14 pt-10 border-t border-line/10">
+        <div className="grid md:grid-cols-12 gap-10 mt-14 pt-10 border-t border-aurora/10">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -120,7 +128,7 @@ export function Footer() {
                 <li key={link.name}>
                   <button
                     onClick={() => scrollToSection(link.href)}
-                    className="font-mono text-xs uppercase tracking-[0.14em] text-muted hover:text-acidstrong transition-colors duration-200"
+                    className="font-mono text-xs uppercase tracking-[0.14em] text-muted hover:text-aurorastrong transition-colors duration-200"
                   >
                     {link.name}
                   </button>
@@ -138,11 +146,11 @@ export function Footer() {
           >
             <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted mb-5">Contact</p>
             <div className="space-y-3.5 text-sm">
-              <a href="mailto:aritradutta049@gmail.com" className="flex items-center gap-3 text-ink/80 hover:text-acidstrong transition-colors duration-200">
+              <a href="mailto:aritradutta049@gmail.com" className="flex items-center gap-3 text-ink/80 hover:text-aurorastrong transition-colors duration-200">
                 <Mail size={15} className="text-muted" />
                 aritradutta049@gmail.com
               </a>
-              <a href="tel:+916295699190" className="flex items-center gap-3 text-ink/80 hover:text-acidstrong transition-colors duration-200">
+              <a href="tel:+916295699190" className="flex items-center gap-3 text-ink/80 hover:text-aurorastrong transition-colors duration-200">
                 <Phone size={15} className="text-muted" />
                     +91 62956 99190
               </a>
@@ -162,43 +170,70 @@ export function Footer() {
           >
             <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted mb-5">Elsewhere</p>
             <div className="flex flex-wrap gap-2.5 mb-7">
-              {socialLinks.map((social) => (
-                <a
+              {socialLinks.map((social, i) => (
+                <motion.a
                   key={social.name}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   title={social.name}
                   aria-label={social.name}
-                  className="w-11 h-11 rounded-full flex items-center justify-center border border-line/12 text-muted hover:text-[#101204] hover:bg-acid hover:border-acid transition-colors duration-300"
+                  initial={{ opacity: 0, scale: 0.8, y: 8 }}
+                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -3 }}
+                  className="group relative w-11 h-11 rounded-full flex items-center justify-center border border-aurora/25 text-muted hover:text-[#0B0616] transition-colors duration-300 overflow-hidden"
                 >
-                  <social.icon size={17} />
-                </a>
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-aurora scale-0 group-hover:scale-100 transition-transform duration-300 ease-out rounded-full"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_22px_rgba(139,92,246,0.55)]"
+                  />
+                  <social.icon size={17} className="relative z-10 transition-transform duration-300 group-hover:rotate-[8deg]" />
+                </motion.a>
               ))}
             </div>
             <div className="flex flex-wrap gap-2">
-              {badges.map((b) => (
-                <span key={b.value} className="px-3.5 py-1.5 rounded-full border border-acid/30 font-mono text-[11px] text-acidstrong">
+              {badges.map((b, i) => (
+                <motion.span
+                  key={b.value}
+                  initial={{ opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: 0.1 + i * 0.06 }}
+                  className="px-3.5 py-1.5 rounded-full border border-aurora/30 font-mono text-[11px] text-aurorastrong hover:border-aurora hover:shadow-[0_0_14px_rgba(139,92,246,0.35)] transition-all duration-300 cursor-default"
+                >
                   {b.value}
-                </span>
+                </motion.span>
               ))}
             </div>
           </motion.div>
         </div>
 
         {/* ── Bottom bar ───────────────────────────────────── */}
-        <div className="mt-14 pt-7 border-t border-line/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+        <div className="mt-14 pt-7 border-t border-aurora/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
           <p className="flex items-center gap-1.5 text-sm text-muted">
             © 2024 Aritra Dutta. Made with
-            <Heart size={14} className="text-acidstrong fill-current" />
+            <Heart size={14} className="text-aurorastrong fill-current" />
             and lots of ☕
           </p>
 
           <div className="flex items-center gap-2.5">
             {['Next.js', 'TypeScript', 'Tailwind CSS'].map((t) => (
-              <span key={t} className="px-3.5 py-1.5 rounded-full border border-line/10 font-mono text-[11px] text-muted">
+              <motion.span
+                key={t}
+                initial={{ opacity: 0, y: 6 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.35, delay: 0.05 }}
+                className="px-3.5 py-1.5 rounded-full border border-aurora/10 font-mono text-[11px] text-muted hover:border-aurora/30 hover:text-aurorastrong transition-colors duration-300 cursor-default"
+              >
                 {t}
-              </span>
+              </motion.span>
             ))}
             <TopProgressButton onTop={scrollToTop} />
           </div>
