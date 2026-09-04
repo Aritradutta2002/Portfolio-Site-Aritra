@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Calendar, Clock, ArrowLeft, Search, Tag, Heart, Eye, BookOpen, Star, Filter
-} from 'lucide-react'
+import { Calendar, Clock, ArrowLeft, Search, Tag, Heart, Eye, BookOpen, Star, X } from 'lucide-react'
 import Link from 'next/link'
-import { GlassCard } from '@/components/GlassCard'
+import { LuxeBackdrop } from '@/components/luxe/Backdrop'
+import { Cursor } from '@/components/luxe/Cursor'
 
 type BlogPost = {
   id: number
@@ -21,7 +20,6 @@ type BlogPost = {
   category: string
   isFeatured: boolean
   createdAt: string
-  updatedAt: string
 }
 
 const allPosts: BlogPost[] = [
@@ -29,409 +27,315 @@ const allPosts: BlogPost[] = [
     id: 1,
     title: "Mastering Data Structures and Algorithms: A Competitive Programmer's Journey",
     excerpt: 'My experience solving 700+ problems across LeetCode, CodeForces, and CodeChef. Key insights and strategies that helped me achieve a 1672 rating.',
-    content: "Competitive programming has been an incredible journey for me. Starting from basic array problems to tackling complex graph algorithms, I've learned that consistency beats intensity every time.\n\nIn this post, I share my roadmap: how I structured my practice, the resources that helped me most, and the mindset shifts that turned me from a beginner into a confident problem solver.",
-    author: 'Aritra Dutta',
-    viewCount: 1240,
-    likeCount: 87,
-    readTime: 8,
-    tags: ['Competitive Programming', 'DSA', 'LeetCode'],
-    category: 'PROGRAMMING',
-    isFeatured: true,
+    content: "Competitive programming has been an incredible journey. Starting from basic array problems to tackling complex graph algorithms, I've learned that consistency beats intensity every time.\n\nIn this post, I share my roadmap: how I structured my practice, the resources that helped me most, and the mindset shifts that turned me from a beginner into a confident problem solver.",
+    author: 'Aritra Dutta', viewCount: 1240, likeCount: 87, readTime: 8,
+    tags: ['Competitive Programming', 'DSA', 'LeetCode'], category: 'PROGRAMMING', isFeatured: true,
     createdAt: '2024-12-15T10:00:00Z',
-    updatedAt: '2024-12-15T10:00:00Z',
   },
   {
     id: 2,
     title: 'Building Scalable REST APIs with Spring Boot and Hibernate',
     excerpt: 'A comprehensive guide to creating enterprise-grade REST APIs using Spring Boot, covering best practices, security, and performance optimization.',
-    content: "Spring Boot has revolutionized how we build Java applications. In this guide, I walk through designing RESTful APIs that scale—from proper resource naming and HTTP status codes to implementing pagination, caching, and rate limiting.",
-    author: 'Aritra Dutta',
-    viewCount: 980,
-    likeCount: 64,
-    readTime: 12,
-    tags: ['Spring Boot', 'Java', 'REST API', 'Backend'],
-    category: 'BACKEND_DEVELOPMENT',
-    isFeatured: true,
+    content: "Spring Boot has revolutionized how we build Java applications. In this guide, I walk through designing RESTful APIs that scale — from proper resource naming and HTTP status codes to pagination, caching, and rate limiting.",
+    author: 'Aritra Dutta', viewCount: 980, likeCount: 64, readTime: 12,
+    tags: ['Spring Boot', 'Java', 'REST API', 'Backend'], category: 'BACKEND_DEVELOPMENT', isFeatured: true,
     createdAt: '2024-12-10T10:00:00Z',
-    updatedAt: '2024-12-10T10:00:00Z',
   },
   {
     id: 3,
     title: 'From Algorithm Visualization to Production: My Development Journey',
     excerpt: 'How I built an interactive algorithm visualizer and the lessons learned about clean code, user experience, and performance optimization.',
     content: "Turning a side project into a polished product taught me more than any tutorial. In this post, I share the story of building an algorithm visualizer.",
-    author: 'Aritra Dutta',
-    viewCount: 756,
-    likeCount: 45,
-    readTime: 6,
-    tags: ['JavaScript', 'Algorithms', 'Web Development'],
-    category: 'WEB_DEVELOPMENT',
-    isFeatured: false,
+    author: 'Aritra Dutta', viewCount: 756, likeCount: 45, readTime: 6,
+    tags: ['JavaScript', 'Algorithms', 'Web Development'], category: 'WEB_DEVELOPMENT', isFeatured: false,
     createdAt: '2024-12-05T10:00:00Z',
-    updatedAt: '2024-12-05T10:00:00Z',
   },
   {
     id: 4,
     title: 'Effective Problem-Solving Strategies for Technical Interviews',
     excerpt: 'Proven techniques and mental frameworks that helped me excel in technical interviews and competitive programming contests.',
     content: "Technical interviews are as much about communication as they are about coding. I break down the UMPIRE method for approaching unfamiliar problems.",
-    author: 'Aritra Dutta',
-    viewCount: 1120,
-    likeCount: 72,
-    readTime: 10,
-    tags: ['Interview Prep', 'Problem Solving', 'Career'],
-    category: 'CAREER',
-    isFeatured: false,
+    author: 'Aritra Dutta', viewCount: 1120, likeCount: 72, readTime: 10,
+    tags: ['Interview Prep', 'Problem Solving', 'Career'], category: 'CAREER', isFeatured: false,
     createdAt: '2024-11-28T10:00:00Z',
-    updatedAt: '2024-11-28T10:00:00Z',
   },
   {
     id: 5,
     title: 'Understanding React Server Components in Next.js 15',
     excerpt: 'A deep dive into React Server Components, how they differ from client components, and when to use each for optimal performance.',
     content: "Next.js 15 brings React Server Components to the forefront. I explain the mental model behind server components and practical patterns for building fast apps.",
-    author: 'Aritra Dutta',
-    viewCount: 640,
-    likeCount: 38,
-    readTime: 7,
-    tags: ['React', 'Next.js', 'Frontend'],
-    category: 'WEB_DEVELOPMENT',
-    isFeatured: false,
+    author: 'Aritra Dutta', viewCount: 640, likeCount: 38, readTime: 7,
+    tags: ['React', 'Next.js', 'Frontend'], category: 'WEB_DEVELOPMENT', isFeatured: false,
     createdAt: '2024-11-20T10:00:00Z',
-    updatedAt: '2024-11-20T10:00:00Z',
   },
   {
     id: 6,
     title: 'My Competitive Programming Toolkit: Extensions, Templates, and Tips',
-    excerpt: 'The exact setup I use for competitive programming contests—from VS Code extensions to C++ templates and debugging tricks.',
+    excerpt: 'The exact setup I use for competitive programming contests — from VS Code extensions to C++ templates and debugging tricks.',
     content: "Having the right toolkit can save minutes in a timed contest. I share my complete VS Code setup for competitive programming.",
-    author: 'Aritra Dutta',
-    viewCount: 890,
-    likeCount: 55,
-    readTime: 5,
-    tags: ['Competitive Programming', 'C++', 'Tools'],
-    category: 'COMPETITIVE_PROGRAMMING',
-    isFeatured: false,
+    author: 'Aritra Dutta', viewCount: 890, likeCount: 55, readTime: 5,
+    tags: ['Competitive Programming', 'C++', 'Tools'], category: 'COMPETITIVE_PROGRAMMING', isFeatured: false,
     createdAt: '2024-11-15T10:00:00Z',
-    updatedAt: '2024-11-15T10:00:00Z',
   },
 ]
 
 const categories = ['All', 'PROGRAMMING', 'BACKEND_DEVELOPMENT', 'WEB_DEVELOPMENT', 'CAREER', 'COMPETITIVE_PROGRAMMING']
-
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 40, scale: 0.96 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" as const } },
-}
+const fmtCat = (c: string) => c === 'All' ? 'All' : c.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase())
+const fmtDate = (d: string) => { try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) } catch { return 'Unknown' } }
 
 export default function BlogPage() {
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState('All')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [currentPage, setCurrentPage] = useState(0)
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
-  const [likedPosts, setLikedPosts] = useState<Set<number>>(new Set())
-
+  const [cat, setCat] = useState('All')
+  const [q, setQ] = useState('')
+  const [page, setPage] = useState(0)
+  const [open, setOpen] = useState<BlogPost | null>(null)
+  const [liked, setLiked] = useState<Set<number>>(new Set())
   const pageSize = 6
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500)
-    return () => clearTimeout(timer)
+    const t = setTimeout(() => setLoading(false), 450)
+    return () => clearTimeout(t)
   }, [])
+  useEffect(() => setPage(0), [cat, q])
 
-  const filteredPosts = useMemo(() => {
-    let result = allPosts
-    if (selectedCategory !== 'All') result = result.filter(p => p.category === selectedCategory)
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase()
-      result = result.filter(p =>
-        p.title.toLowerCase().includes(q) ||
-        p.excerpt.toLowerCase().includes(q) ||
-        p.tags.some(t => t.toLowerCase().includes(q))
-      )
+  const filtered = useMemo(() => {
+    let r = allPosts
+    if (cat !== 'All') r = r.filter((p) => p.category === cat)
+    if (q.trim()) {
+      const s = q.toLowerCase()
+      r = r.filter((p) => p.title.toLowerCase().includes(s) || p.excerpt.toLowerCase().includes(s) || p.tags.some((t) => t.toLowerCase().includes(s)))
     }
-    return result
-  }, [selectedCategory, searchQuery])
+    return r
+  }, [cat, q])
 
-  const totalPages = Math.ceil(filteredPosts.length / pageSize) || 1
-  const paginatedPosts = filteredPosts.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
-  const featuredPosts = allPosts.filter(p => p.isFeatured)
-
-  useEffect(() => { setCurrentPage(0) }, [selectedCategory, searchQuery])
-
-  const toggleLike = (id: number) => {
-    setLikedPosts(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
-      return next
-    })
-  }
-
-  const getLikeCount = (post: BlogPost) => post.likeCount + (likedPosts.has(post.id) ? 1 : 0)
-
-  const formatDate = (d: string) => {
-    try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
-    catch { return 'Unknown' }
-  }
-
-  const formatCategory = (c: string) => c.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+  const totalPages = Math.ceil(filtered.length / pageSize) || 1
+  const visible = filtered.slice(page * pageSize, (page + 1) * pageSize)
+  const featured = allPosts.filter((p) => p.isFeatured)
+  const toggleLike = (id: number) => setLiked((prev) => {
+    const n = new Set(prev)
+    if (n.has(id)) n.delete(id); else n.add(id)
+    return n
+  })
+  const likes = (p: BlogPost) => p.likeCount + (liked.has(p.id) ? 1 : 0)
 
   return (
-    <div className="min-h-screen relative bg-background text-ink">
+    <div className="relative min-h-screen bg-background text-ink">
+      <LuxeBackdrop />
+      <Cursor />
 
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-50 bg-background/85 backdrop-blur-xl border-b border-aurora/10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/#blog"
-            className="flex items-center gap-2 text-muted hover:text-aurorastrong transition-colors group">
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm font-medium">Back to Portfolio</span>
+      <div className="sticky top-0 z-50 border-b border-line/10 bg-background/80 backdrop-blur-2xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
+          <Link href="/#writing" className="group flex items-center gap-2 text-sm font-semibold text-muted transition-colors hover:text-gold">
+            <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
+            Back to portfolio
           </Link>
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-aurorastrong" />
-            <span className="font-display text-lg font-bold tracking-tight">
-              Aritra&apos;s Blog<span className="text-aurorastrong">.</span>
-            </span>
-          </div>
+          <span className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
+            <BookOpen size={18} className="text-gold" />
+            Aritra&apos;s Blog<span className="text-gold">.</span>
+          </span>
         </div>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-16">
-
-        {/* Hero heading */}
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
-          className="mb-14 md:mb-16">
-          <motion.span
-            initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-aurora/25 bg-aurora/10 font-mono text-xs uppercase tracking-[0.18em] text-muted mb-5">
-            <Star className="w-3.5 h-3.5 text-aurorastrong" /> Thoughts & Insights
-          </motion.span>
-          <h2 className="font-display tracking-[-0.03em] leading-[1.02] font-bold text-ink text-5xl md:text-6xl mb-4">
-            My Writing<span className="text-gradient">.</span>
-          </h2>
-          <p className="text-base md:text-lg text-muted max-w-2xl leading-relaxed">
+      <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8 md:py-16">
+        <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-line/12 bg-surface/70 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+            <Star size={13} className="text-gold" /> Thoughts & insights
+          </span>
+          <h1 className="font-display text-5xl font-bold tracking-[-0.04em] text-ink md:text-6xl">
+            My <span className="serif-accent">writing.</span>
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted md:text-lg">
             Deep dives into competitive programming, backend engineering, and the lessons I&apos;ve learned along the way.
           </p>
-          <div className="mt-8 h-px w-full bg-gradient-to-r from-aurora/25 via-aurora/10 to-transparent" aria-hidden="true" />
+          <div className="mt-8 h-px bg-gradient-to-r from-gold/40 via-line/10 to-transparent" aria-hidden="true" />
         </motion.div>
 
-        {/* Featured Posts */}
-        {featuredPosts.length > 0 && selectedCategory === 'All' && !searchQuery && (
-          <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            className="mb-14">
-            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-ink mb-6">Featured Posts</h3>
-
-            <div className="grid md:grid-cols-2 gap-5">
-              {featuredPosts.slice(0, 2).map((post, i) => (
-                <motion.article key={post.id}
-                  initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * i + 0.3 }}
-                  onClick={() => setSelectedPost(post)}
-                  className="group cursor-pointer"
-                  whileHover={{ y: -4 }}>
-                  <GlassCard hover>
-                    <div className="h-1 w-full bg-aurora" />
-                    <div className="p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-aurora text-[#0B0616]">
-                          Featured
-                        </span>
-                        <span className="font-mono text-xs text-muted">{formatDate(post.createdAt)}</span>
-                        <span className="font-mono text-xs text-muted flex items-center gap-1">
-                          <Clock className="w-3 h-3" />{post.readTime} min
-                        </span>
-                      </div>
-                      <h4 className="font-display text-xl font-bold tracking-tight text-ink mb-3 group-hover:text-aurorastrong transition-colors line-clamp-2">
-                        {post.title}
-                      </h4>
-                      <p className="text-muted text-sm leading-relaxed line-clamp-3 mb-4">{post.excerpt}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4 font-mono text-xs text-muted">
-                          <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{post.viewCount}</span>
-                          <span className="flex items-center gap-1"><Heart className="w-3.5 h-3.5" />{getLikeCount(post)}</span>
-                        </div>
-                        <div className="flex gap-1.5 flex-wrap">
-                          {post.tags.slice(0, 2).map(tag => (
-                            <span key={tag} className="px-2.5 py-1 text-[11px] rounded-full border border-aurora/20 font-mono text-ink/70">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+        {featured.length > 0 && cat === 'All' && !q && (
+          <section className="mb-14 mt-12" aria-label="Featured posts">
+            <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.24em] text-gold">Featured</p>
+            <div className="grid gap-5 md:grid-cols-2">
+              {featured.slice(0, 2).map((p, i) => (
+                <motion.article
+                  key={p.id}
+                  initial={{ opacity: 0, y: 26 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.1 }}
+                  onClick={() => setOpen(p)}
+                  className="luxe-card luxe-lift group cursor-pointer overflow-hidden"
+                  data-cursor="Read"
+                >
+                  <div className="h-1.5 w-full bg-gold" />
+                  <div className="p-7">
+                    <div className="mb-4 flex flex-wrap items-center gap-3 font-mono text-xs text-muted">
+                      <span className="rounded-full bg-gold px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-gold-ink">Featured</span>
+                      <span>{fmtDate(p.createdAt)}</span>
+                      <span className="inline-flex items-center gap-1"><Clock size={12} />{p.readTime} min</span>
                     </div>
-                  </GlassCard>
+                    <h2 className="font-display text-xl font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-gold">
+                      {p.title}
+                    </h2>
+                    <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted">{p.excerpt}</p>
+                    <div className="mt-5 flex items-center justify-between border-t border-line/8 pt-4 font-mono text-xs text-muted">
+                      <span className="flex items-center gap-4">
+                        <span className="inline-flex items-center gap-1"><Eye size={13} />{p.viewCount}</span>
+                        <span className="inline-flex items-center gap-1"><Heart size={13} />{likes(p)}</span>
+                      </span>
+                      <span>{p.tags.slice(0, 2).join(' · ')}</span>
+                    </div>
+                  </div>
                 </motion.article>
               ))}
             </div>
-          </motion.section>
+          </section>
         )}
 
-        {/* Search + Filter */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-          className="mb-10">
-          <GlassCard className="p-5">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-1 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
-                <input type="text" placeholder="Search posts…" value={searchQuery}
-                  onChange={e => { setSearchQuery(e.target.value); setCurrentPage(0) }}
-                  className="w-full pl-9 pr-4 py-3 bg-transparent border-b border-aurora/20 text-ink text-[15px] placeholder:text-muted/60 focus:outline-none focus:border-aurora transition-colors" />
-              </div>
-              <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-muted" />
-                <select value={selectedCategory} onChange={e => { setSelectedCategory(e.target.value); setCurrentPage(0) }}
-                  className="px-4 py-3 rounded-xl border border-aurora/20 bg-background text-ink text-sm focus:outline-none focus:border-aurora transition-colors">
-                  {categories.map(c => <option key={c} value={c}>{formatCategory(c)}</option>)}
-                </select>
-              </div>
+        <div className="luxe-card mb-10 p-5">
+          <div className="flex flex-col gap-4 md:flex-row">
+            <div className="relative flex-1">
+              <Search size={16} className="absolute left-0 top-1/2 -translate-y-1/2 text-muted" />
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search essays…"
+                aria-label="Search posts"
+                className="w-full border-b border-line/15 bg-transparent py-3 pl-8 pr-4 text-[15px] text-ink outline-none transition-colors placeholder:text-muted/50 focus:border-gold"
+              />
             </div>
-          </GlassCard>
-        </motion.div>
+            <select
+              value={cat}
+              onChange={(e) => setCat(e.target.value)}
+              aria-label="Filter by category"
+              className="rounded-full border border-line/15 bg-background px-5 py-3 text-sm text-ink outline-none focus:border-gold"
+            >
+              {categories.map((c) => <option key={c} value={c}>{fmtCat(c)}</option>)}
+            </select>
+          </div>
+        </div>
 
-        {/* Posts Grid */}
-        <AnimatePresence mode="wait">
-          {loading ? (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="rounded-2xl border border-aurora/10 bg-aurora/[0.03] p-6 animate-pulse">
-                  <div className="h-3 bg-aurora/10 rounded w-3/4 mb-4" />
-                  <div className="h-2.5 bg-aurora/10 rounded w-full mb-2" />
-                  <div className="h-2.5 bg-aurora/10 rounded w-2/3 mb-6" />
-                  <div className="h-8 bg-aurora/10 rounded-full w-1/3" />
+        {loading ? (
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="skeleton h-64 rounded-[20px]" aria-hidden="true" />
+            ))}
+          </div>
+        ) : visible.length === 0 ? (
+          <div className="py-24 text-center">
+            <Search size={40} className="mx-auto mb-4 text-muted" />
+            <h2 className="font-display text-xl font-bold text-ink">No essays found</h2>
+            <p className="mt-1 text-muted">Try a different search or category.</p>
+          </div>
+        ) : (
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {visible.map((p, i) => (
+              <motion.article
+                key={p.id}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(i * 0.06, 0.3) }}
+                onClick={() => setOpen(p)}
+                className="luxe-card luxe-lift group cursor-pointer"
+                data-cursor="Read"
+              >
+                <div className="h-1.5 w-full rounded-t-[20px] bg-gold" />
+                <div className="p-6">
+                  <div className="mb-3 flex items-center justify-between font-mono text-xs text-muted">
+                    <span className="inline-flex items-center gap-1.5"><Calendar size={12} />{fmtDate(p.createdAt)}</span>
+                    {p.isFeatured && <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-bold text-gold-ink">Featured</span>}
+                  </div>
+                  <h3 className="line-clamp-2 font-display text-[17px] font-bold leading-snug text-ink transition-colors group-hover:text-gold">{p.title}</h3>
+                  <p className="mt-2.5 line-clamp-3 text-[13.5px] leading-relaxed text-muted">{p.excerpt}</p>
+                  <div className="mb-4 mt-4 flex flex-wrap gap-1.5">
+                    {p.tags.slice(0, 2).map((t) => (
+                      <span key={t} className="inline-flex items-center gap-1 rounded-full border border-line/12 px-2.5 py-1 font-mono text-[10px] text-ink/70">
+                        <Tag size={10} />{t}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-between border-t border-line/8 pt-4 font-mono text-xs text-muted">
+                    <span className="flex items-center gap-3">
+                      <span className="inline-flex items-center gap-1"><Eye size={13} />{p.viewCount}</span>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleLike(p.id) }}
+                        aria-pressed={liked.has(p.id)}
+                        aria-label={`Like ${p.title}`}
+                        className={`inline-flex items-center gap-1 transition-colors ${liked.has(p.id) ? 'text-rosex' : 'hover:text-rosex'}`}
+                      >
+                        <Heart size={13} className={liked.has(p.id) ? 'fill-rosex' : ''} />{likes(p)}
+                      </button>
+                    </span>
+                    <span className="inline-flex items-center gap-1"><Clock size={12} />{p.readTime} min</span>
+                  </div>
                 </div>
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div key="content" variants={containerVariants} initial="hidden" animate="visible"
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {paginatedPosts.map(post => (
-                <motion.article key={post.id} variants={cardVariants}
-                  onClick={() => setSelectedPost(post)}
-                  className="group cursor-pointer"
-                  whileHover={{ y: -4 }}>
-                  <GlassCard hover>
-                    <div className="h-1 w-full bg-aurora" />
-                    <div className="p-5">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2 font-mono text-xs text-muted">
-                          <Calendar className="w-3 h-3" />{formatDate(post.createdAt)}
-                        </div>
-                        {post.isFeatured && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-aurora text-[#0B0616]">Featured</span>
-                        )}
-                      </div>
-                      <h3 className="font-display text-[15px] font-bold text-ink mb-2.5 line-clamp-2 group-hover:text-aurorastrong transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-muted text-[13px] leading-relaxed line-clamp-3 mb-4">{post.excerpt}</p>
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {post.tags.slice(0, 2).map(tag => (
-                          <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] border border-aurora/20 font-mono text-ink/70">
-                            <Tag className="w-2.5 h-2.5" />{tag}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex items-center justify-between pt-3.5 border-t border-aurora/10">
-                        <div className="flex items-center gap-3 font-mono text-xs text-muted">
-                          <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{post.viewCount}</span>
-                          <button onClick={e => { e.stopPropagation(); toggleLike(post.id) }}
-                            className={`flex items-center gap-1 transition-colors ${likedPosts.has(post.id) ? 'text-rose-500' : 'hover:text-rose-500'}`}>
-                            <Heart className={`w-3.5 h-3.5 ${likedPosts.has(post.id) ? 'fill-rose-500' : ''}`} />
-                            {getLikeCount(post)}
-                          </button>
-                        </div>
-                        <span className="font-mono text-xs text-muted flex items-center gap-1">
-                          <Clock className="w-3 h-3" />{post.readTime} min
-                        </span>
-                      </div>
-                    </div>
-                  </GlassCard>
-                </motion.article>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Empty state */}
-        {!loading && paginatedPosts.length === 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24">
-            <Search className="w-12 h-12 text-muted mx-auto mb-4" />
-            <h3 className="font-display text-xl font-bold text-ink mb-2">No posts found</h3>
-            <p className="text-muted">Try adjusting your search or category filter.</p>
-          </motion.div>
+              </motion.article>
+            ))}
+          </div>
         )}
 
-        {/* Pagination */}
         {totalPages > 1 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center gap-2 mt-12">
+          <div className="mt-12 flex justify-center gap-2">
             {[...Array(totalPages)].map((_, i) => (
-              <button key={i} onClick={() => setCurrentPage(i)}
-                className={`w-9 h-9 rounded-full font-mono text-sm transition-colors duration-200 ${
-                  currentPage === i
-                    ? 'bg-aurora text-[#0B0616] font-bold'
-                    : 'border border-aurora/20 text-muted hover:text-ink hover:border-aurora/60'
-                }`}>
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                aria-label={`Page ${i + 1}`}
+                aria-current={page === i ? 'page' : undefined}
+                className={`h-11 w-11 rounded-full font-mono text-sm transition-colors ${
+                  page === i ? 'bg-gold font-bold text-gold-ink' : 'border border-line/15 text-muted hover:border-gold hover:text-ink'
+                }`}
+              >
                 {i + 1}
               </button>
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
 
-      {/* Post Modal */}
       <AnimatePresence>
-        {selectedPost && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-            onClick={() => setSelectedPost(null)}>
-            <motion.div initial={{ y: 32, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 32, opacity: 0 }} transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="glass-card relative max-w-3xl w-full max-h-[85vh] overflow-y-auto overflow-x-hidden"
-              onClick={e => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-label={selectedPost.title}>
-              <div className="h-1 w-full bg-aurora" />
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+            onClick={() => setOpen(null)}
+            role="dialog" aria-modal="true" aria-label={open.title}
+          >
+            <motion.div
+              initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="luxe-card max-h-[85dvh] w-full max-w-3xl overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="h-1.5 w-full bg-gold" />
               <div className="p-8">
-                <div className="flex items-start justify-between gap-4 mb-6">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3 font-mono text-xs text-muted">
-                      <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{formatDate(selectedPost.createdAt)}</span>
-                      <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{selectedPost.readTime} min read</span>
-                    </div>
-                    <h2 className="font-display text-2xl font-bold tracking-tight text-ink leading-snug">{selectedPost.title}</h2>
-                    <p className="text-sm text-muted mt-1">By {selectedPost.author}</p>
+                <div className="mb-6 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="mb-2 flex items-center gap-3 font-mono text-xs text-muted">
+                      <span className="inline-flex items-center gap-1.5"><Calendar size={13} />{fmtDate(open.createdAt)}</span>
+                      <span className="inline-flex items-center gap-1.5"><Clock size={13} />{open.readTime} min</span>
+                    </p>
+                    <h2 className="font-display text-2xl font-bold leading-snug tracking-tight text-ink">{open.title}</h2>
+                    <p className="mt-1 text-sm text-muted">By {open.author}</p>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <button onClick={() => toggleLike(selectedPost.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full font-mono text-xs transition-colors ${likedPosts.has(selectedPost.id) ? 'bg-rose-500/15 text-rose-500 border border-rose-500/40' : 'border border-aurora/20 text-muted hover:text-rose-500 hover:border-rose-500/40'}`}>
-                      <Heart className={`w-4 h-4 ${likedPosts.has(selectedPost.id) ? 'fill-rose-500' : ''}`} />
-                      {getLikeCount(selectedPost)}
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button
+                      onClick={() => toggleLike(open.id)}
+                      aria-pressed={liked.has(open.id)}
+                      aria-label="Like this post"
+                      className={`flex h-11 items-center gap-2 rounded-full border px-4 font-mono text-xs ${
+                        liked.has(open.id) ? 'border-rosex/50 bg-rosex/10 text-rosex' : 'border-line/15 text-muted hover:border-rosex/50 hover:text-rosex'
+                      }`}
+                    >
+                      <Heart size={15} className={liked.has(open.id) ? 'fill-rosex' : ''} />{likes(open)}
                     </button>
-                    <button onClick={() => setSelectedPost(null)}
-                      className="p-2 rounded-full border border-aurora/20 text-muted hover:text-ink transition-colors"
-                      aria-label="Close article">
-                      <ArrowLeft className="w-4 h-4" />
+                    <button onClick={() => setOpen(null)} aria-label="Close article" className="flex h-11 w-11 items-center justify-center rounded-full border border-line/15 text-muted hover:text-ink">
+                      <X size={17} />
                     </button>
                   </div>
                 </div>
-                <p className="text-muted leading-relaxed mb-6 text-[15px] whitespace-pre-line">
-                  {selectedPost.content}
-                </p>
-                <div className="flex flex-wrap gap-2 pt-5 border-t border-aurora/10">
-                  {selectedPost.tags.map(tag => (
-                    <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-xs border border-aurora/20 text-ink/75">
-                      <Tag className="w-3 h-3" />{tag}
+                <p className="whitespace-pre-line text-[15px] leading-relaxed text-muted">{open.content}</p>
+                <div className="mt-6 flex flex-wrap gap-2 border-t border-line/8 pt-5">
+                  {open.tags.map((t) => (
+                    <span key={t} className="inline-flex items-center gap-1.5 rounded-full border border-line/12 px-3 py-1 font-mono text-xs text-ink/75">
+                      <Tag size={12} />{t}
                     </span>
                   ))}
                 </div>

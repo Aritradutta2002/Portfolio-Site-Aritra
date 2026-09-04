@@ -1,59 +1,34 @@
 import type { Metadata } from "next";
-import { Inter, Fira_Code, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Inter, Fira_Code, Space_Grotesk, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import SmoothScroll from '@/components/SmoothScroll'
 
-/* Variable display + body fonts, self-hosted via next/font (no CDN). */
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const firaCode = Fira_Code({
-  variable: "--font-fira-code",
-  subsets: ["latin"],
-  display: 'swap',
-});
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: 'swap' });
+const spaceGrotesk = Space_Grotesk({ variable: "--font-display", subsets: ["latin"], display: 'swap' });
+const instrumentSerif = Instrument_Serif({ variable: "--font-serifd", subsets: ["latin"], weight: ["400"], style: ["normal", "italic"], display: 'swap' });
+const firaCode = Fira_Code({ variable: "--font-mono", subsets: ["latin"], display: 'swap' });
 
 export const metadata: Metadata = {
-  title: "Aritra Dutta | Portfolio",
-  description: "Full Stack Application Engineer at TCS with 2+ years building Java microservices, AI-powered features, and cloud platforms. 700+ problems solved, LeetCode 1672.",
-  keywords: "Aritra Dutta, Full Stack Engineer, Java, Spring Boot, LangChain, React, AWS, Portfolio, TCS, Competitive Programming, LeetCode",
+  title: "Aritra Dutta — Full-Stack Engineer",
+  description: "Full-stack engineer @ TCS (2+ yrs): Java 21 microservices, 30× API wins, Azure migrations, GenAI in production. LeetCode 1672, 700+ problems solved.",
+  keywords: "Aritra Dutta, Full Stack Engineer, Java, Spring Boot, LangChain, React, AWS, Azure, Portfolio, TCS, LeetCode",
   authors: [{ name: "Aritra Dutta" }],
   creator: "Aritra Dutta",
+  metadataBase: new URL("https://aritradutta.dev"),
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://aritradutta.dev",
-    title: "Aritra Dutta | Full Stack Engineer Portfolio",
-    description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 30x API performance gains.",
-    siteName: "Aritra Dutta Portfolio",
+    title: "Aritra Dutta — Full-Stack Engineer",
+    description: "Java microservices, 30× API wins, zero-downtime Azure migrations, GenAI in production.",
+    siteName: "Aritra Dutta",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aritra Dutta | Full Stack Engineer Portfolio",
-    description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 30x API performance gains.",
+    title: "Aritra Dutta — Full-Stack Engineer",
+    description: "Java microservices, 30× API wins, zero-downtime Azure migrations, GenAI in production.",
   },
   icons: {
     icon: [
@@ -64,29 +39,38 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Aritra Dutta",
+  jobTitle: "Full-Stack Engineer",
+  worksFor: { "@type": "Organization", name: "Tata Consultancy Services" },
+  address: { "@type": "PostalAddress", addressLocality: "Bhubaneswar", addressCountry: "IN" },
+  sameAs: [
+    "https://github.com/Aritradutta2002",
+    "https://www.linkedin.com/in/aritra-dutta-rick20/",
+    "https://leetcode.com/u/Ari2001/",
+    "https://www.algoguru.online/",
+  ],
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#050508" />
+        <meta name="theme-color" content="#07080C" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} ${firaCode.variable} font-sans antialiased transition-colors duration-500`}
-      >
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSerif.variable} ${firaCode.variable} font-sans antialiased luxe-grain`}>
+        <a href="#content" className="skip-link">Skip to content</a>
         <ErrorBoundary>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange={false}
-          >
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange={false}>
             <SmoothScroll>
-              {children}
+              <main id="content">{children}</main>
             </SmoothScroll>
           </ThemeProvider>
         </ErrorBoundary>
