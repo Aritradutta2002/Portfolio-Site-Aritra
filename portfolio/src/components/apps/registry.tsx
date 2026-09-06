@@ -33,6 +33,9 @@ export const APP_COMPONENTS = {
   notes: dynamic(() => import('./NotesApp'), { ssr: false, loading: Loading }),
   calendar: dynamic(() => import('./CalendarApp'), { ssr: false, loading: Loading }),
   finder: dynamic(() => import('./FinderApp'), { ssr: false, loading: Loading }),
+  music: dynamic(() => import('./MusicApp'), { ssr: false, loading: Loading }),
+  mail: dynamic(() => import('./ContactApp'), { ssr: false, loading: Loading }),
+  browser: dynamic(() => import('./BrowserApp'), { ssr: false, loading: Loading }),
 } as const
 
 export type AppComponentProps = AppProps & { windowId?: string; payload?: string }

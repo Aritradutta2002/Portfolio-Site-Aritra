@@ -11,7 +11,8 @@ const ICON_H = 92
 const ROW_GAP = 6
 const EDGE = 12
 const DRAG_THRESHOLD = 4
-const DESKTOP_POS_KEY = 'os-desktop-positions:v1'
+const DESKTOP_POS_KEY = 'os-desktop-positions:v2'
+const COLUMN_GAP = 18
 
 type Pos = { x: number; y: number }
 
@@ -25,7 +26,7 @@ function columnLayout(vw: number, vh: number): Pos[] {
     const row = i % maxRows
     if (i > 0 && row === 0) col++
     return {
-      x: vw - EDGE - (col + 1) * ICON_W - col * (ICON_W * 0.18),
+      x: vw - EDGE - (col + 1) * ICON_W - col * COLUMN_GAP,
       y: MENU_H + EDGE + row * (ICON_H + ROW_GAP),
     }
   })

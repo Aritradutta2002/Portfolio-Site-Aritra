@@ -18,10 +18,15 @@ export type IconName =
   | 'photos'
   | 'notes'
   | 'calendar'
+  | 'music'
+  | 'mail'
+  | 'browser'
   | 'widgets'
   | 'launchpad'
   | 'spotlight'
   | 'apple'
+
+export const APPLE_MUSIC_LOGO = 'https://www.apple.com/v/apple-music/ag/images/overview/icon_apple_music_alt_25__e8i83er30ga6_small_2x.png'
 
 type Props = {
   name: IconName
@@ -44,6 +49,9 @@ const PLATES: Record<IconName, [string, string]> = {
   photos:     ['#FFFFFF', '#EDEDF0'],
   notes:      ['#FFFFFF', '#EDEDF0'],
   calendar:   ['#FFFFFF', '#EDEDF0'],
+  music:      ['#FA3B63', '#C51D54'],
+  mail:       ['#54B9FF', '#2475D7'],
+  browser:    ['#63D9F5', '#3474E6'],
   widgets:    ['#5E5CE6', '#3634A3'],
   launchpad:  ['#F2F2F7', '#D8D8DE'],
   spotlight:  ['#8E8E93', '#48484A'],
@@ -228,6 +236,32 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
       )
     }
 
+    case 'music':
+      return (
+        <g fill={c}>
+          <path d="M39 17v25.2a8.5 8.5 0 1 1-3.5-6.8V21.8l16-3.8v22.2a8.5 8.5 0 1 1-3.5-6.8V13.5L39 17Z" />
+          <path d="M35.5 21.8 48 18.8v4l-12.5 3v-4Z" opacity=".48" />
+        </g>
+      )
+
+    case 'mail':
+      return (
+        <g>
+          <rect x="10" y="17" width="44" height="31" rx="6" fill={c} />
+          <path d="m12 20 20 15 20-15" fill="none" stroke="#2475D7" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="m12 45 14-13M52 45 38 32" fill="none" stroke="#2475D7" strokeWidth="2.5" strokeLinecap="round" opacity=".65" />
+        </g>
+      )
+
+    case 'browser':
+      return (
+        <g fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="32" cy="32" r="20" />
+          <path d="M12 32h40M32 12c6 5.2 9 11.9 9 20s-3 14.8-9 20c-6-5.2-9-11.9-9-20s3-14.8 9-20Z" />
+          <path d="M17 20h30M17 44h30" opacity=".6" />
+        </g>
+      )
+
     case 'widgets':
       return (
         <g>
@@ -272,11 +306,26 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
 }
 
 export default function AppIcon({ name, size = 48, className = '', glyphColor }: Props) {
-  const [from, to] = PLATES[name]
   const gid = React.useMemo(
     () => `ic-${name}-${++gradSeq}-${Math.random().toString(36).slice(2, 7)}`,
     [name]
   )
+
+  if (name === 'music') {
+    return (
+      <img
+        src={APPLE_MUSIC_LOGO}
+        alt=""
+        width={size}
+        height={size}
+        className={className}
+        draggable={false}
+        style={{ display: 'block', objectFit: 'contain' }}
+      />
+    )
+  }
+
+  const [from, to] = PLATES[name]
   const dark = name === 'terminal' || name === 'apple'
   const lightPlate = name === 'photos' || name === 'notes' || name === 'calendar' || name === 'launchpad'
 

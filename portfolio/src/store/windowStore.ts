@@ -18,6 +18,9 @@ export type AppType =
   | 'notes'
   | 'calendar'
   | 'finder'
+  | 'music'
+  | 'mail'
+  | 'browser'
 
 export interface WindowInstance {
   id: string
@@ -64,6 +67,9 @@ export const APP_META: Record<AppType, { title: string; width: number; height: n
   notes:      { title: 'Notes',        width: 760,  height: 540, minWidth: 460, minHeight: 340 },
   calendar:   { title: 'Calendar',     width: 720,  height: 560, minWidth: 420, minHeight: 360 },
   finder:     { title: 'Finder',       width: 780,  height: 520, minWidth: 480, minHeight: 340 },
+  music:      { title: 'Music',        width: 760,  height: 560, minWidth: 480, minHeight: 420 },
+  mail:       { title: 'Mail',         width: 600,  height: 520, minWidth: 380, minHeight: 400 },
+  browser:    { title: 'Aurora',       width: 820,  height: 560, minWidth: 480, minHeight: 360 },
 }
 
 const CASCADE = 28
