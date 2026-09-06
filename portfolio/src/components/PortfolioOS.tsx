@@ -49,7 +49,7 @@ export default function PortfolioOS() {
   const onBootComplete = React.useCallback(() => setPhase('desktop'), [])
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[#05060c]">
+    <div className="fixed inset-0 overflow-hidden bg-[var(--shell-background)] text-[var(--shell-foreground)] transition-colors duration-500">
       {/* ── Landing / boot ── */}
       {ready && phase !== 'desktop' && (
         <div className="absolute inset-0">
@@ -61,7 +61,7 @@ export default function PortfolioOS() {
                 'radial-gradient(120% 100% at 8% 88%, rgba(200,68,60,0.30) 0%, transparent 55%),' +
                 'radial-gradient(100% 90% at 30% 60%, rgba(87,196,199,0.16) 0%, transparent 55%),' +
                 'radial-gradient(90% 80% at 70% 30%, rgba(138,92,230,0.14) 0%, transparent 55%),' +
-                'linear-gradient(180deg, #101731 0%, #141A33 52%, #1B2444 100%)',
+                'linear-gradient(180deg, var(--shell-background) 0%, #141A33 52%, #1B2444 100%)',
             }}
             aria-hidden="true"
           />

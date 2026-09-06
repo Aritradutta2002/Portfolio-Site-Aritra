@@ -338,7 +338,7 @@ export default function AppIcon({ name, size = 48, className = '', glyphColor }:
       aria-hidden="true"
       focusable="false"
       shapeRendering="geometricPrecision"
-      style={{ display: 'block' }}
+      style={{ display: 'block', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.18))' }}
     >
       <defs>
         <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">

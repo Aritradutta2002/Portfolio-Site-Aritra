@@ -52,7 +52,7 @@ export default function ProjectWindow({ payload }: AppProps) {
               style={
                 l.primary
                   ? { background: ACCENT, color: '#FFFFFF' }
-                  : { background: '#F2F2F7', color: '#1D1D1F' }
+                  : { background: 'var(--os-chip-bg)', color: 'var(--os-chip-text)' }
               }
             >
               {l.label}
@@ -101,7 +101,8 @@ export default function ProjectWindow({ payload }: AppProps) {
           {project.stack.map((s) => (
             <span
               key={s}
-              className="rounded-md bg-[#F2F2F7] px-2 py-[3px] text-[11.5px] font-medium text-[#3C3C43]"
+              className="rounded-md px-2 py-[3px] text-[11.5px] font-medium"
+              style={{ background: 'var(--os-chip-bg)', color: 'var(--os-chip-text)' }}
             >
               {s}
             </span>
@@ -116,7 +117,7 @@ export default function ProjectWindow({ payload }: AppProps) {
         </h2>
         <div
           className="rounded-xl border px-3.5 py-2.5 text-[12.5px] leading-[1.6]"
-          style={{ borderColor: ACCENT_SOFT, background: '#F6FEFC', color: '#134E4A' }}
+          style={{ borderColor: 'var(--os-role-border)', background: 'var(--os-role-bg)', color: 'var(--os-role-text)' }}
         >
           {project.role}
         </div>

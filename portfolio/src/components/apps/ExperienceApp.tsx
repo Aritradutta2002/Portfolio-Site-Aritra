@@ -11,9 +11,9 @@ export default function ExperienceApp() {
   const active = experience.find((e) => e.id === activeId) ?? experience[0]
 
   return (
-    <div className="flex h-full w-full bg-white text-[#1D1D1F]">
+    <div className="flex h-full w-full bg-white text-[#1D1D1F] dark:bg-[#1e1e20] dark:text-[#f4f4f6]">
       {/* ── Left column: role list (Finder column view) ── */}
-      <div className="os-scroll w-[42%] min-w-[190px] max-w-[300px] shrink-0 overflow-y-auto border-r border-black/[0.08] bg-[#F7F7F9] py-1.5">
+      <div className="os-scroll w-[42%] min-w-[190px] max-w-[300px] shrink-0 overflow-y-auto border-r border-black/[0.08] bg-[#F7F7F9] py-1.5 dark:border-white/10 dark:bg-[#252529]">
         <p className="px-3 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.09em] text-[#86868B]">
           Roles
         </p>
@@ -28,11 +28,11 @@ export default function ExperienceApp() {
               className="os-focusable block w-full px-3 py-2 text-left transition-colors"
               style={
                 on
-                  ? { background: ACCENT_SOFT }
+                  ? { background: 'var(--experience-selected-bg)' }
                   : undefined
               }
               onMouseEnter={(e) => {
-                if (!on) e.currentTarget.style.background = '#EFEFF2'
+                if (!on) e.currentTarget.style.background = document.documentElement.classList.contains('dark') ? '#303036' : '#EFEFF2'
               }}
               onMouseLeave={(e) => {
                 if (!on) e.currentTarget.style.background = 'transparent'
@@ -104,7 +104,8 @@ export default function ExperienceApp() {
             {active.stack.map((s) => (
               <span
                 key={s}
-                className="rounded-md bg-[#F2F2F7] px-2 py-[3px] text-[11.5px] font-medium text-[#3C3C43]"
+                className="rounded-md px-2 py-[3px] text-[11.5px] font-medium"
+                style={{ background: 'var(--os-chip-bg)', color: 'var(--os-chip-text)' }}
               >
                 {s}
               </span>

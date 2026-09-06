@@ -132,8 +132,7 @@ export default function NotesApp() {
                 key={n.id}
                 type="button"
                 onClick={() => setActiveId(n.id)}
-                className="os-focusable block w-full px-3 py-2 text-left transition-colors"
-                style={on ? { background: '#F5E9CF' } : undefined}
+                className={`os-focusable block w-full px-3 py-2 text-left transition-colors ${on ? 'bg-[#F5E9CF] dark:bg-[#332d44]' : ''}`}
                 onMouseEnter={(e) => {
                   if (!on) e.currentTarget.style.background = 'rgba(0,0,0,0.04)'
                 }}

@@ -14,6 +14,14 @@
   --line: 12 14 24;
   --background: #F5F6FA;
   --foreground: #0C0E18;
+  --shell-background: #eef1f7;
+  --shell-foreground: #172033;
+  --experience-selected-bg: #CCFBF1;
+  --os-chip-bg: #F2F2F7;
+  --os-chip-text: #1D1D1F;
+  --os-role-bg: #F6FEFC;
+  --os-role-border: #CCFBF1;
+  --os-role-text: #134E4A;
 
   /* Aurora accents */
   --aurora-1: #8B5CF6; /* violet */
@@ -54,6 +62,14 @@
   --line: 255 255 255;
   --background: #050508;
   --foreground: #EDEEF4;
+  --shell-background: #05060c;
+  --shell-foreground: #f5f7ff;
+  --experience-selected-bg: #173b3a;
+  --os-chip-bg: #303036;
+  --os-chip-text: #F4F4F6;
+  --os-role-bg: #173b3a;
+  --os-role-border: #28615e;
+  --os-role-text: #b7f3e9;
 
   /* Aurora accents (same hues, readable on near-black) */
   --aurora-1: #8B5CF6;
