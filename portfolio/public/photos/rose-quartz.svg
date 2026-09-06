@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2A0A1E"/><stop offset="100%" stop-color="#5B1F3A"/>
+    </linearGradient>
+    <radialGradient id="r1" cx="0.28" cy="0.24" r="0.62">
+      <stop offset="0%" stop-color="#F472B6" stop-opacity="0.8"/><stop offset="100%" stop-color="#F472B6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="r2" cx="0.78" cy="0.82" r="0.66">
+      <stop offset="0%" stop-color="#FB7185" stop-opacity="0.72"/><stop offset="100%" stop-color="#FB7185" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="gr"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#g)"/>
+  <rect width="1600" height="1000" fill="url(#r1)"/>
+  <rect width="1600" height="1000" fill="url(#r2)"/>
+  <rect width="1600" height="1000" filter="url(#gr)" opacity="0.05" style="mix-blend-mode:overlay"/>
+</svg>

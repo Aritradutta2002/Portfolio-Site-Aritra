@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Fira_Code, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import "@/styles/os-chrome.css";
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import SmoothScroll from '@/components/SmoothScroll'

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 2160" width="3840" height="2160" preserveAspectRatio="xMidYMid slice">
+  <title>macOS-style default desktop wallpaper</title>
+  <defs>
+    <!-- Sky: deep indigo through violet to a warm horizon -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#080C20"/>
+      <stop offset="14%"  stop-color="#151A3E"/>
+      <stop offset="30%"  stop-color="#2E2A63"/>
+      <stop offset="46%"  stop-color="#5C3A82"/>
+      <stop offset="60%"  stop-color="#98457A"/>
+      <stop offset="72%"  stop-color="#D2685A"/>
+      <stop offset="84%"  stop-color="#EF9A57"/>
+      <stop offset="94%"  stop-color="#F9C877"/>
+      <stop offset="100%" stop-color="#FDE3A7"/>
+    </linearGradient>
+
+    <radialGradient id="sunGlow" cx="0.62" cy="0.94" r="0.55">
+      <stop offset="0%"   stop-color="#FFE9AE" stop-opacity="0.95"/>
+      <stop offset="28%"  stop-color="#FFC46B" stop-opacity="0.55"/>
+      <stop offset="62%"  stop-color="#F0803C" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#F0803C" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Dune bands, far (lit) to near (silhouette) -->
+    <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBD79A"/><stop offset="100%" stop-color="#F2B073"/>
+    </linearGradient>
+    <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EFA471"/><stop offset="100%" stop-color="#D97F62"/>
+    </linearGradient>
+    <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D97C64"/><stop offset="100%" stop-color="#B25C61"/>
+    </linearGradient>
+    <linearGradient id="d4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A95263"/><stop offset="100%" stop-color="#7C3F5C"/>
+    </linearGradient>
+    <linearGradient id="d5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#71385A"/><stop offset="100%" stop-color="#4E2A4C"/>
+    </linearGradient>
+    <linearGradient id="d6" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#43244A"/><stop offset="100%" stop-color="#2A1738"/>
+    </linearGradient>
+    <linearGradient id="d7" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1F1130"/><stop offset="100%" stop-color="#100A1E"/>
+    </linearGradient>
+
+    <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#000000" stop-opacity="0.30"/>
+      <stop offset="38%"  stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.35"/>
+    </linearGradient>
+
+    <filter id="softEdge" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="3840" height="2160" fill="url(#sky)"/>
+  <rect width="3840" height="2160" fill="url(#sunGlow)"/>
+
+  <!-- Star field in the upper band -->
+  <g fill="#FFFFFF">
+    <circle cx="320"  cy="140" r="2.6" opacity="0.75"/>
+    <circle cx="860"  cy="96"  r="2.0" opacity="0.55"/>
+    <circle cx="1240" cy="210" r="2.4" opacity="0.65"/>
+    <circle cx="1720" cy="130" r="1.8" opacity="0.45"/>
+    <circle cx="2280" cy="188" r="2.6" opacity="0.6"/>
+    <circle cx="2760" cy="110" r="2.0" opacity="0.5"/>
+    <circle cx="3180" cy="230" r="2.2" opacity="0.55"/>
+    <circle cx="3560" cy="150" r="2.5" opacity="0.6"/>
+    <circle cx="620"  cy="330" r="1.6" opacity="0.35"/>
+    <circle cx="2020" cy="380" r="1.7" opacity="0.32"/>
+    <circle cx="2980" cy="420" r="1.5" opacity="0.28"/>
+  </g>
+
+  <!-- Layered dunes -->
+  <g filter="url(#softEdge)">
+    <path fill="url(#d1)" d="M0 1298 C 460 1252, 880 1338, 1330 1300 C 1780 1262, 2140 1196, 2620 1252 C 3060 1300, 3440 1272, 3840 1232 L3840 2160 L0 2160 Z"/>
+    <path fill="url(#d2)" d="M0 1392 C 420 1348, 820 1440, 1260 1410 C 1720 1378, 2060 1300, 2540 1358 C 3020 1416, 3480 1394, 3840 1350 L3840 2160 L0 2160 Z"/>
+    <path fill="url(#d3)" d="M0 1516 C 500 1462, 900 1560, 1400 1530 C 1900 1500, 2260 1420, 2760 1482 C 3220 1538, 3560 1516, 3840 1470 L3840 2160 L0 2160 Z"/>
+    <path fill="url(#d4)" d="M0 1660 C 480 1606, 940 1704, 1440 1676 C 1960 1646, 2340 1564, 2860 1626 C 3300 1678, 3600 1660, 3840 1618 L3840 2160 L0 2160 Z"/>
+    <path fill="url(#d5)" d="M0 1828 C 520 1776, 980 1868, 1500 1842 C 2020 1816, 2420 1738, 2940 1800 C 3360 1850, 3620 1834, 3840 1794 L3840 2160 L0 2160 Z"/>
+    <path fill="url(#d6)" d="M0 1978 C 560 1934, 1020 2016, 1540 1994 C 2060 1972, 2500 1904, 3000 1958 C 3400 2002, 3640 1990, 3840 1958 L3840 2160 L0 2160 Z"/>
+  </g>
+  <path fill="url(#d7)" d="M0 2092 C 600 2064, 1060 2120, 1580 2104 C 2100 2088, 2560 2040, 3040 2082 C 3420 2116, 3660 2108, 3840 2086 L3840 2160 L0 2160 Z"/>
+
+  <!-- Vignette + grain -->
+  <rect width="3840" height="2160" fill="url(#vignette)"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay"/>
+</svg>

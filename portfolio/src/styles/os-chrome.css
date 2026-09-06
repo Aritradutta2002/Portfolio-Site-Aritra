@@ -1,0 +1,259 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   OS CHROME — macOS-style desktop shell
+   Beyond Tailwind defaults: translucency, squircle radii, window shadows,
+   dock magnification, genie-minimize, traffic lights, thin scrollbars.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* OS chrome surfaces (per Plan §1 design tokens) */
+  --os-chrome: 245 245 247;          /* #F5F5F7 */
+  --os-chrome-dark: 29 29 31;        /* #1D1D1F */
+  --os-accent: 45 212 191;           /* #2DD4BF muted teal — the single accent */
+  --os-window-bg: 255 255 255;
+  --os-window-bg-dark: 30 30 32;
+  --os-text: 29 29 31;
+  --os-text-dark: 244 244 246;
+  --font-os: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI',
+    var(--font-geist-sans, system-ui), sans-serif;
+}
+
+/* ── Desktop wallpaper ────────────────────────────────────────────────────
+   The user's macOS-style wallpaper, resized to 3840×3840 (exactly 4K).
+   background-size: cover scales by width on ultrawide and crops vertically —
+   it never stretches or distorts the image. */
+.os-wallpaper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: #141A33;
+  background-image: url('/wallpapers/mac-theme.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ── Translucent chrome (menu bar, dock, panels) ──────────────────────── */
+.os-chrome-surface {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.os-chrome-dark {
+  background: rgba(22, 22, 26, 0.62);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+/* ── Menu bar ─────────────────────────────────────────────────────────── */
+.os-menubar {
+  font-family: var(--font-os);
+  -webkit-font-smoothing: antialiased;
+}
+.os-menubar-item {
+  transition: background-color 0.14s ease, color 0.14s ease;
+  border-radius: 5px;
+}
+.os-menubar-item:hover,
+.os-menubar-item[data-open='true'] {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+/* ── Windows ──────────────────────────────────────────────────────────── */
+.os-window {
+  font-family: var(--font-os);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgb(var(--os-window-bg));
+  color: rgb(var(--os-text));
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.28),
+    0 32px 64px -12px rgba(0, 0, 0, 0.55),
+    0 12px 24px -8px rgba(0, 0, 0, 0.40);
+  will-change: transform;
+}
+.os-window[data-focused='false'] {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.22),
+    0 18px 40px -14px rgba(0, 0, 0, 0.42);
+}
+.os-window-titlebar {
+  background: linear-gradient(to bottom, #f6f6f8 0%, #ececed 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+}
+.os-window[data-focused='false'] .os-window-titlebar {
+  background: #f2f2f4;
+}
+
+/* Traffic lights */
+.os-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.5px solid rgba(0, 0, 0, 0.18);
+  transition: filter 0.15s ease;
+}
+.os-light-red    { background: #FF5F57; }
+.os-light-yellow { background: #FEBC2E; }
+.os-light-green  { background: #28C840; }
+.os-light:hover  { filter: brightness(0.92); }
+.os-light:active { filter: brightness(0.8); }
+/* Glyphs appear on hover of the whole light cluster (true macOS behaviour) */
+.os-lights:hover .os-light-glyph { opacity: 0.7; }
+.os-light-glyph { opacity: 0; transition: opacity 0.12s ease; }
+
+/* ── Dock ─────────────────────────────────────────────────────────────── */
+.os-dock {
+  font-family: var(--font-os);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow:
+    0 18px 50px -12px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+.os-dock-icon { position: relative; will-change: transform; }
+.os-dock-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.85);
+}
+.os-dock-label {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: rgba(30, 30, 34, 0.92);
+  color: #fff;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* Genie-minimize: window collapses toward its dock icon */
+.os-genie {
+  transform-origin: bottom center;
+}
+
+/* ── Desktop widgets (Sonoma-style glass cards) ────────────────────────── */
+.os-widget {
+  border-radius: 22px;
+  background: rgba(28, 28, 30, 0.55);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.20),
+    0 18px 40px -12px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ── Desktop icons ────────────────────────────────────────────────────── */
+.os-desktop-icon { font-family: var(--font-os); }
+.os-desktop-icon-label {
+  font-size: 12px;
+  line-height: 1.25;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75), 0 0 10px rgba(0, 0, 0, 0.45);
+  max-width: 92px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.os-desktop-icon[data-selected='true'] .os-desktop-icon-plate {
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+.os-desktop-icon-plate {
+  border-radius: 9px;
+  transition: background 0.14s ease, box-shadow 0.14s ease;
+}
+
+/* ── Spotlight palette ────────────────────────────────────────────────── */
+.os-spotlight {
+  font-family: var(--font-os);
+  border-radius: 14px;
+  background: rgba(28, 28, 32, 0.72);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 40px 90px -12px rgba(0, 0, 0, 0.7);
+}
+.os-spotlight-row[data-active='true'] {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ── Thin overlay scrollbars for window content ───────────────────────── */
+.os-scroll { overflow: auto; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.28) transparent; }
+.os-scroll::-webkit-scrollbar { width: 9px; height: 9px; }
+.os-scroll::-webkit-scrollbar-track { background: transparent; }
+.os-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.26);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.os-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.42); background-clip: content-box; }
+.os-scroll-dark::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); background-clip: content-box; }
+.os-scroll-dark::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.38); background-clip: content-box; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Boot sequence ────────────────────────────────────────────────────── */
+@keyframes os-boot-pulse {
+  0%, 100% { opacity: 0.25; transform: scale(0.7); }
+  50%      { opacity: 1;    transform: scale(1); }
+}
+.os-boot-dot { animation: os-boot-pulse 1.1s ease-in-out infinite; }
+
+@keyframes os-screen-wake {
+  0%   { opacity: 0; filter: brightness(3) blur(8px); }
+  35%  { opacity: 1; filter: brightness(1.6) blur(0); }
+  100% { opacity: 1; filter: brightness(1) blur(0); }
+}
+.os-screen-wake { animation: os-screen-wake 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ── Terminal ─────────────────────────────────────────────────────────── */
+.os-terminal {
+  font-family: var(--font-geist-mono, var(--font-fira-code), ui-monospace, 'SFMono-Regular', Menlo, monospace);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+@keyframes os-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+.os-caret { animation: os-caret 1.05s steps(1) infinite; }
+
+/* ── Focus rings — visible on every interactive OS affordance ─────────── */
+.os-focusable:focus-visible {
+  outline: 2px solid rgb(var(--os-accent));
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ── Reduced motion: kill drift, keep layout identical ────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .os-boot-dot { animation: none; opacity: 0.8; }
+  .os-screen-wake { animation: none; }
+  .os-caret { animation: none; }
+}
+
+/* Prevent text selection while dragging windows */
+.os-dragging, .os-dragging * { user-select: none !important; cursor: default !important; }
