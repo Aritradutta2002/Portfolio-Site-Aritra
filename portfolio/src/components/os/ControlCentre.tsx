@@ -142,7 +142,7 @@ export default function ControlCentre() {
         <div className="rounded-[17px] bg-white/[0.12] p-2.5">
           <button type="button" onClick={toggleWifi} className="flex w-full items-center gap-2.5 text-left" aria-pressed={wifi}>
             <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${wifi ? 'bg-[#83a9ff]' : 'bg-white/10 text-white/50'}`}><WifiIcon size={19} /></span>
-            <span className="leading-tight"><span className="block font-semibold">Wi-Fi</span><span className="block text-[11px] text-white/55">{wifi ? 'ne0gi-5G' : 'Off'}</span></span>
+            <span className="leading-tight"><span className="block font-semibold">Wi-Fi</span><span className="block text-[11px] text-white/55">{wifi ? 'Aritra 5G' : 'Off'}</span></span>
           </button>
           <button type="button" onClick={() => setTheme(dark ? 'light' : 'dark')} className="mt-3 flex w-full items-center gap-2.5 text-left" aria-pressed={dark}>
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/80">{dark ? <MoonIcon size={18} /> : <SunIcon size={18} />}</span>
