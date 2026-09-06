@@ -8,11 +8,14 @@ import { MENU_H } from './MenuBar'
 
 const ICON_W = 68
 const ICON_H = 82
-const ROW_GAP = 6
-const EDGE = 12
+const ROW_GAP = 8
+const EDGE = 16
 const DRAG_THRESHOLD = 4
-const DESKTOP_POS_KEY = 'os-desktop-positions:v2'
-const COLUMN_GAP = 18
+const COLUMN_GAP = 16
+
+/* Grid cell size — icons snap to this grid on drop */
+const GRID_COL = ICON_W + COLUMN_GAP
+const GRID_ROW = ICON_H + ROW_GAP
 
 type Pos = { x: number; y: number }
 
@@ -20,14 +23,14 @@ type Pos = { x: number; y: number }
     wrapping to a new column toward the left when one fills up. */
 function columnLayout(vw: number, vh: number): Pos[] {
   const usable = vh - MENU_H - EDGE - 110 /* dock clearance */
-  const maxRows = Math.max(1, Math.floor(usable / (ICON_H + ROW_GAP)))
+  const maxRows = Math.max(1, Math.floor(usable / GRID_ROW))
   let col = 0
   return DESKTOP_APPS.map((_, i) => {
     const row = i % maxRows
     if (i > 0 && row === 0) col++
     return {
       x: vw - EDGE - (col + 1) * ICON_W - col * COLUMN_GAP,
-      y: MENU_H + EDGE + row * (ICON_H + ROW_GAP),
+      y: MENU_H + EDGE + row * GRID_ROW,
     }
   })
 }
@@ -37,70 +40,45 @@ function clampPos(x: number, y: number): Pos {
   const vh = window.innerHeight
   return {
     x: Math.min(Math.max(x, 0), Math.max(vw - ICON_W, 0)),
-    y: Math.min(Math.max(y, MENU_H), Math.max(vh - ICON_H - 96, MENU_H)),
+    y: Math.min(Math.max(y, MENU_H + 4), Math.max(vh - ICON_H - 96, MENU_H + 4)),
   }
 }
 
-function loadPositions(fallback: Pos[]): Pos[] {
-  try {
-    const raw = localStorage.getItem(DESKTOP_POS_KEY)
-    if (!raw) return fallback
-    const saved = JSON.parse(raw) as Record<string, Pos>
-    if (!saved || typeof saved !== 'object') return fallback
-    return DESKTOP_APPS.map((app, i) => {
-      const p = saved[app.id]
-      if (
-        p &&
-        Number.isFinite(p.x) &&
-        Number.isFinite(p.y)
-      ) {
-        return clampPos(p.x, p.y)
-      }
-      return fallback[i]
-    })
-  } catch {
-    return fallback
-  }
+/** Snap a free position to the nearest grid cell. */
+function snapToGrid(x: number, y: number, vw: number, vh: number): Pos {
+  /* Find the nearest column origin from the right edge */
+  const snappedX = Math.round((x - EDGE) / GRID_COL) * GRID_COL + EDGE
+  const snappedY = Math.round((y - MENU_H - EDGE) / GRID_ROW) * GRID_ROW + MENU_H + EDGE
+  return clampPos(snappedX, snappedY)
 }
 
 export default function Desktop() {
   const openApp = useWindowStore((s) => s.openApp)
+
+  /* Always start from the clean column layout — never restore saved positions.
+     This ensures icons are always properly aligned on every page load. */
   const [positions, setPositions] = React.useState<Pos[]>(() => {
     const vw = typeof window !== 'undefined' ? window.innerWidth : 1440
     const vh = typeof window !== 'undefined' ? window.innerHeight : 900
-    const fallback = columnLayout(vw, vh)
-    if (typeof window === 'undefined') return fallback
-    return loadPositions(fallback)
+    return columnLayout(vw, vh)
   })
   const [selected, setSelected] = React.useState<string | null>(null)
   const desktopRef = React.useRef<HTMLDivElement>(null)
 
-  /* Persist free positions so a reload keeps the user's layout. */
-  React.useEffect(() => {
-    try {
-      const map: Record<string, Pos> = {}
-      DESKTOP_APPS.forEach((app, i) => {
-        if (positions[i]) map[app.id] = positions[i]
-      })
-      localStorage.setItem(DESKTOP_POS_KEY, JSON.stringify(map))
-    } catch {
-      /* storage unavailable — layout stays in memory */
-    }
-  }, [positions])
-
   /* Re-flow the column on resize so icons never end up off-screen. */
   React.useEffect(() => {
     const onResize = () => {
-      setPositions((prev) =>
-        prev.map((p) => clampPos(p.x, p.y))
-      )
+      /* On resize, recalculate the full layout from scratch */
+      setPositions(columnLayout(window.innerWidth, window.innerHeight))
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
   const move = React.useCallback((index: number, pos: Pos) => {
-    setPositions((prev) => prev.map((p, i) => (i === index ? pos : p)))
+    /* Snap to grid on drop */
+    const snapped = snapToGrid(pos.x, pos.y, window.innerWidth, window.innerHeight)
+    setPositions((prev) => prev.map((p, i) => (i === index ? snapped : p)))
   }, [])
 
   /* Clicking bare desktop clears the selection. */
@@ -305,17 +283,16 @@ function DesktopIcon({
           onOpen()
           return
         }
-        const step = e.shiftKey ? 24 : 8
         const map: Record<string, Pos> = {
-          ArrowLeft: { x: position.x - step, y: position.y },
-          ArrowRight: { x: position.x + step, y: position.y },
-          ArrowUp: { x: position.x, y: position.y - step },
-          ArrowDown: { x: position.x, y: position.y + step },
+          ArrowLeft:  { x: position.x - GRID_COL, y: position.y },
+          ArrowRight: { x: position.x + GRID_COL, y: position.y },
+          ArrowUp:    { x: position.x, y: position.y - GRID_ROW },
+          ArrowDown:  { x: position.x, y: position.y + GRID_ROW },
         }
         const next = map[e.key]
         if (next) {
           e.preventDefault()
-          onMove(index, clampPos(next.x, next.y))
+          onMove(index, next)
         }
       }}
       aria-label={`${app.label} — ${app.description}. Drag to move, double-click to open, arrow keys to nudge.`}
