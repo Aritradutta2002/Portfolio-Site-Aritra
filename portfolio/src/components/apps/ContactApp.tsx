@@ -3,18 +3,20 @@
 import * as React from 'react'
 import about from '@/content/about.json'
 
-const ACCENT = '#0F766E'
+const ACCENT_LIGHT = '#0F766E'
+const ACCENT_DARK = '#2dd4bf'
 const TO_EMAIL = about.links.email.replace('mailto:', '')
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
 
 const FIELD =
-  'w-full rounded-md border border-black/[0.12] bg-white px-2.5 py-1.5 text-[12.5px] text-[#1D1D1F] placeholder:text-[#A1A1A6] focus:border-[#2DD4BF] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]'
+  'w-full rounded-md border border-black/[0.12] bg-white px-2.5 py-1.5 text-[12.5px] text-[#1D1D1F] placeholder:text-[#A1A1A6] focus:border-[#2DD4BF] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF] dark:border-white/[0.10] dark:bg-[#252528] dark:text-[#f4f4f6] dark:placeholder:text-[#636366]'
 
 export default function ContactApp() {
   const [form, setForm] = React.useState({ name: '', email: '', subject: '', message: '' })
   const [status, setStatus] = React.useState<Status>('idle')
   const [error, setError] = React.useState<string | null>(null)
+  const ACCENT = typeof document !== 'undefined' && document.documentElement.classList.contains('dark') ? ACCENT_DARK : ACCENT_LIGHT
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }))
@@ -63,32 +65,32 @@ export default function ContactApp() {
   return (
     <form
       onSubmit={onSubmit}
-      className="flex h-full w-full flex-col bg-white text-[#1D1D1F]"
+      className="flex h-full w-full flex-col bg-white text-[#1D1D1F] dark:bg-[#1e1e20] dark:text-[#f4f4f6]"
       noValidate
     >
       {/* ── Header row (Mail.app compose) ── */}
-      <div className="shrink-0 border-b border-black/[0.08] bg-[#FAFAFC]">
+      <div className="shrink-0 border-b border-black/[0.08] bg-[#FAFAFC] dark:border-white/[0.10] dark:bg-[#252528]">
         <div className="flex items-center gap-2 px-4 py-1.5">
-          <label htmlFor="c-to" className="w-12 shrink-0 text-right text-[11.5px] text-[#86868B]">
+          <label htmlFor="c-to" className="w-12 shrink-0 text-right text-[11.5px] text-[#86868B] dark:text-[#8e8e93]">
             To:
           </label>
           <input
             id="c-to"
             value={`${about.name} <${TO_EMAIL}>`}
             readOnly
-            className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2.5 py-1 text-[12.5px] text-[#3C3C43]"
+            className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2.5 py-1 text-[12.5px] text-[#3C3C43] dark:text-[#d1d1d6]"
           />
         </div>
         <div className="flex items-center gap-2 px-4 py-1.5">
-          <label htmlFor="c-subject" className="w-12 shrink-0 text-right text-[11.5px] text-[#86868B]">
+          <label htmlFor="c-subject" className="w-12 shrink-0 text-right text-[11.5px] text-[#86868B] dark:text-[#8e8e93]">
             Subject:
           </label>
           <input
             id="c-subject"
             value={form.subject}
             onChange={set('subject')}
-            placeholder="Let’s build something"
-            className={`min-w-0 flex-1 rounded-md border border-black/[0.12] bg-white px-2.5 py-1 text-[12.5px] placeholder:text-[#A1A1A6] focus:border-[#2DD4BF] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF]`}
+            placeholder="Let's build something"
+            className={`min-w-0 flex-1 rounded-md border border-black/[0.12] bg-white px-2.5 py-1 text-[12.5px] placeholder:text-[#A1A1A6] focus:border-[#2DD4BF] focus:outline-none focus:ring-1 focus:ring-[#2DD4BF] dark:border-white/[0.10] dark:bg-[#252528] dark:text-[#f4f4f6] dark:placeholder:text-[#636366]`}
           />
         </div>
       </div>
@@ -97,7 +99,7 @@ export default function ContactApp() {
       <div className="os-scroll min-h-0 flex-1 overflow-y-auto px-4 py-3">
         <div className="mb-3 grid grid-cols-2 gap-2">
           <div>
-            <label htmlFor="c-name" className="mb-1 block text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#86868B]">
+            <label htmlFor="c-name" className="mb-1 block text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#86868B] dark:text-[#8e8e93]">
               Your name
             </label>
             <input
@@ -109,7 +111,7 @@ export default function ContactApp() {
             />
           </div>
           <div>
-            <label htmlFor="c-email" className="mb-1 block text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#86868B]">
+            <label htmlFor="c-email" className="mb-1 block text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#86868B] dark:text-[#8e8e93]">
               Your email
             </label>
             <input
@@ -123,7 +125,7 @@ export default function ContactApp() {
           </div>
         </div>
 
-        <label htmlFor="c-message" className="mb-1 block text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#86868B]">
+        <label htmlFor="c-message" className="mb-1 block text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#86868B] dark:text-[#8e8e93]">
           Message
         </label>
         <textarea
@@ -148,8 +150,8 @@ export default function ContactApp() {
       </div>
 
       {/* ── Footer ── */}
-      <div className="flex shrink-0 items-center justify-between gap-3 border-t border-black/[0.08] bg-[#FAFAFC] px-4 py-2.5">
-        <span className="text-[11px] text-[#86868B]">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-t border-black/[0.08] bg-[#FAFAFC] px-4 py-2.5 dark:border-white/[0.10] dark:bg-[#252528]">
+        <span className="text-[11px] text-[#86868B] dark:text-[#8e8e93]">
           Or email directly:{' '}
           <a href={about.links.email} className="os-focusable underline" style={{ color: ACCENT }}>
             {TO_EMAIL}

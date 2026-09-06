@@ -19,6 +19,11 @@
   --os-titlebar-inactive: #F0F0F2;
   --font-os: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI',
     var(--font-geist-sans, system-ui), sans-serif;
+  /* App chip tokens */
+  --os-chip-bg: #F2F2F7;
+  --os-chip-text: #3C3C43;
+  /* Experience selected row */
+  --experience-selected-bg: rgba(15, 118, 110, 0.10);
 }
 
 /* ── Desktop wallpaper ────────────────────────────────────────────────────*/
@@ -133,13 +138,21 @@
   --os-titlebar-start: #3A3A3C;
   --os-titlebar-end:   #2C2C2E;
   --os-titlebar-inactive: #2A2A2C;
+  /* App chip tokens — dark */
+  --os-chip-bg: #3a3a3e;
+  --os-chip-text: #e5e5ea;
+  /* Experience selected row — dark */
+  --experience-selected-bg: rgba(45, 212, 191, 0.15);
 }
 .dark .os-window-titlebar {
   border-bottom-color: rgba(0, 0, 0, 0.45);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  /* Ensure title text is always white in dark mode */
+  color: #ffffff;
 }
 .dark .os-window[data-focused='false'] .os-window-titlebar {
   box-shadow: none;
+  color: rgba(255, 255, 255, 0.45);
 }
 .dark .os-window [class*="bg-white"],
 .dark .os-window [class*="bg-[#FAFAFC]"],
@@ -178,6 +191,16 @@
 .dark .os-window [style*="#CCFBF1"],
 .dark .os-window [style*="#F6FEFC"] {
   background: #173b3a !important;
+}
+
+/* Additional dark mode overrides for secondary surface shades */
+.dark .os-window [class*="bg-[#FAFAFC]"],
+.dark .os-window [class*="bg-[#F7F7F9]"],
+.dark .os-window [class*="bg-[#F2F2F5]"] {
+  background-color: #252528 !important;
+}
+.dark .os-window [class*="border-black/"] {
+  border-color: rgba(255,255,255,0.10) !important;
 }
 
 /* ── Traffic lights — pixel-accurate macOS Ventura ────────────────────── */

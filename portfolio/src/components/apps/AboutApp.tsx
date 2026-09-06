@@ -2,15 +2,18 @@
 
 import * as React from 'react'
 import Image from 'next/image'
+import { useTheme } from 'next-themes'
 import about from '@/content/about.json'
 
-const ACCENT = '#0F766E' /* text-safe teal */
-const ACCENT_SOFT = '#CCFBF1'
+const ACCENT_LIGHT = '#0F766E'
+const ACCENT_DARK = '#2dd4bf'
+const ACCENT_SOFT_LIGHT = '#CCFBF1'
+const ACCENT_SOFT_DARK = '#0d3330'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-5">
-      <h2 className="mb-2 text-[10.5px] font-semibold uppercase tracking-[0.09em] text-[#86868B]">
+      <h2 className="mb-2 text-[10.5px] font-semibold uppercase tracking-[0.09em] text-[#86868B] dark:text-[#8e8e93]">
         {title}
       </h2>
       {children}
@@ -21,8 +24,11 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Chip({ children, tone = 'neutral' }: { children: React.ReactNode; tone?: 'neutral' | 'accent' }) {
   return (
     <span
-      className="inline-flex items-center rounded-md px-2 py-[3px] text-[11.5px] font-medium leading-tight"
-      style={tone === 'accent' ? { background: ACCENT_SOFT, color: ACCENT } : { background: '#F2F2F7', color: '#3C3C43' }}
+      className={
+        tone === 'accent'
+          ? 'inline-flex items-center rounded-md px-2 py-[3px] text-[11.5px] font-medium leading-tight bg-[#CCFBF1] text-[#0F766E] dark:bg-[#0d3330] dark:text-[#2dd4bf]'
+          : 'inline-flex items-center rounded-md px-2 py-[3px] text-[11.5px] font-medium leading-tight bg-[#F2F2F7] text-[#3C3C43] dark:bg-[#3a3a3e] dark:text-[#e5e5ea]'
+      }
     >
       {children}
     </span>
@@ -30,10 +36,15 @@ function Chip({ children, tone = 'neutral' }: { children: React.ReactNode; tone?
 }
 
 export default function AboutApp() {
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
+  const ACCENT = isDark ? ACCENT_DARK : ACCENT_LIGHT
+  const ACCENT_SOFT = isDark ? ACCENT_SOFT_DARK : ACCENT_SOFT_LIGHT
+
   const skillGroups = Object.entries(about.skills) as Array<[string, string[]]>
 
   return (
-    <div className="os-scroll h-full w-full overflow-y-auto bg-white px-5 py-4 text-[#1D1D1F]">
+    <div className="os-scroll h-full w-full overflow-y-auto bg-white px-5 py-4 text-[#1D1D1F] dark:bg-[#1e1e20] dark:text-[#f4f4f6]">
       {/* ── Identity ── */}
       <header className="mb-5 flex items-start gap-4">
         <div
@@ -56,7 +67,7 @@ export default function AboutApp() {
           <p className="mt-0.5 text-[13px] font-medium" style={{ color: ACCENT }}>
             {about.title}
           </p>
-          <p className="mt-1 text-[12px] text-[#6E6E73]">
+          <p className="mt-1 text-[12px] text-[#6E6E73] dark:text-[#8e8e93]">
             {about.company} · {about.location}
           </p>
         </div>
@@ -64,7 +75,7 @@ export default function AboutApp() {
 
       {/* ── Bio ── */}
       <Section title="Bio">
-        <p className="text-[13px] leading-[1.62] text-[#3C3C43]">{about.bio}</p>
+        <p className="text-[13px] leading-[1.62] text-[#3C3C43] dark:text-[#d1d1d6]">{about.bio}</p>
       </Section>
 
       {/* ── Quick facts ── */}
@@ -72,8 +83,8 @@ export default function AboutApp() {
         <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
           {about.quickFacts.map((f) => (
             <div key={f.label} className="min-w-0">
-              <dt className="text-[10.5px] uppercase tracking-wide text-[#86868B]">{f.label}</dt>
-              <dd className="truncate text-[12.5px] font-medium text-[#1D1D1F]">{f.value}</dd>
+              <dt className="text-[10.5px] uppercase tracking-wide text-[#86868B] dark:text-[#8e8e93]">{f.label}</dt>
+              <dd className="truncate text-[12.5px] font-medium text-[#1D1D1F] dark:text-[#f4f4f6]">{f.value}</dd>
             </div>
           ))}
         </dl>
@@ -84,7 +95,7 @@ export default function AboutApp() {
         <div className="space-y-2.5">
           {skillGroups.map(([group, items]) => (
             <div key={group} className="flex flex-wrap items-center gap-1.5">
-              <span className="mr-1 shrink-0 text-[11.5px] font-semibold text-[#1D1D1F]">
+              <span className="mr-1 shrink-0 text-[11.5px] font-semibold text-[#1D1D1F] dark:text-[#f4f4f6]">
                 {group}
               </span>
               <span className="flex flex-wrap gap-1.5">
@@ -95,7 +106,7 @@ export default function AboutApp() {
             </div>
           ))}
           <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-            <span className="mr-1 shrink-0 text-[11.5px] font-semibold text-[#1D1D1F]">Spoken</span>
+            <span className="mr-1 shrink-0 text-[11.5px] font-semibold text-[#1D1D1F] dark:text-[#f4f4f6]">Spoken</span>
             {about.spokenLanguages.map((l) => (
               <Chip key={l}>{l}</Chip>
             ))}
@@ -108,16 +119,19 @@ export default function AboutApp() {
         {about.education.map((e) => (
           <div
             key={e.institution}
-            className="rounded-xl border border-black/[0.07] bg-[#FAFAFC] px-3.5 py-3"
+            className="rounded-xl border border-black/[0.07] bg-[#FAFAFC] px-3.5 py-3 dark:border-white/[0.10] dark:bg-[#252528]"
           >
             <div className="flex items-baseline justify-between gap-3">
               <p className="text-[13.5px] font-semibold leading-snug">{e.degree}</p>
-              <span className="shrink-0 rounded-md px-2 py-[2px] text-[11px] font-semibold" style={{ background: ACCENT_SOFT, color: ACCENT }}>
+              <span
+                className="shrink-0 rounded-md px-2 py-[2px] text-[11px] font-semibold"
+                style={{ background: ACCENT_SOFT, color: ACCENT }}
+              >
                 CGPA {e.cgpa}
               </span>
             </div>
-            <p className="mt-0.5 text-[12px] text-[#3C3C43]">{e.institution}</p>
-            <p className="mt-0.5 text-[11.5px] text-[#86868B]">
+            <p className="mt-0.5 text-[12px] text-[#3C3C43] dark:text-[#d1d1d6]">{e.institution}</p>
+            <p className="mt-0.5 text-[11.5px] text-[#86868B] dark:text-[#8e8e93]">
               {e.location} · {e.period}
             </p>
           </div>
@@ -128,15 +142,15 @@ export default function AboutApp() {
       <Section title="Certifications & Achievements">
         <div className="space-y-2">
           {about.certifications.map((c) => (
-            <div key={c.title} className="rounded-xl border border-black/[0.07] bg-[#FAFAFC] px-3.5 py-2.5">
+            <div key={c.title} className="rounded-xl border border-black/[0.07] bg-[#FAFAFC] px-3.5 py-2.5 dark:border-white/[0.10] dark:bg-[#252528]">
               <p className="text-[12.5px] font-semibold leading-snug">{c.title}</p>
-              <p className="mt-0.5 text-[11.5px] text-[#6E6E73]">{c.detail}</p>
+              <p className="mt-0.5 text-[11.5px] text-[#6E6E73] dark:text-[#8e8e93]">{c.detail}</p>
             </div>
           ))}
           {about.achievements.map((a) => (
-            <div key={a.title} className="rounded-xl border border-black/[0.07] bg-[#FAFAFC] px-3.5 py-2.5">
+            <div key={a.title} className="rounded-xl border border-black/[0.07] bg-[#FAFAFC] px-3.5 py-2.5 dark:border-white/[0.10] dark:bg-[#252528]">
               <p className="text-[12.5px] font-semibold leading-snug">{a.title}</p>
-              <p className="mt-0.5 text-[11.5px] text-[#6E6E73]">{a.detail}</p>
+              <p className="mt-0.5 text-[11.5px] text-[#6E6E73] dark:text-[#8e8e93]">{a.detail}</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {a.stats.map((s) => (
                   <a
@@ -172,7 +186,7 @@ export default function AboutApp() {
               href={l.href}
               target={l.href.startsWith('mailto:') ? undefined : '_blank'}
               rel="noopener noreferrer"
-              className="os-focusable rounded-lg border border-black/[0.08] bg-white px-3 py-1.5 text-[12px] font-medium text-[#1D1D1F] transition-colors hover:border-black/20 hover:bg-[#F5F5F7]"
+              className="os-focusable rounded-lg border border-black/[0.08] bg-white px-3 py-1.5 text-[12px] font-medium text-[#1D1D1F] transition-colors hover:border-black/20 hover:bg-[#F5F5F7] dark:border-white/[0.10] dark:bg-[#252528] dark:text-[#f4f4f6] dark:hover:border-white/20 dark:hover:bg-[#2a2a2e]"
             >
               {l.label}
             </a>

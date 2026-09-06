@@ -359,8 +359,27 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
   }
 }
 
-/* ── Squircle clip path (Apple's ~21% corner radius on 64×64 grid) ──────── */
-const SQUIRCLE_PATH = 'M2,13.5 C2,6.6 6.6,2 13.5,2 L50.5,2 C57.4,2 62,6.6 62,13.5 L62,50.5 C62,57.4 57.4,62 50.5,62 L13.5,62 C6.6,62 2,57.4 2,50.5 Z'
+/* ── True Apple superellipse squircle (continuous curvature, 64×64 grid) ──
+   Apple uses a superellipse with n≈5, not a simple rounded rect.
+   This cubic-bezier approximation matches the real iOS/macOS icon shape:
+   corners have a smooth "squircle" curve that flows continuously into the
+   straight sides — no abrupt tangent break like a plain rx rect. */
+const SQUIRCLE_PATH = [
+  'M 32 2',
+  'C 44.2 2, 50.4 2, 55.2 4.8',
+  'C 59.2 7.2, 61.8 11.2, 62 16',
+  'C 62.2 20.8, 62 26, 62 32',
+  'C 62 38, 62.2 43.2, 62 48',
+  'C 61.8 52.8, 59.2 56.8, 55.2 59.2',
+  'C 50.4 62, 44.2 62, 32 62',
+  'C 19.8 62, 13.6 62, 8.8 59.2',
+  'C 4.8 56.8, 2.2 52.8, 2 48',
+  'C 1.8 43.2, 2 38, 2 32',
+  'C 2 26, 1.8 20.8, 2 16',
+  'C 2.2 11.2, 4.8 7.2, 8.8 4.8',
+  'C 13.6 2, 19.8 2, 32 2',
+  'Z',
+].join(' ')
 
 export default function AppIcon({ name, size = 48, className = '', glyphColor }: Props) {
   const uid = React.useMemo(
@@ -418,16 +437,17 @@ export default function AppIcon({ name, size = 48, className = '', glyphColor }:
           ))}
         </linearGradient>
 
-        {/* Top gloss gradient */}
-        <linearGradient id={glossId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity={isDark ? 0.10 : isLight ? 0.70 : 0.28} />
+        {/* Top-left diagonal gloss — Apple's light source comes from top-left */}
+        <linearGradient id={glossId} x1="0" y1="0" x2="0.5" y2="1">
+          <stop offset="0%"   stopColor="#FFFFFF" stopOpacity={isDark ? 0.12 : isLight ? 0.75 : 0.32} />
+          <stop offset="55%"  stopColor="#FFFFFF" stopOpacity={isDark ? 0.03 : isLight ? 0.12 : 0.06} />
           <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
 
-        {/* Inner shadow at bottom */}
+        {/* Inner bottom vignette for depth */}
         <linearGradient id={innerShadowId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(0,0,0,0)" />
-          <stop offset="100%" stopColor="rgba(0,0,0,0.18)" />
+          <stop offset="50%"  stopColor="rgba(0,0,0,0)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0.22)" />
         </linearGradient>
       </defs>
 
@@ -436,22 +456,22 @@ export default function AppIcon({ name, size = 48, className = '', glyphColor }:
         {/* Base gradient fill */}
         <rect x="0" y="0" width="64" height="64" fill={`url(#${gradId})`} />
 
-        {/* Inner bottom shadow for depth */}
+        {/* Bottom vignette for depth */}
         <rect x="0" y="0" width="64" height="64" fill={`url(#${innerShadowId})`} />
 
         {/* Glyph */}
         <Glyph name={name} color={glyphCol} />
 
-        {/* Top gloss highlight — covers top ~40% of icon */}
-        <rect x="0" y="0" width="64" height="28" fill={`url(#${glossId})`} />
+        {/* Diagonal gloss — top-left light source, covers top ~55% */}
+        <rect x="0" y="0" width="64" height="36" fill={`url(#${glossId})`} />
       </g>
 
-      {/* ── Rim / border ── */}
+      {/* ── Rim — inner stroke so it sits inside the shape ── */}
       <path
         d={SQUIRCLE_PATH}
         fill="none"
-        stroke={isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.20)'}
-        strokeWidth="1.2"
+        stroke={isLight ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.18)'}
+        strokeWidth="1"
       />
     </svg>
   )

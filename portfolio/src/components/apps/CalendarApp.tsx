@@ -70,15 +70,15 @@ export default function CalendarApp() {
   const selectedEvents = selected ? eventsByDate.get(selected) ?? [] : []
 
   return (
-    <div className="flex h-full w-full flex-col bg-white text-[#1D1D1F]">
+    <div className="flex h-full w-full flex-col bg-white dark:bg-[#1e1e20] text-[#1D1D1F] dark:text-[#f4f4f6]">
       {/* ── Toolbar ── */}
-      <div className="flex shrink-0 items-center justify-between border-b border-black/[0.07] bg-[#FAFAFC] px-4 py-2">
+      <div className="flex shrink-0 items-center justify-between border-b border-black/[0.07] dark:border-white/[0.08] bg-[#FAFAFC] dark:bg-[#252528] px-4 py-2">
         <div className="flex items-center gap-1.5">
           <button
             type="button"
             onClick={() => shift(-1)}
             aria-label="Previous month"
-            className="os-focusable grid h-7 w-7 place-items-center rounded-md text-[#0A63D6] hover:bg-black/[0.05]"
+            className="os-focusable grid h-7 w-7 place-items-center rounded-md text-[#0A63D6] dark:text-[#4da3ff] hover:bg-black/[0.05] dark:hover:bg-white/[0.08]"
           >
             ‹
           </button>
@@ -86,7 +86,7 @@ export default function CalendarApp() {
             type="button"
             onClick={() => shift(1)}
             aria-label="Next month"
-            className="os-focusable grid h-7 w-7 place-items-center rounded-md text-[#0A63D6] hover:bg-black/[0.05]"
+            className="os-focusable grid h-7 w-7 place-items-center rounded-md text-[#0A63D6] dark:text-[#4da3ff] hover:bg-black/[0.05] dark:hover:bg-white/[0.08]"
           >
             ›
           </button>
@@ -96,7 +96,7 @@ export default function CalendarApp() {
               setView({ y: today.getFullYear(), m: today.getMonth() })
               setSelected(dateKey(today))
             }}
-            className="os-focusable ml-1 rounded-md border border-black/[0.1] bg-white px-2.5 py-1 text-[11.5px] font-medium hover:bg-[#F0F0F3]"
+            className="os-focusable ml-1 rounded-md border border-black/[0.1] dark:border-white/[0.08] bg-white dark:bg-[#1e1e20] px-2.5 py-1 text-[11.5px] font-medium hover:bg-[#F0F0F3] dark:hover:bg-[#3a3a3e]"
           >
             Today
           </button>
@@ -106,11 +106,11 @@ export default function CalendarApp() {
 
       {/* ── Month grid ── */}
       <div className="flex min-h-0 flex-1 flex-col px-3 pb-2 pt-2.5">
-        <div className="grid shrink-0 grid-cols-7 border-b border-black/[0.07] pb-1.5">
+        <div className="grid shrink-0 grid-cols-7 border-b border-black/[0.07] dark:border-white/[0.08] pb-1.5">
           {DOW.map((d, i) => (
             <span
               key={i}
-              className="text-center text-[10.5px] font-semibold uppercase tracking-wide text-[#86868B]"
+              className="text-center text-[10.5px] font-semibold uppercase tracking-wide text-[#86868B] dark:text-[#8e8e93]"
             >
               {d}
             </span>
@@ -127,14 +127,14 @@ export default function CalendarApp() {
                 key={i}
                 type="button"
                 onClick={() => setSelected(key)}
-                className="flex flex-col items-center gap-0.5 border-b border-r border-black/[0.04] px-1 pt-1.5 pb-1 text-center transition-colors last:border-r-0 hover:bg-[#F5F5F7]"
-                style={on ? { background: '#E8F2FF' } : undefined}
+                className="flex flex-col items-center gap-0.5 border-b border-r border-black/[0.04] dark:border-white/[0.08] px-1 pt-1.5 pb-1 text-center transition-colors last:border-r-0 hover:bg-[#F5F5F7] dark:hover:bg-white/[0.06]"
+                style={on ? { background: document.documentElement.classList.contains('dark') ? '#1a2d4a' : '#E8F2FF' } : undefined}
                 aria-label={`${d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}${dayEvents ? `, ${dayEvents.length} event${dayEvents.length > 1 ? 's' : ''}` : ''}`}
               >
                 <span
                   className={
                     'grid h-6 w-6 place-items-center rounded-full text-[12px] ' +
-                    (today ? 'font-semibold text-white' : inMonth(d) ? 'text-[#1D1D1F]' : 'text-[#C7C7CC]')
+                    (today ? 'font-semibold text-white' : inMonth(d) ? 'text-[#1D1D1F] dark:text-[#f4f4f6]' : 'text-[#C7C7CC] dark:text-[#636366]')
                   }
                   style={today ? { background: '#FF453A' } : undefined}
                 >
@@ -156,7 +156,7 @@ export default function CalendarApp() {
       </div>
 
       {/* ── Selected day ── */}
-      <div className="shrink-0 border-t border-black/[0.07] bg-[#FAFAFC] px-4 py-2.5">
+      <div className="shrink-0 border-t border-black/[0.07] dark:border-white/[0.08] bg-[#FAFAFC] dark:bg-[#252528] px-4 py-2.5">
         {selected ? (
           selectedEvents.length ? (
             <ul className="space-y-1.5">
@@ -168,13 +168,13 @@ export default function CalendarApp() {
                   />
                   <span className="min-w-0">
                     <span className="block text-[12.5px] font-semibold leading-snug">{e.title}</span>
-                    <span className="block text-[11px] leading-snug text-[#6E6E73]">{e.note}</span>
+                    <span className="block text-[11px] leading-snug text-[#6E6E73] dark:text-[#8e8e93]">{e.note}</span>
                   </span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-[12px] text-[#86868B]">
+            <p className="text-[12px] text-[#86868B] dark:text-[#8e8e93]">
               {new Date(selected + 'T12:00:00').toLocaleDateString('en-US', {
                 weekday: 'long',
                 month: 'long',
@@ -184,7 +184,7 @@ export default function CalendarApp() {
             </p>
           )
         ) : (
-          <p className="text-[12px] text-[#86868B]">Select a day to see its events.</p>
+          <p className="text-[12px] text-[#86868B] dark:text-[#8e8e93]">Select a day to see its events.</p>
         )}
       </div>
     </div>

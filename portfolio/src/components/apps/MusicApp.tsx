@@ -58,34 +58,66 @@ export default function MusicApp() {
         </div>
         <div className="relative mt-auto flex items-center justify-center gap-6 pt-6">
           <button type="button" onClick={previousTrack} aria-label="Previous song" className="rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white"><SkipBack size={18} fill="currentColor" /></button>
-          <button type="button" onClick={togglePlayback} aria-label={playing ? 'Pause song' : 'Play song'} className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#242226] shadow-lg transition hover:scale-105">
+          <button type="button" onClick={togglePlayback} aria-label={playing ? 'Pause song' : 'Play song'} className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#242226] shadow-lg transition hover:scale-105 dark:bg-white/20 dark:text-white dark:backdrop-blur-sm dark:border dark:border-white/30">
             {playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
           </button>
           <button type="button" onClick={nextTrack} aria-label="Next song" className="rounded-full p-2 text-white/80 transition hover:bg-white/10 hover:text-white"><SkipForward size={18} fill="currentColor" /></button>
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-col border-t border-black/[0.08] px-6 py-5 md:border-l md:border-t-0">
+      <div className="flex min-h-0 flex-col border-t border-black/[0.08] bg-[#fbfbfd] px-6 py-5 dark:border-white/[0.10] dark:bg-[#1e1e20] md:border-l md:border-t-0">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold">Up next</h2>
-          <span className="text-[11px] text-black/40">{MUSIC_TRACKS.length} songs</span>
+          <h2 className="text-sm font-semibold text-[#1d1d1f] dark:text-white">Up next</h2>
+          <span className="text-[11px] text-black/40 dark:text-white/40">{MUSIC_TRACKS.length} songs</span>
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
           {MUSIC_TRACKS.map((item, index) => {
             const active = index === currentIndex
             return (
-              <button key={item.id} type="button" onClick={() => selectTrack(index)} className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${active ? 'bg-black/[0.07]' : 'hover:bg-black/[0.04]'}`}>
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg text-white" style={{ background: `linear-gradient(145deg, ${item.accent}, #303038)` }}>{active && playing ? '♫' : '♪'}</span>
-                <span className="min-w-0 flex-1"><span className={`block truncate text-[13px] font-medium ${active ? 'text-[#d32657]' : ''}`}>{item.title}</span><span className="block truncate text-[11px] text-black/45">{item.artist} · {item.album}</span></span>
-                <ChevronRight size={15} className="text-black/20 transition group-hover:translate-x-0.5" />
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => selectTrack(index)}
+                className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+                  active
+                    ? 'bg-black/[0.07] dark:bg-white/[0.08]'
+                    : 'hover:bg-black/[0.04] dark:hover:bg-white/[0.06]'
+                }`}
+              >
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg text-white"
+                  style={{ background: `linear-gradient(145deg, ${item.accent}, #303038)` }}
+                >
+                  {active && playing ? '♫' : '♪'}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className={`block truncate text-[13px] font-semibold ${active ? 'text-[#d32657] dark:text-[#ff6b8a]' : 'text-[#1d1d1f] dark:text-white'}`}>
+                    {item.title}
+                  </span>
+                  <span className="block truncate text-[11px] text-black/45 dark:text-white/45">
+                    {item.artist} · {item.album}
+                  </span>
+                </span>
+                <ChevronRight size={15} className="text-black/20 transition group-hover:translate-x-0.5 dark:text-white/25" />
               </button>
             )
           })}
         </div>
-        <div className="mt-4 flex items-center gap-3 border-t border-black/[0.07] pt-4">
-          <Volume2 size={15} className="text-black/45" />
-          <input aria-label="Music volume" type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => { const value = Number(e.target.value); setVolume(value); if (audio) audio.volume = value }} className="h-1.5 flex-1 accent-[#d32657]" />
-          <span className="w-8 text-right text-[11px] text-black/40">{Math.round(volume * 100)}%</span>
+        <div className="mt-4 flex items-center gap-3 border-t border-black/[0.07] pt-4 dark:border-white/[0.10]">
+          <Volume2 size={15} className="text-black/45 dark:text-white/50" />
+          <input
+            aria-label="Music volume"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={(e) => { const value = Number(e.target.value); setVolume(value); if (audio) audio.volume = value }}
+            className="h-1.5 flex-1 accent-[#d32657]"
+          />
+          <span className="w-8 text-right text-[11px] text-black/40 dark:text-white/40">
+            {Math.round(volume * 100)}%
+          </span>
         </div>
       </div>
     </div>

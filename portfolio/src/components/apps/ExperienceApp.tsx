@@ -4,7 +4,6 @@ import * as React from 'react'
 import experience from '@/content/experience.json'
 
 const ACCENT = '#0F766E'
-const ACCENT_SOFT = '#CCFBF1'
 
 export default function ExperienceApp() {
   const [activeId, setActiveId] = React.useState<string>(experience[0]?.id ?? '')
@@ -66,15 +65,14 @@ export default function ExperienceApp() {
             </p>
           </header>
 
-          <p className="mb-3 text-[13px] leading-[1.62] text-[#3C3C43]">{active.summary}</p>
+          <p className="mb-3 text-[13px] leading-[1.62] text-[#3C3C43] dark:text-[#d1d1d6]">{active.summary}</p>
 
           {/* Impact highlights */}
           <div className="mb-4 flex flex-wrap gap-1.5">
             {active.highlights.map((h) => (
               <span
                 key={h}
-                className="rounded-md px-2 py-[3px] text-[11px] font-semibold"
-                style={{ background: ACCENT_SOFT, color: ACCENT }}
+                className="rounded-md px-2 py-[3px] text-[11px] font-semibold bg-[#CCFBF1] text-[#0F766E] dark:bg-[#0d3330] dark:text-[#2dd4bf]"
               >
                 {h}
               </span>
@@ -86,7 +84,7 @@ export default function ExperienceApp() {
           </h2>
           <ul className="mb-4 space-y-2">
             {active.bullets.map((b) => (
-              <li key={b} className="flex gap-2.5 text-[12.5px] leading-[1.6] text-[#3C3C43]">
+              <li key={b} className="flex gap-2.5 text-[12.5px] leading-[1.6] text-[#3C3C43] dark:text-[#d1d1d6]">
                 <span
                   className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full"
                   style={{ background: '#2DD4BF' }}

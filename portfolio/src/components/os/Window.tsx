@@ -211,16 +211,17 @@ export default function Window({
             </button>
           </div>
 
-          {/* Centred title with app icon — macOS style */}
+          {/* Centred title with app icon — macOS style, dark-mode aware */}
           <div className="pointer-events-none absolute inset-x-0 flex items-center justify-center gap-1.5" style={{ height: 32 }}>
             <AppIcon name={iconName} size={13} />
             <span
-              className="truncate text-[12px] font-medium"
-              style={{
-                color: focused ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.38)',
-                letterSpacing: '-0.01em',
-                maxWidth: 220,
-              }}
+              className={[
+                'truncate text-[12px] font-semibold',
+                focused
+                  ? 'text-[#1d1d1f] dark:text-white'
+                  : 'text-[#1d1d1f]/40 dark:text-white/40',
+              ].join(' ')}
+              style={{ letterSpacing: '-0.01em', maxWidth: 220 }}
             >
               {win.title}
             </span>
@@ -233,7 +234,7 @@ export default function Window({
         {/* ── Content ──
             data-lenis-prevent keeps Lenis from swallowing wheel events so
             in-window scrolling stays native. */}
-        <div className="min-h-0 flex-1 bg-white" data-lenis-prevent>
+        <div className="min-h-0 flex-1 bg-white dark:bg-[#1e1e20]" data-lenis-prevent>
           {children}
         </div>
       </motion.div>

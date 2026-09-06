@@ -160,12 +160,14 @@ export default function FinderApp() {
   const canForward = hIndex < history.length - 1
   const crumb = [FS, ...path.map((_, i) => findPath(path.slice(0, i + 1))!)]
 
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+
   return (
-    <div className="flex h-full w-full bg-white text-[#1D1D1F]">
+    <div className="flex h-full w-full bg-white text-[#1D1D1F] dark:bg-[#1e1e20] dark:text-[#f4f4f6]">
       {/* ── Sidebar ── */}
-      <div className="os-chrome-surface hidden w-[168px] shrink-0 flex-col gap-3 border-r border-black/[0.08] px-2.5 py-3 sm:flex">
+      <div className="os-chrome-surface hidden w-[168px] shrink-0 flex-col gap-3 border-r border-black/[0.08] px-2.5 py-3 dark:border-white/[0.10] sm:flex">
         <div>
-          <p className="px-1.5 pb-1 text-[10px] font-semibold uppercase tracking-wide text-[#86868B]">
+          <p className="px-1.5 pb-1 text-[10px] font-semibold uppercase tracking-wide text-[#86868B] dark:text-[#8e8e93]">
             Favourites
           </p>
           {[
@@ -184,7 +186,7 @@ export default function FinderApp() {
                 className="os-focusable block w-full truncate rounded-md px-1.5 py-1 text-left text-[12px] transition-colors"
                 style={on ? { background: 'rgba(10,99,214,0.12)', color: '#0A63D6' } : undefined}
                 onMouseEnter={(e) => {
-                  if (!on) e.currentTarget.style.background = 'rgba(0,0,0,0.05)'
+                  if (!on) e.currentTarget.style.background = document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)'
                 }}
                 onMouseLeave={(e) => {
                   if (!on) e.currentTarget.style.background = 'transparent'
@@ -196,14 +198,14 @@ export default function FinderApp() {
           })}
         </div>
         <div>
-          <p className="px-1.5 pb-1 text-[10px] font-semibold uppercase tracking-wide text-[#86868B]">
+          <p className="px-1.5 pb-1 text-[10px] font-semibold uppercase tracking-wide text-[#86868B] dark:text-[#8e8e93]">
             Locations
           </p>
           <a
             href="https://github.com/Aritradutta2002"
             target="_blank"
             rel="noopener noreferrer"
-            className="os-focusable block truncate rounded-md px-1.5 py-1 text-[12px] hover:bg-black/[0.05]"
+            className="os-focusable block truncate rounded-md px-1.5 py-1 text-[12px] hover:bg-black/[0.05] dark:hover:bg-white/[0.07]"
           >
             GitHub ↗
           </a>
@@ -211,7 +213,7 @@ export default function FinderApp() {
             href="https://www.linkedin.com/in/aritra-dutta-rick20/"
             target="_blank"
             rel="noopener noreferrer"
-            className="os-focusable block truncate rounded-md px-1.5 py-1 text-[12px] hover:bg-black/[0.05]"
+            className="os-focusable block truncate rounded-md px-1.5 py-1 text-[12px] hover:bg-black/[0.05] dark:hover:bg-white/[0.07]"
           >
             LinkedIn ↗
           </a>
@@ -221,13 +223,13 @@ export default function FinderApp() {
       {/* ── Main ── */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Toolbar */}
-        <div className="flex shrink-0 items-center gap-2 border-b border-black/[0.07] bg-[#FAFAFC] px-3 py-2">
+        <div className="flex shrink-0 items-center gap-2 border-b border-black/[0.07] bg-[#FAFAFC] px-3 py-2 dark:border-white/[0.10] dark:bg-[#252528]">
           <button
             type="button"
             onClick={back}
             disabled={!canBack}
             aria-label="Back"
-            className="os-focusable grid h-7 w-7 place-items-center rounded-md text-[#0A63D6] transition-colors hover:bg-black/[0.05] disabled:opacity-30"
+            className="os-focusable grid h-7 w-7 place-items-center rounded-md text-[#0A63D6] transition-colors hover:bg-black/[0.05] disabled:opacity-30 dark:text-[#2dd4bf] dark:hover:bg-white/[0.07]"
           >
             ‹
           </button>
@@ -236,25 +238,25 @@ export default function FinderApp() {
             onClick={forward}
             disabled={!canForward}
             aria-label="Forward"
-            className="os-focusable grid h-7 w-7 place-items-center rounded-md text-[#0A63D6] transition-colors hover:bg-black/[0.05] disabled:opacity-30"
+            className="os-focusable grid h-7 w-7 place-items-center rounded-md text-[#0A63D6] transition-colors hover:bg-black/[0.05] disabled:opacity-30 dark:text-[#2dd4bf] dark:hover:bg-white/[0.07]"
           >
             ›
           </button>
-          <nav className="flex min-w-0 items-center gap-1 text-[12px] text-[#6E6E73]" aria-label="Path">
+          <nav className="flex min-w-0 items-center gap-1 text-[12px] text-[#6E6E73] dark:text-[#8e8e93]" aria-label="Path">
             {crumb.map((n, i) => (
               <React.Fragment key={n.id}>
-                {i > 0 && <span className="text-[#C7C7CC]">›</span>}
+                {i > 0 && <span className="text-[#C7C7CC] dark:text-[#636366]">›</span>}
                 <button
                   type="button"
                   onClick={() => navigate(path.slice(0, i))}
-                  className="os-focusable max-w-[110px] truncate rounded px-1 font-medium text-[#1D1D1F] hover:bg-black/[0.05]"
+                  className="os-focusable max-w-[110px] truncate rounded px-1 font-medium text-[#1D1D1F] hover:bg-black/[0.05] dark:text-[#f4f4f6] dark:hover:bg-white/[0.07]"
                 >
                   {n.name}
                 </button>
               </React.Fragment>
             ))}
           </nav>
-          <span className="ml-auto shrink-0 text-[11px] text-[#86868B]">
+          <span className="ml-auto shrink-0 text-[11px] text-[#86868B] dark:text-[#8e8e93]">
             {items.length} item{items.length === 1 ? '' : 's'}
           </span>
         </div>
@@ -262,7 +264,7 @@ export default function FinderApp() {
         {/* Items */}
         <div className="os-scroll flex-1 overflow-y-auto p-4" data-lenis-prevent>
           {items.length === 0 ? (
-            <p className="grid h-full place-items-center text-[13px] text-[#86868B]">
+            <p className="grid h-full place-items-center text-[13px] text-[#86868B] dark:text-[#8e8e93]">
               This folder is empty.
             </p>
           ) : (
@@ -282,9 +284,9 @@ export default function FinderApp() {
                       }
                     }}
                     className="os-focusable group flex w-[96px] flex-col items-center gap-1.5 rounded-xl p-2 transition-colors"
-                    style={on ? { background: '#E8F2FF' } : undefined}
+                    style={on ? { background: document.documentElement.classList.contains('dark') ? 'rgba(45,212,191,0.15)' : '#E8F2FF' } : undefined}
                     onMouseEnter={(e) => {
-                      if (!on) e.currentTarget.style.background = 'rgba(0,0,0,0.04)'
+                      if (!on) e.currentTarget.style.background = document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'
                     }}
                     onMouseLeave={(e) => {
                       if (!on) e.currentTarget.style.background = 'transparent'
@@ -298,7 +300,7 @@ export default function FinderApp() {
                         glyphColor={node.icon === 'project' ? '#FFFFFF' : undefined}
                       />
                     </span>
-                    <span className="max-w-full truncate text-[11.5px] font-medium leading-tight">
+                    <span className="max-w-full truncate text-[11.5px] font-medium leading-tight text-[#1D1D1F] dark:text-[#f4f4f6]">
                       {node.name}
                     </span>
                   </button>
@@ -309,8 +311,8 @@ export default function FinderApp() {
         </div>
 
         {/* Status bar */}
-        <div className="shrink-0 border-t border-black/[0.07] bg-[#FAFAFC] px-3 py-1.5">
-          <p className="text-[11px] text-[#86868B]">
+        <div className="shrink-0 border-t border-black/[0.07] bg-[#FAFAFC] px-3 py-1.5 dark:border-white/[0.10] dark:bg-[#252528]">
+          <p className="text-[11px] text-[#86868B] dark:text-[#8e8e93]">
             Double-click a folder to open it · double-click an app to launch it
           </p>
         </div>
