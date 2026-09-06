@@ -195,7 +195,7 @@ export default function SpotlightSearch({
                         role="option"
                         aria-selected={i === active}
                         data-active={i === active}
-                        className="os-spotlight-row flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left"
+                        className="os-spotlight-row os-press flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left"
                         onMouseEnter={() => setActive(i)}
                         onClick={() => commit(r)}
                       >

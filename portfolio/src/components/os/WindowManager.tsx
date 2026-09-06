@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { useWindowStore, selectFocused } from '@/store/windowStore'
 import Window from './Window'
 import { AppBody } from '@/components/apps/registry'
@@ -30,13 +31,15 @@ export default function WindowManager() {
 
   return (
     <div className="pointer-events-none absolute inset-0">
-      {windows
-        .filter((w) => !w.minimized)
-        .map((w) => (
-          <Window key={w.id} win={w} focused={focused?.id === w.id}>
-            <AppBody win={w} />
-          </Window>
-        ))}
+      <AnimatePresence>
+        {windows
+          .filter((w) => !w.minimized)
+          .map((w) => (
+            <Window key={w.id} win={w} focused={focused?.id === w.id}>
+              <AppBody win={w} />
+            </Window>
+          ))}
+      </AnimatePresence>
     </div>
   )
 }

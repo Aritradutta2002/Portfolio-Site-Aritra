@@ -110,6 +110,8 @@ function DesktopIcon({
   const dragState = React.useRef<{ dx: number; dy: number; moved: boolean } | null>(
     null
   )
+  /* Only apply the :active scale-down when the user isn't dragging. */
+  const [dragging, setDragging] = React.useState(false)
 
   const clamp = (x: number, y: number): Pos => {
     const vw = window.innerWidth
@@ -136,12 +138,16 @@ function DesktopIcon({
     if (!s) return
     const nx = e.clientX - s.dx
     const ny = e.clientY - s.dy
-    if (Math.abs(nx - position.x) > 2 || Math.abs(ny - position.y) > 2) s.moved = true
+    if (Math.abs(nx - position.x) > 2 || Math.abs(ny - position.y) > 2) {
+      s.moved = true
+      setDragging(true)
+    }
     onMove(index, clamp(nx, ny))
   }
 
   const endDrag = (e: React.PointerEvent<HTMLButtonElement>) => {
     dragState.current = null
+    setDragging(false)
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId)
     }
@@ -159,6 +165,7 @@ function DesktopIcon({
         touchAction: 'none',
       }}
       data-selected={selected}
+      data-dragging={dragging}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}

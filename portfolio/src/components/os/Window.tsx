@@ -153,6 +153,7 @@ export default function Window({
             ? { opacity: 0, scale: genie.scale, x: genie.x, y: genie.y }
             : { opacity: 1, scale: 1, x: 0, y: 0 }
         }
+        exit={reduce ? undefined : { opacity: 0, scale: 0.9 }}
         transition={
           genie
             ? { duration: GENIE_MS / 1000, ease: [0.4, 0, 1, 1] }

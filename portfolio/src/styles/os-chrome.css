@@ -184,7 +184,11 @@
 }
 .os-desktop-icon-plate {
   border-radius: 9px;
-  transition: background 0.14s ease, box-shadow 0.14s ease;
+  transition: background 0.14s ease, box-shadow 0.14s ease, transform 0.1s ease;
+}
+/* Real press feedback — but not while the icon is being dragged. */
+.os-desktop-icon:not([data-dragging='true']):active .os-desktop-icon-plate {
+  transform: scale(0.9);
 }
 
 /* ── Spotlight palette ────────────────────────────────────────────────── */
@@ -257,3 +261,108 @@
 
 /* Prevent text selection while dragging windows */
 .os-dragging, .os-dragging * { user-select: none !important; cursor: default !important; }
+
+/* ── Press feedback — scale-down compression on :active ───────────────── */
+.os-press {
+  transition: transform 0.1s ease;
+}
+.os-press:active {
+  transform: scale(0.9);
+}
+.os-press-sm:active {
+  transform: scale(0.94);
+}
+
+/* ── Custom range sliders (Control Centre) ────────────────────────────── */
+.os-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.22);
+  outline: none;
+  cursor: pointer;
+}
+.os-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #fff;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+.os-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #fff;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+.os-slider-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 9999px;
+  background: #fff;
+  pointer-events: none;
+}
+
+/* ── Control Centre tiles ─────────────────────────────────────────────── */
+.os-cc-tile {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background-color 0.14s ease;
+}
+.os-cc-tile:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.os-cc-active {
+  background: rgba(45, 212, 191, 0.9);
+  box-shadow: 0 4px 16px rgba(45, 212, 191, 0.4);
+}
+.os-cc-active:hover {
+  background: rgba(45, 212, 191, 0.95);
+}
+.os-cc-active .os-cc-label {
+  color: #062b27;
+}
+
+/* ── Menu bar dropdown rows ───────────────────────────────────────────── */
+.os-dd-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  border-radius: 5px;
+  padding: 5px 10px;
+  text-align: left;
+  font-size: 13px;
+}
+.os-dd-row:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Dock divider ─────────────────────────────────────────────────────── */
+.os-dock-divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 10px 2px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Brightness dim overlay ───────────────────────────────────────────── */
+.os-dim {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: #000;
+  will-change: opacity;
+  transition: opacity 0.15s ease;
+}
