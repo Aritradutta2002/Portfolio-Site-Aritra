@@ -8,9 +8,10 @@ import { MENU_H } from './MenuBar'
 
 const ICON_W = 84
 const ICON_H = 92
-const COL_GAP = 4
 const ROW_GAP = 6
 const EDGE = 12
+const DRAG_THRESHOLD = 4
+const DESKTOP_POS_KEY = 'os-desktop-positions:v1'
 
 type Pos = { x: number; y: number }
 
@@ -30,28 +31,68 @@ function columnLayout(vw: number, vh: number): Pos[] {
   })
 }
 
+function clampPos(x: number, y: number): Pos {
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  return {
+    x: Math.min(Math.max(x, 0), Math.max(vw - ICON_W, 0)),
+    y: Math.min(Math.max(y, MENU_H), Math.max(vh - ICON_H - 96, MENU_H)),
+  }
+}
+
+function loadPositions(fallback: Pos[]): Pos[] {
+  try {
+    const raw = localStorage.getItem(DESKTOP_POS_KEY)
+    if (!raw) return fallback
+    const saved = JSON.parse(raw) as Record<string, Pos>
+    if (!saved || typeof saved !== 'object') return fallback
+    return DESKTOP_APPS.map((app, i) => {
+      const p = saved[app.id]
+      if (
+        p &&
+        Number.isFinite(p.x) &&
+        Number.isFinite(p.y)
+      ) {
+        return clampPos(p.x, p.y)
+      }
+      return fallback[i]
+    })
+  } catch {
+    return fallback
+  }
+}
+
 export default function Desktop() {
   const openApp = useWindowStore((s) => s.openApp)
-  const [positions, setPositions] = React.useState<Pos[]>(() =>
-    columnLayout(
-      typeof window !== 'undefined' ? window.innerWidth : 1440,
-      typeof window !== 'undefined' ? window.innerHeight : 900
-    )
-  )
+  const [positions, setPositions] = React.useState<Pos[]>(() => {
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 1440
+    const vh = typeof window !== 'undefined' ? window.innerHeight : 900
+    const fallback = columnLayout(vw, vh)
+    if (typeof window === 'undefined') return fallback
+    return loadPositions(fallback)
+  })
   const [selected, setSelected] = React.useState<string | null>(null)
   const desktopRef = React.useRef<HTMLDivElement>(null)
+
+  /* Persist free positions so a reload keeps the user's layout. */
+  React.useEffect(() => {
+    try {
+      const map: Record<string, Pos> = {}
+      DESKTOP_APPS.forEach((app, i) => {
+        if (positions[i]) map[app.id] = positions[i]
+      })
+      localStorage.setItem(DESKTOP_POS_KEY, JSON.stringify(map))
+    } catch {
+      /* storage unavailable — layout stays in memory */
+    }
+  }, [positions])
 
   /* Re-flow the column on resize so icons never end up off-screen. */
   React.useEffect(() => {
     const onResize = () => {
-      setPositions((prev) => {
-        const vw = window.innerWidth
-        const vh = window.innerHeight
-        return prev.map((p) => ({
-          x: Math.min(Math.max(p.x, 0), Math.max(vw - ICON_W, 0)),
-          y: Math.min(Math.max(p.y, MENU_H), Math.max(vh - ICON_H - 96, MENU_H)),
-        }))
-      })
+      setPositions((prev) =>
+        prev.map((p) => clampPos(p.x, p.y))
+      )
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
@@ -88,7 +129,24 @@ export default function Desktop() {
   )
 }
 
-/* ── Desktop icon ─────────────────────────────────────────────────────── */
+/* ── Desktop icon ───────────────────────────────────────────────────────
+   Ultra-smooth drag: during the gesture we mutate only the element's
+   `transform` (GPU-composited, rAF-throttled) — zero React re-renders.
+   The committed position is written to state once, on pointer-up. */
+
+type DragState = {
+  pointerId: number
+  startX: number
+  startY: number
+  originX: number
+  originY: number
+  dx: number
+  dy: number
+  fx: number
+  fy: number
+  moved: boolean
+  raf: number
+}
 
 function DesktopIcon({
   app,
@@ -107,62 +165,130 @@ function DesktopIcon({
   onMove: (index: number, pos: Pos) => void
   onOpen: () => void
 }) {
-  const dragState = React.useRef<{ dx: number; dy: number; moved: boolean } | null>(
-    null
-  )
-  /* Only apply the :active scale-down when the user isn't dragging. */
+  const elRef = React.useRef<HTMLButtonElement>(null)
+  const drag = React.useRef<DragState | null>(null)
+  const suppressClickUntil = React.useRef(0)
   const [dragging, setDragging] = React.useState(false)
 
-  const clamp = (x: number, y: number): Pos => {
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-    return {
-      x: Math.min(Math.max(x, 0), Math.max(vw - ICON_W, 0)),
-      y: Math.min(Math.max(y, MENU_H), Math.max(vh - ICON_H - 96, MENU_H)),
-    }
-  }
+  const applyTransform = React.useCallback(() => {
+    const d = drag.current
+    const el = elRef.current
+    if (!d || !el) return
+    d.raf = 0
+    const nx = d.originX + d.dx
+    const ny = d.originY + d.dy
+    const c = clampPos(nx, ny)
+    d.fx = c.x
+    d.fy = c.y
+    // Base layout stays at left/top; only the composited transform moves.
+    el.style.transform = `translate3d(${c.x - d.originX}px, ${c.y - d.originY}px, 0) scale(1.08)`
+  }, [])
 
   const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.isPrimary === false) return
+    if (e.pointerType === 'mouse' && e.button !== 0) return
     onSelect()
-    const rect = e.currentTarget.getBoundingClientRect()
-    dragState.current = {
-      dx: e.clientX - rect.left,
-      dy: e.clientY - rect.top,
+    drag.current = {
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      originX: position.x,
+      originY: position.y,
+      dx: 0,
+      dy: 0,
+      fx: position.x,
+      fy: position.y,
       moved: false,
+      raf: 0,
     }
-    e.currentTarget.setPointerCapture(e.pointerId)
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {
+      /* pointer capture unavailable — drag still works via move/up */
+    }
   }
 
   const onPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
-    const s = dragState.current
-    if (!s) return
-    const nx = e.clientX - s.dx
-    const ny = e.clientY - s.dy
-    if (Math.abs(nx - position.x) > 2 || Math.abs(ny - position.y) > 2) {
-      s.moved = true
+    const d = drag.current
+    if (!d || e.pointerId !== d.pointerId) return
+    const dx = e.clientX - d.startX
+    const dy = e.clientY - d.startY
+    if (!d.moved) {
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return
+      d.moved = true
       setDragging(true)
+      document.body.classList.add('os-dragging')
+      const el = elRef.current
+      if (el) {
+        el.style.zIndex = '60'
+        el.style.willChange = 'transform'
+      }
     }
-    onMove(index, clamp(nx, ny))
+    d.dx = dx
+    d.dy = dy
+    if (d.raf) return
+    d.raf = requestAnimationFrame(applyTransform)
   }
 
   const endDrag = (e: React.PointerEvent<HTMLButtonElement>) => {
-    dragState.current = null
-    setDragging(false)
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId)
+    const d = drag.current
+    if (!d || e.pointerId !== d.pointerId) return
+    if (d.raf) cancelAnimationFrame(d.raf)
+    drag.current = null
+    document.body.classList.remove('os-dragging')
+    const el = elRef.current
+    if (el) {
+      el.style.transform = ''
+      el.style.zIndex = ''
+      el.style.willChange = ''
+    }
+    setDragging((was) => {
+      if (was && d.moved) suppressClickUntil.current = Date.now() + 250
+      return false
+    })
+    if (d.moved) {
+      const c = clampPos(d.fx, d.fy)
+      onMove(index, c)
+    }
+    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId)
+      } catch {
+        /* already released */
+      }
+    }
+  }
+
+  const onDoubleClick = (e: React.MouseEvent) => {
+    if (Date.now() < suppressClickUntil.current) {
+      e.preventDefault()
+      return
+    }
+    onOpen()
+  }
+
+  const onClick = (e: React.MouseEvent) => {
+    // A drag release must not trigger click behaviours.
+    if (Date.now() < suppressClickUntil.current) {
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 
   return (
     <button
+      ref={elRef}
       type="button"
-      className="os-desktop-icon os-focusable absolute grid place-items-center gap-1 p-1"
+      className="os-desktop-icon os-focusable absolute grid place-items-center gap-1 p-1 select-none"
       style={{
         left: position.x,
         top: position.y,
         width: ICON_W,
         height: ICON_H,
         touchAction: 'none',
+        transition: dragging ? 'none' : 'transform 180ms cubic-bezier(0.22, 1, 0.36, 1)',
+        willChange: dragging ? 'transform' : undefined,
+        cursor: dragging ? 'grabbing' : 'default',
       }}
       data-selected={selected}
       data-dragging={dragging}
@@ -170,14 +296,28 @@ function DesktopIcon({
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
-      onDoubleClick={onOpen}
+      onClick={onClick}
+      onDoubleClick={onDoubleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
           onOpen()
+          return
+        }
+        const step = e.shiftKey ? 24 : 8
+        const map: Record<string, Pos> = {
+          ArrowLeft: { x: position.x - step, y: position.y },
+          ArrowRight: { x: position.x + step, y: position.y },
+          ArrowUp: { x: position.x, y: position.y - step },
+          ArrowDown: { x: position.x, y: position.y + step },
+        }
+        const next = map[e.key]
+        if (next) {
+          e.preventDefault()
+          onMove(index, clampPos(next.x, next.y))
         }
       }}
-      aria-label={`${app.label} — ${app.description}`}
+      aria-label={`${app.label} — ${app.description}. Drag to move, double-click to open, arrow keys to nudge.`}
     >
       <span className="os-desktop-icon-plate grid place-items-center p-1">
         <AppIcon name={app.icon} size={56} />
@@ -187,4 +327,4 @@ function DesktopIcon({
   )
 }
 
-export { ICON_W, ICON_H, COL_GAP }
+export { ICON_W, ICON_H }
