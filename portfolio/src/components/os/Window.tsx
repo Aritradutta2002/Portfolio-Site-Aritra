@@ -163,15 +163,16 @@ export default function Window({
       >
         {/* ── Title bar ── */}
         <div
-          className="os-window-titlebar os-drag-handle flex shrink-0 cursor-default select-none items-center gap-2 px-3"
-          style={{ height: 30 }}
+          className="os-window-titlebar os-drag-handle flex shrink-0 cursor-default select-none items-center px-3"
+          style={{ height: 32 }}
           onDoubleClick={() => toggleMaximize(win.id)}
           onKeyDown={onTitleKeyDown}
           tabIndex={0}
           role="toolbar"
           aria-label={`${win.title} title bar — arrow keys move, double-click to zoom`}
         >
-          <div className="os-lights flex items-center gap-2">
+          {/* Traffic lights — macOS spacing: 8px from left edge, 6px between dots */}
+          <div className="os-lights flex items-center" style={{ gap: 6, marginLeft: 2 }}>
             <button
               type="button"
               className="os-light os-light-red os-focusable"
@@ -179,8 +180,8 @@ export default function Window({
               aria-label={`Close ${win.title}`}
               title="Close"
             >
-              <svg viewBox="0 0 12 12" className="os-light-glyph h-[7px] w-[7px]" aria-hidden="true">
-                <path d="M2.4 2.4l7.2 7.2M9.6 2.4l-7.2 7.2" stroke="#5A0A06" strokeWidth="1.5" strokeLinecap="round" />
+              <svg viewBox="0 0 10 10" className="os-light-glyph" style={{ width: 6, height: 6 }} aria-hidden="true">
+                <path d="M2 2l6 6M8 2l-6 6" stroke="#4D0000" strokeWidth="1.4" strokeLinecap="round" />
               </svg>
             </button>
             <button
@@ -190,8 +191,8 @@ export default function Window({
               aria-label={`Minimize ${win.title}`}
               title="Minimize"
             >
-              <svg viewBox="0 0 12 12" className="os-light-glyph h-[7px] w-[7px]" aria-hidden="true">
-                <path d="M2.4 6h7.2" stroke="#5A4306" strokeWidth="1.5" strokeLinecap="round" />
+              <svg viewBox="0 0 10 10" className="os-light-glyph" style={{ width: 6, height: 6 }} aria-hidden="true">
+                <path d="M2 5h6" stroke="#5A3A00" strokeWidth="1.4" strokeLinecap="round" />
               </svg>
             </button>
             <button
@@ -201,21 +202,32 @@ export default function Window({
               aria-label={`${win.maximized ? 'Restore' : 'Zoom'} ${win.title}`}
               title={win.maximized ? 'Restore' : 'Zoom'}
             >
-              <svg viewBox="0 0 12 12" className="os-light-glyph h-[7px] w-[7px]" aria-hidden="true">
-                <path d="M3.2 8.8V4.4h4.4M8.8 3.2v4.4H4.4" stroke="#0A5411" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+              <svg viewBox="0 0 10 10" className="os-light-glyph" style={{ width: 6, height: 6 }} aria-hidden="true">
+                {win.maximized
+                  ? <path d="M3 7V4h3M7 3v3H4" stroke="#003D10" strokeWidth="1.3" strokeLinecap="round" fill="none" />
+                  : <path d="M2.5 7.5V4.5h3M7.5 2.5v3h-3" stroke="#003D10" strokeWidth="1.3" strokeLinecap="round" fill="none" />
+                }
               </svg>
             </button>
           </div>
 
-          <div className="pointer-events-none flex min-w-0 flex-1 items-center justify-center gap-1.5">
-            <AppIcon name={iconName} size={14} />
-            <span className="truncate text-[12.5px] font-semibold text-[#3C3C43]/90">
+          {/* Centred title with app icon — macOS style */}
+          <div className="pointer-events-none absolute inset-x-0 flex items-center justify-center gap-1.5" style={{ height: 32 }}>
+            <AppIcon name={iconName} size={13} />
+            <span
+              className="truncate text-[12px] font-medium"
+              style={{
+                color: focused ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.38)',
+                letterSpacing: '-0.01em',
+                maxWidth: 220,
+              }}
+            >
               {win.title}
             </span>
           </div>
 
-          {/* Balance the traffic lights so the title stays optically centred */}
-          <div className="w-[52px] shrink-0" aria-hidden="true" />
+          {/* Right spacer to optically balance the traffic lights */}
+          <div className="ml-auto w-[56px] shrink-0" aria-hidden="true" />
         </div>
 
         {/* ── Content ──

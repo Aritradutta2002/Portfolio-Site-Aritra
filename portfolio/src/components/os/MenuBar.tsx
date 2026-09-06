@@ -226,24 +226,18 @@ export default function MenuBar({
       className="os-menubar absolute inset-x-0 top-0 z-[9000] flex items-center gap-1 px-2 text-[13px] text-white/90 select-none"
       style={{ height: MENU_H }}
     >
-      {/* ── Logo / About menu ── */}
+      {/* ── Apple logo / About menu ── */}
       <MenuEntry
         id="app"
         open={openMenu === 'app'}
-        ariaLabel="Aritra menu"
+        ariaLabel="Apple menu"
         onToggle={() => toggle('app')}
         onHover={() => switchTo('app')}
         label={
-          <>
-            <span
-              className="grid h-[15px] w-[15px] place-items-center rounded-[4px] text-[8px] font-bold leading-none text-white"
-              style={{ background: 'linear-gradient(135deg, #57C4C7, #8A5CE6)' }}
-              aria-hidden="true"
-            >
-              {initials}
-            </span>
-            <span className="font-medium">{about.name}</span>
-          </>
+          /* Authentic Apple  logo — SF-style path */
+          <svg width="13" height="16" viewBox="0 0 14 17" fill="currentColor" aria-hidden="true" style={{ opacity: 0.92, marginLeft: 2 }}>
+            <path d="M13.17 12.56c-.3.68-.65 1.31-1.06 1.88-.56.8-1.02 1.35-1.37 1.65-.55.5-1.14.76-1.77.77-.45 0-1-.13-1.63-.39-.63-.26-1.21-.39-1.74-.39-.56 0-1.15.13-1.79.39-.64.26-1.16.4-1.56.41-.6.03-1.21-.24-1.82-.8-.38-.33-.86-.9-1.44-1.72C.4 13.5 0 12.5 0 11.46c0-1.1.24-2.05.72-2.84.38-.63.88-1.13 1.52-1.5.64-.37 1.33-.56 2.07-.57.46 0 1.06.14 1.81.42.75.28 1.23.42 1.44.42.16 0 .7-.17 1.6-.5.86-.31 1.58-.44 2.18-.39 1.61.13 2.82.76 3.62 1.9-1.44.87-2.15 2.09-2.14 3.65.01 1.22.46 2.23 1.34 3.01zm-3.5-12.4c0 .96-.35 1.85-1.05 2.68-.84 1-1.86 1.57-2.96 1.48-.01-.11-.02-.23-.02-.35 0-.92.4-1.9 1.11-2.7.35-.4.8-.74 1.34-1.01.54-.27 1.05-.42 1.53-.44.01.12.05.23.05.34z" />
+          </svg>
         }
       >
         <div className="px-2.5 py-1.5">
@@ -371,7 +365,11 @@ export default function MenuBar({
       <div className="ml-auto flex items-center gap-1">
         <BatteryStatus />
 
-        <WiFiToggle />
+        <WiFiToggle
+          open={openMenu === 'wifi'}
+          onToggle={() => toggle('wifi')}
+          onHover={() => switchTo('wifi')}
+        />
 
         {/* Control Centre */}
         <ControlCentreTrigger open={openMenu === 'cc'} onClick={() => toggle('cc')} onHover={() => switchTo('cc')}>
@@ -397,22 +395,140 @@ export default function MenuBar({
   )
 }
 
-/* ── Wi-Fi quick toggle ────────────────────────────────────────────────── */
+/* ── Wi-Fi panel ───────────────────────────────────────────────────────── */
 
-function WiFiToggle() {
+const WIFI_NETWORKS = [
+  { id: 'aritra5g',   name: 'Aritra 5G',        strength: 3, secured: true,  connected: true  },
+  { id: 'aritraBt',   name: 'Aritra Bluetooth',  strength: 2, secured: true,  connected: false },
+  { id: 'aritra2g',   name: 'Aritra 2.4G',       strength: 2, secured: true,  connected: false },
+  { id: 'guest',      name: 'Guest Network',      strength: 1, secured: false, connected: false },
+]
+
+function WiFiToggle({
+  open,
+  onToggle,
+  onHover,
+}: {
+  open: boolean
+  onToggle: () => void
+  onHover: () => void
+}) {
   const wifi = useUiStore((s) => s.wifi)
   const toggleWifi = useUiStore((s) => s.toggleWifi)
+  const [connected, setConnected] = React.useState('aritra5g')
+
+  const handleConnect = (id: string) => {
+    setConnected(id)
+    if (!wifi) toggleWifi()
+  }
+
   return (
-    <button
-      type="button"
-      onClick={toggleWifi}
-      aria-label={wifi ? 'Disconnect Wi-Fi' : 'Connect Wi-Fi'}
-      title={wifi ? 'Wi-Fi on' : 'Wi-Fi off'}
-      data-open={!wifi}
-      className={`os-menubar-item os-press-sm rounded-[5px] px-2 py-0.5 ${wifi ? 'text-white/90' : 'text-white/40 [&_svg]:opacity-40'}`}
-    >
-      <WiFiGlyph size={15} />
-    </button>
+    <div className="relative" onMouseEnter={onHover}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-label="Wi-Fi"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        data-open={open}
+        title="Wi-Fi"
+        className={`os-menubar-item os-press-sm rounded-[5px] px-2 py-0.5 ${wifi ? 'text-white/90' : 'text-white/40'}`}
+      >
+        <WiFiGlyph size={15} active={wifi} />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            role="dialog"
+            aria-label="Wi-Fi"
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="os-spotlight absolute right-0 top-[calc(100%+6px)] z-[9200] w-[280px] overflow-hidden p-3 text-[13px] text-white"
+          >
+            {/* Header row */}
+            <div className="mb-2.5 flex items-center justify-between">
+              <span className="text-[13px] font-semibold text-white/90">Wi-Fi</span>
+              <button
+                type="button"
+                onClick={toggleWifi}
+                className={`relative h-[22px] w-[38px] rounded-full transition-colors duration-200 ${wifi ? 'bg-[#30D158]' : 'bg-white/20'}`}
+                aria-label={wifi ? 'Turn Wi-Fi off' : 'Turn Wi-Fi on'}
+              >
+                <span
+                  className="absolute top-[3px] h-[16px] w-[16px] rounded-full bg-white shadow transition-all duration-200"
+                  style={{ left: wifi ? 19 : 3 }}
+                />
+              </button>
+            </div>
+
+            {wifi ? (
+              <>
+                {/* Network list */}
+                <div className="flex flex-col gap-0.5">
+                  {WIFI_NETWORKS.map((net) => (
+                    <button
+                      key={net.id}
+                      type="button"
+                      onClick={() => handleConnect(net.id)}
+                      className={`flex w-full items-center gap-2.5 rounded-[8px] px-2.5 py-2 text-left transition-colors hover:bg-white/10 ${connected === net.id ? 'bg-white/[0.08]' : ''}`}
+                    >
+                      {/* Signal strength bars */}
+                      <WifiStrengthIcon strength={net.strength} active={connected === net.id} />
+                      <span className="flex-1 text-[12.5px] font-medium leading-tight text-white/90">
+                        {net.name}
+                      </span>
+                      {net.secured && (
+                        <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+                          <rect x="1" y="5.5" width="9" height="7" rx="1.5" fill="rgba(255,255,255,0.45)" />
+                          <path d="M3 5.5V4a2.5 2.5 0 0 1 5 0v1.5" stroke="rgba(255,255,255,0.45)" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+                        </svg>
+                      )}
+                      {connected === net.id && (
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                          <path d="M2 6l3 3 5-5" stroke="#30D158" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="my-2 h-px bg-white/10" />
+
+                {/* Other network */}
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-2 rounded-[8px] px-2.5 py-1.5 text-[12px] text-white/60 hover:bg-white/10 hover:text-white/90 transition-colors"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+                  </svg>
+                  Other…
+                </button>
+              </>
+            ) : (
+              <p className="py-2 text-center text-[12px] text-white/45">
+                Wi-Fi is turned off
+              </p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+function WifiStrengthIcon({ strength, active }: { strength: number; active: boolean }) {
+  const color = active ? '#30D158' : 'rgba(255,255,255,0.7)'
+  const dim = 'rgba(255,255,255,0.22)'
+  return (
+    <svg width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden="true">
+      <path d="M8 12.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" fill={strength >= 1 ? color : dim} />
+      <path d="M4.5 9.5a5 5 0 0 1 7 0" stroke={strength >= 2 ? color : dim} strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      <path d="M1.5 6.5a9 9 0 0 1 13 0" stroke={strength >= 3 ? color : dim} strokeWidth="1.5" strokeLinecap="round" fill="none" />
+    </svg>
   )
 }
 
@@ -448,9 +564,9 @@ function ControlCentreTrigger({
 
 /* ── Glyphs ────────────────────────────────────────────────────────────── */
 
-function WiFiGlyph({ size = 15 }: { size?: number }) {
+function WiFiGlyph({ size = 15, active = true }: { size?: number; active?: boolean }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true" style={{ opacity: active ? 1 : 0.4 }}>
       <path d="M2.5 8.5a15 15 0 0 1 19 0" />
       <path d="M5.5 12.5a10.5 10.5 0 0 1 13 0" />
       <path d="M8.8 16.3a6 6 0 0 1 6.4 0" />

@@ -1,10 +1,10 @@
 import * as React from 'react'
 
 /* ── macOS-style squircle app icons ────────────────────────────────────────
-   Rendered inline as SVG: resolution-independent, crisp at 4K and beyond,
-   theme-safe, no external assets to download or blur.
-   Every icon shares one 64×64 grid, one squircle plate (rx 14 ≈ Apple's
-   22.4% superellipse) and one highlight recipe, so the set stays uniform. */
+   Authentic Apple-style icons: multi-stop gradients, inner gloss highlight,
+   subtle rim light, depth shadow, and per-icon glyph detail.
+   Every icon shares one 64×64 grid and the same squircle clip path
+   (rx 13.5 ≈ Apple's ~21% superellipse corner radius). */
 
 export type IconName =
   | 'about'
@@ -36,31 +36,28 @@ type Props = {
   glyphColor?: string
 }
 
-/** [from, to] vertical gradient for the squircle plate. */
-const PLATES: Record<IconName, [string, string]> = {
-  about:      ['#8B5CF6', '#5B4BE0'],
-  experience: ['#2DD4BF', '#0EA5E9'],
-  projects:   ['#F5A623', '#F97316'],
-  project:    ['#F5A623', '#F97316'],
-  resume:     ['#F472B6', '#DB2777'],
-  contact:    ['#34C759', '#059669'],
-  terminal:   ['#2C2C2E', '#111114'],
-  finder:     ['#19B0F5', '#0A63D6'],
-  photos:     ['#FFFFFF', '#EDEDF0'],
-  notes:      ['#FFFFFF', '#EDEDF0'],
-  calendar:   ['#FFFFFF', '#EDEDF0'],
-  music:      ['#FA3B63', '#C51D54'],
-  mail:       ['#54B9FF', '#2475D7'],
-  browser:    ['#63D9F5', '#3474E6'],
-  widgets:    ['#5E5CE6', '#3634A3'],
-  launchpad:  ['#F2F2F7', '#D8D8DE'],
-  spotlight:  ['#8E8E93', '#48484A'],
-  apple:      ['#2C2C2E', '#111114'],
-}
+/* Each icon: [top-color, mid-color, bottom-color] for a 3-stop gradient */
+type GradDef = { stops: Array<{ offset: string; color: string }>; angle?: string }
 
-/* Plate fill for glyph sub-shapes that need to “cut back to the plate”. */
-const PLATE_DEEP: Partial<Record<IconName, string>> = {
-  finder: '#0A63D6',
+const GRAD_DEFS: Record<IconName, GradDef> = {
+  about:      { stops: [{ offset: '0%', color: '#BF8FFF' }, { offset: '45%', color: '#8B5CF6' }, { offset: '100%', color: '#4C35C8' }] },
+  experience: { stops: [{ offset: '0%', color: '#5EEAD4' }, { offset: '50%', color: '#06B6D4' }, { offset: '100%', color: '#0369A1' }] },
+  projects:   { stops: [{ offset: '0%', color: '#FCD34D' }, { offset: '45%', color: '#F59E0B' }, { offset: '100%', color: '#D97706' }] },
+  project:    { stops: [{ offset: '0%', color: '#FCD34D' }, { offset: '45%', color: '#F59E0B' }, { offset: '100%', color: '#D97706' }] },
+  resume:     { stops: [{ offset: '0%', color: '#F9A8D4' }, { offset: '45%', color: '#EC4899' }, { offset: '100%', color: '#BE185D' }] },
+  contact:    { stops: [{ offset: '0%', color: '#6EE7B7' }, { offset: '45%', color: '#10B981' }, { offset: '100%', color: '#047857' }] },
+  terminal:   { stops: [{ offset: '0%', color: '#3A3A3E' }, { offset: '50%', color: '#1C1C1E' }, { offset: '100%', color: '#0A0A0C' }] },
+  finder:     { stops: [{ offset: '0%', color: '#60C8F5' }, { offset: '40%', color: '#1A9FE8' }, { offset: '100%', color: '#0A5FD6' }] },
+  photos:     { stops: [{ offset: '0%', color: '#FFFFFF' }, { offset: '100%', color: '#E8E8ED' }] },
+  notes:      { stops: [{ offset: '0%', color: '#FFFDE7' }, { offset: '100%', color: '#F5F0D8' }] },
+  calendar:   { stops: [{ offset: '0%', color: '#FFFFFF' }, { offset: '100%', color: '#EDEDF0' }] },
+  music:      { stops: [{ offset: '0%', color: '#FF6B8A' }, { offset: '45%', color: '#FC2D55' }, { offset: '100%', color: '#B5003E' }] },
+  mail:       { stops: [{ offset: '0%', color: '#7DD3FC' }, { offset: '45%', color: '#3B82F6' }, { offset: '100%', color: '#1D4ED8' }] },
+  browser:    { stops: [{ offset: '0%', color: '#93C5FD' }, { offset: '40%', color: '#3B82F6' }, { offset: '100%', color: '#1E40AF' }] },
+  widgets:    { stops: [{ offset: '0%', color: '#A78BFA' }, { offset: '45%', color: '#7C3AED' }, { offset: '100%', color: '#4C1D95' }] },
+  launchpad:  { stops: [{ offset: '0%', color: '#F5F5F7' }, { offset: '100%', color: '#D1D1D6' }] },
+  spotlight:  { stops: [{ offset: '0%', color: '#A1A1AA' }, { offset: '50%', color: '#71717A' }, { offset: '100%', color: '#3F3F46' }] },
+  apple:      { stops: [{ offset: '0%', color: '#3A3A3E' }, { offset: '50%', color: '#1C1C1E' }, { offset: '100%', color: '#0A0A0C' }] },
 }
 
 let gradSeq = 0
@@ -78,107 +75,135 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
   switch (name) {
     case 'about':
       return (
-        <g fill={c}>
-          <circle cx="32" cy="22.5" r="9.5" />
-          <path d="M32 35.5c-9.4 0-17 5.6-17 12.5V52h34v-4c0-6.9-7.6-12.5-17-12.5Z" />
+        <g>
+          {/* Head */}
+          <circle cx="32" cy="22" r="9" fill={c} />
+          {/* Shoulders */}
+          <path d="M14 52c0-9.9 8.1-17 18-17s18 7.1 18 17H14Z" fill={c} />
+          {/* Subtle inner highlight on head */}
+          <circle cx="29" cy="19.5" r="3.5" fill="rgba(255,255,255,0.18)" />
         </g>
       )
 
     case 'experience':
       return (
-        <g fill={c}>
-          <path d="M23 21v-3a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v3h5a3 3 0 0 1 3 3v7H15v-7a3 3 0 0 1 3-3h5Z" opacity="0.30" />
-          <path d="M15 33h34v13a4 4 0 0 1-4 4H19a4 4 0 0 1-4-4V33Z" />
-          <path d="M15 26h34v7H15z" opacity="0.55" />
+        <g>
+          {/* Briefcase body */}
+          <rect x="13" y="28" width="38" height="24" rx="4" fill={c} />
+          {/* Briefcase top bar */}
+          <rect x="13" y="26" width="38" height="6" rx="3" fill={c} opacity="0.75" />
+          {/* Handle */}
+          <path d="M24 26v-4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v4" fill="none" stroke={c} strokeWidth="3" strokeLinecap="round" />
+          {/* Center clasp */}
+          <rect x="28" y="37" width="8" height="5" rx="2" fill="rgba(0,0,0,0.22)" />
+          {/* Horizontal divider */}
+          <rect x="13" y="37" width="38" height="2" rx="1" fill="rgba(0,0,0,0.15)" />
         </g>
       )
 
     case 'projects':
     case 'project':
       return (
-        <g fill={c}>
-          <path d="M11 21a4 4 0 0 1 4-4h11.2a3 3 0 0 1 2.1.9l3.2 3.2a3 3 0 0 0 2.1.9H49a4 4 0 0 1 4 4v19a4 4 0 0 1-4 4H15a4 4 0 0 1-4-4V21Z" />
+        <g>
+          {/* Folder back */}
+          <path d="M11 24a4 4 0 0 1 4-4h10.5a3 3 0 0 1 2.1.9l2.8 2.8a3 3 0 0 0 2.1.9H49a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H15a4 4 0 0 1-4-4V24Z" fill={c} />
+          {/* Folder tab highlight */}
+          <path d="M11 24a4 4 0 0 1 4-4h10.5a3 3 0 0 1 2.1.9l2.8 2.8a3 3 0 0 0 2.1.9H49a4 4 0 0 1 4 4v2H11v-6Z" fill="rgba(255,255,255,0.22)" />
+          {/* Inner shadow at top of folder body */}
+          <path d="M11 30h42v2H11z" fill="rgba(0,0,0,0.08)" />
         </g>
       )
 
     case 'resume':
       return (
-        <g fill={c}>
-          <path d="M18 12h20l11 11v29a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4Z" opacity="0.95" />
-          <path d="M38 12v11h11" opacity="0.45" />
-          <g opacity="0.55">
-            <rect x="22" y="32" width="20" height="2.6" rx="1.3" />
-            <rect x="22" y="39" width="20" height="2.6" rx="1.3" />
-            <rect x="22" y="46" width="13" height="2.6" rx="1.3" />
-          </g>
+        <g>
+          {/* Paper body */}
+          <path d="M18 11h18l12 12v29a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V15a4 4 0 0 1 4-4Z" fill={c} />
+          {/* Folded corner */}
+          <path d="M36 11v12h12" fill="none" stroke={c} strokeWidth="1.5" opacity="0.5" />
+          <path d="M36 11l12 12H36V11Z" fill="rgba(0,0,0,0.18)" />
+          {/* Text lines */}
+          <rect x="22" y="31" width="20" height="2.5" rx="1.25" fill="rgba(0,0,0,0.28)" />
+          <rect x="22" y="37.5" width="20" height="2.5" rx="1.25" fill="rgba(0,0,0,0.22)" />
+          <rect x="22" y="44" width="13" height="2.5" rx="1.25" fill="rgba(0,0,0,0.18)" />
+          {/* Top highlight */}
+          <path d="M18 11h18v3H18a4 4 0 0 0-4 4v-3a4 4 0 0 1 4-4Z" fill="rgba(255,255,255,0.22)" />
         </g>
       )
 
     case 'contact':
       return (
         <g>
-          <rect x="11" y="19" width="42" height="26" rx="5" fill={c} />
-          <path
-            d="M14 24.5 32 36.8 50 24.5"
-            fill="none"
-            stroke="#059669"
-            strokeWidth="3.2"
-            strokeLinecap="round"
-            opacity="0.9"
-          />
+          {/* Envelope body */}
+          <rect x="10" y="18" width="44" height="30" rx="6" fill={c} />
+          {/* Envelope flap */}
+          <path d="M10 24l22 15 22-15" fill="none" stroke="rgba(0,0,0,0.22)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Envelope flap highlight */}
+          <path d="M10 18l22 15 22-15" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Bottom crease lines */}
+          <path d="M10 46 24 33M54 46 40 33" fill="none" stroke="rgba(0,0,0,0.14)" strokeWidth="2" strokeLinecap="round" />
         </g>
       )
 
     case 'terminal':
       return (
-        <g fill={c}>
+        <g>
+          {/* Prompt chevron */}
           <path
-            d="M18 24l8 8-8 8"
+            d="M16 24l10 8-10 8"
             fill="none"
             stroke={c}
-            strokeWidth="3.4"
+            strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <rect x="30" y="39" width="16" height="3.2" rx="1.6" />
+          {/* Cursor bar */}
+          <rect x="30" y="38.5" width="18" height="3.5" rx="1.75" fill={c} />
+          {/* Subtle screen glow */}
+          <rect x="2" y="2" width="60" height="60" rx="13.5" fill="rgba(0,255,100,0.04)" />
         </g>
       )
 
     case 'finder':
       return (
         <g>
-          {/* Finder face */}
+          {/* Face — two-tone split: left blue, right lighter */}
+          <path d="M32 13c10.5 0 18.5 7.6 18.5 17.5S42.5 48 32 48 13.5 40.4 13.5 30.5 21.5 13 32 13Z" fill="#FFFFFF" />
+          {/* Left half tint */}
+          <path d="M13.5 30.5C13.5 20.6 21.5 13 32 13v35C21.5 48 13.5 40.4 13.5 30.5Z" fill="#D6EEFF" />
+          {/* Left eye */}
+          <circle cx="26" cy="29.5" r="3.2" fill="#0A5FD6" />
+          <circle cx="25" cy="28.2" r="1.1" fill="rgba(255,255,255,0.55)" />
+          {/* Right eye */}
+          <circle cx="38" cy="29.5" r="3.2" fill="#0A5FD6" />
+          <circle cx="37" cy="28.2" r="1.1" fill="rgba(255,255,255,0.55)" />
+          {/* Smile */}
           <path
-            d="M32 13.5c10.8 0 19 7.8 19 17.6S42.8 48.7 32 48.7 13 40.9 13 31.1 21.2 13.5 32 13.5Z"
-            fill="#FFFFFF"
-          />
-          {/* Eyes */}
-          <circle cx="26.4" cy="30" r="2.8" fill="#0A63D6" />
-          <circle cx="37.6" cy="30" r="2.8" fill="#0A63D6" />
-          {/* Smile — the two-sided Finder mouth */}
-          <path
-            d="M24.5 37.5c2.3 3.2 5 4.6 7.5 4.6s5.2-1.4 7.5-4.6"
+            d="M24 37.5c2.5 3.5 5.2 5 8 5s5.5-1.5 8-5"
             fill="none"
-            stroke="#0A63D6"
-            strokeWidth="2.6"
+            stroke="#0A5FD6"
+            strokeWidth="2.8"
             strokeLinecap="round"
           />
+          {/* Nose hint */}
+          <path d="M30.5 33.5 32 35.5 33.5 33.5" fill="none" stroke="#0A5FD6" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
         </g>
       )
 
     case 'photos': {
-      /* Pinwheel of eight petals around a white core */
       return (
         <g>
           {PHOTOS_PETALS.map((petal, i) => (
             <path
               key={petal}
-              d="M32 31.4 C 29.6 24.4, 29.4 17.2, 32 11.5 C 34.6 17.2, 34.4 24.4, 32 31.4 Z"
+              d="M32 30.5 C 29.2 23, 29 15.5, 32 10 C 35 15.5, 34.8 23, 32 30.5 Z"
               fill={petal}
               transform={`rotate(${i * 45} 32 32)`}
             />
           ))}
-          <circle cx="32" cy="32" r="6.4" fill="#FFFFFF" />
+          {/* White center circle with subtle shadow */}
+          <circle cx="32" cy="32" r="7" fill="rgba(0,0,0,0.08)" />
+          <circle cx="32" cy="32" r="6.2" fill="#FFFFFF" />
         </g>
       )
     }
@@ -186,89 +211,108 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
     case 'notes': {
       return (
         <g>
+          {/* Paper background — warm cream */}
+          <rect x="8" y="8" width="48" height="48" rx="9" fill="#FFFDE7" />
           {/* Yellow header band */}
-          <path d="M8 15a9 9 0 0 1 9-9h30a9 9 0 0 1 9 9v6H8v-6Z" fill="#F5A623" />
-          {/* Ruled lines */}
-          <g fill="#C7C7CC">
-            <rect x="15" y="29" width="34" height="3.2" rx="1.6" />
-            <rect x="15" y="38" width="34" height="3.2" rx="1.6" />
-            <rect x="15" y="47" width="22" height="3.2" rx="1.6" />
-          </g>
+          <path d="M8 8h48a0 0 0 0 1 0 0v14H8V8Z" fill="#F5A623" />
+          <path d="M8 8h48" stroke="rgba(0,0,0,0.08)" strokeWidth="1" />
+          {/* Spiral binding holes */}
+          <circle cx="20" cy="15" r="2.5" fill="rgba(0,0,0,0.22)" />
+          <circle cx="32" cy="15" r="2.5" fill="rgba(0,0,0,0.22)" />
+          <circle cx="44" cy="15" r="2.5" fill="rgba(0,0,0,0.22)" />
           {/* Left margin rule */}
-          <rect x="21.5" y="21" width="1.6" height="34" fill="#E5B45C" />
+          <rect x="20" y="22" width="1.5" height="30" fill="#E8C97A" />
+          {/* Ruled lines */}
+          <rect x="24" y="27" width="26" height="2.2" rx="1.1" fill="#D4C5A0" />
+          <rect x="24" y="34" width="26" height="2.2" rx="1.1" fill="#D4C5A0" />
+          <rect x="24" y="41" width="26" height="2.2" rx="1.1" fill="#D4C5A0" />
+          <rect x="24" y="48" width="16" height="2.2" rx="1.1" fill="#D4C5A0" />
         </g>
       )
     }
 
     case 'calendar': {
-      /* Live date — the icon always shows today, like the real thing */
       const now = new Date()
-      const month = now
-        .toLocaleDateString('en-US', { month: 'short' })
-        .toUpperCase()
+      const month = now.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()
       const day = now.getDate()
       return (
         <g>
-          <path d="M8 16a8 8 0 0 1 8-8h32a8 8 0 0 1 8 8v4H8v-4Z" fill="#FF453A" />
-          <text
-            x="32"
-            y="15.8"
-            textAnchor="middle"
-            fontSize="8.4"
-            fontWeight="700"
-            fill="#FFFFFF"
-            fontFamily={SYSTEM_FONT}
-          >
-            {month}
-          </text>
-          <text
-            x="32"
-            y="49"
-            textAnchor="middle"
-            fontSize="26"
-            fontWeight="500"
-            fill="#1D1D1F"
-            fontFamily={SYSTEM_FONT}
-          >
-            {day}
-          </text>
+          {/* Calendar body */}
+          <rect x="8" y="12" width="48" height="44" rx="8" fill="#FFFFFF" />
+          {/* Red header */}
+          <path d="M8 12h48v16H8V12Z" fill="#FF3B30" />
+          <path d="M8 12h48a0 0 0 0 1 0 0v4H8v-4Z" fill="rgba(255,255,255,0.18)" />
+          {/* Ring holes */}
+          <rect x="20" y="8" width="4" height="10" rx="2" fill="#C0392B" />
+          <rect x="40" y="8" width="4" height="10" rx="2" fill="#C0392B" />
+          {/* Month label */}
+          <text x="32" y="23" textAnchor="middle" fontSize="8" fontWeight="700" fill="#FFFFFF" fontFamily={SYSTEM_FONT} letterSpacing="0.5">{month}</text>
+          {/* Day number */}
+          <text x="32" y="50" textAnchor="middle" fontSize="26" fontWeight="300" fill="#1D1D1F" fontFamily={SYSTEM_FONT}>{day}</text>
+          {/* Grid lines hint */}
+          <line x1="8" y1="28" x2="56" y2="28" stroke="#E5E5EA" strokeWidth="1" />
         </g>
       )
     }
 
     case 'music':
       return (
-        <g fill={c}>
-          <path d="M39 17v25.2a8.5 8.5 0 1 1-3.5-6.8V21.8l16-3.8v22.2a8.5 8.5 0 1 1-3.5-6.8V13.5L39 17Z" />
-          <path d="M35.5 21.8 48 18.8v4l-12.5 3v-4Z" opacity=".48" />
+        <g>
+          {/* Music note */}
+          <path d="M38 16v26a9 9 0 1 1-4-7.4V20.5l14-3.5v22a9 9 0 1 1-4-7.4V13L38 16Z" fill={c} />
+          {/* Highlight on note head */}
+          <circle cx="25" cy="42" r="3" fill="rgba(255,255,255,0.22)" />
+          <circle cx="44" cy="38" r="3" fill="rgba(255,255,255,0.22)" />
         </g>
       )
 
     case 'mail':
       return (
         <g>
-          <rect x="10" y="17" width="44" height="31" rx="6" fill={c} />
-          <path d="m12 20 20 15 20-15" fill="none" stroke="#2475D7" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="m12 45 14-13M52 45 38 32" fill="none" stroke="#2475D7" strokeWidth="2.5" strokeLinecap="round" opacity=".65" />
+          {/* Envelope body */}
+          <rect x="9" y="16" width="46" height="33" rx="7" fill={c} />
+          {/* Top highlight strip */}
+          <rect x="9" y="16" width="46" height="8" rx="7" fill="rgba(255,255,255,0.18)" />
+          {/* Envelope V-fold */}
+          <path d="M11 19l21 16 21-16" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Bottom crease */}
+          <path d="M11 47 26 33M53 47 38 33" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="2" strokeLinecap="round" />
         </g>
       )
 
     case 'browser':
       return (
-        <g fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="32" cy="32" r="20" />
-          <path d="M12 32h40M32 12c6 5.2 9 11.9 9 20s-3 14.8-9 20c-6-5.2-9-11.9-9-20s3-14.8 9-20Z" />
-          <path d="M17 20h30M17 44h30" opacity=".6" />
+        <g>
+          {/* Globe body */}
+          <circle cx="32" cy="32" r="20" fill={c} />
+          {/* Latitude lines */}
+          <ellipse cx="32" cy="32" rx="10" ry="20" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.8" />
+          {/* Equator */}
+          <line x1="12" y1="32" x2="52" y2="32" stroke="rgba(255,255,255,0.45)" strokeWidth="1.8" />
+          {/* Tropic lines */}
+          <path d="M14 22h36M14 42h36" stroke="rgba(255,255,255,0.28)" strokeWidth="1.4" />
+          {/* Outer ring highlight */}
+          <circle cx="32" cy="32" r="20" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />
+          {/* Top gloss */}
+          <path d="M18 18a20 20 0 0 1 28 0" stroke="rgba(255,255,255,0.35)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
         </g>
       )
 
     case 'widgets':
       return (
         <g>
-          <rect x="11" y="11" width="19" height="19" rx="5.5" fill="#64D2FF" />
-          <rect x="34" y="11" width="19" height="19" rx="5.5" fill="#FFD60A" opacity="0.95" />
-          <rect x="11" y="34" width="19" height="19" rx="5.5" fill="#FF6482" opacity="0.95" />
-          <rect x="34" y="34" width="19" height="19" rx="5.5" fill="#30D158" opacity="0.95" />
+          {/* Top-left: blue */}
+          <rect x="10" y="10" width="20" height="20" rx="6" fill="#64D2FF" />
+          <rect x="10" y="10" width="20" height="8" rx="6" fill="rgba(255,255,255,0.28)" />
+          {/* Top-right: yellow */}
+          <rect x="34" y="10" width="20" height="20" rx="6" fill="#FFD60A" />
+          <rect x="34" y="10" width="20" height="8" rx="6" fill="rgba(255,255,255,0.28)" />
+          {/* Bottom-left: pink */}
+          <rect x="10" y="34" width="20" height="20" rx="6" fill="#FF6482" />
+          <rect x="10" y="34" width="20" height="8" rx="6" fill="rgba(255,255,255,0.22)" />
+          {/* Bottom-right: green */}
+          <rect x="34" y="34" width="20" height="20" rx="6" fill="#30D158" />
+          <rect x="34" y="34" width="20" height="8" rx="6" fill="rgba(255,255,255,0.22)" />
         </g>
       )
 
@@ -276,20 +320,30 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
       return (
         <g>
           {[
-            ['#FF453A', 12, 12], ['#FF9F0A', 26, 12], ['#FFD60A', 40, 12],
-            ['#30D158', 12, 26], ['#64D2FF', 26, 26], ['#0A84FF', 40, 26],
-            ['#BF5AF2', 12, 40], ['#FF375F', 26, 40], ['#5E5CE6', 40, 40],
+            ['#FF453A', 10, 10], ['#FF9F0A', 26, 10], ['#FFD60A', 42, 10],
+            ['#30D158', 10, 26], ['#64D2FF', 26, 26], ['#0A84FF', 42, 26],
+            ['#BF5AF2', 10, 42], ['#FF375F', 26, 42], ['#5E5CE6', 42, 42],
           ].map(([fill, x, y]) => (
-            <circle key={`${x}-${y}`} cx={(x as number) + 6} cy={(y as number) + 6} r="6.4" fill={fill as string} />
+            <rect
+              key={`${x}-${y}`}
+              x={x as number}
+              y={y as number}
+              width="12"
+              height="12"
+              rx="3.5"
+              fill={fill as string}
+            />
           ))}
         </g>
       )
 
     case 'spotlight':
       return (
-        <g fill="none" stroke={c} strokeWidth="4.2" strokeLinecap="round">
-          <circle cx="28" cy="28" r="11" />
-          <path d="M36.5 36.5 46 46" />
+        <g>
+          <circle cx="28" cy="27" r="12" fill="none" stroke={c} strokeWidth="4.5" />
+          <line x1="37" y1="36" x2="48" y2="47" stroke={c} strokeWidth="4.5" strokeLinecap="round" />
+          {/* Inner lens glint */}
+          <circle cx="24" cy="23" r="3.5" fill="rgba(255,255,255,0.22)" />
         </g>
       )
 
@@ -305,11 +359,18 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
   }
 }
 
+/* ── Squircle clip path (Apple's ~21% corner radius on 64×64 grid) ──────── */
+const SQUIRCLE_PATH = 'M2,13.5 C2,6.6 6.6,2 13.5,2 L50.5,2 C57.4,2 62,6.6 62,13.5 L62,50.5 C62,57.4 57.4,62 50.5,62 L13.5,62 C6.6,62 2,57.4 2,50.5 Z'
+
 export default function AppIcon({ name, size = 48, className = '', glyphColor }: Props) {
-  const gid = React.useMemo(
+  const uid = React.useMemo(
     () => `ic-${name}-${++gradSeq}-${Math.random().toString(36).slice(2, 7)}`,
     [name]
   )
+  const clipId = `${uid}-clip`
+  const gradId = `${uid}-grad`
+  const glossId = `${uid}-gloss`
+  const innerShadowId = `${uid}-inner`
 
   if (name === 'music') {
     return (
@@ -320,14 +381,15 @@ export default function AppIcon({ name, size = 48, className = '', glyphColor }:
         height={size}
         className={className}
         draggable={false}
-        style={{ display: 'block', objectFit: 'contain' }}
+        style={{ display: 'block', objectFit: 'contain', borderRadius: '22%' }}
       />
     )
   }
 
-  const [from, to] = PLATES[name]
-  const dark = name === 'terminal' || name === 'apple'
-  const lightPlate = name === 'photos' || name === 'notes' || name === 'calendar' || name === 'launchpad'
+  const gradDef = GRAD_DEFS[name]
+  const isLight = name === 'photos' || name === 'notes' || name === 'calendar' || name === 'launchpad'
+  const isDark = name === 'terminal' || name === 'apple'
+  const glyphCol = glyphColor ?? (isLight ? '#1D1D1F' : '#FFFFFF')
 
   return (
     <svg
@@ -338,41 +400,61 @@ export default function AppIcon({ name, size = 48, className = '', glyphColor }:
       aria-hidden="true"
       focusable="false"
       shapeRendering="geometricPrecision"
-      style={{ display: 'block', filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.18))' }}
+      style={{
+        display: 'block',
+        filter: `drop-shadow(0 1px 1px rgba(0,0,0,0.12)) drop-shadow(0 3px 6px rgba(0,0,0,0.22)) drop-shadow(0 8px 16px rgba(0,0,0,0.14))`,
+      }}
     >
       <defs>
-        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={from} />
-          <stop offset="100%" stopColor={to} />
+        {/* Squircle clip */}
+        <clipPath id={clipId}>
+          <path d={SQUIRCLE_PATH} />
+        </clipPath>
+
+        {/* Main plate gradient */}
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          {gradDef.stops.map((s) => (
+            <stop key={s.offset} offset={s.offset} stopColor={s.color} />
+          ))}
+        </linearGradient>
+
+        {/* Top gloss gradient */}
+        <linearGradient id={glossId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity={isDark ? 0.10 : isLight ? 0.70 : 0.28} />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Inner shadow at bottom */}
+        <linearGradient id={innerShadowId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(0,0,0,0)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0.18)" />
         </linearGradient>
       </defs>
-      {/* Squircle plate — rx 14 on a 64 grid ≈ Apple’s 22.4% superellipse */}
-      <rect x="2" y="2" width="60" height="60" rx="14" fill={`url(#${gid})`} />
-      {/* Top sheen — lighter on light plates so the shape stays visible */}
-      <rect
-        x="2"
-        y="2"
-        width="60"
-        height="30"
-        rx="14"
-        fill="#FFFFFF"
-        opacity={dark ? 0.06 : lightPlate ? 0.55 : 0.14}
-      />
-      {/* Hairline border — dark on light plates, light on dark */}
-      <rect
-        x="2.75"
-        y="2.75"
-        width="58.5"
-        height="58.5"
-        rx="13.4"
+
+      {/* ── Plate ── */}
+      <g clipPath={`url(#${clipId})`}>
+        {/* Base gradient fill */}
+        <rect x="0" y="0" width="64" height="64" fill={`url(#${gradId})`} />
+
+        {/* Inner bottom shadow for depth */}
+        <rect x="0" y="0" width="64" height="64" fill={`url(#${innerShadowId})`} />
+
+        {/* Glyph */}
+        <Glyph name={name} color={glyphCol} />
+
+        {/* Top gloss highlight — covers top ~40% of icon */}
+        <rect x="0" y="0" width="64" height="28" fill={`url(#${glossId})`} />
+      </g>
+
+      {/* ── Rim / border ── */}
+      <path
+        d={SQUIRCLE_PATH}
         fill="none"
-        stroke={lightPlate ? '#3C3C43' : '#FFFFFF'}
-        strokeOpacity={lightPlate ? 0.14 : 0.18}
-        strokeWidth="1.5"
+        stroke={isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.20)'}
+        strokeWidth="1.2"
       />
-      <Glyph name={name} color={glyphColor ?? (lightPlate ? '#1D1D1F' : '#FFFFFF')} />
     </svg>
   )
 }
 
-export { PLATE_DEEP }
+export { GRAD_DEFS as PLATE_DEEP }

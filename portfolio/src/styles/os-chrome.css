@@ -1,29 +1,27 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   OS CHROME — macOS-style desktop shell
-   Beyond Tailwind defaults: translucency, squircle radii, window shadows,
-   dock magnification, genie-minimize, traffic lights, thin scrollbars.
+   OS CHROME — Authentic macOS Ventura / Sonoma desktop shell
+   Pixel-accurate: vibrancy surfaces, squircle radii, window shadows,
+   dock glass + reflection, traffic lights, thin scrollbars.
    ───────────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* OS chrome surfaces (per Plan §1 design tokens) */
-  --os-chrome: 245 245 247;          /* #F5F5F7 */
-  --os-chrome-dark: 29 29 31;        /* #1D1D1F */
-  --os-accent: 45 212 191;           /* #2DD4BF muted teal — the single accent */
+  /* OS chrome surfaces */
+  --os-chrome: 245 245 247;
+  --os-chrome-dark: 29 29 31;
+  --os-accent: 10 132 255;           /* macOS Blue #0A84FF */
   --os-window-bg: 255 255 255;
   --os-window-bg-dark: 30 30 32;
   --os-text: 29 29 31;
   --os-text-dark: 244 244 246;
-  --os-titlebar-start: #f6f6f8;
-  --os-titlebar-end: #ececed;
-  --os-titlebar-inactive: #f2f2f4;
+  /* Authentic macOS Ventura title bar gradient */
+  --os-titlebar-start: #EBEBED;
+  --os-titlebar-end:   #D8D8DA;
+  --os-titlebar-inactive: #F0F0F2;
   --font-os: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI',
     var(--font-geist-sans, system-ui), sans-serif;
 }
 
-/* ── Desktop wallpaper ────────────────────────────────────────────────────
-   The user's macOS-style wallpaper, resized to 3840×3840 (exactly 4K).
-   background-size: cover scales by width on ultrawide and crops vertically —
-   it never stretches or distorts the image. */
+/* ── Desktop wallpaper ────────────────────────────────────────────────────*/
 .os-wallpaper {
   position: absolute;
   inset: 0;
@@ -56,65 +54,92 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* ── Menu bar ─────────────────────────────────────────────────────────── */
+/* ── Menu bar — authentic macOS Sonoma translucency ──────────────────── */
 .os-menubar {
   font-family: var(--font-os);
   -webkit-font-smoothing: antialiased;
-  background: linear-gradient(to bottom, rgba(20, 20, 24, 0.42), rgba(20, 20, 24, 0.18));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(22px) saturate(150%);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  /* Sonoma: very subtle dark tint over the wallpaper */
+  background: linear-gradient(
+    to bottom,
+    rgba(12, 12, 16, 0.52) 0%,
+    rgba(12, 12, 16, 0.28) 100%
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(30px) saturate(160%) brightness(1.05);
+  -webkit-backdrop-filter: blur(30px) saturate(160%) brightness(1.05);
+  /* Subtle top highlight like real macOS */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 .os-menubar-item {
-  transition: background-color 0.14s ease, color 0.14s ease;
+  transition: background-color 0.12s ease, color 0.12s ease;
   border-radius: 5px;
+  padding: 2px 8px;
 }
 .os-menubar-item:hover,
 .os-menubar-item[data-open='true'] {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.18);
   color: #fff;
 }
 
-/* ── Windows ──────────────────────────────────────────────────────────── */
+/* ── Windows — authentic macOS Ventura chrome ─────────────────────────── */
 .os-window {
   font-family: var(--font-os);
   border-radius: 12px;
   overflow: hidden;
   background: rgb(var(--os-window-bg));
   color: rgb(var(--os-text));
+  /* macOS window shadow: tight inner ring + large diffuse shadow */
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.28),
-    0 32px 64px -12px rgba(0, 0, 0, 0.55),
-    0 12px 24px -8px rgba(0, 0, 0, 0.40);
+    0 0 0 0.5px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.22),
+    0 24px 64px -8px rgba(0, 0, 0, 0.45),
+    0 48px 96px -16px rgba(0, 0, 0, 0.28);
   will-change: transform;
 }
 .os-window[data-focused='false'] {
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.22),
-    0 18px 40px -14px rgba(0, 0, 0, 0.42);
+    0 0 0 0.5px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.14),
+    0 16px 40px -8px rgba(0, 0, 0, 0.28);
 }
 .os-window[data-focused='false'] .os-light {
-  filter: saturate(0.45) opacity(0.72);
+  /* Unfocused: traffic lights become grey, like real macOS */
+  background: #DCDCDE !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
 }
 .os-window-titlebar {
-  background: linear-gradient(to bottom, var(--os-titlebar-start) 0%, var(--os-titlebar-end) 100%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+  /* Authentic macOS Ventura title bar: subtle linear gradient */
+  background: linear-gradient(
+    to bottom,
+    var(--os-titlebar-start) 0%,
+    var(--os-titlebar-end) 100%
+  );
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  /* Subtle inner top highlight */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 .os-window[data-focused='false'] .os-window-titlebar {
   background: var(--os-titlebar-inactive);
+  box-shadow: none;
 }
 
-/* App bodies were designed as light macOS windows. Keep their authored
-   structure, but translate the shared surface and typography tokens in dark mode. */
+/* Dark mode window chrome */
 .dark {
   --os-window-bg: 30 30 32;
   --os-text: 244 244 246;
-  --os-titlebar-start: #343438;
-  --os-titlebar-end: #242428;
-  --os-titlebar-inactive: #2b2b2f;
+  --os-titlebar-start: #3A3A3C;
+  --os-titlebar-end:   #2C2C2E;
+  --os-titlebar-inactive: #2A2A2C;
 }
 .dark .os-window-titlebar {
-  border-bottom-color: rgba(255, 255, 255, 0.12);
+  border-bottom-color: rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.dark .os-window[data-focused='false'] .os-window-titlebar {
+  box-shadow: none;
 }
 .dark .os-window [class*="bg-white"],
 .dark .os-window [class*="bg-[#FAFAFC]"],
@@ -155,7 +180,7 @@
   background: #173b3a !important;
 }
 
-/* Traffic lights */
+/* ── Traffic lights — pixel-accurate macOS Ventura ────────────────────── */
 .os-light {
   width: 12px;
   height: 12px;
@@ -163,60 +188,84 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 0.5px solid rgba(0, 0, 0, 0.18);
-  transition: filter 0.15s ease;
+  transition: filter 0.12s ease;
+  position: relative;
+  /* Subtle inner shadow for depth */
+  box-shadow: inset 0 0.5px 1px rgba(0, 0, 0, 0.22), 0 0.5px 0 rgba(255, 255, 255, 0.55);
 }
-.os-light-red    { background: #FF5F57; }
-.os-light-yellow { background: #FEBC2E; }
-.os-light-green  { background: #28C840; }
-.os-light:hover  { filter: brightness(0.92); }
-.os-light:active { filter: brightness(0.8); }
-/* Glyphs appear on hover of the whole light cluster (true macOS behaviour) */
-.os-lights:hover .os-light-glyph { opacity: 0.7; }
+.os-light-red {
+  background: radial-gradient(circle at 38% 35%, #FF8A84, #FF5F57 55%, #E0443C);
+  border: 0.5px solid rgba(180, 40, 30, 0.45);
+}
+.os-light-yellow {
+  background: radial-gradient(circle at 38% 35%, #FFD97A, #FEBC2E 55%, #D89A10);
+  border: 0.5px solid rgba(160, 110, 0, 0.38);
+}
+.os-light-green {
+  background: radial-gradient(circle at 38% 35%, #5EE87A, #28C840 55%, #1A9E30);
+  border: 0.5px solid rgba(10, 110, 30, 0.38);
+}
+.os-light:hover { filter: brightness(0.9) saturate(1.1); }
+.os-light:active { filter: brightness(0.78); }
+/* Glyphs appear on hover of the whole light cluster */
+.os-lights:hover .os-light-glyph { opacity: 0.75; }
 .os-light-glyph { opacity: 0; transition: opacity 0.12s ease; }
 
-/* ── Dock ─────────────────────────────────────────────────────────────── */
+/* ── Dock — authentic macOS Sonoma glass ──────────────────────────────── */
 .os-dock {
   font-family: var(--font-os);
-  border-radius: 18px;
-  background: rgba(30, 30, 34, 0.48);
-  backdrop-filter: blur(26px) saturate(180%);
-  -webkit-backdrop-filter: blur(26px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 20px;
+  /* Sonoma dock: frosted glass with warm tint */
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.32);
   box-shadow:
-    0 18px 50px -12px rgba(0, 0, 0, 0.55),
-    0 2px 8px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    /* Outer shadow */
+    0 20px 60px -10px rgba(0, 0, 0, 0.50),
+    0 8px 20px rgba(0, 0, 0, 0.22),
+    /* Inner top highlight */
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    /* Inner bottom shadow */
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
 }
 .os-dock-icon { position: relative; will-change: transform; touch-action: none; }
 .os-dock-icon[data-dragging='true'] { will-change: transform; }
 .os-dock-icon[data-dragging='true'] .os-dock-label { display: none; }
+
+/* Running indicator — macOS Sonoma style: small glowing dot */
 .os-dock-indicator {
   position: absolute;
   left: 50%;
-  bottom: -7px;
+  bottom: -6px;
   width: 4px;
   height: 4px;
   border-radius: 9999px;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
 }
+
+/* Tooltip label */
 .os-dock-label {
   position: absolute;
-  bottom: calc(100% + 10px);
+  bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
   font-size: 12px;
+  font-weight: 500;
   line-height: 1;
-  padding: 5px 9px;
-  border-radius: 7px;
-  background: rgba(30, 30, 34, 0.92);
-  color: #fff;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(24, 24, 28, 0.88);
+  color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.40), 0 1px 4px rgba(0, 0, 0, 0.22);
   pointer-events: none;
+  letter-spacing: 0.01em;
 }
 
 /* Genie-minimize: window collapses toward its dock icon */
@@ -240,42 +289,43 @@
 /* ── Desktop icons ────────────────────────────────────────────────────── */
 .os-desktop-icon { font-family: var(--font-os); }
 .os-desktop-icon-label {
-  font-size: 12px;
-  line-height: 1.25;
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.3;
   color: #fff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75), 0 0 10px rgba(0, 0, 0, 0.45);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 0 8px rgba(0, 0, 0, 0.55),
+    0 2px 6px rgba(0, 0, 0, 0.45);
   max-width: 92px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .os-desktop-icon[data-selected='true'] .os-desktop-icon-label {
-  padding: 2px 5px;
+  padding: 1px 5px;
   border-radius: 4px;
   background: #0a84ff;
   color: #fff;
   text-shadow: none;
 }
 .os-desktop-icon[data-selected='true'] .os-desktop-icon-plate {
-  background: rgba(10, 132, 255, 0.28);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28), 0 6px 18px rgba(0, 0, 0, 0.2);
+  background: rgba(10, 132, 255, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.30), 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 .os-desktop-icon-plate {
-  width: 68px;
-  height: 68px;
-  border-radius: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   transition: background 0.14s ease, box-shadow 0.14s ease, transform 0.1s ease;
 }
-/* Real press feedback — but not while the icon is being dragged. */
 .os-desktop-icon:not([data-dragging='true']):active .os-desktop-icon-plate {
-  transform: scale(0.9);
+  transform: scale(0.88);
 }
-/* Lift while dragging: transform is driven per-frame from JS (GPU layer),
-   so keep transitions off and add depth via the plate. */
 .os-desktop-icon[data-dragging='true'] { will-change: transform; }
 .os-desktop-icon[data-dragging='true'] .os-desktop-icon-plate {
-  background: rgba(255, 255, 255, 0.28);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(255, 255, 255, 0.38);
 }
 .os-desktop-icon[data-dragging='true'] .os-desktop-icon-label { opacity: 0.9; }
 
@@ -283,27 +333,30 @@
 .os-spotlight {
   font-family: var(--font-os);
   border-radius: 14px;
-  background: rgba(28, 28, 32, 0.72);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 40px 90px -12px rgba(0, 0, 0, 0.7);
+  background: rgba(28, 28, 32, 0.78);
+  backdrop-filter: blur(48px) saturate(200%);
+  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.45),
+    0 40px 90px -12px rgba(0, 0, 0, 0.75);
 }
 .os-spotlight-row[data-active='true'] {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(10, 132, 255, 0.75);
+  border-radius: 8px;
 }
 
 /* ── Thin overlay scrollbars for window content ───────────────────────── */
 .os-scroll { overflow: auto; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.28) transparent; }
-.os-scroll::-webkit-scrollbar { width: 9px; height: 9px; }
+.os-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
 .os-scroll::-webkit-scrollbar-track { background: transparent; }
 .os-scroll::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.26);
+  background: rgba(0, 0, 0, 0.24);
   border-radius: 9999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
-.os-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.42); background-clip: content-box; }
+.os-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.40); background-clip: content-box; }
 .os-scroll-dark::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); background-clip: content-box; }
 .os-scroll-dark::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.38); background-clip: content-box; }
 
@@ -333,14 +386,14 @@
 @keyframes os-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 .os-caret { animation: os-caret 1.05s steps(1) infinite; }
 
-/* ── Focus rings — visible on every interactive OS affordance ─────────── */
+/* ── Focus rings ─────────────────────────────────────────────────────── */
 .os-focusable:focus-visible {
   outline: 2px solid rgb(var(--os-accent));
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-/* ── Reduced motion: kill drift, keep layout identical ────────────────── */
+/* ── Reduced motion ──────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .os-boot-dot { animation: none; opacity: 0.8; }
   .os-screen-wake { animation: none; }
@@ -350,16 +403,10 @@
 /* Prevent text selection while dragging windows */
 .os-dragging, .os-dragging * { user-select: none !important; cursor: default !important; }
 
-/* ── Press feedback — scale-down compression on :active ───────────────── */
-.os-press {
-  transition: transform 0.1s ease;
-}
-.os-press:active {
-  transform: scale(0.9);
-}
-.os-press-sm:active {
-  transform: scale(0.94);
-}
+/* ── Press feedback ──────────────────────────────────────────────────── */
+.os-press { transition: transform 0.1s ease; }
+.os-press:active { transform: scale(0.9); }
+.os-press-sm:active { transform: scale(0.94); }
 
 /* ── Custom range sliders (Control Centre) ────────────────────────────── */
 .os-slider {
@@ -375,16 +422,16 @@
 .os-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 9999px;
   background: #fff;
   border: none;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35), 0 0 0 0.5px rgba(0,0,0,0.12);
 }
 .os-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 9999px;
   background: #fff;
   border: none;
@@ -402,22 +449,22 @@
 
 /* ── Control Centre tiles ─────────────────────────────────────────────── */
 .os-cc-tile {
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
   transition: background-color 0.14s ease;
 }
 .os-cc-tile:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.18);
 }
 .os-cc-active {
-  background: rgba(45, 212, 191, 0.9);
-  box-shadow: 0 4px 16px rgba(45, 212, 191, 0.4);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22);
 }
 .os-cc-active:hover {
-  background: rgba(45, 212, 191, 0.95);
+  background: rgba(255, 255, 255, 0.95);
 }
 .os-cc-active .os-cc-label {
-  color: #062b27;
+  color: #1D1D1F;
 }
 
 /* ── Menu bar dropdown rows ───────────────────────────────────────────── */
@@ -427,26 +474,28 @@
   justify-content: space-between;
   gap: 16px;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 5px 10px;
   text-align: left;
   font-size: 13px;
 }
 .os-dd-row:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(10, 132, 255, 0.75);
+  color: #fff;
 }
 
 /* ── Dock divider ─────────────────────────────────────────────────────── */
 .os-dock-divider {
   width: 1px;
   align-self: stretch;
-  margin: 10px 2px;
-  background: rgba(255, 255, 255, 0.25);
+  margin: 8px 2px;
+  background: rgba(255, 255, 255, 0.30);
 }
 
+/* Icon drop-shadow in dock */
 .os-dock .os-dock-icon svg,
 .os-dock .os-dock-icon img {
-  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.30)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
 }
 
 /* ── Brightness dim overlay ───────────────────────────────────────────── */

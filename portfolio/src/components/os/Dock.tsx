@@ -246,8 +246,10 @@ export default function Dock() {
   )
 }
 
-/* macOS-style trash can (kept local — not in the app-icon registry). */
+/* macOS-style Trash icon — authentic Ventura/Sonoma look */
 function BinIcon({ size = 44, full }: { size?: number; full?: boolean }) {
+  const bodyColor = full ? '#636366' : '#8E8E93'
+  const lidColor = full ? '#8E8E93' : '#AEAEB2'
   return (
     <svg
       width={size}
@@ -257,33 +259,58 @@ function BinIcon({ size = 44, full }: { size?: number; full?: boolean }) {
       style={{ display: 'block' }}
       shapeRendering="geometricPrecision"
     >
-      {/* Body */}
+      <defs>
+        <linearGradient id="bin-body" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={full ? '#7C7C80' : '#A0A0A6'} />
+          <stop offset="100%" stopColor={full ? '#4A4A4E' : '#6E6E73'} />
+        </linearGradient>
+        <linearGradient id="bin-lid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={full ? '#AEAEB2' : '#C7C7CC'} />
+          <stop offset="100%" stopColor={full ? '#8E8E93' : '#AEAEB2'} />
+        </linearGradient>
+      </defs>
+
+      {/* Trash body */}
       <path
-        d="M20 26h24l-2.2 26.6a6 6 0 0 1-6 5.4h-7.6a6 6 0 0 1-6-5.4L20 26Z"
-        fill={full ? '#7A7A80' : '#8E8E93'}
-        stroke="rgba(0,0,0,0.18)"
-        strokeWidth="1"
+        d="M19 27h26l-2.4 27a5 5 0 0 1-5 4.5H26.4a5 5 0 0 1-5-4.5L19 27Z"
+        fill="url(#bin-body)"
       />
-      {/* Lid / rim */}
+      {/* Body highlight */}
       <path
-        d="M26 26v-4a6 6 0 0 1 6-6h0a6 6 0 0 1 6 6v4"
+        d="M19 27h26l-.5 5H19.5L19 27Z"
+        fill="rgba(255,255,255,0.14)"
+      />
+      {/* Body border */}
+      <path
+        d="M19 27h26l-2.4 27a5 5 0 0 1-5 4.5H26.4a5 5 0 0 1-5-4.5L19 27Z"
         fill="none"
-        stroke="#AEAEB6"
-        strokeWidth="4"
-        strokeLinecap="round"
+        stroke="rgba(0,0,0,0.22)"
+        strokeWidth="0.8"
       />
-      {/* Lid top handle */}
-      <rect x="28" y="14.5" width="8" height="3" rx="1.5" fill="#B9B9C0" />
+
+      {/* Lid rim (horizontal bar) */}
+      <rect x="15" y="24" width="34" height="4.5" rx="2.25" fill="url(#bin-lid)" />
+      <rect x="15" y="24" width="34" height="2" rx="2" fill="rgba(255,255,255,0.28)" />
+
+      {/* Handle stem */}
+      <rect x="27.5" y="14" width="9" height="11" rx="2" fill={lidColor} />
+      <rect x="27.5" y="14" width="9" height="4" rx="2" fill="rgba(255,255,255,0.22)" />
+      {/* Handle top cap */}
+      <rect x="26" y="12" width="12" height="3.5" rx="1.75" fill={lidColor} />
+
       {/* Vertical rib lines */}
-      <g stroke="rgba(255,255,255,0.35)" strokeWidth="1.6" strokeLinecap="round">
-        <path d="M27 33l-1 12" />
-        <path d="M32 33v13" />
-        <path d="M37 33l1 12" />
+      <g strokeLinecap="round" strokeWidth="1.4">
+        <line x1="26" y1="32" x2="25" y2="50" stroke="rgba(255,255,255,0.30)" />
+        <line x1="32" y1="32" x2="32" y2="51" stroke="rgba(255,255,255,0.30)" />
+        <line x1="38" y1="32" x2="39" y2="50" stroke="rgba(255,255,255,0.30)" />
       </g>
-      {!full && (
-        <g stroke="rgba(0,0,0,0.18)" strokeWidth="1.6" strokeLinecap="round">
-          <path d="M27 33l-1 12" />
-          <path d="M37 33l1 12" />
+
+      {/* Full indicator: crumpled paper hint */}
+      {full && (
+        <g fill="rgba(255,255,255,0.18)">
+          <ellipse cx="32" cy="36" rx="7" ry="4" />
+          <ellipse cx="28" cy="42" rx="4" ry="2.5" />
+          <ellipse cx="36" cy="44" rx="3.5" ry="2" />
         </g>
       )}
     </svg>

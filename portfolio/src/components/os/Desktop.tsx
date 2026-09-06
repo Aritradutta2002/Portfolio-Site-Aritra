@@ -6,8 +6,8 @@ import AppIcon from './AppIcons'
 import { DESKTOP_APPS, type AppDefinition } from './appRegistry'
 import { MENU_H } from './MenuBar'
 
-const ICON_W = 84
-const ICON_H = 100
+const ICON_W = 68
+const ICON_H = 82
 const ROW_GAP = 6
 const EDGE = 12
 const DRAG_THRESHOLD = 4
@@ -321,7 +321,7 @@ function DesktopIcon({
       aria-label={`${app.label} — ${app.description}. Drag to move, double-click to open, arrow keys to nudge.`}
     >
       <span className="os-desktop-icon-plate grid place-items-center">
-        <AppIcon name={app.icon} size={64} />
+        <AppIcon name={app.icon} size={48} />
       </span>
       <span className="os-desktop-icon-label text-center">{app.label}</span>
     </button>
