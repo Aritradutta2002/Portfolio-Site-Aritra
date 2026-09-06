@@ -8,7 +8,6 @@ import emailjs from '@emailjs/browser'
 import { createMailtoLink, EMAIL_CONFIG, validateFormData, SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/email-config'
 import { SectionHeading } from './SectionHeading'
 import { CountUp } from './CountUp'
-import { GlassCard } from './GlassCard'
 import { RippleButton } from './RippleButton'
 import { GlowCard } from './GlowCard'
 

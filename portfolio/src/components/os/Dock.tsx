@@ -248,7 +248,6 @@ export default function Dock() {
 
 /* macOS-style Trash icon — authentic Ventura/Sonoma look */
 function BinIcon({ size = 44, full }: { size?: number; full?: boolean }) {
-  const bodyColor = full ? '#636366' : '#8E8E93'
   const lidColor = full ? '#8E8E93' : '#AEAEB2'
   return (
     <svg

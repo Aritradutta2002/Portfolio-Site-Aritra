@@ -45,7 +45,7 @@ function clampPos(x: number, y: number): Pos {
 }
 
 /** Snap a free position to the nearest grid cell. */
-function snapToGrid(x: number, y: number, vw: number, vh: number): Pos {
+function snapToGrid(x: number, y: number): Pos {
   /* Find the nearest column origin from the right edge */
   const snappedX = Math.round((x - EDGE) / GRID_COL) * GRID_COL + EDGE
   const snappedY = Math.round((y - MENU_H - EDGE) / GRID_ROW) * GRID_ROW + MENU_H + EDGE
@@ -77,7 +77,7 @@ export default function Desktop() {
 
   const move = React.useCallback((index: number, pos: Pos) => {
     /* Snap to grid on drop */
-    const snapped = snapToGrid(pos.x, pos.y, window.innerWidth, window.innerHeight)
+    const snapped = snapToGrid(pos.x, pos.y)
     setPositions((prev) => prev.map((p, i) => (i === index ? snapped : p)))
   }, [])
 

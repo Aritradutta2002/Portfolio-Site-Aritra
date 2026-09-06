@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { ChevronRight, Pause, Play, SkipBack, SkipForward, Volume2 } from 'lucide-react'
 import { MUSIC_TRACKS, useMusicStore } from '@/store/musicStore'
 import { useUiStore } from '@/store/uiStore'
@@ -40,7 +41,7 @@ export default function MusicApp() {
             <h1 className="mt-1 text-2xl font-semibold tracking-tight">Music</h1>
           </div>
           <div className="rounded-2xl bg-white/10 p-2 shadow-lg backdrop-blur-sm">
-            <img src={APPLE_MUSIC_LOGO} alt="" width="34" height="34" className="block rounded-lg" />
+            <Image src={APPLE_MUSIC_LOGO} alt="Apple Music" width={34} height={34} className="block rounded-lg" unoptimized />
           </div>
         </div>
         <div className="relative mt-7 flex items-end gap-4">

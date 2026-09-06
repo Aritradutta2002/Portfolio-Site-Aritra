@@ -40,7 +40,7 @@ export default function ResumeApp() {
         {failed ? (
           <div className="grid h-full place-items-center rounded-lg border border-dashed border-black/15 dark:border-white/[0.08] bg-white dark:bg-[#1e1e20] px-6 text-center">
             <div>
-              <p className="text-[13px] font-medium">This browser can't preview PDFs inline.</p>
+              <p className="text-[13px] font-medium">This browser can&apos;t preview PDFs inline.</p>
               <p className="mt-1 text-[12px] text-[#6E6E73] dark:text-[#8e8e93]">
                 Use the Download button above to grab the PDF.
               </p>

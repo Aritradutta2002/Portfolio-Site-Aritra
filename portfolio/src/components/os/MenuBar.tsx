@@ -89,7 +89,7 @@ function MenuEntry({
 }) {
   const alignCls = align === 'right' ? 'right-0' : 'left-0'
   return (
-    <div className="relative" onMouseEnter={onHover}>
+    <div id={`menubar-entry-${id}`} className="relative" onMouseEnter={onHover}>
       <button
         type="button"
         data-open={open}
@@ -203,12 +203,6 @@ export default function MenuBar({
     if (document.fullscreenElement) void document.exitFullscreen()
     else void document.documentElement.requestFullscreen().catch(() => {})
   }
-
-  const initials = about.name
-    .split(' ')
-    .map((p) => p[0])
-    .join('')
-    .slice(0, 2)
 
   const focusedApp = focused ? focused.title : 'Finder'
   const closeApp = () => {

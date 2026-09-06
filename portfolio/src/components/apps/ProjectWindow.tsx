@@ -6,7 +6,6 @@ import AppIcon from '@/components/os/AppIcons'
 import type { AppProps } from './types'
 
 const ACCENT = '#0F766E'
-const ACCENT_SOFT = '#CCFBF1'
 
 export default function ProjectWindow({ payload }: AppProps) {
   const project = projects.find((p) => p.id === payload) ?? projects[0]

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Image from 'next/image'
 
 /* ── macOS-style squircle app icons ────────────────────────────────────────
    Authentic Apple-style icons: multi-stop gradients, inner gloss highlight,
@@ -393,13 +394,14 @@ export default function AppIcon({ name, size = 48, className = '', glyphColor }:
 
   if (name === 'music') {
     return (
-      <img
+      <Image
         src={APPLE_MUSIC_LOGO}
-        alt=""
+        alt="Music"
         width={size}
         height={size}
         className={className}
         draggable={false}
+        unoptimized
         style={{ display: 'block', objectFit: 'contain', borderRadius: '22%' }}
       />
     )

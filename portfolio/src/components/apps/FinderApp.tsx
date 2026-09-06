@@ -160,8 +160,6 @@ export default function FinderApp() {
   const canForward = hIndex < history.length - 1
   const crumb = [FS, ...path.map((_, i) => findPath(path.slice(0, i + 1))!)]
 
-  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
-
   return (
     <div className="flex h-full w-full bg-white text-[#1D1D1F] dark:bg-[#1e1e20] dark:text-[#f4f4f6]">
       {/* ── Sidebar ── */}
