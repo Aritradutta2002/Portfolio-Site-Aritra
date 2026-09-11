@@ -33,7 +33,7 @@ const educationData = [
 ]
 
 const achievements = [
-  { text: 'TCS DEEP Ninja Certified DevOps Engineer — Recognized for expertise in DevOps tooling and practices' },
+  { text: 'Enterprise Java Modernisation — AWS Transform: Java 8 → 21, Spring Boot 3.x, 20× faster critical APIs' },
   { text: 'Competitive Programming: 700+ problems solved across platforms' },
   { text: 'LeetCode Rating 1672' },
   { text: 'Codeforces 1046 (Div 2)' },

@@ -407,9 +407,10 @@ function BinSlot({
   )
 }
 
-/* macOS-style Trash icon — authentic Ventura/Sonoma look */
+/* macOS-style Trash icon — faithful to the Sonoma/Ventura dock Trash:
+   a translucent wire-mesh drum with an overhanging lid and handle.
+   `full` lifts the lid slightly and peeks crumpled paper out, like macOS. */
 function BinIcon({ size = 44, full }: { size?: number; full?: boolean }) {
-  const lidColor = full ? '#8E8E93' : '#AEAEB2'
   return (
     <svg
       width={size}
@@ -420,59 +421,76 @@ function BinIcon({ size = 44, full }: { size?: number; full?: boolean }) {
       shapeRendering="geometricPrecision"
     >
       <defs>
-        <linearGradient id="bin-body" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={full ? '#7C7C80' : '#A0A0A6'} />
-          <stop offset="100%" stopColor={full ? '#4A4A4E' : '#6E6E73'} />
-        </linearGradient>
+        {/* Lid — bright brushed silver */}
         <linearGradient id="bin-lid" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={full ? '#AEAEB2' : '#C7C7CC'} />
-          <stop offset="100%" stopColor={full ? '#8E8E93' : '#AEAEB2'} />
+          <stop offset="0%" stopColor={full ? '#F2F2F5' : '#E9E9EE'} />
+          <stop offset="55%" stopColor={full ? '#C9C9D0' : '#C3C3CB'} />
+          <stop offset="100%" stopColor={full ? '#A7A7B0' : '#9E9EA8'} />
+        </linearGradient>
+        {/* Body — translucent silver drum */}
+        <linearGradient id="bin-body" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="rgba(148,148,158,0.92)" />
+          <stop offset="18%" stopColor="rgba(214,214,222,0.85)" />
+          <stop offset="50%" stopColor="rgba(176,176,186,0.80)" />
+          <stop offset="82%" stopColor="rgba(205,205,214,0.85)" />
+          <stop offset="100%" stopColor="rgba(138,138,148,0.92)" />
+        </linearGradient>
+        {/* Top inner shadow under the lid */}
+        <linearGradient id="bin-topshade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(40,40,48,0.35)" />
+          <stop offset="100%" stopColor="rgba(40,40,48,0)" />
         </linearGradient>
       </defs>
 
-      {/* Trash body */}
-      <path
-        d="M19 27h26l-2.4 27a5 5 0 0 1-5 4.5H26.4a5 5 0 0 1-5-4.5L19 27Z"
-        fill="url(#bin-body)"
-      />
-      {/* Body highlight */}
-      <path
-        d="M19 27h26l-.5 5H19.5L19 27Z"
-        fill="rgba(255,255,255,0.14)"
-      />
-      {/* Body border */}
-      <path
-        d="M19 27h26l-2.4 27a5 5 0 0 1-5 4.5H26.4a5 5 0 0 1-5-4.5L19 27Z"
-        fill="none"
-        stroke="rgba(0,0,0,0.22)"
-        strokeWidth="0.8"
-      />
-
-      {/* Lid rim (horizontal bar) */}
-      <rect x="15" y="24" width="34" height="4.5" rx="2.25" fill="url(#bin-lid)" />
-      <rect x="15" y="24" width="34" height="2" rx="2" fill="rgba(255,255,255,0.28)" />
-
-      {/* Handle stem */}
-      <rect x="27.5" y="14" width="9" height="11" rx="2" fill={lidColor} />
-      <rect x="27.5" y="14" width="9" height="4" rx="2" fill="rgba(255,255,255,0.22)" />
-      {/* Handle top cap */}
-      <rect x="26" y="12" width="12" height="3.5" rx="1.75" fill={lidColor} />
-
-      {/* Vertical rib lines */}
-      <g strokeLinecap="round" strokeWidth="1.4">
-        <line x1="26" y1="32" x2="25" y2="50" stroke="rgba(255,255,255,0.30)" />
-        <line x1="32" y1="32" x2="32" y2="51" stroke="rgba(255,255,255,0.30)" />
-        <line x1="38" y1="32" x2="39" y2="50" stroke="rgba(255,255,255,0.30)" />
-      </g>
-
-      {/* Full indicator: crumpled paper hint */}
+      {/* ── Crumpled paper (only when full) — peeks above the lid ── */}
       {full && (
-        <g fill="rgba(255,255,255,0.18)">
-          <ellipse cx="32" cy="36" rx="7" ry="4" />
-          <ellipse cx="28" cy="42" rx="4" ry="2.5" />
-          <ellipse cx="36" cy="44" rx="3.5" ry="2" />
+        <g>
+          <circle cx="24.5" cy="19.5" r="5.2" fill="#F7F7F9" />
+          <circle cx="33" cy="17.5" r="5.8" fill="#FFFFFF" />
+          <circle cx="40.5" cy="19.8" r="4.8" fill="#EFEFF3" />
+          {/* Crease hints */}
+          <path d="M29.5 15.5l3 2.5-2.4 2.6" fill="none" stroke="rgba(120,120,130,0.4)" strokeWidth="0.9" strokeLinecap="round" />
+          <path d="M22.5 18.5l2.6 1.6-.9 2.3" fill="none" stroke="rgba(120,120,130,0.35)" strokeWidth="0.8" strokeLinecap="round" />
         </g>
       )}
+
+      {/* ── Handle knob on the lid ── */}
+      <path
+        d="M27.4 10.5h9.2a2.2 2.2 0 0 1 2.2 2.2v3.1a1.4 1.4 0 0 1-1.4 1.4H26.6a1.4 1.4 0 0 1-1.4-1.4v-3.1a2.2 2.2 0 0 1 2.2-2.2Z"
+        fill="url(#bin-lid)"
+        stroke="rgba(60,60,70,0.35)"
+        strokeWidth="0.7"
+      />
+      <rect x="26.4" y="11.6" width="11.2" height="1.6" rx="0.8" fill="rgba(255,255,255,0.55)" />
+
+      {/* ── Lid — overhangs the body like the real icon ── */}
+      <rect x="11.5" y="16.6" width="41" height="6" rx="3" fill="url(#bin-lid)" stroke="rgba(60,60,70,0.35)" strokeWidth="0.7" />
+      <rect x="13" y="17.7" width="38" height="1.7" rx="0.85" fill="rgba(255,255,255,0.6)" />
+      <rect x="13" y="21.2" width="38" height="1" rx="0.5" fill="rgba(70,70,80,0.18)" />
+
+      {/* ── Body — slightly tapered drum with rounded bottom ── */}
+      <path
+        d="M15.5 25.5h33l-2.1 26.2a4.6 4.6 0 0 1-4.59 4.3H22.19a4.6 4.6 0 0 1-4.59-4.3L15.5 25.5Z"
+        fill="url(#bin-body)"
+        stroke="rgba(55,55,65,0.38)"
+        strokeWidth="0.8"
+      />
+      {/* Under-lid shadow */}
+      <path d="M15.5 25.5h33l-.45 5.6H15.95l-.45-5.6Z" fill="url(#bin-topshade)" />
+
+      {/* ── Wire-mesh vertical ribs ── */}
+      <g strokeLinecap="round">
+        <path d="M22.6 32.5 23.6 51" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5" />
+        <path d="M27.3 32.5 27.9 52.5" stroke="rgba(90,90,100,0.42)" strokeWidth="1.4" />
+        <path d="M32 32.5V53" stroke="rgba(90,90,100,0.42)" strokeWidth="1.4" />
+        <path d="M36.7 32.5 36.1 52.5" stroke="rgba(90,90,100,0.42)" strokeWidth="1.4" />
+        <path d="M41.4 32.5 40.4 51" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" />
+      </g>
+      {/* Horizontal mesh hint */}
+      <path d="M16.6 38.5h30.8M17.4 45h29.2" stroke="rgba(90,90,100,0.20)" strokeWidth="1.1" strokeLinecap="round" />
+
+      {/* Glass sheen down the front */}
+      <path d="M20 27.5 21.4 51" stroke="rgba(255,255,255,0.35)" strokeWidth="3.2" strokeLinecap="round" opacity="0.5" />
     </svg>
   )
 }

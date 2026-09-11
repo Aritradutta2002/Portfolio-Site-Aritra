@@ -89,8 +89,8 @@ export const resumeData = {
   /* ── Achievements & Certifications ────────────────────────────────── */
   achievements: [
     {
-      title: 'TCS DEEP Ninja Certified DevOps Engineer',
-      detail: 'Recognized for expertise in DevOps tooling and practices.',
+      title: 'Enterprise Java Modernisation — AWS Transform',
+      detail: 'Led remediation of enterprise microservices: Java 8 → 21, Spring Boot 1.x → 3.x, with up to 20× faster critical production APIs.',
     },
     {
       title: 'Competitive Programming',

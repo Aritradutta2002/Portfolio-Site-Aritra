@@ -40,20 +40,20 @@ const firaCode = Fira_Code({
 export const metadata: Metadata = {
   title: "Aritra Dutta | Portfolio",
   description: "Full Stack Application Engineer at TCS with 2+ years building Java microservices, AI-powered features, and cloud platforms. 700+ problems solved, LeetCode 1672.",
-  keywords: "Aritra Dutta, Full Stack Engineer, Java, Spring Boot, LangChain, React, AWS, Portfolio, TCS, Competitive Programming, LeetCode",
+  keywords: "Aritra Dutta, Full Stack Application Engineer, Java, Spring Boot, LangChain, React, AWS, Portfolio, TCS, Competitive Programming, LeetCode",
   authors: [{ name: "Aritra Dutta" }],
   creator: "Aritra Dutta",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://aritradutta.dev",
-    title: "Aritra Dutta | Full Stack Engineer Portfolio",
+    title: "Aritra Dutta | Full Stack Application Engineer Portfolio",
     description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 30x API performance gains.",
     siteName: "Aritra Dutta Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aritra Dutta | Full Stack Engineer Portfolio",
+    title: "Aritra Dutta | Full Stack Application Engineer Portfolio",
     description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 30x API performance gains.",
   },
   icons: {

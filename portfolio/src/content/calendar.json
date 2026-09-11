@@ -42,10 +42,10 @@
     "note": "Electronics & Communication Engineering, CGPA 8.79 / 10."
   },
   {
-    "id": "devops-ninja",
+    "id": "postgres-migration",
     "date": "2025-11-11",
-    "title": "TCS DEEP Ninja — DevOps",
-    "kind": "award",
-    "note": "Certified for DevOps tooling and practices."
+    "title": "Oracle → PostgreSQL migration",
+    "kind": "milestone",
+    "note": "Ultimatix patent & trademark platform — redesigned normalized schemas, cut redundant query calls."
   }
 ]

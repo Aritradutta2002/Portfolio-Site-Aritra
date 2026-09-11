@@ -54,7 +54,7 @@ const cpStats = [
 ]
 
 const certifications = [
-  { text: 'TCS DEEP Ninja Certified DevOps Engineer', issuer: 'TCS' },
+  { text: 'Enterprise Java Modernisation', issuer: 'AWS Transform' },
   { text: 'Problem Solving (Intermediate)', issuer: 'HackerRank' },
   { text: 'The Complete Python Pro Bootcamp', issuer: 'Udemy' },
   { text: 'Object Oriented Programming in Java', issuer: 'Coursera' },

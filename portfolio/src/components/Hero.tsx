@@ -16,7 +16,7 @@ const stats = [
 ]
 
 /* ── Roles (previously typewriter) ──────────────────────────── */
-const roles = ['Full Stack Engineer', 'GenAI Builder', 'Problem Solver']
+const roles = ['Full Stack Application Engineer', 'GenAI Builder', 'Problem Solver']
 
 /* ── Social quick-links ─────────────────────────────────────── */
 const socials = [
@@ -96,7 +96,7 @@ export function Hero() {
               className="inline-flex items-center gap-2.5 rounded-full border border-aurora/25 bg-aurora/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted mb-8"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-aurora-2 float-dot" />
-              Full Stack Engineer @ TCS
+              Full Stack Application Engineer @ TCS
             </motion.p>
 
             <motion.h1
@@ -130,7 +130,7 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="text-base md:text-lg leading-relaxed text-muted max-w-xl mb-10"
             >
-              Full Stack Engineer building intelligent, large-scale systems at{' '}
+              Full Stack Application Engineer building intelligent, large-scale systems at{' '}
               <span className="font-semibold text-ink">TCS</span> — Java microservices with{' '}
               <span className="font-semibold text-gradient">30x performance gains</span>,
               zero-downtime Azure migrations, and{' '}

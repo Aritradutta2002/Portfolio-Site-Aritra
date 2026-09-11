@@ -109,7 +109,7 @@ export function IntroCurtain() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="mt-4 font-mono text-xs uppercase tracking-[0.25em] text-muted"
           >
-            Full Stack Engineer — Bhubaneswar, IN
+            Full Stack Application Engineer — Bhubaneswar, IN
           </motion.p>
         </motion.div>
 
