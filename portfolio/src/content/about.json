@@ -1,0 +1,81 @@
+{
+  "name": "Aritra Dutta",
+  "handle": "aritro",
+  "title": "System Engineer · Full Stack Application Engineer",
+  "company": "Tata Consultancy Services",
+  "location": "Bhubaneswar, India",
+  "bio": "Full Stack Application Engineer with 2+ years of experience building scalable Java microservices, end-to-end web applications, and AI-powered features. I modernise legacy systems — migrating Java 8 monoliths to Java 21 microservices, moving JBoss workloads onto cloud PaaS, and squeezing 20–30x performance gains out of critical APIs. Outside of work I build products end-to-end and solve competitive programming problems.",
+  "quickFacts": [
+    { "label": "Role", "value": "System Engineer" },
+    { "label": "Company", "value": "Tata Consultancy Services" },
+    { "label": "Location", "value": "Bhubaneswar, India" },
+    { "label": "Experience", "value": "2+ years" }
+  ],
+  "education": [
+    {
+      "degree": "B.Tech, Electronics & Communication Engineering",
+      "institution": "Maulana Abul Kalam Azad University of Technology (MAKAUT)",
+      "location": "Kolkata, India",
+      "period": "2020 – 2024",
+      "cgpa": "8.79"
+    }
+  ],
+  "certifications": [
+    {
+      "title": "Enterprise Java Modernisation — AWS Transform",
+      "detail": "Led remediation of enterprise microservices: Java 8 → 21, Spring Boot 1.x → 3.x, with 20× faster critical APIs."
+    }
+  ],
+  "achievements": [
+    {
+      "title": "Competitive Programming",
+      "detail": "700+ problems solved across platforms.",
+      "stats": [
+        { "label": "LeetCode", "value": "1672", "href": "https://leetcode.com/u/Ari2001/" },
+        { "label": "Codeforces", "value": "1046", "href": "https://codeforces.com" },
+        { "label": "CodeChef", "value": "1708 · 3★", "href": "https://www.codechef.com/users/interover01" }
+      ]
+    }
+  ],
+  "skills": {
+    "Languages": ["Java", "Python", "TypeScript", "SQL"],
+    "Frameworks & Libraries": [
+      "Spring Boot",
+      "Spring MVC",
+      "Spring Security",
+      "Spring Data JPA",
+      "Hibernate",
+      "REST APIs",
+      "Microservices",
+      "React",
+      "Angular",
+      "Tailwind CSS"
+    ],
+    "AI / GenAI": ["Generative AI", "RAG", "LangChain", "LLM Integration"],
+    "Databases": ["PostgreSQL", "Oracle", "MySQL", "Apache Kafka"],
+    "Tools & Platforms": [
+      "AWS",
+      "AWS Transform",
+      "Azure PaaS",
+      "Docker",
+      "Jenkins",
+      "Git",
+      "Maven",
+      "SonarQube",
+      "Tomcat",
+      "JBoss",
+      "GitHub Copilot",
+      "CI/CD"
+    ],
+    "Methodologies": ["Agile", "Scrum", "Jira", "Code Review"]
+  },
+  "spokenLanguages": ["English", "Hindi", "Bengali"],
+  "links": {
+    "portfolio": "https://portfolio-aritra-pearl.vercel.app/",
+    "github": "https://github.com/Aritradutta2002",
+    "linkedin": "https://www.linkedin.com/in/aritra-dutta-rick20/",
+    "email": "mailto:aritradutta049@gmail.com",
+    "leetcode": "https://leetcode.com/u/Ari2001/",
+    "codechef": "https://www.codechef.com/users/interover01"
+  }
+}

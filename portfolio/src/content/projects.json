@@ -1,0 +1,24 @@
+[
+  {
+    "id": "algoguru",
+    "name": "AlgoGuru",
+    "tagline": "Programming Learning Platform",
+    "kind": "folder",
+    "accent": "#8B5CF6",
+    "summary": "A full-stack competitive programming platform — live at algoguru.online, built and shipped end-to-end as sole developer.",
+    "description": "AlgoGuru is a competitive programming learning platform I designed, built, and deployed end-to-end. It pairs curated interactive problem sets with an in-browser Java playground, role-based authentication, and progress tracking — then layers an AI tutor on top for contextual guidance. I owned the complete product lifecycle: architecture, implementation, deployment, and domain configuration.",
+    "features": [
+      "Java Playground — write, run and iterate on solutions in the browser.",
+      "Role-based authentication with per-user progress tracking.",
+      "Interactive, curated problem sets across data structures and algorithms.",
+      "Guru Bot — an AI tutor using RAG for contextual problem-solving guidance."
+    ],
+    "stack": ["React", "TypeScript", "Tailwind CSS", "Supabase", "Java", "Python", "LangChain"],
+    "role": "Sole developer — architecture, implementation, deployment, domain.",
+    "links": {
+      "live": "https://www.algoguru.online/",
+      "github": "https://github.com/Aritradutta2002"
+    },
+    "images": []
+  }
+]

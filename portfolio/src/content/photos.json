@@ -1,0 +1,66 @@
+[
+  {
+    "id": "aurora-ridge",
+    "title": "Aurora Ridge",
+    "caption": "Long exposure, northern sky",
+    "src": "/photos/aurora-ridge.svg",
+    "accent": "#7C5CFF",
+    "date": "2026-01-10"
+  },
+  {
+    "id": "teal-current",
+    "title": "Teal Current",
+    "caption": "Shallow water, mid-morning",
+    "src": "/photos/teal-current.svg",
+    "accent": "#2DD4BF",
+    "date": "2026-02-11"
+  },
+  {
+    "id": "ember-dunes",
+    "title": "Ember Dunes",
+    "caption": "Desert basin at last light",
+    "src": "/photos/ember-dunes.svg",
+    "accent": "#F59E0B",
+    "date": "2026-03-12"
+  },
+  {
+    "id": "rose-quartz",
+    "title": "Rose Quartz",
+    "caption": "Mineral study, macro",
+    "src": "/photos/rose-quartz.svg",
+    "accent": "#F472B6",
+    "date": "2026-04-13"
+  },
+  {
+    "id": "indigo-drift",
+    "title": "Indigo Drift",
+    "caption": "Cloud deck from 34,000 ft",
+    "src": "/photos/indigo-drift.svg",
+    "accent": "#6366F1",
+    "date": "2026-05-14"
+  },
+  {
+    "id": "moss-light",
+    "title": "Moss Light",
+    "caption": "Understory, temperate forest",
+    "src": "/photos/moss-light.svg",
+    "accent": "#34D399",
+    "date": "2026-06-15"
+  },
+  {
+    "id": "signal-noise",
+    "title": "Signal Noise",
+    "caption": "Long-wave interference pattern",
+    "src": "/photos/signal-noise.svg",
+    "accent": "#94A3B8",
+    "date": "2026-07-16"
+  },
+  {
+    "id": "solar-flare",
+    "title": "Solar Flare",
+    "caption": "Chromosphere, false colour",
+    "src": "/photos/solar-flare.svg",
+    "accent": "#FBBF24",
+    "date": "2026-08-17"
+  }
+]

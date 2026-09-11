@@ -1,0 +1,51 @@
+[
+  {
+    "id": "tcs-element",
+    "date": "2026-04-01",
+    "title": "Joined Element Fleet team",
+    "kind": "work",
+    "note": "Application Developer — Java 21 / Spring Boot 3.x modernisation via AWS Transform."
+  },
+  {
+    "id": "java21-migration",
+    "date": "2026-05-18",
+    "title": "Java 8 → Java 21 migration",
+    "kind": "milestone",
+    "note": "Microservices lifted from Spring Boot 1.x to 3.x with AWS Transform."
+  },
+  {
+    "id": "azure-paas",
+    "date": "2026-06-22",
+    "title": "JBoss → Azure Tomcat PaaS",
+    "kind": "milestone",
+    "note": "iDeclare monolith carved into a standalone Spring Boot service with JWT security."
+  },
+  {
+    "id": "algoguru-launch",
+    "date": "2026-03-09",
+    "title": "AlgoGuru shipped",
+    "kind": "project",
+    "note": "Full-stack competitive programming platform live at algoguru.online."
+  },
+  {
+    "id": "tcs-joining",
+    "date": "2024-09-02",
+    "title": "Joined TCS",
+    "kind": "work",
+    "note": "System Engineer — Ultimatix platform, Oracle → PostgreSQL migration."
+  },
+  {
+    "id": "graduation",
+    "date": "2024-06-15",
+    "title": "B.Tech completed — MAKAUT",
+    "kind": "life",
+    "note": "Electronics & Communication Engineering, CGPA 8.79 / 10."
+  },
+  {
+    "id": "postgres-migration",
+    "date": "2025-11-11",
+    "title": "Oracle → PostgreSQL migration",
+    "kind": "milestone",
+    "note": "Ultimatix patent & trademark platform — redesigned normalized schemas, cut redundant query calls."
+  }
+]

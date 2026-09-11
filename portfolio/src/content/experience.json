@@ -1,0 +1,37 @@
+[
+  {
+    "id": "element-fleet",
+    "role": "Application Developer",
+    "org": "Element Fleet Management (via TCS)",
+    "period": "Apr 2026 – Present",
+    "location": "Bhubaneswar, India",
+    "icon": "briefcase",
+    "summary": "Modernising a fleet-management microservice estate: Java 8 → Java 21, JBoss → Azure Tomcat PaaS, and a monolith carve-out.",
+    "highlights": ["Java 21", "Spring Boot 3.x", "AWS Transform", "20x faster APIs"],
+    "stack": ["Java 21", "Spring Boot 3.x", "Spring Security", "JWT", "Azure PaaS", "Docker", "Jenkins"],
+    "bullets": [
+      "Modernized microservices from Java 8 / Spring Boot 1.x to Java 21 / Spring Boot 3.x using AWS Transform.",
+      "Migrated infrastructure from JBoss to Azure Tomcat PaaS; refactored the iDeclare monolith into a standalone Spring Boot microservice with JWT-based Spring Security.",
+      "Built Jenkins CI/CD pipelines with Docker deployments and authored 2,000+ JUnit test cases.",
+      "Optimized SQL queries and APIs, achieving up to 20x faster response times.",
+      "Utilized GitHub Copilot, Jira, and Jile within Agile workflows."
+    ]
+  },
+  {
+    "id": "ultimatix",
+    "role": "Application Developer",
+    "org": "Ultimatix Platform (TCS Internal)",
+    "period": "Sep 2024 – Mar 2026",
+    "location": "Bhubaneswar, India",
+    "icon": "briefcase",
+    "summary": "Database migration from Oracle to PostgreSQL plus patent/trademark lifecycle modules on an internal enterprise platform.",
+    "highlights": ["Oracle → PostgreSQL", "30x faster APIs", "Core Java"],
+    "stack": ["Core Java", "Spring Boot", "Oracle", "PostgreSQL", "Hibernate"],
+    "bullets": [
+      "Executed database migration from Oracle to PostgreSQL.",
+      "Developed patent and trademark lifecycle modules using Core Java and Spring Boot.",
+      "Optimized 7+ critical APIs, improving performance up to 30x under production load.",
+      "Conducted technical interviews and onboarding knowledge transfers."
+    ]
+  }
+]

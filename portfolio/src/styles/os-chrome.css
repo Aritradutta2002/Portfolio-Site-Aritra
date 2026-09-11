@@ -1,0 +1,536 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   OS CHROME — Authentic macOS Ventura / Sonoma desktop shell
+   Pixel-accurate: vibrancy surfaces, squircle radii, window shadows,
+   dock glass + reflection, traffic lights, thin scrollbars.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* OS chrome surfaces */
+  --os-chrome: 245 245 247;
+  --os-chrome-dark: 29 29 31;
+  --os-accent: 10 132 255;           /* macOS Blue #0A84FF */
+  --os-window-bg: 255 255 255;
+  --os-window-bg-dark: 30 30 32;
+  --os-text: 29 29 31;
+  --os-text-dark: 244 244 246;
+  /* macOS Sequoia title bars are flat, not gradient */
+  --os-titlebar-bg: #F6F5F7;
+  --os-titlebar-inactive: #F2F2F4;
+  --font-os: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI',
+    var(--font-geist-sans, system-ui), sans-serif;
+  /* App chip tokens */
+  --os-chip-bg: #F2F2F7;
+  --os-chip-text: #3C3C43;
+  /* Experience selected row */
+  --experience-selected-bg: rgba(15, 118, 110, 0.10);
+}
+
+/* ── Desktop wallpaper ────────────────────────────────────────────────────*/
+/* Sequoia-style wallpaper, theme-aware: dark by default, a dedicated light
+   plate when the system/site theme is light — no CSS filter hacks. The two
+   plates are stacked so the theme flip is a smooth crossfade. */
+.os-wallpaper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: #10152e;
+  background-image: url('/wallpapers/macos-dark.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.os-wallpaper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #e9edf6;
+  background-image: url('/wallpapers/macos-light.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+:root:not(.dark) .os-wallpaper::after {
+  opacity: 1;
+}
+
+/* ── Translucent chrome (menu bar, dock, panels) ──────────────────────── */
+.os-chrome-surface {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.os-chrome-dark {
+  background: rgba(22, 22, 26, 0.62);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+.dark .os-chrome-surface {
+  background: rgba(35, 35, 40, 0.76);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Menu bar — authentic macOS Sequoia translucency ─────────────────── */
+.os-menubar {
+  font-family: var(--font-os);
+  -webkit-font-smoothing: antialiased;
+  /* Sequoia: a near-clear, slightly dark tint over the wallpaper */
+  background: rgba(16, 16, 22, 0.34);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  /* Subtle top highlight like real macOS */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.os-menubar-item {
+  transition: background-color 0.12s ease, color 0.12s ease;
+  border-radius: 5px;
+  padding: 2px 8px;
+}
+.os-menubar-item:hover,
+.os-menubar-item[data-open='true'] {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+/* ── Windows — authentic macOS Ventura chrome ─────────────────────────── */
+.os-window {
+  font-family: var(--font-os);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgb(var(--os-window-bg));
+  color: rgb(var(--os-text));
+  /* macOS window shadow: tight inner ring + large diffuse shadow */
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.22),
+    0 24px 64px -8px rgba(0, 0, 0, 0.45),
+    0 48px 96px -16px rgba(0, 0, 0, 0.28);
+  will-change: transform;
+}
+.os-window[data-focused='false'] {
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.14),
+    0 16px 40px -8px rgba(0, 0, 0, 0.28);
+}
+.os-window[data-focused='false'] .os-light {
+  /* Unfocused: traffic lights become grey, like real macOS */
+  background: #DCDCDE !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+.os-window-titlebar {
+  /* macOS Sequoia title bar: flat, hairline-separated */
+  background: var(--os-titlebar-bg);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+}
+.os-window[data-focused='false'] .os-window-titlebar {
+  background: var(--os-titlebar-inactive);
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Dark mode window chrome */
+.dark {
+  --os-window-bg: 30 30 32;
+  --os-text: 244 244 246;
+  --os-titlebar-bg: #333338;
+  --os-titlebar-inactive: #2A2A2E;
+  /* App chip tokens — dark */
+  --os-chip-bg: #3a3a3e;
+  --os-chip-text: #e5e5ea;
+  /* Experience selected row — dark */
+  --experience-selected-bg: rgba(45, 212, 191, 0.15);
+}
+.dark .os-window-titlebar {
+  border-bottom-color: rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  /* Ensure title text is always white in dark mode */
+  color: #ffffff;
+}
+.dark .os-window[data-focused='false'] .os-window-titlebar {
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.45);
+}
+.dark .os-window [class*="bg-white"],
+.dark .os-window [class*="bg-[#FAFAFC]"],
+.dark .os-window [class*="bg-[#F7F7F9]"],
+.dark .os-window [class*="bg-[#F7F5EE]"],
+.dark .os-window [class*="bg-[#F2F2F7]"],
+.dark .os-window [class*="bg-[#F2F2F5]"],
+.dark .os-window [class*="bg-[#F5F5F7]"],
+.dark .os-window [class*="bg-[#FFFDF5]"],
+.dark .os-window [class*="bg-[#f5f7fb]"],
+.dark .os-window [class*="bg-[#fbfbfd]"] {
+  background-color: #1e1e20 !important;
+}
+.dark .os-window [class*="text-[#1D1D1F]"],
+.dark .os-window [class*="text-[#3C3C43]"],
+.dark .os-window [class*="text-[#1d2433]"] {
+  color: #f4f4f6 !important;
+}
+.dark .os-window [class*="text-[#6E6E73]"],
+.dark .os-window [class*="text-[#86868B]"],
+.dark .os-window [class*="text-[#A1A1A6]"],
+.dark .os-window [class*="text-[#C7C7CC]"] {
+  color: #aeb0ba !important;
+}
+.dark .os-window [class*="text-black"],
+.dark .os-window [class*="placeholder:text-black"] {
+  color: rgba(244, 244, 246, 0.64) !important;
+}
+.dark .os-window [class*="placeholder:text-[#C7C7CC]"],
+.dark .os-window [class*="placeholder:text-[#A1A1A6]"]::placeholder {
+  color: #8f919b !important;
+}
+.dark .os-window [class*="border-black"] {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+.dark .os-window [style*="#CCFBF1"],
+.dark .os-window [style*="#F6FEFC"] {
+  background: #173b3a !important;
+}
+
+/* Additional dark mode overrides for secondary surface shades */
+.dark .os-window [class*="bg-[#FAFAFC]"],
+.dark .os-window [class*="bg-[#F7F7F9]"],
+.dark .os-window [class*="bg-[#F2F2F5]"] {
+  background-color: #252528 !important;
+}
+.dark .os-window [class*="border-black/"] {
+  border-color: rgba(255,255,255,0.10) !important;
+}
+
+/* ── Traffic lights — pixel-accurate macOS Ventura ────────────────────── */
+.os-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.12s ease;
+  position: relative;
+  /* Subtle inner shadow for depth */
+  box-shadow: inset 0 0.5px 1px rgba(0, 0, 0, 0.22), 0 0.5px 0 rgba(255, 255, 255, 0.55);
+}
+.os-light-red {
+  background: radial-gradient(circle at 38% 35%, #FF8A84, #FF5F57 55%, #E0443C);
+  border: 0.5px solid rgba(180, 40, 30, 0.45);
+}
+.os-light-yellow {
+  background: radial-gradient(circle at 38% 35%, #FFD97A, #FEBC2E 55%, #D89A10);
+  border: 0.5px solid rgba(160, 110, 0, 0.38);
+}
+.os-light-green {
+  background: radial-gradient(circle at 38% 35%, #5EE87A, #28C840 55%, #1A9E30);
+  border: 0.5px solid rgba(10, 110, 30, 0.38);
+}
+.os-light:hover { filter: brightness(0.9) saturate(1.1); }
+.os-light:active { filter: brightness(0.78); }
+/* Glyphs appear on hover of the whole light cluster */
+.os-lights:hover .os-light-glyph { opacity: 0.75; }
+.os-light-glyph { opacity: 0; transition: opacity 0.12s ease; }
+
+/* ── Dock — authentic macOS Sonoma glass ──────────────────────────────── */
+.os-dock {
+  font-family: var(--font-os);
+  border-radius: 24px;
+  /* Sonoma dock: frosted glass with warm tint */
+  background: rgba(255, 255, 255, 0.20);
+  backdrop-filter: blur(36px) saturate(190%) brightness(1.08);
+  -webkit-backdrop-filter: blur(36px) saturate(190%) brightness(1.08);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow:
+    /* Outer shadow */
+    0 20px 60px -10px rgba(0, 0, 0, 0.50),
+    0 8px 20px rgba(0, 0, 0, 0.22),
+    /* Inner top highlight */
+    inset 0 1px 0 rgba(255, 255, 255, 0.50),
+    /* Inner bottom shadow */
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+}
+.os-dock-icon { position: relative; will-change: transform; touch-action: none; }
+.os-dock-icon[data-dragging='true'] { will-change: transform; }
+.os-dock-icon[data-dragging='true'] .os-dock-label { display: none; }
+
+/* Running indicator — macOS Sonoma style: small glowing dot */
+.os-dock-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+}
+
+/* Tooltip label */
+.os-dock-label {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(24, 24, 28, 0.88);
+  color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.40), 0 1px 4px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+  letter-spacing: 0.01em;
+}
+
+/* Genie-minimize: window collapses toward its dock icon */
+.os-genie {
+  transform-origin: bottom center;
+}
+
+/* ── Desktop widgets (Sonoma-style glass cards) ────────────────────────── */
+.os-widget {
+  border-radius: 22px;
+  background: rgba(28, 28, 30, 0.55);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.20),
+    0 18px 40px -12px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ── Desktop icons ────────────────────────────────────────────────────── */
+.os-desktop-icon { font-family: var(--font-os); }
+.os-desktop-icon-label {
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #fff;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 0 8px rgba(0, 0, 0, 0.55),
+    0 2px 6px rgba(0, 0, 0, 0.45);
+  max-width: 92px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.os-desktop-icon[data-selected='true'] .os-desktop-icon-label {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #0a84ff;
+  color: #fff;
+  text-shadow: none;
+}
+.os-desktop-icon[data-selected='true'] .os-desktop-icon-plate {
+  background: rgba(10, 132, 255, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.30), 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+.os-desktop-icon-plate {
+  width: 58px;
+  height: 58px;
+  border-radius: 13px;
+  transition: background 0.14s ease, box-shadow 0.14s ease, transform 0.1s ease;
+}
+.os-desktop-icon:not([data-dragging='true']):active .os-desktop-icon-plate {
+  transform: scale(0.88);
+}
+.os-desktop-icon[data-dragging='true'] { will-change: transform; }
+.os-desktop-icon[data-dragging='true'] .os-desktop-icon-plate {
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(255, 255, 255, 0.38);
+}
+.os-desktop-icon[data-dragging='true'] .os-desktop-icon-label { opacity: 0.9; }
+
+/* ── Spotlight palette ────────────────────────────────────────────────── */
+.os-spotlight {
+  font-family: var(--font-os);
+  border-radius: 14px;
+  background: rgba(28, 28, 32, 0.78);
+  backdrop-filter: blur(48px) saturate(200%);
+  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.45),
+    0 40px 90px -12px rgba(0, 0, 0, 0.75);
+}
+.os-spotlight-row[data-active='true'] {
+  background: rgba(10, 132, 255, 0.75);
+  border-radius: 8px;
+}
+
+/* ── Thin overlay scrollbars for window content ───────────────────────── */
+.os-scroll { overflow: auto; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.28) transparent; }
+.os-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.os-scroll::-webkit-scrollbar-track { background: transparent; }
+.os-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.24);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.os-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.40); background-clip: content-box; }
+.os-scroll-dark::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); background-clip: content-box; }
+.os-scroll-dark::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.38); background-clip: content-box; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Boot sequence ────────────────────────────────────────────────────── */
+@keyframes os-boot-pulse {
+  0%, 100% { opacity: 0.25; transform: scale(0.7); }
+  50%      { opacity: 1;    transform: scale(1); }
+}
+.os-boot-dot { animation: os-boot-pulse 1.1s ease-in-out infinite; }
+
+@keyframes os-screen-wake {
+  0%   { opacity: 0; filter: brightness(3) blur(8px); }
+  35%  { opacity: 1; filter: brightness(1.6) blur(0); }
+  100% { opacity: 1; filter: brightness(1) blur(0); }
+}
+.os-screen-wake { animation: os-screen-wake 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ── Terminal ─────────────────────────────────────────────────────────── */
+.os-terminal {
+  font-family: var(--font-geist-mono, var(--font-fira-code), ui-monospace, 'SFMono-Regular', Menlo, monospace);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+@keyframes os-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+.os-caret { animation: os-caret 1.05s steps(1) infinite; }
+
+/* ── Focus rings ─────────────────────────────────────────────────────── */
+.os-focusable:focus-visible {
+  outline: 2px solid rgb(var(--os-accent));
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .os-boot-dot { animation: none; opacity: 0.8; }
+  .os-screen-wake { animation: none; }
+  .os-caret { animation: none; }
+}
+
+/* Prevent text selection while dragging windows */
+.os-dragging, .os-dragging * { user-select: none !important; cursor: default !important; }
+
+/* ── Press feedback ──────────────────────────────────────────────────── */
+.os-press { transition: transform 0.1s ease; }
+.os-press:active { transform: scale(0.9); }
+.os-press-sm:active { transform: scale(0.94); }
+
+/* ── Custom range sliders (Control Centre) ────────────────────────────── */
+.os-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.22);
+  outline: none;
+  cursor: pointer;
+}
+.os-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35), 0 0 0 0.5px rgba(0,0,0,0.12);
+}
+.os-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+.os-slider-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 9999px;
+  background: #fff;
+  pointer-events: none;
+}
+
+/* ── Control Centre tiles ─────────────────────────────────────────────── */
+.os-cc-tile {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background-color 0.14s ease;
+}
+.os-cc-tile:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+.os-cc-active {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22);
+}
+.os-cc-active:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+.os-cc-active .os-cc-label {
+  color: #1D1D1F;
+}
+
+/* ── Menu bar dropdown rows ───────────────────────────────────────────── */
+.os-dd-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  border-radius: 6px;
+  padding: 5px 10px;
+  text-align: left;
+  font-size: 13px;
+}
+.os-dd-row:hover {
+  background: rgba(10, 132, 255, 0.75);
+  color: #fff;
+}
+
+/* ── Dock divider ─────────────────────────────────────────────────────── */
+.os-dock-divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 8px 2px;
+  background: rgba(255, 255, 255, 0.30);
+}
+
+/* Icon drop-shadow in dock */
+.os-dock .os-dock-icon svg,
+.os-dock .os-dock-icon img {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.30)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
+}
+
+/* ── Brightness dim overlay ───────────────────────────────────────────── */
+.os-dim {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: #000;
+  will-change: opacity;
+  transition: opacity 0.15s ease;
+}
