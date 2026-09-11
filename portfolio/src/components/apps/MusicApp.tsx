@@ -1,11 +1,10 @@
 'use client'
 
 import * as React from 'react'
-import Image from 'next/image'
 import { ChevronRight, Pause, Play, SkipBack, SkipForward, Volume2 } from 'lucide-react'
 import { MUSIC_TRACKS, useMusicStore } from '@/store/musicStore'
 import { useUiStore } from '@/store/uiStore'
-import { APPLE_MUSIC_LOGO } from '@/components/os/AppIcons'
+import AppIcon from '@/components/os/AppIcons'
 
 function formatTime(value: number) {
   if (!Number.isFinite(value) || value < 0) return '0:00'
@@ -41,7 +40,7 @@ export default function MusicApp() {
             <h1 className="mt-1 text-2xl font-semibold tracking-tight">Music</h1>
           </div>
           <div className="rounded-2xl bg-white/10 p-2 shadow-lg backdrop-blur-sm">
-            <Image src={APPLE_MUSIC_LOGO} alt="Apple Music" width={34} height={34} className="block rounded-lg" unoptimized />
+            <AppIcon name="music" size={34} className="rounded-lg" />
           </div>
         </div>
         <div className="relative mt-7 flex items-end gap-4">

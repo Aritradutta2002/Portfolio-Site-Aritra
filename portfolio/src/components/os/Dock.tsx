@@ -1,30 +1,31 @@
 'use client'
 
 import * as React from 'react'
-import { motion, Reorder, useReducedMotion } from 'framer-motion'
+import {
+  animate,
+  motion,
+  Reorder,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+  type MotionValue,
+} from 'framer-motion'
 import { useWindowStore } from '@/store/windowStore'
 import AppIcon from './AppIcons'
 import { DOCK_APPS, APP_BY_ID } from './appRegistry'
 import { registerDockIcon } from './dockRegistry'
 
-const BASE_ICON = 44
+/* ── Geometry — matches real macOS defaults ────────────────────────────────
+   Icons are 52px (macOS default ≈ 52–56), magnifying to ~1.55× under the
+   cursor with a gaussian falloff across neighbours, exactly like Sonoma. */
+const BASE_ICON = 52
 const GAP = 10
-const PAD = 8
-const BASE_H = BASE_ICON + PAD * 2
-const MAX_SCALE = 1.5
-const GROWTH = Math.round(BASE_ICON * (MAX_SCALE - 1)) // 22
+const BASE_H = BASE_ICON + 9 * 2
+const MAX_SCALE = 1.55
+const SIGMA = (BASE_ICON + GAP) * 0.85 // falloff width in px
 
 const DOCK_ORDER_KEY = 'os-dock-order:v1'
-
-/** macOS falloff: the hovered icon peaks, immediate neighbours scale less. */
-function scaleFor(index: number, hovered: number | null, magnify = true) {
-  if (!magnify || hovered === null) return 1
-  const d = Math.abs(index - hovered)
-  if (d === 0) return MAX_SCALE
-  if (d === 1) return 1.28
-  if (d === 2) return 1.12
-  return 1
-}
 
 function loadDockOrder(): string[] {
   const defaults: string[] = DOCK_APPS.map((a) => a.id)
@@ -60,6 +61,11 @@ export default function Dock() {
   const [draggingId, setDraggingId] = React.useState<string | null>(null)
   const reduce = useReducedMotion()
   const suppressClick = React.useRef(false)
+  const outerRef = React.useRef<HTMLDivElement>(null)
+
+  /* Cursor x (raw → springed). Infinity = no magnification. */
+  const rawX = useMotionValue(1e6)
+  const mouseX = useSpring(rawX, { stiffness: 420, damping: 42, mass: 0.8 })
 
   React.useEffect(() => {
     try {
@@ -68,9 +74,6 @@ export default function Dock() {
       /* storage unavailable — order stays in memory */
     }
   }, [order])
-
-  const hoveredIndex = hoveredId ? order.indexOf(hoveredId) : null
-  const hovering = hoveredIndex !== null && hoveredIndex >= 0 && !reduce && draggingId === null
 
   const isOpen = (id: string) => windows.some((w) => w.appType === id)
   const focusCount = windows.filter((w) => !w.minimized).length
@@ -108,23 +111,29 @@ export default function Dock() {
     })
   }
 
+  const onLeave = () => {
+    rawX.set(1e6)
+    setHoveredId(null)
+    setLabel(null)
+    setBinLabel(false)
+  }
+
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-2 z-[8000] flex justify-center">
+    <div
+      ref={outerRef}
+      className="pointer-events-none absolute inset-x-0 bottom-2 z-[8000] flex justify-center"
+    >
       <motion.div
         className="os-dock pointer-events-auto flex items-end px-2"
         style={{ gap: GAP }}
-        animate={{
-          height: hovering ? BASE_H + GROWTH : BASE_H,
-          paddingBottom: PAD,
-          paddingTop: PAD,
-        }}
+        animate={{ height: BASE_H }}
         initial={false}
         transition={{ type: 'spring', stiffness: 420, damping: 32, mass: 0.7 }}
-        onMouseLeave={() => {
-          setHoveredId(null)
-          setLabel(null)
-          setBinLabel(false)
+        onMouseMove={(e) => {
+          if (reduce || draggingId !== null) return
+          rawX.set(e.clientX)
         }}
+        onMouseLeave={onLeave}
         role="toolbar"
         aria-label="Dock — drag icons to reorder"
       >
@@ -142,107 +151,255 @@ export default function Dock() {
             const open = isOpen(app.id)
             const isDragging = draggingId === app.id
             return (
-              <Reorder.Item
+              <DockSlot
                 key={app.id}
-                value={app.id}
-                className="os-dock-icon flex items-end"
-                style={{
-                  width: BASE_ICON,
-                  height: BASE_ICON,
-                  touchAction: 'none',
-                  zIndex: isDragging ? 5 : undefined,
-                }}
-                onMouseEnter={() => {
-                  setHoveredId(app.id)
-                  setLabel(app.label)
-                }}
-                onFocus={() => {
-                  setHoveredId(app.id)
-                  setLabel(app.label)
-                }}
-                drag={reduce ? false : true}
-                whileDrag={{ scale: 1.18, y: -8 }}
-                onDragStart={() => {
-                  setDraggingId(app.id)
-                  suppressClick.current = true
-                  setHoveredId(null)
-                }}
-                onDragEnd={() => {
-                  setDraggingId(null)
-                  // Keep suppression for the click that follows a real drag;
-                  // clear it shortly after so plain clicks keep working.
-                  window.setTimeout(() => {
-                    suppressClick.current = false
-                  }, 80)
-                }}
-                transition={{ type: 'spring', stiffness: 550, damping: 38, mass: 0.7 }}
-                layout={reduce ? undefined : true}
-                dragElastic={0.12}
-                data-dragging={isDragging}
-              >
-                {/* Hover tooltip — hidden while any icon is being dragged */}
-                {label === app.label && hoveredId === app.id && draggingId === null && (
-                  <span className="os-dock-label" aria-hidden="true">
-                    {app.label}
-                  </span>
-                )}
-
-                <motion.button
-                  type="button"
-                  className="os-focusable relative flex h-full w-full cursor-grab items-end justify-center active:cursor-grabbing"
-                  onClick={() => handleClick(app.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                      e.preventDefault()
-                      moveKeyboard(app.id, e.key === 'ArrowLeft' ? -1 : 1)
-                    }
-                  }}
-                  aria-label={`${app.label}${open ? ' (open)' : ''} — drag to reorder, arrow keys to move`}
-                  animate={{ scale: reduce || isDragging ? 1 : scaleFor(i, hoveredIndex) }}
-                  initial={false}
-                  whileTap={isDragging ? undefined : { scale: 0.85 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 32, mass: 0.6 }}
-                  style={{ transformOrigin: 'bottom center', touchAction: 'none' }}
-                  ref={(el) => {
-                    registerDockIcon(app.id, el)
-                  }}
-                >
-                  <AppIcon name={app.icon} size={BASE_ICON} />
-                </motion.button>
-
-                {/* Running indicator */}
-                {open && <span className="os-dock-indicator" aria-hidden="true" />}
-              </Reorder.Item>
+                app={app}
+                index={i}
+                slotCount={order.length + 1 /* + the Bin */}
+                mouseX={mouseX}
+                outerRef={outerRef}
+                magnify={!reduce}
+                open={open}
+                isDragging={isDragging}
+                reduce={!!reduce}
+                label={label}
+                hoveredId={hoveredId}
+                draggingId={draggingId}
+                setHoveredId={setHoveredId}
+                setLabel={setLabel}
+                setDraggingId={setDraggingId}
+                suppressClick={suppressClick}
+                onLaunch={handleClick}
+                onKeyboardMove={moveKeyboard}
+              />
             )
           })}
         </Reorder.Group>
 
         {/* Divider + Bin (fixed — not reorderable, like macOS) */}
         <div className="os-dock-divider" aria-hidden="true" />
-        <div
-          className="os-dock-icon flex items-end"
-          style={{ width: BASE_ICON, height: BASE_ICON }}
-          onMouseEnter={() => setBinLabel(true)}
-        >
-          {binLabel && draggingId === null && (
-            <span className="os-dock-label" aria-hidden="true">
-              Bin
-            </span>
-          )}
-          <motion.button
-            type="button"
-            className="os-focusable relative flex h-full w-full items-end justify-center"
-            onClick={closeAll}
-            aria-label={`Bin — close all windows (${focusCount} open)`}
-            title={focusCount > 0 ? `${focusCount} window${focusCount === 1 ? '' : 's'} open` : 'Empty'}
-            whileTap={{ scale: 0.85 }}
-            style={{ transformOrigin: 'bottom center' }}
-          >
-            <BinIcon size={BASE_ICON} full={focusCount > 0} />
-          </motion.button>
-        </div>
+        <BinSlot
+          index={order.length}
+          slotCount={order.length + 1}
+          mouseX={mouseX}
+          outerRef={outerRef}
+          label={binLabel}
+          dragging={draggingId !== null}
+          onHover={() => setBinLabel(true)}
+          focusCount={focusCount}
+          onClick={closeAll}
+        />
       </motion.div>
     </div>
+  )
+}
+
+/* ── Magnification math ────────────────────────────────────────────────────
+   Each slot's scale derives from its *base* slot centre (stable positions —
+   the real dock also computes from resting positions, which keeps the icon
+   under the cursor steady). Gaussian falloff, cursor-distance driven,
+   springed for butter — no React re-renders during the sweep. */
+function useDockScale(
+  index: number,
+  slotCount: number,
+  mouseX: MotionValue<number>,
+  outerRef: React.RefObject<HTMLDivElement | null>,
+  magnify: boolean
+): MotionValue<number> {
+  return useTransform(mouseX, (mx) => {
+    if (!magnify || !Number.isFinite(mx)) return 1
+    const el = outerRef.current
+    if (!el) return 1
+    const rect = el.getBoundingClientRect()
+    const center = rect.left + rect.width / 2
+    const base = center + (index - (slotCount - 1) / 2) * (BASE_ICON + GAP)
+    const d = Math.abs(mx - base)
+    if (d > SIGMA * 3) return 1
+    return 1 + (MAX_SCALE - 1) * Math.exp(-(d * d) / (2 * SIGMA * SIGMA))
+  })
+}
+
+/* ── Dock slot — one magnifiable icon cell ──────────────────────────────── */
+
+type DockSlotProps = {
+  app: (typeof DOCK_APPS)[number]
+  index: number
+  slotCount: number
+  mouseX: MotionValue<number>
+  outerRef: React.RefObject<HTMLDivElement | null>
+  magnify: boolean
+  open: boolean
+  isDragging: boolean
+  reduce: boolean
+  label: string | null
+  hoveredId: string | null
+  draggingId: string | null
+  setHoveredId: (id: string | null) => void
+  setLabel: (l: string | null) => void
+  setDraggingId: (id: string | null) => void
+  suppressClick: React.RefObject<boolean>
+  onLaunch: (appType: string) => void
+  onKeyboardMove: (id: string, dir: -1 | 1) => void
+}
+
+function DockSlot({
+  app,
+  index,
+  slotCount,
+  mouseX,
+  outerRef,
+  magnify,
+  open,
+  isDragging,
+  reduce,
+  label,
+  hoveredId,
+  draggingId,
+  setHoveredId,
+  setLabel,
+  setDraggingId,
+  suppressClick,
+  onLaunch,
+  onKeyboardMove,
+}: DockSlotProps) {
+  const scale = useDockScale(index, slotCount, mouseX, outerRef, magnify)
+
+  /* Width/height follow the magnification MotionValue — layout pushes
+     neighbours outward exactly like the real dock. */
+  const width = useTransform(scale, (s) => Math.round(BASE_ICON * s))
+  const height = useTransform(scale, (s) => Math.round(BASE_ICON * s))
+
+  /* Launch bounce — a single tasteful hop, like macOS opening feedback. */
+  const y = useMotionValue(0)
+  const bounce = () => {
+    if (reduce) return
+    animate(y, [0, -26, 0], { duration: 0.52, ease: [0.22, 1, 0.36, 1] })
+  }
+
+  return (
+    <Reorder.Item
+      value={app.id}
+      className="os-dock-icon flex items-end justify-center"
+      style={{
+        width,
+        height,
+        y,
+        touchAction: 'none',
+        zIndex: isDragging ? 5 : undefined,
+      }}
+      onMouseEnter={() => {
+        setHoveredId(app.id)
+        setLabel(app.label)
+      }}
+      onFocus={() => {
+        setHoveredId(app.id)
+        setLabel(app.label)
+      }}
+      drag={reduce ? false : true}
+      whileDrag={{ scale: 1.18 }}
+      onDragStart={() => {
+        setDraggingId(app.id)
+        suppressClick.current = true
+        setHoveredId(null)
+      }}
+      onDragEnd={() => {
+        setDraggingId(null)
+        // Keep suppression for the click that follows a real drag;
+        // clear it shortly after so plain clicks keep working.
+        window.setTimeout(() => {
+          suppressClick.current = false
+        }, 80)
+      }}
+      transition={{ type: 'spring', stiffness: 550, damping: 38, mass: 0.7 }}
+      layout={reduce ? undefined : true}
+      dragElastic={0.12}
+      data-dragging={isDragging}
+    >
+      {/* Hover tooltip — hidden while any icon is being dragged */}
+      {label === app.label && hoveredId === app.id && draggingId === null && (
+        <span className="os-dock-label" aria-hidden="true">
+          {app.label}
+        </span>
+      )}
+
+      <motion.button
+        type="button"
+        className="os-focusable relative flex h-full w-full cursor-grab items-end justify-center active:cursor-grabbing"
+        onClick={() => {
+          bounce()
+          onLaunch(app.id)
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            e.preventDefault()
+            onKeyboardMove(app.id, e.key === 'ArrowLeft' ? -1 : 1)
+          }
+        }}
+        aria-label={`${app.label}${open ? ' (open)' : ''} — drag to reorder, arrow keys to move`}
+        whileTap={isDragging ? undefined : { scale: 0.88 }}
+        style={{ transformOrigin: 'bottom center', touchAction: 'none' }}
+        ref={(el) => {
+          registerDockIcon(app.id, el)
+        }}
+      >
+        <AppIcon name={app.icon} size={BASE_ICON} />
+      </motion.button>
+
+      {/* Running indicator */}
+      {open && <span className="os-dock-indicator" aria-hidden="true" />}
+    </Reorder.Item>
+  )
+}
+
+/* ── Bin slot ────────────────────────────────────────────────────────────── */
+
+function BinSlot({
+  index,
+  slotCount,
+  mouseX,
+  outerRef,
+  label,
+  dragging,
+  onHover,
+  focusCount,
+  onClick,
+}: {
+  index: number
+  slotCount: number
+  mouseX: MotionValue<number>
+  outerRef: React.RefObject<HTMLDivElement | null>
+  label: boolean
+  dragging: boolean
+  onHover: () => void
+  focusCount: number
+  onClick: () => void
+}) {
+  const scale = useDockScale(index, slotCount, mouseX, outerRef, true)
+  const width = useTransform(scale, (s) => Math.round(BASE_ICON * s))
+  const height = useTransform(scale, (s) => Math.round(BASE_ICON * s))
+  return (
+    <motion.div
+      className="os-dock-icon flex items-end justify-center"
+      style={{ width, height }}
+      onMouseEnter={onHover}
+    >
+      {label && !dragging && (
+        <span className="os-dock-label" aria-hidden="true">
+          Bin
+        </span>
+      )}
+      <motion.button
+        type="button"
+        className="os-focusable relative flex h-full w-full items-end justify-center"
+        onClick={onClick}
+        aria-label={`Bin — close all windows (${focusCount} open)`}
+        title={focusCount > 0 ? `${focusCount} window${focusCount === 1 ? '' : 's'} open` : 'Empty'}
+        whileTap={{ scale: 0.88 }}
+        style={{ transformOrigin: 'bottom center' }}
+      >
+        <BinIcon size={BASE_ICON} full={focusCount > 0} />
+      </motion.button>
+    </motion.div>
   )
 }
 

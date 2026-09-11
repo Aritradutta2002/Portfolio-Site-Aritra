@@ -78,14 +78,25 @@ function useKeyboardTexture() {
 function useScreenTexture() {
   /* The real desktop wallpaper, center-cropped to the 16:10 screen. Renders
      the exact image the DOM desktop will show — a seamless 3D → 2D handoff. */
-  const tex = useLoader(THREE.TextureLoader, '/wallpapers/mac-theme.jpg')
+  const tex = useLoader(THREE.TextureLoader, '/wallpapers/macos-dark.jpg')
   React.useMemo(() => {
     tex.colorSpace = THREE.SRGBColorSpace
-    /* Square source, 2.81×1.83 screen — crop top and bottom (cover fit). */
+    /* Cover-fit whatever the source aspect is to the 2.81×1.83 screen. */
+    const img = tex.image as { width?: number; height?: number } | undefined
+    const texAspect =
+      img?.width && img?.height ? img.width / img.height : 16 / 10
     const screenAspect = 2.81 / 1.83
-    const v = 1 / screenAspect
-    tex.repeat.set(1, v)
-    tex.offset.set(0, (1 - v) / 2)
+    if (texAspect > screenAspect) {
+      /* Source wider than screen — crop the sides. */
+      const u = screenAspect / texAspect
+      tex.repeat.set(u, 1)
+      tex.offset.set((1 - u) / 2, 0)
+    } else {
+      /* Source taller than screen — crop top and bottom. */
+      const v = screenAspect / texAspect
+      tex.repeat.set(1, v)
+      tex.offset.set(0, (1 - v) / 2)
+    }
     tex.anisotropy = 4
     tex.needsUpdate = true
   }, [tex])

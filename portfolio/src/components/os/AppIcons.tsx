@@ -1,11 +1,10 @@
 import * as React from 'react'
-import Image from 'next/image'
 
 /* ── macOS-style squircle app icons ────────────────────────────────────────
-   Authentic Apple-style icons: multi-stop gradients, inner gloss highlight,
-   subtle rim light, depth shadow, and per-icon glyph detail.
-   Every icon shares one 64×64 grid and the same squircle clip path
-   (rx 13.5 ≈ Apple's ~21% superellipse corner radius). */
+   Authentic Apple-style icons: authentic per-app palettes and glyphs,
+   the shared Apple superellipse (squircle) clip, a subtle top-edge sheen
+   and a single tasteful depth shadow — matte like Big Sur and later,
+   not the glossy 2014 look. Every icon shares one 64×64 grid. */
 
 export type IconName =
   | 'about'
@@ -27,8 +26,6 @@ export type IconName =
   | 'spotlight'
   | 'apple'
 
-export const APPLE_MUSIC_LOGO = 'https://www.apple.com/v/apple-music/ag/images/overview/icon_apple_music_alt_25__e8i83er30ga6_small_2x.png'
-
 type Props = {
   name: IconName
   size?: number
@@ -37,68 +34,79 @@ type Props = {
   glyphColor?: string
 }
 
-/* Each icon: [top-color, mid-color, bottom-color] for a 3-stop gradient */
-type GradDef = { stops: Array<{ offset: string; color: string }>; angle?: string }
-
-const GRAD_DEFS: Record<IconName, GradDef> = {
-  about:      { stops: [{ offset: '0%', color: '#BF8FFF' }, { offset: '45%', color: '#8B5CF6' }, { offset: '100%', color: '#4C35C8' }] },
-  experience: { stops: [{ offset: '0%', color: '#5EEAD4' }, { offset: '50%', color: '#06B6D4' }, { offset: '100%', color: '#0369A1' }] },
-  projects:   { stops: [{ offset: '0%', color: '#FCD34D' }, { offset: '45%', color: '#F59E0B' }, { offset: '100%', color: '#D97706' }] },
-  project:    { stops: [{ offset: '0%', color: '#FCD34D' }, { offset: '45%', color: '#F59E0B' }, { offset: '100%', color: '#D97706' }] },
-  resume:     { stops: [{ offset: '0%', color: '#F9A8D4' }, { offset: '45%', color: '#EC4899' }, { offset: '100%', color: '#BE185D' }] },
-  contact:    { stops: [{ offset: '0%', color: '#6EE7B7' }, { offset: '45%', color: '#10B981' }, { offset: '100%', color: '#047857' }] },
-  terminal:   { stops: [{ offset: '0%', color: '#3A3A3E' }, { offset: '50%', color: '#1C1C1E' }, { offset: '100%', color: '#0A0A0C' }] },
-  finder:     { stops: [{ offset: '0%', color: '#60C8F5' }, { offset: '40%', color: '#1A9FE8' }, { offset: '100%', color: '#0A5FD6' }] },
-  photos:     { stops: [{ offset: '0%', color: '#FFFFFF' }, { offset: '100%', color: '#E8E8ED' }] },
-  notes:      { stops: [{ offset: '0%', color: '#FFFDE7' }, { offset: '100%', color: '#F5F0D8' }] },
-  calendar:   { stops: [{ offset: '0%', color: '#FFFFFF' }, { offset: '100%', color: '#EDEDF0' }] },
-  music:      { stops: [{ offset: '0%', color: '#FF6B8A' }, { offset: '45%', color: '#FC2D55' }, { offset: '100%', color: '#B5003E' }] },
-  mail:       { stops: [{ offset: '0%', color: '#7DD3FC' }, { offset: '45%', color: '#3B82F6' }, { offset: '100%', color: '#1D4ED8' }] },
-  browser:    { stops: [{ offset: '0%', color: '#93C5FD' }, { offset: '40%', color: '#3B82F6' }, { offset: '100%', color: '#1E40AF' }] },
+/* Each icon: multi-stop vertical plate gradient, sampled from the real apps */
+const GRAD_DEFS: Record<IconName, { stops: Array<{ offset: string; color: string }> }> = {
+  /* Apple Account / System Settings person: cool graphite-blue */
+  about:      { stops: [{ offset: '0%', color: '#8E9BB8' }, { offset: '50%', color: '#5E6E96' }, { offset: '100%', color: '#3D4C74' }] },
+  /* ProjecX briefcase — refined teal */
+  experience: { stops: [{ offset: '0%', color: '#4ADCC8' }, { offset: '48%', color: '#12B5A5' }, { offset: '100%', color: '#0B7F86' }] },
+  /* Finder folder — Apple's folder blue */
+  projects:   { stops: [{ offset: '0%', color: '#6EC6F7' }, { offset: '45%', color: '#2F9FF0' }, { offset: '100%', color: '#1273D8' }] },
+  project:    { stops: [{ offset: '0%', color: '#6EC6F7' }, { offset: '45%', color: '#2F9FF0' }, { offset: '100%', color: '#1273D8' }] },
+  /* Pages-like document — coral */
+  resume:     { stops: [{ offset: '0%', color: '#FF7E75' }, { offset: '48%', color: '#F04A45' }, { offset: '100%', color: '#C72E30' }] },
+  /* Messages green */
+  contact:    { stops: [{ offset: '0%', color: '#67E961' }, { offset: '48%', color: '#2ECE44' }, { offset: '100%', color: '#12A02C' }] },
+  /* Terminal — near-black */
+  terminal:   { stops: [{ offset: '0%', color: '#3A3F46' }, { offset: '50%', color: '#1E2228' }, { offset: '100%', color: '#0B0D10' }] },
+  /* Safari — sky blue */
+  finder:     { stops: [{ offset: '0%', color: '#41B4F5' }, { offset: '45%', color: '#1E8FE8' }, { offset: '100%', color: '#0C63D6' }] },
+  /* Photos — white plate, pinwheel glyph */
+  photos:     { stops: [{ offset: '0%', color: '#FFFFFF' }, { offset: '100%', color: '#EBEBEF' }] },
+  /* Notes — white paper, yellow band glyph */
+  notes:      { stops: [{ offset: '0%', color: '#FFFFFF' }, { offset: '100%', color: '#F0EDE4' }] },
+  /* Calendar — white plate */
+  calendar:   { stops: [{ offset: '0%', color: '#FFFFFF' }, { offset: '100%', color: '#ECECF0' }] },
+  /* Apple Music — the real #FA233B → #FB5C74 */
+  music:      { stops: [{ offset: '0%', color: '#FB5C74' }, { offset: '100%', color: '#FA233B' }] },
+  /* Mail — the real iOS blue */
+  mail:       { stops: [{ offset: '0%', color: '#3BA2FF' }, { offset: '48%', color: '#1E7BEE' }, { offset: '100%', color: '#0F5FD7' }] },
+  /* Aurora browser — deep sky */
+  browser:    { stops: [{ offset: '0%', color: '#5CB8F8' }, { offset: '45%', color: '#2E8BEA' }, { offset: '100%', color: '#155CD0' }] },
+  /* Widgets — graphite like Mission Control tile */
   widgets:    { stops: [{ offset: '0%', color: '#A78BFA' }, { offset: '45%', color: '#7C3AED' }, { offset: '100%', color: '#4C1D95' }] },
-  launchpad:  { stops: [{ offset: '0%', color: '#F5F5F7' }, { offset: '100%', color: '#D1D1D6' }] },
+  /* Launchpad — silver */
+  launchpad:  { stops: [{ offset: '0%', color: '#F5F5F7' }, { offset: '100%', color: '#CDCDD4' }] },
+  /* Spotlight — graphite */
   spotlight:  { stops: [{ offset: '0%', color: '#A1A1AA' }, { offset: '50%', color: '#71717A' }, { offset: '100%', color: '#3F3F46' }] },
+  /* Apple logo tile */
   apple:      { stops: [{ offset: '0%', color: '#3A3A3E' }, { offset: '50%', color: '#1C1C1E' }, { offset: '100%', color: '#0A0A0C' }] },
 }
 
-let gradSeq = 0
-
-/* macOS Photos pinwheel petal colours, clockwise from 12 o'clock. */
+/* macOS Photos pinwheel — Apple's real petal hues, clockwise from 12 o'clock. */
 const PHOTOS_PETALS = [
-  '#F5C244', '#F0803C', '#E5484D', '#E58AB5',
-  '#8E64D5', '#4C8DF6', '#37B4EB', '#57BE6E',
+  '#FDBA2F', '#F87A3E', '#F5453C', '#F78EBB',
+  '#9A6AD8', '#4B8DF8', '#35C1F1', '#64BE60',
 ]
 
 const SYSTEM_FONT = `-apple-system, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif`
 
-function Glyph({ name, color }: { name: IconName; color: string }) {
+function Glyph({ name, color, uid }: { name: IconName; color: string; uid: string }) {
   const c = color
   switch (name) {
     case 'about':
       return (
         <g>
           {/* Head */}
-          <circle cx="32" cy="22" r="9" fill={c} />
-          {/* Shoulders */}
-          <path d="M14 52c0-9.9 8.1-17 18-17s18 7.1 18 17H14Z" fill={c} />
-          {/* Subtle inner highlight on head */}
-          <circle cx="29" cy="19.5" r="3.5" fill="rgba(255,255,255,0.18)" />
+          <circle cx="32" cy="22.5" r="8.6" fill={c} />
+          {/* Shoulders — Apple-account style arc */}
+          <path d="M15 51c0-9.4 7.6-16.5 17-16.5S49 41.6 49 51H15Z" fill={c} />
+          {/* Soft top-light on head */}
+          <circle cx="29.2" cy="20" r="3.4" fill="rgba(255,255,255,0.20)" />
         </g>
       )
 
     case 'experience':
       return (
         <g>
-          {/* Briefcase body */}
-          <rect x="13" y="28" width="38" height="24" rx="4" fill={c} />
-          {/* Briefcase top bar */}
-          <rect x="13" y="26" width="38" height="6" rx="3" fill={c} opacity="0.75" />
-          {/* Handle */}
-          <path d="M24 26v-4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v4" fill="none" stroke={c} strokeWidth="3" strokeLinecap="round" />
-          {/* Center clasp */}
-          <rect x="28" y="37" width="8" height="5" rx="2" fill="rgba(0,0,0,0.22)" />
-          {/* Horizontal divider */}
-          <rect x="13" y="37" width="38" height="2" rx="1" fill="rgba(0,0,0,0.15)" />
+          {/* Handle behind body */}
+          <path d="M24.5 27v-3.5a4.5 4.5 0 0 1 4.5-4.5h6a4.5 4.5 0 0 1 4.5 4.5V27" fill="none" stroke={c} strokeWidth="3.2" strokeLinecap="round" />
+          {/* Body */}
+          <rect x="13" y="27" width="38" height="24" rx="5" fill={c} />
+          {/* Top sheen */}
+          <rect x="13" y="27" width="38" height="7" rx="3.5" fill="rgba(255,255,255,0.20)" />
+          {/* Clasp */}
+          <rect x="28.5" y="36.5" width="7" height="5.5" rx="2" fill="rgba(0,0,0,0.20)" />
         </g>
       )
 
@@ -106,12 +114,13 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
     case 'project':
       return (
         <g>
-          {/* Folder back */}
-          <path d="M11 24a4 4 0 0 1 4-4h10.5a3 3 0 0 1 2.1.9l2.8 2.8a3 3 0 0 0 2.1.9H49a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H15a4 4 0 0 1-4-4V24Z" fill={c} />
-          {/* Folder tab highlight */}
-          <path d="M11 24a4 4 0 0 1 4-4h10.5a3 3 0 0 1 2.1.9l2.8 2.8a3 3 0 0 0 2.1.9H49a4 4 0 0 1 4 4v2H11v-6Z" fill="rgba(255,255,255,0.22)" />
-          {/* Inner shadow at top of folder body */}
-          <path d="M11 30h42v2H11z" fill="rgba(0,0,0,0.08)" />
+          {/* Folder back + tab, Apple folder blue */}
+          <path d="M11 24.5a4.5 4.5 0 0 1 4.5-4.5h9.8a3.5 3.5 0 0 1 2.47 1.02l2.9 2.9c.66.66 1.55 1.03 2.48 1.03H48.5A4.5 4.5 0 0 1 53 29.4v17.1a4.5 4.5 0 0 1-4.5 4.5h-33A4.5 4.5 0 0 1 11 46.5v-22Z" fill={c} />
+          {/* Front paper sheet — white document peeking out */}
+          <rect x="19" y="29.5" width="26" height="17" rx="2" fill="#FFFFFF" opacity="0.92" />
+          {/* Folder front, slightly lighter blue */}
+          <path d="M11 30.5a3 3 0 0 1 3.6-2.94l14.9 3.1a12 12 0 0 0 4.98 0l13.92-3.1A3 3 0 0 1 53 30.5v16a4.5 4.5 0 0 1-4.5 4.5h-33A4.5 4.5 0 0 1 11 46.5v-16Z" fill="#5DBBF6" />
+          <path d="M11 30.5a3 3 0 0 1 3.6-2.94l14.9 3.1a12 12 0 0 0 4.98 0l13.92-3.1A3 3 0 0 1 53 30.5v3l-42-5.4v2.34Z" fill="rgba(255,255,255,0.25)" />
         </g>
       )
 
@@ -119,75 +128,72 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
       return (
         <g>
           {/* Paper body */}
-          <path d="M18 11h18l12 12v29a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V15a4 4 0 0 1 4-4Z" fill={c} />
+          <path d="M18 11h17.5L48 23.5V52a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V15a4 4 0 0 1 4-4Z" fill="#FFFFFF" />
           {/* Folded corner */}
-          <path d="M36 11v12h12" fill="none" stroke={c} strokeWidth="1.5" opacity="0.5" />
-          <path d="M36 11l12 12H36V11Z" fill="rgba(0,0,0,0.18)" />
+          <path d="M35.5 11 48 23.5H39a3.5 3.5 0 0 1-3.5-3.5V11Z" fill="#FFD3CF" />
           {/* Text lines */}
-          <rect x="22" y="31" width="20" height="2.5" rx="1.25" fill="rgba(0,0,0,0.28)" />
-          <rect x="22" y="37.5" width="20" height="2.5" rx="1.25" fill="rgba(0,0,0,0.22)" />
-          <rect x="22" y="44" width="13" height="2.5" rx="1.25" fill="rgba(0,0,0,0.18)" />
-          {/* Top highlight */}
-          <path d="M18 11h18v3H18a4 4 0 0 0-4 4v-3a4 4 0 0 1 4-4Z" fill="rgba(255,255,255,0.22)" />
+          <rect x="21.5" y="30" width="21" height="2.6" rx="1.3" fill="#F04A45" opacity="0.85" />
+          <rect x="21.5" y="36.5" width="21" height="2.6" rx="1.3" fill="#C9C9CF" />
+          <rect x="21.5" y="43" width="13" height="2.6" rx="1.3" fill="#C9C9CF" />
+          {/* Name bar */}
+          <rect x="21.5" y="21" width="12" height="4.5" rx="2.25" fill="#F04A45" opacity="0.55" />
         </g>
       )
 
     case 'contact':
+      /* Messages — white speech bubble on green */
       return (
         <g>
-          {/* Envelope body */}
-          <rect x="10" y="18" width="44" height="30" rx="6" fill={c} />
-          {/* Envelope flap */}
-          <path d="M10 24l22 15 22-15" fill="none" stroke="rgba(0,0,0,0.22)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          {/* Envelope flap highlight */}
-          <path d="M10 18l22 15 22-15" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          {/* Bottom crease lines */}
-          <path d="M10 46 24 33M54 46 40 33" fill="none" stroke="rgba(0,0,0,0.14)" strokeWidth="2" strokeLinecap="round" />
+          <path
+            d="M32 14.5c10.5 0 19 6.9 19 15.4 0 8.5-8.5 15.4-19 15.4-1.6 0-3.2-.17-4.7-.5-1.9 1.5-4.6 3.1-7.6 3.5-.7.1-1.3-.55-1.1-1.2.5-1.9.7-4.1.4-5.9-3.7-2.8-6-6.8-6-11.3 0-8.5 8.5-15.4 19-15.4Z"
+            fill="#FFFFFF"
+          />
+          {/* Subtle bubble shading */}
+          <path d="M32 14.5c10.5 0 19 6.9 19 15.4 0 1.5-.3 3-.85 4.4C48.4 26.9 41 21.5 32 21.5S15.6 26.9 13.85 34.3A15.5 15.5 0 0 1 13 29.9c0-8.5 8.5-15.4 19-15.4Z" fill="rgba(0,0,0,0.05)" />
         </g>
       )
 
     case 'terminal':
       return (
         <g>
-          {/* Prompt chevron */}
-          <path
-            d="M16 24l10 8-10 8"
-            fill="none"
-            stroke={c}
-            strokeWidth="3.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          {/* Cursor bar */}
-          <rect x="30" y="38.5" width="18" height="3.5" rx="1.75" fill={c} />
-          {/* Subtle screen glow */}
-          <rect x="2" y="2" width="60" height="60" rx="13.5" fill="rgba(0,255,100,0.04)" />
+          {/* Window chrome: title bar */}
+          <rect x="6" y="12" width="52" height="40" rx="7" fill="#0E1116" />
+          <path d="M6 19a7 7 0 0 1 7-7h38a7 7 0 0 1 7 7v3.5H6V19Z" fill="#2E333B" />
+          {/* Title-bar dots */}
+          <circle cx="12.5" cy="17.6" r="1.5" fill="#FF5F57" />
+          <circle cx="17.5" cy="17.6" r="1.5" fill="#FEBC2E" />
+          <circle cx="22.5" cy="17.6" r="1.5" fill="#28C840" />
+          {/* Prompt */}
+          <path d="M14 30l7.5 6-7.5 6" fill="none" stroke="#E8E8EA" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+          <rect x="26" y="39.5" width="17" height="3.2" rx="1.6" fill="#E8E8EA" />
         </g>
       )
 
     case 'finder':
+      /* The real Finder: two-tone split face filling the whole icon */
       return (
         <g>
-          {/* Face — two-tone split: left blue, right lighter */}
-          <path d="M32 13c10.5 0 18.5 7.6 18.5 17.5S42.5 48 32 48 13.5 40.4 13.5 30.5 21.5 13 32 13Z" fill="#FFFFFF" />
-          {/* Left half tint */}
-          <path d="M13.5 30.5C13.5 20.6 21.5 13 32 13v35C21.5 48 13.5 40.4 13.5 30.5Z" fill="#D6EEFF" />
-          {/* Left eye */}
-          <circle cx="26" cy="29.5" r="3.2" fill="#0A5FD6" />
-          <circle cx="25" cy="28.2" r="1.1" fill="rgba(255,255,255,0.55)" />
-          {/* Right eye */}
-          <circle cx="38" cy="29.5" r="3.2" fill="#0A5FD6" />
-          <circle cx="37" cy="28.2" r="1.1" fill="rgba(255,255,255,0.55)" />
-          {/* Smile */}
-          <path
-            d="M24 37.5c2.5 3.5 5.2 5 8 5s5.5-1.5 8-5"
-            fill="none"
-            stroke="#0A5FD6"
-            strokeWidth="2.8"
-            strokeLinecap="round"
-          />
-          {/* Nose hint */}
-          <path d="M30.5 33.5 32 35.5 33.5 33.5" fill="none" stroke="#0A5FD6" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+          {/* Right (darker) half — full-bleed face */}
+          <path d="M32 4C25 4 12 8 12 32s13 28 20 28 20-4 20-28S39 4 32 4Z" fill={`url(#${uid}-fright)`} />
+          {/* Left (lighter) half */}
+          <path d="M32 4C25 4 12 8 12 32s13 28 20 28V4Z" fill={`url(#${uid}-fleft)`} />
+          <defs>
+            <linearGradient id={`${uid}-fleft`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#A8E2FD" />
+              <stop offset="100%" stopColor="#54B7F7" />
+            </linearGradient>
+            <linearGradient id={`${uid}-fright`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#43ADF6" />
+              <stop offset="100%" stopColor="#0F76DE" />
+            </linearGradient>
+          </defs>
+          {/* Eyes — sit either side of the centre line */}
+          <ellipse cx="22.5" cy="27.5" rx="2.6" ry="4.4" fill="#0B3D73" />
+          <ellipse cx="41.5" cy="27.5" rx="2.6" ry="4.4" fill="#0B3D73" />
+          <circle cx="23.3" cy="25.9" r="0.9" fill="rgba(255,255,255,0.85)" />
+          <circle cx="42.3" cy="25.9" r="0.9" fill="rgba(255,255,255,0.85)" />
+          {/* Smile crossing the split */}
+          <path d="M20 38c3.6 4.6 7.6 6.9 12 6.9s8.4-2.3 12-6.9" fill="none" stroke="#0B3D73" strokeWidth="2.7" strokeLinecap="round" />
         </g>
       )
 
@@ -202,9 +208,8 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
               transform={`rotate(${i * 45} 32 32)`}
             />
           ))}
-          {/* White center circle with subtle shadow */}
-          <circle cx="32" cy="32" r="7" fill="rgba(0,0,0,0.08)" />
-          <circle cx="32" cy="32" r="6.2" fill="#FFFFFF" />
+          <circle cx="32" cy="32" r="7" fill="rgba(0,0,0,0.06)" />
+          <circle cx="32" cy="32" r="6.1" fill="#FFFFFF" />
         </g>
       )
     }
@@ -212,139 +217,140 @@ function Glyph({ name, color }: { name: IconName; color: string }) {
     case 'notes': {
       return (
         <g>
-          {/* Paper background — warm cream */}
-          <rect x="8" y="8" width="48" height="48" rx="9" fill="#FFFDE7" />
+          {/* Paper — full bleed white */}
+          <rect x="4" y="4" width="56" height="56" fill="#FDFDFB" />
           {/* Yellow header band */}
-          <path d="M8 8h48a0 0 0 0 1 0 0v14H8V8Z" fill="#F5A623" />
-          <path d="M8 8h48" stroke="rgba(0,0,0,0.08)" strokeWidth="1" />
-          {/* Spiral binding holes */}
-          <circle cx="20" cy="15" r="2.5" fill="rgba(0,0,0,0.22)" />
-          <circle cx="32" cy="15" r="2.5" fill="rgba(0,0,0,0.22)" />
-          <circle cx="44" cy="15" r="2.5" fill="rgba(0,0,0,0.22)" />
-          {/* Left margin rule */}
-          <rect x="20" y="22" width="1.5" height="30" fill="#E8C97A" />
+          <rect x="4" y="4" width="56" height="17" fill="#FFC933" />
+          <rect x="4" y="19.5" width="56" height="1" fill="rgba(0,0,0,0.10)" />
           {/* Ruled lines */}
-          <rect x="24" y="27" width="26" height="2.2" rx="1.1" fill="#D4C5A0" />
-          <rect x="24" y="34" width="26" height="2.2" rx="1.1" fill="#D4C5A0" />
-          <rect x="24" y="41" width="26" height="2.2" rx="1.1" fill="#D4C5A0" />
-          <rect x="24" y="48" width="16" height="2.2" rx="1.1" fill="#D4C5A0" />
+          <rect x="13" y="29" width="38" height="2.2" rx="1.1" fill="#DEDEE3" />
+          <rect x="13" y="36.5" width="38" height="2.2" rx="1.1" fill="#DEDEE3" />
+          <rect x="13" y="44" width="26" height="2.2" rx="1.1" fill="#DEDEE3" />
         </g>
       )
     }
 
     case 'calendar': {
       const now = new Date()
-      const month = now.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()
+      const weekday = now
+        .toLocaleDateString('en-US', { weekday: 'short' })
+        .toUpperCase()
       const day = now.getDate()
       return (
         <g>
-          {/* Calendar body */}
-          <rect x="8" y="12" width="48" height="44" rx="8" fill="#FFFFFF" />
+          {/* Body — full bleed white */}
+          <rect x="4" y="4" width="56" height="56" fill="#FFFFFF" />
           {/* Red header */}
-          <path d="M8 12h48v16H8V12Z" fill="#FF3B30" />
-          <path d="M8 12h48a0 0 0 0 1 0 0v4H8v-4Z" fill="rgba(255,255,255,0.18)" />
-          {/* Ring holes */}
-          <rect x="20" y="8" width="4" height="10" rx="2" fill="#C0392B" />
-          <rect x="40" y="8" width="4" height="10" rx="2" fill="#C0392B" />
-          {/* Month label */}
-          <text x="32" y="23" textAnchor="middle" fontSize="8" fontWeight="700" fill="#FFFFFF" fontFamily={SYSTEM_FONT} letterSpacing="0.5">{month}</text>
-          {/* Day number */}
-          <text x="32" y="50" textAnchor="middle" fontSize="26" fontWeight="300" fill="#1D1D1F" fontFamily={SYSTEM_FONT}>{day}</text>
-          {/* Grid lines hint */}
-          <line x1="8" y1="28" x2="56" y2="28" stroke="#E5E5EA" strokeWidth="1" />
+          <rect x="4" y="4" width="56" height="15" fill="#FF453A" />
+          {/* Weekday label — real Calendar shows the weekday */}
+          <text x="32" y="15" textAnchor="middle" fontSize="8.5" fontWeight="600" fill="#FFFFFF" fontFamily={SYSTEM_FONT} letterSpacing="0.8">{weekday}</text>
+          {/* Date number */}
+          <text x="32" y="51" textAnchor="middle" fontSize="29" fontWeight="300" fill="#1D1D1F" fontFamily={SYSTEM_FONT}>{day}</text>
         </g>
       )
     }
 
     case 'music':
+      /* Apple Music beamed note */
       return (
-        <g>
-          {/* Music note */}
-          <path d="M38 16v26a9 9 0 1 1-4-7.4V20.5l14-3.5v22a9 9 0 1 1-4-7.4V13L38 16Z" fill={c} />
-          {/* Highlight on note head */}
-          <circle cx="25" cy="42" r="3" fill="rgba(255,255,255,0.22)" />
-          <circle cx="44" cy="38" r="3" fill="rgba(255,255,255,0.22)" />
+        <g fill="#FFFFFF">
+          <path d="M42.5 14.5c0-1.2-1-2-2.2-1.8L26 15.4c-1.4.2-2.4 1.3-2.4 2.7v19.2a6.9 6.9 0 0 0-3.1-.74c-3.6 0-6.5 2.4-6.5 5.4s2.9 5.4 6.5 5.4 6.5-2.4 6.5-5.4V25.3c0-.9.65-1.65 1.55-1.8l10.6-2.06c1-.2 1.85.55 1.85 1.55v12.6a6.9 6.9 0 0 0-3.1-.74c-3.6 0-6.5 2.4-6.5 5.4s2.9 5.4 6.5 5.4 6.5-2.4 6.5-5.4V14.5Z" />
         </g>
       )
 
     case 'mail':
+      /* The real Mail envelope — white, crisp flap */
       return (
         <g>
-          {/* Envelope body */}
-          <rect x="9" y="16" width="46" height="33" rx="7" fill={c} />
-          {/* Top highlight strip */}
-          <rect x="9" y="16" width="46" height="8" rx="7" fill="rgba(255,255,255,0.18)" />
-          {/* Envelope V-fold */}
-          <path d="M11 19l21 16 21-16" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          {/* Bottom crease */}
-          <path d="M11 47 26 33M53 47 38 33" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="2" strokeLinecap="round" />
+          <rect x="9" y="17" width="46" height="31" rx="6" fill="#FFFFFF" />
+          {/* Flap fold */}
+          <path d="M11.5 20.5 30.1 34a3.2 3.2 0 0 0 3.8 0l18.6-13.5" fill="none" stroke="#B9CFF3" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Bottom creases */}
+          <path d="M12 45.5 25.5 33.5M52 45.5 38.5 33.5" fill="none" stroke="#E3ECF9" strokeWidth="2" strokeLinecap="round" />
         </g>
       )
 
     case 'browser':
+      /* Safari compass */
       return (
         <g>
-          {/* Globe body */}
-          <circle cx="32" cy="32" r="20" fill={c} />
-          {/* Latitude lines */}
-          <ellipse cx="32" cy="32" rx="10" ry="20" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.8" />
-          {/* Equator */}
-          <line x1="12" y1="32" x2="52" y2="32" stroke="rgba(255,255,255,0.45)" strokeWidth="1.8" />
-          {/* Tropic lines */}
-          <path d="M14 22h36M14 42h36" stroke="rgba(255,255,255,0.28)" strokeWidth="1.4" />
-          {/* Outer ring highlight */}
-          <circle cx="32" cy="32" r="20" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />
-          {/* Top gloss */}
-          <path d="M18 18a20 20 0 0 1 28 0" stroke="rgba(255,255,255,0.35)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          {/* Dial face */}
+          <circle cx="32" cy="32" r="24" fill="#F4F7FB" />
+          {/* Blue ring */}
+          <circle cx="32" cy="32" r="24" fill="none" stroke={`url(#${uid}-sring)`} strokeWidth="3" />
+          <defs>
+            <linearGradient id={`${uid}-sring`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#3FADF6" />
+              <stop offset="100%" stopColor="#1668E3" />
+            </linearGradient>
+          </defs>
+          {/* Degree ticks */}
+          {Array.from({ length: 36 }).map((_, i) => {
+            const a = (i * 10 * Math.PI) / 180
+            const major = i % 9 === 0
+            const r1 = major ? 16.6 : 18.4
+            const r2 = 20
+            return (
+              <line
+                key={i}
+                x1={32 + r1 * Math.sin(a)}
+                y1={32 - r1 * Math.cos(a)}
+                x2={32 + r2 * Math.sin(a)}
+                y2={32 - r2 * Math.cos(a)}
+                stroke={major ? '#8E9AA8' : '#C6CDD6'}
+                strokeWidth={major ? 1.5 : 0.9}
+                strokeLinecap="round"
+              />
+            )
+          })}
+          {/* Needle — red north, white south */}
+          <g transform="rotate(-45 32 32)">
+            <path d="M32 14.5 36.4 32H27.6L32 14.5Z" fill="#FF3B30" />
+            <path d="M32 49.5 27.6 32h8.8L32 49.5Z" fill="#FFFFFF" stroke="#D9DEE6" strokeWidth="0.6" />
+          </g>
         </g>
       )
 
     case 'widgets':
       return (
         <g>
-          {/* Top-left: blue */}
-          <rect x="10" y="10" width="20" height="20" rx="6" fill="#64D2FF" />
-          <rect x="10" y="10" width="20" height="8" rx="6" fill="rgba(255,255,255,0.28)" />
-          {/* Top-right: yellow */}
+          {/* System-colour tiles */}
+          <rect x="10" y="10" width="20" height="20" rx="6" fill="#0A84FF" />
           <rect x="34" y="10" width="20" height="20" rx="6" fill="#FFD60A" />
-          <rect x="34" y="10" width="20" height="8" rx="6" fill="rgba(255,255,255,0.28)" />
-          {/* Bottom-left: pink */}
-          <rect x="10" y="34" width="20" height="20" rx="6" fill="#FF6482" />
-          <rect x="10" y="34" width="20" height="8" rx="6" fill="rgba(255,255,255,0.22)" />
-          {/* Bottom-right: green */}
+          <rect x="10" y="34" width="20" height="20" rx="6" fill="#FF375F" />
           <rect x="34" y="34" width="20" height="20" rx="6" fill="#30D158" />
-          <rect x="34" y="34" width="20" height="8" rx="6" fill="rgba(255,255,255,0.22)" />
+          <rect x="10" y="10" width="20" height="9" rx="4.5" fill="rgba(255,255,255,0.25)" />
+          <rect x="34" y="10" width="20" height="9" rx="4.5" fill="rgba(255,255,255,0.30)" />
+          <rect x="10" y="34" width="20" height="9" rx="4.5" fill="rgba(255,255,255,0.22)" />
+          <rect x="34" y="34" width="20" height="9" rx="4.5" fill="rgba(255,255,255,0.22)" />
         </g>
       )
 
     case 'launchpad':
+      /* Big Sur+ Launchpad — silver rocket */
       return (
-        <g>
-          {[
-            ['#FF453A', 10, 10], ['#FF9F0A', 26, 10], ['#FFD60A', 42, 10],
-            ['#30D158', 10, 26], ['#64D2FF', 26, 26], ['#0A84FF', 42, 26],
-            ['#BF5AF2', 10, 42], ['#FF375F', 26, 42], ['#5E5CE6', 42, 42],
-          ].map(([fill, x, y]) => (
-            <rect
-              key={`${x}-${y}`}
-              x={x as number}
-              y={y as number}
-              width="12"
-              height="12"
-              rx="3.5"
-              fill={fill as string}
-            />
-          ))}
+        <g transform="rotate(45 32 32)">
+          {/* Body */}
+          <path d="M32 11c4.6 3.8 7 9.2 7 15.4 0 3.4-.7 6.6-2 9.6h-10a24.4 24.4 0 0 1-2-9.6c0-6.2 2.4-11.6 7-15.4Z" fill="#7C8794" />
+          {/* Nose cone */}
+          <path d="M32 11c2.6 2.1 4.5 4.8 5.7 7.9h-11.4C27.5 15.8 29.4 13.1 32 11Z" fill="#E5484D" />
+          {/* Window */}
+          <circle cx="32" cy="24.5" r="3.4" fill="#F5F5F7" stroke="#4A545F" strokeWidth="1.4" />
+          {/* Fins */}
+          <path d="M27 33.5c-3.4 1.5-5.6 4.3-6.5 8.4l6.2-2.6-.4-2.6.7-3.2Z" fill="#E5484D" />
+          <path d="M37 33.5c3.4 1.5 5.6 4.3 6.5 8.4l-6.2-2.6.4-2.6-.7-3.2Z" fill="#E5484D" />
+          {/* Exhaust */}
+          <path d="M32 37.5c1.9 2.7 2.9 5.6 2.9 8.7 0 3.1-1 6-2.9 8.7-1.9-2.7-2.9-5.6-2.9-8.7 0-3.1 1-6 2.9-8.7Z" fill="#FFB340" />
+          <path d="M32 42c1 1.9 1.5 3.8 1.5 5.8 0 2-.5 3.9-1.5 5.8-1-1.9-1.5-3.8-1.5-5.8 0-2 .5-3.9 1.5-5.8Z" fill="#FFE08A" />
         </g>
       )
 
     case 'spotlight':
       return (
         <g>
-          <circle cx="28" cy="27" r="12" fill="none" stroke={c} strokeWidth="4.5" />
+          <circle cx="28" cy="27" r="12" fill="rgba(255,255,255,0.10)" stroke={c} strokeWidth="4.5" />
           <line x1="37" y1="36" x2="48" y2="47" stroke={c} strokeWidth="4.5" strokeLinecap="round" />
-          {/* Inner lens glint */}
-          <circle cx="24" cy="23" r="3.5" fill="rgba(255,255,255,0.22)" />
+          <circle cx="24" cy="23" r="3.2" fill="rgba(255,255,255,0.25)" />
         </g>
       )
 
@@ -382,30 +388,16 @@ const SQUIRCLE_PATH = [
   'Z',
 ].join(' ')
 
+/* Icons whose glyph must render edge-to-edge (no inner padding) */
+const FULL_BLEED = new Set<IconName>(['finder', 'notes', 'calendar'])
+
 export default function AppIcon({ name, size = 48, className = '', glyphColor }: Props) {
-  const uid = React.useMemo(
-    () => `ic-${name}-${++gradSeq}-${Math.random().toString(36).slice(2, 7)}`,
-    [name]
-  )
+  /* Stable per-icon ids — no gradient-id churn across re-renders. */
+  const uid = React.useId().replace(/[^a-zA-Z0-9_-]/g, '')
   const clipId = `${uid}-clip`
   const gradId = `${uid}-grad`
-  const glossId = `${uid}-gloss`
-  const innerShadowId = `${uid}-inner`
-
-  if (name === 'music') {
-    return (
-      <Image
-        src={APPLE_MUSIC_LOGO}
-        alt="Music"
-        width={size}
-        height={size}
-        className={className}
-        draggable={false}
-        unoptimized
-        style={{ display: 'block', objectFit: 'contain', borderRadius: '22%' }}
-      />
-    )
-  }
+  const sheenId = `${uid}-sheen`
+  const vignetteId = `${uid}-vig`
 
   const gradDef = GRAD_DEFS[name]
   const isLight = name === 'photos' || name === 'notes' || name === 'calendar' || name === 'launchpad'
@@ -423,56 +415,56 @@ export default function AppIcon({ name, size = 48, className = '', glyphColor }:
       shapeRendering="geometricPrecision"
       style={{
         display: 'block',
-        filter: `drop-shadow(0 1px 1px rgba(0,0,0,0.12)) drop-shadow(0 3px 6px rgba(0,0,0,0.22)) drop-shadow(0 8px 16px rgba(0,0,0,0.14))`,
+        filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18)) drop-shadow(0 6px 14px rgba(0,0,0,0.22))',
       }}
     >
       <defs>
-        {/* Squircle clip */}
         <clipPath id={clipId}>
           <path d={SQUIRCLE_PATH} />
         </clipPath>
 
-        {/* Main plate gradient */}
         <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
           {gradDef.stops.map((s) => (
             <stop key={s.offset} offset={s.offset} stopColor={s.color} />
           ))}
         </linearGradient>
 
-        {/* Top-left diagonal gloss — Apple's light source comes from top-left */}
-        <linearGradient id={glossId} x1="0" y1="0" x2="0.5" y2="1">
-          <stop offset="0%"   stopColor="#FFFFFF" stopOpacity={isDark ? 0.12 : isLight ? 0.75 : 0.32} />
-          <stop offset="55%"  stopColor="#FFFFFF" stopOpacity={isDark ? 0.03 : isLight ? 0.12 : 0.06} />
+        {/* Subtle top sheen — modern macOS icons are matte, not glossy */}
+        <linearGradient id={sheenId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity={isDark ? 0.10 : isLight ? 0.45 : 0.16} />
+          <stop offset="45%" stopColor="#FFFFFF" stopOpacity={isDark ? 0.02 : isLight ? 0.08 : 0.03} />
           <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
 
-        {/* Inner bottom vignette for depth */}
-        <linearGradient id={innerShadowId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="50%"  stopColor="rgba(0,0,0,0)" />
-          <stop offset="100%" stopColor="rgba(0,0,0,0.22)" />
+        {/* Bottom vignette for quiet depth */}
+        <linearGradient id={vignetteId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="55%" stopColor="rgba(0,0,0,0)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0.16)" />
         </linearGradient>
       </defs>
 
       {/* ── Plate ── */}
       <g clipPath={`url(#${clipId})`}>
-        {/* Base gradient fill */}
         <rect x="0" y="0" width="64" height="64" fill={`url(#${gradId})`} />
 
-        {/* Bottom vignette for depth */}
-        <rect x="0" y="0" width="64" height="64" fill={`url(#${innerShadowId})`} />
+        {/* Glyph — inset apps keep Apple's ~8% padding, full-bleed apps don't */}
+        {FULL_BLEED.has(name) ? (
+          <Glyph name={name} color={glyphCol} uid={uid} />
+        ) : (
+          <g transform="translate(4.2 4.2) scale(0.87)">
+            <Glyph name={name} color={glyphCol} uid={uid} />
+          </g>
+        )}
 
-        {/* Glyph */}
-        <Glyph name={name} color={glyphCol} />
-
-        {/* Diagonal gloss — top-left light source, covers top ~55% */}
-        <rect x="0" y="0" width="64" height="36" fill={`url(#${glossId})`} />
+        <rect x="0" y="0" width="64" height="64" fill={`url(#${vignetteId})`} />
+        <rect x="0" y="0" width="64" height="64" fill={`url(#${sheenId})`} />
       </g>
 
-      {/* ── Rim — inner stroke so it sits inside the shape ── */}
+      {/* ── Rim — hairline inner stroke ── */}
       <path
         d={SQUIRCLE_PATH}
         fill="none"
-        stroke={isLight ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.18)'}
+        stroke={isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.14)'}
         strokeWidth="1"
       />
     </svg>

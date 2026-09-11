@@ -13,10 +13,9 @@
   --os-window-bg-dark: 30 30 32;
   --os-text: 29 29 31;
   --os-text-dark: 244 244 246;
-  /* Authentic macOS Ventura title bar gradient */
-  --os-titlebar-start: #EBEBED;
-  --os-titlebar-end:   #D8D8DA;
-  --os-titlebar-inactive: #F0F0F2;
+  /* macOS Sequoia title bars are flat, not gradient */
+  --os-titlebar-bg: #F6F5F7;
+  --os-titlebar-inactive: #F2F2F4;
   --font-os: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI',
     var(--font-geist-sans, system-ui), sans-serif;
   /* App chip tokens */
@@ -27,18 +26,33 @@
 }
 
 /* ── Desktop wallpaper ────────────────────────────────────────────────────*/
+/* Sequoia-style wallpaper, theme-aware: dark by default, a dedicated light
+   plate when the system/site theme is light — no CSS filter hacks. The two
+   plates are stacked so the theme flip is a smooth crossfade. */
 .os-wallpaper {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background-color: #141A33;
-  background-image: url('/wallpapers/mac-theme.jpg');
+  background-color: #10152e;
+  background-image: url('/wallpapers/macos-dark.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
-:root:not(.dark) .os-wallpaper {
-  filter: brightness(1.32) saturate(0.72);
+.os-wallpaper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #e9edf6;
+  background-image: url('/wallpapers/macos-light.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+:root:not(.dark) .os-wallpaper::after {
+  opacity: 1;
 }
 
 /* ── Translucent chrome (menu bar, dock, panels) ──────────────────────── */
@@ -59,21 +73,17 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* ── Menu bar — authentic macOS Sonoma translucency ──────────────────── */
+/* ── Menu bar — authentic macOS Sequoia translucency ─────────────────── */
 .os-menubar {
   font-family: var(--font-os);
   -webkit-font-smoothing: antialiased;
-  /* Sonoma: very subtle dark tint over the wallpaper */
-  background: linear-gradient(
-    to bottom,
-    rgba(12, 12, 16, 0.52) 0%,
-    rgba(12, 12, 16, 0.28) 100%
-  );
-  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(30px) saturate(160%) brightness(1.05);
-  -webkit-backdrop-filter: blur(30px) saturate(160%) brightness(1.05);
+  /* Sequoia: a near-clear, slightly dark tint over the wallpaper */
+  background: rgba(16, 16, 22, 0.34);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
   /* Subtle top highlight like real macOS */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .os-menubar-item {
   transition: background-color 0.12s ease, color 0.12s ease;
@@ -116,28 +126,21 @@
   border-color: rgba(0, 0, 0, 0.12) !important;
 }
 .os-window-titlebar {
-  /* Authentic macOS Ventura title bar: subtle linear gradient */
-  background: linear-gradient(
-    to bottom,
-    var(--os-titlebar-start) 0%,
-    var(--os-titlebar-end) 100%
-  );
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  /* Subtle inner top highlight */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  /* macOS Sequoia title bar: flat, hairline-separated */
+  background: var(--os-titlebar-bg);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 .os-window[data-focused='false'] .os-window-titlebar {
   background: var(--os-titlebar-inactive);
-  box-shadow: none;
+  border-bottom-color: rgba(0, 0, 0, 0.06);
 }
 
 /* Dark mode window chrome */
 .dark {
   --os-window-bg: 30 30 32;
   --os-text: 244 244 246;
-  --os-titlebar-start: #3A3A3C;
-  --os-titlebar-end:   #2C2C2E;
-  --os-titlebar-inactive: #2A2A2C;
+  --os-titlebar-bg: #333338;
+  --os-titlebar-inactive: #2A2A2E;
   /* App chip tokens — dark */
   --os-chip-bg: #3a3a3e;
   --os-chip-text: #e5e5ea;
@@ -146,7 +149,7 @@
 }
 .dark .os-window-titlebar {
   border-bottom-color: rgba(0, 0, 0, 0.45);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   /* Ensure title text is always white in dark mode */
   color: #ffffff;
 }
@@ -237,18 +240,18 @@
 /* ── Dock — authentic macOS Sonoma glass ──────────────────────────────── */
 .os-dock {
   font-family: var(--font-os);
-  border-radius: 20px;
+  border-radius: 24px;
   /* Sonoma dock: frosted glass with warm tint */
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-  -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+  background: rgba(255, 255, 255, 0.20);
+  backdrop-filter: blur(36px) saturate(190%) brightness(1.08);
+  -webkit-backdrop-filter: blur(36px) saturate(190%) brightness(1.08);
   border: 1px solid rgba(255, 255, 255, 0.32);
   box-shadow:
     /* Outer shadow */
     0 20px 60px -10px rgba(0, 0, 0, 0.50),
     0 8px 20px rgba(0, 0, 0, 0.22),
     /* Inner top highlight */
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.50),
     /* Inner bottom shadow */
     inset 0 -1px 0 rgba(0, 0, 0, 0.08);
 }
@@ -337,9 +340,9 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.30), 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 .os-desktop-icon-plate {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  width: 58px;
+  height: 58px;
+  border-radius: 13px;
   transition: background 0.14s ease, box-shadow 0.14s ease, transform 0.1s ease;
 }
 .os-desktop-icon:not([data-dragging='true']):active .os-desktop-icon-plate {

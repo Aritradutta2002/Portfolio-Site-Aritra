@@ -9,7 +9,7 @@ import AppIcon from './AppIcons'
 import BatteryStatus from './BatteryStatus'
 import ControlCentre from './ControlCentre'
 
-const MENU_H = 28
+const MENU_H = 25
 
 /* ── Live clock ────────────────────────────────────────────────────────────
    Rendered client-side only after mount to avoid an SSR hydration mismatch. */

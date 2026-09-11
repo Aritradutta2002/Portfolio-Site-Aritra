@@ -298,7 +298,7 @@ function DesktopIcon({
       aria-label={`${app.label} — ${app.description}. Drag to move, double-click to open, arrow keys to nudge.`}
     >
       <span className="os-desktop-icon-plate grid place-items-center">
-        <AppIcon name={app.icon} size={48} />
+        <AppIcon name={app.icon} size={52} />
       </span>
       <span className="os-desktop-icon-label text-center">{app.label}</span>
     </button>
