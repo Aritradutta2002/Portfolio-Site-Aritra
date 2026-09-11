@@ -21,7 +21,11 @@ import { registerDockIcon } from './dockRegistry'
    cursor with a gaussian falloff across neighbours, exactly like Sonoma. */
 const BASE_ICON = 52
 const GAP = 10
-const BASE_H = BASE_ICON + 9 * 2
+/* Symmetric vertical padding keeps icons floating centred in the glass,
+   clear of the bottom border (macOS leaves roughly this much breathing
+   room below the icons). */
+const PAD_Y = 10
+const BASE_H = BASE_ICON + PAD_Y * 2
 const MAX_SCALE = 1.55
 const SIGMA = (BASE_ICON + GAP) * 0.85 // falloff width in px
 
@@ -125,7 +129,7 @@ export default function Dock() {
     >
       <motion.div
         className="os-dock pointer-events-auto flex items-end px-2"
-        style={{ gap: GAP }}
+        style={{ gap: GAP, paddingTop: PAD_Y, paddingBottom: PAD_Y }}
         animate={{ height: BASE_H }}
         initial={false}
         transition={{ type: 'spring', stiffness: 420, damping: 32, mass: 0.7 }}
