@@ -90,47 +90,6 @@ body:has(.zro-root) {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ── Ambient Backdrop Breathing Keyframes ───────────────────────────────── */
-
-@keyframes luxeBreatheSpotlight {
-  0%, 100% {
-    transform: translateX(-50%) scale(1);
-    opacity: 0.95;
-  }
-  50% {
-    transform: translateX(-50%) scale(1.05);
-    opacity: 1.15;
-  }
-}
-
-@keyframes luxeBreathePool {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.07);
-    opacity: 1.12;
-  }
-}
-
-.luxe-spotlight {
-  animation: luxeBreatheSpotlight 18s ease-in-out infinite;
-  will-change: transform, opacity;
-}
-
-.luxe-aurora-pool {
-  animation: luxeBreathePool 22s ease-in-out infinite;
-  will-change: transform, opacity;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .luxe-spotlight,
-  .luxe-aurora-pool {
-    animation: none !important;
-  }
-}
-
 html:has(.zro-root) ::-webkit-scrollbar {
   width: 12px;
   height: 12px;
