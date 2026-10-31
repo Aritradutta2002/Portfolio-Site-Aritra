@@ -1,8 +1,6 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -14,6 +12,13 @@ interface ErrorBoundaryProps {
   fallback?: React.ComponentType<{ error?: Error; resetError: () => void }>
 }
 
+/**
+ * Root error boundary.
+ *
+ * Intentionally dependency-free: it wraps every route, so importing
+ * framer-motion or an icon package here would ship those bytes to pages
+ * that never render an error (including the static datasheet).
+ */
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
@@ -48,88 +53,89 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
 function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError: () => void }) {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-md w-full text-center"
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6"
-        >
-          <AlertTriangle className="w-10 h-10 text-red-600 dark:text-red-400" />
-        </motion.div>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 dark:bg-gray-900">
+      <div className="w-full max-w-md text-center">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-10 w-10 text-red-600 dark:text-red-400"
+          >
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <path d="M12 9v4" />
+            <path d="M12 17h.01" />
+          </svg>
+        </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-2xl font-bold text-gray-900 dark:text-white mb-4"
-        >
+        <h1 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
           Oops! Something went wrong
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed"
-        >
-          We encountered an unexpected error. Don&apos;t worry, it&apos;s not your fault. 
+        <p className="mb-8 leading-relaxed text-gray-600 dark:text-gray-400">
+          We encountered an unexpected error. Don&apos;t worry, it&apos;s not your fault.
           Please try refreshing the page or go back to the homepage.
-        </motion.p>
+        </p>
 
         {process.env.NODE_ENV === 'development' && error && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 text-left"
-          >
-            <p className="text-sm font-medium text-red-800 dark:text-red-400 mb-2">
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-left dark:border-red-800 dark:bg-red-900/10">
+            <p className="mb-2 text-sm font-medium text-red-800 dark:text-red-400">
               Error Details (Development Mode):
             </p>
-            <code className="text-xs text-red-700 dark:text-red-300 break-all">
+            <code className="break-all text-xs text-red-700 dark:text-red-300">
               {error.message}
             </code>
-          </motion.div>
+          </div>
         )}
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <button
             onClick={resetError}
-            className="flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+            className="flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-blue-700"
           >
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mr-2 h-4 w-4"
+            >
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+              <path d="M3 21v-5h5" />
+            </svg>
             Try Again
           </button>
-          
+
           <button
-            onClick={() => window.location.href = '/'}
-            className="flex items-center justify-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200 font-medium"
+            onClick={() => (window.location.href = '/')}
+            className="flex items-center justify-center rounded-lg bg-gray-600 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-gray-700"
           >
-            <Home className="w-4 h-4 mr-2" />
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mr-2 h-4 w-4"
+            >
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
             Go Home
           </button>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   )
-}
-
-// Hook for error handling in functional components
-export function useErrorHandler() {
-  return (error: Error, errorInfo?: { componentStack: string }) => {
-    console.error('Error caught:', error, errorInfo)
-    // You can also send error to logging service here
-  }
 }

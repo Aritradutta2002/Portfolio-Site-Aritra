@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Fira_Code, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Inter, Geist, Geist_Mono, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import "@/styles/os-chrome.css";
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import SmoothScroll from '@/components/SmoothScroll'
@@ -11,18 +10,21 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: 'swap',
+  preload: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: 'swap',
+  preload: false,
 });
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
   subsets: ["latin"],
   display: 'swap',
+  preload: false,
 });
 
 const inter = Inter({
@@ -31,9 +33,12 @@ const inter = Inter({
   display: 'swap',
 });
 
-const firaCode = Fira_Code({
-  variable: "--font-fira-code",
+/* Zro datasheet body/mono typeface. Scoped via --font-ds-mono so the
+   legacy OS, classic, blog and social routes keep Geist. */
+const datasheetMono = JetBrains_Mono({
+  variable: "--font-ds-mono",
   subsets: ["latin"],
+  style: ["normal", "italic"],
   display: 'swap',
 });
 
@@ -77,7 +82,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#050508" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} ${firaCode.variable} font-sans antialiased transition-colors duration-500`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} ${datasheetMono.variable} font-sans antialiased transition-colors duration-500`}
       >
         <ErrorBoundary>
           <ThemeProvider

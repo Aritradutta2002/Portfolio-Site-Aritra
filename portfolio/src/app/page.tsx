@@ -1,133 +1,96 @@
-import PortfolioOS from '@/components/PortfolioOS'
-import about from '@/content/about.json'
-import experience from '@/content/experience.json'
-import projects from '@/content/projects.json'
+import type { Metadata } from "next";
+import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
+import { TopBanner } from "@/components/zro/TopBanner";
+import { Navbar } from "@/components/zro/Navbar";
+import { CatalogBrowser } from "@/components/zro/CatalogBrowser";
+import { SkillsMatrix } from "@/components/zro/SkillsMatrix";
+import { BenchmarksSection } from "@/components/zro/BenchmarksSection";
+import { FooterSection } from "@/components/zro/FooterSection";
 
-/* The 3D desktop is invisible to crawlers and screen readers, so the same
-   content is server-rendered here as real semantic HTML (Plan §8). */
-function SemanticContent() {
-  const skillGroups = Object.entries(about.skills) as Array<[string, string[]]>
+export const metadata: Metadata = {
+  title: "Aritra Dutta — System Engineer · Full Stack Application Engineer",
+  description:
+    "The production Java 21 microservices, Azure PaaS migrations, and AI-powered platforms engineered by Aritra Dutta — with measured API latency gains, runtime remediation, and unit test coverage.",
+  keywords:
+    "Aritra Dutta, Java 21, Spring Boot 3, microservices, Azure PaaS, AWS Transform, LangChain, full stack engineer, TCS, portfolio",
+  alternates: {
+    canonical: "https://www.aritradutta.tech/",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://www.aritradutta.tech/",
+    siteName: "Aritra Dutta — Engineering Datasheet",
+    title: "Aritra Dutta — System Engineer · Full Stack Application Engineer",
+    description:
+      "Enterprise Java 21 microservices, cloud PaaS migrations, and AI platforms — documented as an engineering datasheet.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aritra Dutta — System Engineer · Full Stack Application Engineer",
+    description:
+      "Enterprise Java 21 microservices, cloud PaaS migrations, and AI platforms — documented as an engineering datasheet.",
+  },
+};
 
+export default function PortfolioDatasheetPage() {
   return (
-    <div className="sr-only">
-      <h1>
-        {about.name} — {about.title}
-      </h1>
-      <p>
-        {about.title} at {about.company}, based in {about.location}.
-      </p>
-      <p>{about.bio}</p>
+    <div className="zro-root min-h-screen bg-black font-ds-mono text-white">
+      <a
+        href="#catalog"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-white focus:bg-white focus:px-4 focus:py-2 focus:text-black"
+      >
+        Skip to system catalog
+      </a>
 
-      <section>
-        <h2>Experience</h2>
-        {experience.map((role) => (
-          <article key={role.id}>
-            <h3>
-              {role.role} — {role.org}
-            </h3>
-            <p>
-              {role.period} · {role.location}
-            </p>
-            <p>{role.summary}</p>
-            <ul>
-              {role.bullets.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-            <p>Stack: {role.stack.join(', ')}</p>
-          </article>
-        ))}
-      </section>
+      <TopBanner />
+      <Navbar />
 
-      <section>
-        <h2>Projects</h2>
-        {projects.map((p) => (
-          <article key={p.id}>
-            <h3>{p.name}</h3>
-            <p>{p.tagline}</p>
-            <p>{p.description}</p>
-            <p>Stack: {p.stack.join(', ')}</p>
-            <p>
-              <a href={p.links.live}>Live site</a>{' '}
-              <a href={p.links.github}>Source code</a>
-            </p>
-          </article>
-        ))}
-      </section>
-
-      <section>
-        <h2>Skills</h2>
-        {skillGroups.map(([group, items]) => (
-          <p key={group}>
-            <strong>{group}:</strong> {items.join(', ')}
+      <main className="mx-auto max-w-5xl px-6">
+        {/* Hero */}
+        <section className="py-20 md:py-28">
+          <div className="mb-4 text-ds-xs uppercase tracking-[0.16em] text-zro-muted">
+            {PORTFOLIO_HEADER.name} · {PORTFOLIO_HEADER.role}
+          </div>
+          <h1 className="max-w-4xl font-ds-sans text-ds-h1 font-medium text-white">
+            {PORTFOLIO_HEADER.heroHeadline}
+          </h1>
+          <p className="mt-7 max-w-2xl text-ds-md leading-relaxed text-zinc-400 md:text-ds-lg">
+            {PORTFOLIO_HEADER.heroSubtitle}
           </p>
-        ))}
-      </section>
-
-      <section>
-        <h2>Education</h2>
-        {about.education.map((e) => (
-          <p key={e.institution}>
-            {e.degree} — {e.institution}, {e.location} ({e.period}), CGPA {e.cgpa}
-          </p>
-        ))}
-      </section>
-
-      <section>
-        <h2>Certifications &amp; Achievements</h2>
-        {about.certifications.map((c) => (
-          <p key={c.title}>
-            <strong>{c.title}:</strong> {c.detail}
-          </p>
-        ))}
-        {about.achievements.map((a) => (
-          <p key={a.title}>
-            <strong>{a.title}:</strong> {a.detail}{' '}
-            {a.stats.map((s) => `${s.label} ${s.value}`).join(' · ')}
-          </p>
-        ))}
-      </section>
-
-      <section>
-        <h2>Contact</h2>
-        <p>
-          <a href={about.links.email}>{about.links.email.replace('mailto:', '')}</a>
-        </p>
-        <p>
-          <a href={about.links.github}>GitHub</a> ·{' '}
-          <a href={about.links.linkedin}>LinkedIn</a> ·{' '}
-          <a href={about.links.leetcode}>LeetCode</a> ·{' '}
-          <a href={about.links.codechef}>CodeChef</a> ·{' '}
-          <a href="/resume.pdf">Download resume (PDF)</a> ·{' '}
-          <a href="/classic">Plain text version of this site</a>
-        </p>
-      </section>
-    </div>
-  )
-}
-
-export default function Home() {
-  return (
-    <>
-      <PortfolioOS />
-      <SemanticContent />
-      <noscript>
-        <div className="fixed inset-0 z-[9999] grid place-items-center bg-[#05060c] px-6 text-center text-white">
-          <div>
-            <h1 className="text-2xl font-semibold">{about.name}</h1>
-            <p className="mt-1 text-white/70">{about.title}</p>
-            <p className="mt-6 text-sm text-white/60">
-              This portfolio runs as an interactive desktop and needs JavaScript.
-            </p>
+          <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
             <a
-              href="/classic"
-              className="mt-4 inline-block rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#0F766E]"
+              href={CONTACT_LINKS.resumePdf}
+              className="border border-white bg-white px-6 py-3.5 text-ds-sm font-medium text-black transition-colors hover:bg-zinc-200"
             >
-              View the plain version
+              Download resume
+            </a>
+            <a
+              href="#catalog"
+              className="text-ds-sm text-white transition-colors hover:text-zinc-300"
+            >
+              Read the system specs →
             </a>
           </div>
-        </div>
-      </noscript>
-    </>
-  )
+        </section>
+
+        {/* Interactive filter + datasheet catalog */}
+        <section
+          aria-labelledby="catalog-heading"
+          className="border-t border-zinc-800/90"
+        >
+          <div id="catalog" className="scroll-mt-24">
+            <h2 id="catalog-heading" className="sr-only font-ds-sans">
+              Production system catalog
+            </h2>
+            <CatalogBrowser />
+          </div>
+        </section>
+
+        <SkillsMatrix />
+        <BenchmarksSection />
+      </main>
+
+      <FooterSection />
+    </div>
+  );
 }

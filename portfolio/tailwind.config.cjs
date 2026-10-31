@@ -24,11 +24,18 @@ module.exports = {
           3: '#F472B6', // pink
         },
         aurorastrong: 'var(--aurora-text)', // text-safe accent per theme
+        /* Zro datasheet muted text — 5.9:1 on pure black (WCAG AA at 10px). */
+        zro: {
+          muted: '#8b8b96',
+        },
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-geist-mono)', 'var(--font-fira-code)', 'monospace'],
         display: ['var(--font-display)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        /* Zro datasheet — scoped so the legacy sites keep their own typefaces. */
+        'ds-sans': ['var(--font-inter)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        'ds-mono': ['var(--font-ds-mono)', 'var(--font-geist-mono)', 'ui-monospace', 'monospace'],
       },
       /* Modular type scale — 1.25 ratio */
       fontSize: {
@@ -41,6 +48,18 @@ module.exports = {
         '3xl': ['3.052rem', { lineHeight: '1.15' }],
         '4xl': ['3.815rem', { lineHeight: '1.1' }],
         '5xl': ['4.768rem', { lineHeight: '1.05' }],
+        /* Zro datasheet scale — explicit px so the legacy 1.25 ratio
+           (text-sm = 1rem, text-5xl = 4.77rem) never leaks in. */
+        'ds-2xs': ['0.625rem', { lineHeight: '1.5' }],
+        'ds-xs': ['0.6875rem', { lineHeight: '1.6' }],
+        'ds-sm': ['0.75rem', { lineHeight: '1.6' }],
+        'ds-base': ['0.8125rem', { lineHeight: '1.7' }],
+        'ds-md': ['0.875rem', { lineHeight: '1.7' }],
+        'ds-lg': ['1rem', { lineHeight: '1.7' }],
+        'ds-xl': ['1.125rem', { lineHeight: '1.5' }],
+        'ds-h2': ['clamp(1.75rem, 3.5vw, 2.5rem)', { lineHeight: '1.1', letterSpacing: '-0.035em' }],
+        'ds-h1': ['clamp(2.5rem, 7vw, 4.75rem)', { lineHeight: '1.04', letterSpacing: '-0.035em' }],
+        'ds-cta': ['clamp(1.75rem, 4vw, 3rem)', { lineHeight: '1.1', letterSpacing: '-0.035em' }],
       },
       boxShadow: {
         'glass': '0 8px 32px rgba(13, 16, 40, 0.12)',
