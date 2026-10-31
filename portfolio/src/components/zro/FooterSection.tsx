@@ -3,12 +3,12 @@ import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
 const PROFILE_LINKS = [
   { label: "GitHub", href: CONTACT_LINKS.github },
   { label: "LinkedIn", href: CONTACT_LINKS.linkedin },
-  { label: "LeetCode (1672)", href: CONTACT_LINKS.leetcode },
-  { label: "CodeChef (1708 · 3★)", href: CONTACT_LINKS.codechef },
+  { label: "LeetCode", href: CONTACT_LINKS.leetcode },
+  { label: "CodeChef", href: CONTACT_LINKS.codechef },
 ] as const;
 
 const INTERFACE_LINKS = [
-  { label: "Interactive Desktop OS", href: CONTACT_LINKS.desktopView },
+  { label: "Interactive desktop OS", href: CONTACT_LINKS.desktopView },
   { label: "Plain-text version", href: CONTACT_LINKS.classicView },
   { label: "Resume PDF", href: CONTACT_LINKS.resumePdf },
 ] as const;
@@ -18,16 +18,12 @@ export function FooterSection() {
     <footer id="contact" className="bg-black">
       <div className="mx-auto max-w-6xl px-6 pb-14 pt-20">
         <div data-reveal className="max-w-3xl">
-          <div className="text-ds-2xs uppercase tracking-[0.18em] text-zro-muted">
-            05 / Contact
-          </div>
-          <h2 className="mt-3 font-ds-sans text-ds-cta font-medium text-white">
-            Let&apos;s build something that ships.
+          <h2 className="font-ds-sans text-ds-cta font-medium text-white">
+            Let&apos;s talk.
           </h2>
-          <p className="mt-4 max-w-xl text-ds-md leading-relaxed text-zinc-400 md:text-ds-lg">
-            Open to backend, cloud, and full-stack engineering roles. Based in
-            Bhubaneswar, India — happy to talk architecture, Java, or the next
-            system you need to modernise.
+          <p className="mt-4 max-w-xl text-ds-sm leading-relaxed text-zinc-400">
+            Open to backend, cloud and full-stack engineering roles. Happy to
+            walk through the architecture, the migrations, or the numbers above.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-5">
             <a
@@ -42,32 +38,27 @@ export function FooterSection() {
             >
               Download resume
             </a>
-            <a
-              href={`mailto:${CONTACT_LINKS.email}`}
-              className="text-ds-sm text-zinc-300 underline decoration-zinc-600 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
-            >
-              {CONTACT_LINKS.email}
-            </a>
           </div>
         </div>
 
         <div className="mt-20 grid grid-cols-1 gap-10 border-t border-zinc-900 pt-12 text-ds-xs md:grid-cols-12">
-          <div className="space-y-3 md:col-span-6">
-            <div className="flex h-8 w-8 items-center justify-center border border-zinc-700 bg-[#0a0a0c] font-ds-mono font-bold text-white">
-              AD
-            </div>
-            <div className="font-medium text-zinc-300">
-              {PORTFOLIO_HEADER.name} — {PORTFOLIO_HEADER.role}
+          <div className="space-y-2 md:col-span-6">
+            <div className="font-medium text-zinc-200">
+              {PORTFOLIO_HEADER.name}
             </div>
             <div className="text-zro-muted">
-              {PORTFOLIO_HEADER.company} · {PORTFOLIO_HEADER.location}
+              {PORTFOLIO_HEADER.role} · {PORTFOLIO_HEADER.company}
             </div>
+            <a
+              href={`mailto:${CONTACT_LINKS.email}`}
+              className="inline-block text-zinc-400 underline decoration-zinc-700 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
+            >
+              {CONTACT_LINKS.email}
+            </a>
           </div>
 
           <div className="space-y-2.5 md:col-span-3">
-            <div className="pb-1 uppercase tracking-[0.16em] text-zro-muted">
-              Profiles
-            </div>
+            <div className="pb-1 text-zro-muted">Profiles</div>
             <ul className="space-y-2 text-zinc-400">
               {PROFILE_LINKS.map((link) => (
                 <li key={link.label}>
@@ -85,9 +76,7 @@ export function FooterSection() {
           </div>
 
           <div className="space-y-2.5 md:col-span-3">
-            <div className="pb-1 uppercase tracking-[0.16em] text-zro-muted">
-              Other views
-            </div>
+            <div className="pb-1 text-zro-muted">Other views</div>
             <ul className="space-y-2 text-zinc-400">
               {INTERFACE_LINKS.map((link) => (
                 <li key={link.href}>
@@ -107,7 +96,7 @@ export function FooterSection() {
           <span>
             © {new Date().getFullYear()} {PORTFOLIO_HEADER.name}
           </span>
-          <span>Bhubaneswar, India</span>
+          <span>{PORTFOLIO_HEADER.location}</span>
         </div>
       </div>
     </footer>

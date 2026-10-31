@@ -52,7 +52,7 @@ export function CatalogFilterBar({
         aria-live="polite"
         className="text-ds-xs uppercase tracking-[0.14em] text-zro-muted zro-metric"
       >
-        Showing [{totalCount}] systems
+        {totalCount} {totalCount === 1 ? "project" : "projects"}
       </div>
     </div>
   );

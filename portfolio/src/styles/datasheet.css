@@ -92,6 +92,8 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   }
 }
 
+/* The H1 carries the LCP and paints on the first frame, so it is excluded
+   from the entrance animation on purpose — only supporting copy rises. */
 .zro-hero [data-hero] {
   animation: zro-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -126,37 +128,6 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   transform: none;
 }
 
-@keyframes zro-marquee {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-.zro-marquee {
-  animation: zro-marquee 32s linear infinite;
-  will-change: transform;
-}
-
-.zro-marquee:hover {
-  animation-play-state: paused;
-}
-
-/* Native disclosure, styled as a hairline control. */
-.zro-root summary::-webkit-details-marker {
-  display: none;
-}
-
-.zro-root summary {
-  list-style: none;
-}
-
-.zro-root details[open] .zro-plus {
-  transform: rotate(45deg);
-}
-
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
   .js [data-reveal],
@@ -168,8 +139,7 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   }
 
   .zro-hero [data-hero],
-  .zro-card,
-  .zro-marquee {
+  .zro-card {
     animation: none;
   }
 }

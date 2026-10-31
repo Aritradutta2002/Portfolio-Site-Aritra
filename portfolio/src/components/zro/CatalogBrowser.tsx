@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  CATALOG_ITEMS,
+  PROJECTS,
   type CatalogCategory,
   type SystemCategory,
 } from "@/data/portfolioCatalog";
@@ -13,10 +13,10 @@ export function CatalogBrowser() {
   const [selectedCategory, setSelectedCategory] =
     useState<SystemCategory>("ALL");
 
-  const systems =
+  const projects =
     selectedCategory === "ALL"
-      ? CATALOG_ITEMS
-      : CATALOG_ITEMS.filter((item) =>
+      ? PROJECTS
+      : PROJECTS.filter((item) =>
           item.categories.includes(selectedCategory as CatalogCategory)
         );
 
@@ -25,11 +25,11 @@ export function CatalogBrowser() {
       <CatalogFilterBar
         selected={selectedCategory}
         onSelect={setSelectedCategory}
-        totalCount={systems.length}
+        totalCount={projects.length}
       />
 
       <div className="space-y-6">
-        {systems.map((item, index) => (
+        {projects.map((item, index) => (
           <CatalogEntry key={item.id} item={item} index={index} />
         ))}
       </div>

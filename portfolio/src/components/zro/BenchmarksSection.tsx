@@ -1,133 +1,74 @@
-import { BENCHMARKS_DATA, CONTACT_LINKS } from "@/data/portfolioCatalog";
+import { ACHIEVEMENTS, EDUCATION } from "@/data/portfolioCatalog";
 
 export function BenchmarksSection() {
   return (
     <section
-      id="benchmarks"
-      aria-labelledby="benchmarks-heading"
+      id="achievements"
+      aria-labelledby="achievements-heading"
       className="border-b border-zinc-900 py-16 md:py-24"
     >
       <div className="mx-auto max-w-6xl px-6">
-        <div className="max-w-2xl">
-          <div className="text-ds-2xs uppercase tracking-[0.18em] text-zro-muted">
-            04 / Benchmarks
-          </div>
-          <h2
-            id="benchmarks-heading"
-            className="mt-3 font-ds-sans text-ds-h2 font-medium text-white"
-          >
-            Verified benchmarks.
-          </h2>
-          <p className="mt-4 text-ds-md leading-relaxed text-zinc-400">
-            Competitive programming ratings, academic record, and enterprise
-            recognition — the measurable side of the work.
-          </p>
-        </div>
-
-        {/* Hairline telemetry grid — gap-px draws exact 1px rules */}
-        <div
-          data-reveal
-          className="mt-10 grid grid-cols-1 gap-px border border-zinc-800 bg-zinc-800 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          <div className="bg-[#08080a] p-6">
-            <div className="text-ds-2xs uppercase tracking-wider text-zro-muted">
-              Problems Solved
-            </div>
-            <div className="zro-metric mt-2 text-[1.75rem] font-semibold italic leading-none text-white">
-              {BENCHMARKS_DATA.cpTotalSolved}
-            </div>
-            <div className="mt-2 text-ds-xs text-zinc-400">
-              Across global judges
-            </div>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-4">
+            <h2
+              id="achievements-heading"
+              className="font-ds-sans text-ds-h2 font-medium text-white"
+            >
+              Education &amp; achievements
+            </h2>
           </div>
 
-          <div className="bg-[#08080a] p-6">
-            <div className="text-ds-2xs uppercase tracking-wider text-zro-muted">
-              CodeChef Rating
+          <div data-reveal className="lg:col-span-8 border-t border-zinc-800">
+            <div className="border-b border-zinc-900 py-6">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                <h3 className="text-ds-md font-medium text-white">
+                  {EDUCATION.degree}
+                </h3>
+                <span className="zro-metric text-ds-xs text-zinc-400">
+                  {EDUCATION.period}
+                </span>
+              </div>
+              <p className="mt-1 text-ds-sm text-zinc-400">
+                {EDUCATION.institution}
+              </p>
+              <p className="mt-2 text-ds-xs text-zro-muted">
+                {EDUCATION.location} · CGPA{" "}
+                <span className="zro-metric text-zinc-200">{EDUCATION.cgpa}</span>
+              </p>
             </div>
-            <div className="zro-metric mt-2 text-[1.75rem] font-semibold italic leading-none text-white">
-              {BENCHMARKS_DATA.codechefRating}{" "}
-              <span className="text-ds-lg font-normal not-italic text-zinc-300">
-                ({BENCHMARKS_DATA.codechefStars})
-              </span>
-            </div>
-            <div className="mt-2 text-ds-xs text-zinc-400">
-              <a
-                href={CONTACT_LINKS.codechef}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-zinc-600 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
-              >
-                Verify profile ↗
-              </a>
-            </div>
-          </div>
 
-          <div className="bg-[#08080a] p-6">
-            <div className="text-ds-2xs uppercase tracking-wider text-zro-muted">
-              LeetCode Rating
+            <div className="border-b border-zinc-900 py-6">
+              <h3 className="text-ds-md font-medium text-white">
+                {ACHIEVEMENTS.competitiveProgramming.title}
+              </h3>
+              <p className="mt-1 text-ds-sm leading-relaxed text-zinc-400">
+                {ACHIEVEMENTS.competitiveProgramming.detail}
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-ds-xs">
+                {ACHIEVEMENTS.competitiveProgramming.profiles.map((profile) => (
+                  <li key={profile.label} className="flex items-baseline gap-2">
+                    <span className="text-zro-muted">{profile.label}</span>
+                    <a
+                      href={profile.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="zro-metric bg-white px-1.5 py-0.5 font-medium text-black transition-opacity hover:opacity-80"
+                    >
+                      {profile.value}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="zro-metric mt-2 text-[1.75rem] font-semibold italic leading-none text-white">
-              {BENCHMARKS_DATA.leetcodeRating}
-            </div>
-            <div className="mt-2 text-ds-xs text-zinc-400">
-              Codeforces:{" "}
-              <span className="zro-metric">
-                {BENCHMARKS_DATA.codeforcesRating}
-              </span>{" "}
-              ·{" "}
-              <a
-                href={CONTACT_LINKS.leetcode}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-zinc-600 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
-              >
-                LeetCode ↗
-              </a>
-            </div>
-          </div>
 
-          <div className="bg-[#08080a] p-6">
-            <div className="text-ds-2xs uppercase tracking-wider text-zro-muted">
-              B.Tech ECE (MAKAUT)
+            <div className="border-b border-zinc-900 py-6">
+              <h3 className="text-ds-md font-medium text-white">
+                {ACHIEVEMENTS.recognition.title}
+              </h3>
+              <p className="mt-1 text-ds-sm leading-relaxed text-zinc-400">
+                {ACHIEVEMENTS.recognition.detail}
+              </p>
             </div>
-            <div className="zro-metric mt-2 text-[1.75rem] font-semibold italic leading-none text-white">
-              {BENCHMARKS_DATA.education.cgpa}{" "}
-              <span className="text-ds-sm font-normal not-italic text-zinc-400">
-                CGPA
-              </span>
-            </div>
-            <div className="mt-2 text-ds-xs text-zinc-400">
-              {BENCHMARKS_DATA.education.period} · Kolkata
-            </div>
-          </div>
-        </div>
-
-        <div data-reveal className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="border border-zinc-800/90 bg-[#0a0a0c] p-6">
-            <div className="text-ds-2xs uppercase tracking-[0.14em] text-zro-muted">
-              Enterprise Recognition
-            </div>
-            <div className="mt-2 text-ds-md font-semibold text-white">
-              {BENCHMARKS_DATA.certification.title}
-            </div>
-            <p className="mt-2 text-ds-xs leading-relaxed text-zinc-400">
-              {BENCHMARKS_DATA.certification.detail}
-            </p>
-          </div>
-
-          <div className="border border-zinc-800/90 bg-[#0a0a0c] p-6">
-            <div className="text-ds-2xs uppercase tracking-[0.14em] text-zro-muted">
-              Academic Credential
-            </div>
-            <div className="mt-2 text-ds-md font-semibold text-white">
-              {BENCHMARKS_DATA.education.degree}
-            </div>
-            <p className="mt-2 text-ds-xs leading-relaxed text-zinc-400">
-              {BENCHMARKS_DATA.education.institution} (
-              {BENCHMARKS_DATA.education.period}) — Graduated with{" "}
-              {BENCHMARKS_DATA.education.cgpa} CGPA.
-            </p>
           </div>
         </div>
       </div>

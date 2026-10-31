@@ -24,9 +24,10 @@ module.exports = {
           3: '#F472B6', // pink
         },
         aurorastrong: 'var(--aurora-text)', // text-safe accent per theme
-        /* Zro datasheet muted text — 5.9:1 on pure black (WCAG AA at 10px). */
+        /* Muted text — AA-safe on the #08080A card surface (5.1:1) as well
+           as on pure black (6.0:1), so it never drops below 4.5:1 at 10px. */
         zro: {
-          muted: '#8b8b96',
+          muted: '#9a9aa3',
         },
       },
       fontFamily: {
