@@ -1,40 +1,40 @@
+import type { CSSProperties } from "react";
 import { SKILL_GROUPS } from "@/data/portfolioCatalog";
+import { SectionHeader } from "./ui/SectionHeader";
 
 export function SkillsMatrix() {
   return (
     <section
       id="skills"
       aria-labelledby="skills-heading"
-      className="border-b border-zinc-900 py-16 md:py-24"
+      className="border-b border-zro-line"
     >
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+      <div className="mx-auto max-w-6xl px-6 md:px-8">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4">
-            <h2
+            <SectionHeader
               id="skills-heading"
-              className="font-ds-sans text-ds-h2 font-medium text-white"
-            >
-              Skills
-            </h2>
-            <p className="mt-4 max-w-sm text-ds-sm leading-relaxed text-zinc-400">
-              The stack I work in day to day — enterprise Java on the backend,
-              cloud and CI/CD around it, and React or AI tooling at the edges.
-            </p>
+              index="03"
+              title="Skills"
+              description="The stack I work in day to day — enterprise Java on the backend, cloud and CI/CD around it, and React or AI tooling at the edges."
+            />
           </div>
 
           <dl
-            data-reveal
-            className="lg:col-span-8 border-t border-zinc-800"
+            data-stagger
+            className="border-t border-zro-line lg:col-span-8"
           >
-            {SKILL_GROUPS.map((group) => (
+            {SKILL_GROUPS.map((group, index) => (
               <div
                 key={group.domain}
-                className="grid grid-cols-1 gap-x-8 gap-y-2 border-b border-zinc-900 py-4 sm:grid-cols-12"
+                data-reveal="fade"
+                style={{ "--zro-i": index } as CSSProperties}
+                className="group grid grid-cols-1 gap-2 border-b border-zro-line py-5 sm:grid-cols-12"
               >
-                <dt className="text-ds-xs text-zro-muted sm:col-span-3">
+                <dt className="zro-eyebrow transition-colors duration-200 group-hover:text-zro-ink sm:col-span-4">
                   {group.domain}
                 </dt>
-                <dd className="text-ds-xs leading-relaxed text-zinc-200 sm:col-span-9">
+                <dd className="text-[0.9375rem] leading-relaxed text-zro-ink sm:col-span-8">
                   {group.items.join(", ")}
                 </dd>
               </div>

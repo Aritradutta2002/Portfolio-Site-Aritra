@@ -19,7 +19,7 @@ const skillCategories = [
   {
     title: 'Frameworks & Libraries',
     skills: [
-      { name: 'Spring Boot 3', level: 95 },
+      { name: 'Spring Boot 4', level: 95 },
       { name: 'Angular v20',   level: 90 },
       { name: 'React',         level: 75 },
     ],

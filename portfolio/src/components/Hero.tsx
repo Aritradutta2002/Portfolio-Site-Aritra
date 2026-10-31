@@ -26,7 +26,7 @@ const socials = [
 ]
 
 const marqueeItems = [
-  'Java 21', 'Spring Boot 3', 'PostgreSQL', 'Azure PaaS',
+  'Java 21', 'Spring Boot 4', 'PostgreSQL', 'Azure PaaS',
   'Microservices', 'Docker', 'REST APIs', 'Jenkins',
 ]
 
@@ -132,7 +132,7 @@ export function Hero() {
             >
               Full Stack Application Engineer building intelligent, large-scale systems at{' '}
               <span className="font-semibold text-ink">TCS</span> — Java microservices with{' '}
-              <span className="font-semibold text-gradient">30x performance gains</span>,
+              <span className="font-semibold text-gradient">20x performance gains</span>,
               zero-downtime Azure migrations, and{' '}
               <span className="font-semibold text-gradient">GenAI in production</span>.
             </motion.p>

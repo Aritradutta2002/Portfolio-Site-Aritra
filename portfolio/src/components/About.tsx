@@ -33,7 +33,7 @@ const educationData = [
 ]
 
 const achievements = [
-  { text: 'Enterprise Java Modernisation — AWS Transform: Java 8 → 21, Spring Boot 3.x, 20× faster critical APIs' },
+  { text: 'Enterprise Java Modernisation — AWS Transform: Java 8 → 21, Spring Boot 4.x, 20× faster critical APIs' },
   { text: 'Competitive Programming: 700+ problems solved across platforms' },
   { text: 'LeetCode Rating 1672' },
   { text: 'Codeforces 1046 (Div 2)' },
@@ -82,7 +82,7 @@ export function About() {
                 </p>
                 <p>
                   Currently modernizing enterprise backends serving 10K+ daily users with{' '}
-                  <span className="font-semibold text-ink">Java (8 to 21), Spring Boot 3, PostgreSQL, AWS, and Azure PaaS</span>. Executing remediation and cloud migrations for clients like Element Fleet Management. I also build{' '}
+                  <span className="font-semibold text-ink">Java (8 to 21), Spring Boot 4, PostgreSQL, AWS, and Azure PaaS</span>. Executing remediation and cloud migrations for clients like Element Fleet Management. I also build{' '}
                   <span className="font-semibold text-ink">AI-powered features with Python, LangChain, and RAG</span>.
                 </p>
                 <p>

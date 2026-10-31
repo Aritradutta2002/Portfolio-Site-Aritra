@@ -1,3 +1,4 @@
+import { Button } from "./ui/Button";
 import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
 
 const PROFILE_LINKS = [
@@ -15,35 +16,32 @@ const INTERFACE_LINKS = [
 
 export function FooterSection() {
   return (
-    <footer id="contact" className="bg-black">
-      <div className="mx-auto max-w-6xl px-6 pb-14 pt-20">
+    <footer id="contact" className="bg-zro-canvas">
+      <div className="mx-auto max-w-6xl px-6 pb-14 pt-20 md:px-8 md:pt-24">
         <div data-reveal className="max-w-3xl">
-          <h2 className="font-ds-sans text-ds-cta font-medium text-white">
-            Let&apos;s talk.
-          </h2>
-          <p className="mt-4 max-w-xl text-ds-sm leading-relaxed text-zinc-400">
+          <p className="zro-eyebrow">05 — Contact</p>
+          <h2 className="zro-cta mt-5 text-zro-ink">Let&apos;s talk.</h2>
+          <p className="zro-lede mt-4 max-w-[46ch] text-zro-muted">
             Open to backend, cloud and full-stack engineering roles. Happy to
             walk through the architecture, the migrations, or the numbers above.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-5">
-            <a
+          <div className="mt-9 flex flex-wrap items-center gap-4">
+            <Button
               href={`mailto:${CONTACT_LINKS.email}`}
-              className="border border-white bg-white px-6 py-3.5 text-ds-sm font-medium text-black transition-colors hover:bg-zinc-200"
+              variant="solid"
+              arrow
             >
-              Email me →
-            </a>
-            <a
-              href={CONTACT_LINKS.resumePdf}
-              className="border border-zinc-700 bg-[#08080a] px-6 py-3.5 text-ds-sm text-white transition-colors hover:border-white"
-            >
+              Email me
+            </Button>
+            <Button href={CONTACT_LINKS.resumePdf} variant="outline">
               Download resume
-            </a>
+            </Button>
           </div>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-10 border-t border-zinc-900 pt-12 text-ds-xs md:grid-cols-12">
+        <div className="mt-20 grid grid-cols-1 gap-10 border-t border-zro-line pt-12 text-[0.875rem] md:grid-cols-12">
           <div className="space-y-2 md:col-span-6">
-            <div className="font-medium text-zinc-200">
+            <div className="font-medium text-zro-ink">
               {PORTFOLIO_HEADER.name}
             </div>
             <div className="text-zro-muted">
@@ -51,38 +49,39 @@ export function FooterSection() {
             </div>
             <a
               href={`mailto:${CONTACT_LINKS.email}`}
-              className="inline-block text-zinc-400 underline decoration-zinc-700 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
+              className="zro-link inline-block text-[0.875rem]"
             >
               {CONTACT_LINKS.email}
             </a>
           </div>
 
-          <div className="space-y-2.5 md:col-span-3">
-            <div className="pb-1 text-zro-muted">Profiles</div>
-            <ul className="space-y-2 text-zinc-400">
+          <div className="space-y-3 md:col-span-3">
+            <div className="zro-eyebrow pb-1">Profiles</div>
+            <ul className="space-y-2 text-zro-muted">
               {PROFILE_LINKS.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="transition-colors hover:text-white"
+                    className="inline-flex items-center gap-1.5 transition-colors duration-200 hover:text-zro-ink"
                   >
-                    {link.label} ↗
+                    {link.label}
+                    <span aria-hidden="true">↗</span>
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="space-y-2.5 md:col-span-3">
-            <div className="pb-1 text-zro-muted">Other views</div>
-            <ul className="space-y-2 text-zinc-400">
+          <div className="space-y-3 md:col-span-3">
+            <div className="zro-eyebrow pb-1">Other views</div>
+            <ul className="space-y-2 text-zro-muted">
               {INTERFACE_LINKS.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className="transition-colors hover:text-white"
+                    className="transition-colors duration-200 hover:text-zro-ink"
                   >
                     {link.label}
                   </a>
@@ -92,11 +91,22 @@ export function FooterSection() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-2 border-t border-zinc-900 pt-6 text-ds-2xs uppercase tracking-[0.14em] text-zro-muted sm:flex-row sm:items-center sm:justify-between">
-          <span>
+        <div className="mt-12 flex flex-col gap-3 border-t border-zro-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <span className="zro-metric text-[0.6875rem] uppercase tracking-[0.14em] text-zro-faint">
             © {new Date().getFullYear()} {PORTFOLIO_HEADER.name}
           </span>
-          <span>{PORTFOLIO_HEADER.location}</span>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <span className="zro-metric text-[0.6875rem] uppercase tracking-[0.14em] text-zro-faint">
+              {PORTFOLIO_HEADER.location}
+            </span>
+            <span className="inline-flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.14em] text-zro-faint">
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 rounded-full bg-zro-accent"
+              />
+              Available for work
+            </span>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,62 +1,107 @@
 /*
- * Enterprise Datasheet (/) — scoped, additive only.
- * Loaded by the (datasheet) route group, so it never reaches the desktop OS,
- * classic, blog or social routes.
+ * Enterprise Datasheet (/) — scoped design layer.
+ * Loaded by the (datasheet) route group, so nothing here reaches the desktop
+ * OS, classic, blog or social routes.
+ *
+ * Identity: near-black canvas, hairline surfaces, sharp 0-radius geometry,
+ * editorial grotesk + mono micro-labels, one restrained brass accent.
  */
+
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
+
+.zro-root,
+:root:has(.zro-root) {
+  --zro-canvas: 10 10 11;
+  --zro-canvas-deep: 6 6 7;
+  --zro-surface: 16 16 19;
+  --zro-surface-2: 23 23 27;
+  --zro-ink: 244 244 245;
+  --zro-muted: 161 161 170;
+  --zro-faint: 138 138 147;
+  --zro-accent: 200 164 107;
+  --zro-hairline: rgba(255, 255, 255, 0.09);
+  --zro-hairline-strong: rgba(255, 255, 255, 0.18);
+  --zro-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --zro-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --zro-d1: 160ms;
+  --zro-d2: 240ms;
+  --zro-d3: 600ms;
+  --zro-d4: 800ms;
+  /* Overrides the global 6–10rem rhythm without touching other routes. */
+  --section-pad-y: clamp(5rem, 8vw, 7.5rem);
+}
+
+/* Font stacks resolve where the next/font classes live (the datasheet
+   wrapper), so they are declared on .zro-root and inherit downward. */
+.zro-root {
+  --zro-sans: var(--font-ds-sans), system-ui, sans-serif;
+  --zro-mono: var(--font-ds-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+}
+
+/* ── Canvas ─────────────────────────────────────────────────────────────── */
 
 .zro-root {
   color-scheme: dark;
-  background-color: #000000;
-  color: #ffffff;
-  font-family: var(--font-ds-mono), var(--font-geist-mono), ui-monospace,
-    SFMono-Regular, Menlo, monospace;
+  background-color: rgb(var(--zro-canvas));
+  color: rgb(var(--zro-ink));
+  font-family: var(--zro-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Pure black canvas, including overscroll and the scrollbar gutter. */
 html:has(.zro-root) {
-  background-color: #000000;
   color-scheme: dark;
-  scrollbar-color: #3f3f46 #000000;
+  background-color: rgb(var(--zro-canvas-deep));
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--zro-surface-2)) rgb(var(--zro-canvas-deep));
 }
 
 body:has(.zro-root) {
-  background-color: #000000;
-  color: #ffffff;
-  font-family: var(--font-ds-mono), var(--font-geist-mono), ui-monospace,
-    SFMono-Regular, Menlo, monospace;
-  scrollbar-color: #3f3f46 #000000;
+  background-color: rgb(var(--zro-canvas));
+  color: rgb(var(--zro-ink));
+  scrollbar-color: rgb(var(--zro-surface-2)) rgb(var(--zro-canvas-deep));
 }
 
-/* The legacy film-grain overlay would sit above the datasheet's hairlines. */
+/* The legacy film-grain overlay would sit above the datasheet hairlines. */
 body:has(.zro-root)::after {
   display: none;
 }
 
+html:has(.zro-root) ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
 html:has(.zro-root) ::-webkit-scrollbar-track {
-  background: #000000;
+  background: rgb(var(--zro-canvas-deep));
 }
 
 html:has(.zro-root) ::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 0;
+  background: rgb(var(--zro-surface-2));
+  border: 3px solid rgb(var(--zro-canvas-deep));
+  border-radius: 999px;
 }
 
 html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+  background: rgb(48 48 54);
 }
 
-/* White-on-black inversion, per the datasheet spec. */
 .zro-root ::selection {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: rgb(var(--zro-ink));
+  color: rgb(var(--zro-canvas));
 }
 
 .zro-root :focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid rgb(var(--zro-ink));
   outline-offset: 2px;
 }
 
-/* Zero-radius is enforced defensively as well as via `rounded-none`. */
+.zro-root .zro-btn--solid:focus-visible {
+  outline-offset: 3px;
+}
+
+/* Zero-radius is part of the identity; enforced defensively. */
 .zro-root button,
 .zro-root input,
 .zro-root textarea,
@@ -64,44 +109,343 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   border-radius: 0;
 }
 
-/* Global legacy rules that would otherwise override utility classes:
-   `section p { max-width: 65ch }` outranks `max-w-none`. */
+/* Global legacy rules that would otherwise override utility classes. */
 .zro-root section p {
   max-width: none;
 }
 
-/* Sticky header clearance for every in-page anchor. */
 .zro-root [id] {
   scroll-margin-top: 5rem;
 }
 
-/* Tabular telemetry everywhere in the datasheet. */
-.zro-root .zro-metric {
+/* ── Type ───────────────────────────────────────────────────────────────── */
+
+.zro-display {
+  font-family: var(--zro-sans);
+  font-size: clamp(2.75rem, 6.2vw, 5rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.zro-cta {
+  font-family: var(--zro-sans);
+  font-size: clamp(2.5rem, 5.5vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.zro-title {
+  font-family: var(--zro-sans);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.zro-lede {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+
+.zro-body {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.zro-eyebrow {
+  font-family: var(--zro-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--zro-faint));
+}
+
+.zro-metric {
+  font-family: var(--zro-mono);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
 
-/* ── Motion ───────────────────────────────────────────────────────────── */
+/* ── Buttons ────────────────────────────────────────────────────────────── */
 
-@keyframes zro-rise {
-  from {
-    transform: translateY(18px);
+.zro-btn {
+  --zro-btn-bg: transparent;
+  --zro-btn-fg: rgb(var(--zro-ink));
+  --zro-btn-border: transparent;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding-inline: 1.25rem;
+  border: 1px solid var(--zro-btn-border);
+  border-radius: 0;
+  background-color: var(--zro-btn-bg);
+  color: var(--zro-btn-fg);
+  font-family: var(--zro-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--zro-d2) var(--zro-ease),
+    border-color var(--zro-d2) var(--zro-ease),
+    color var(--zro-d2) var(--zro-ease),
+    transform var(--zro-d1) var(--zro-ease);
+}
+
+.zro-btn:active {
+  transform: none;
+}
+
+.zro-btn--solid {
+  --zro-btn-bg: rgb(var(--zro-ink));
+  --zro-btn-fg: rgb(var(--zro-canvas));
+  --zro-btn-border: rgb(var(--zro-ink));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.zro-btn--outline {
+  --zro-btn-border: var(--zro-hairline-strong);
+  --zro-btn-bg: rgba(255, 255, 255, 0.015);
+}
+
+.zro-btn--quiet {
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgb(var(--zro-muted));
+}
+
+.zro-btn--quiet:hover {
+  color: rgb(var(--zro-ink));
+}
+
+.zro-btn--sm {
+  height: 2.25rem;
+  padding-inline: 0.875rem;
+  font-size: 0.8125rem;
+}
+
+.zro-btn-arrow {
+  display: inline-block;
+  transition: transform var(--zro-d2) var(--zro-ease);
+}
+
+@media (hover: hover) {
+  .zro-btn:hover {
+    transform: translateY(-1px);
   }
-  to {
+
+  .zro-btn--solid:hover {
+    --zro-btn-bg: #ffffff;
+    --zro-btn-border: #ffffff;
+  }
+
+  .zro-btn--outline:hover {
+    --zro-btn-border: rgba(255, 255, 255, 0.34);
+    --zro-btn-bg: rgba(255, 255, 255, 0.05);
+  }
+
+  .zro-btn--quiet:hover {
     transform: none;
   }
+
+  .zro-btn:hover .zro-btn-arrow {
+    transform: translate(2px, -2px);
+  }
+
+  .zro-btn--quiet:hover .zro-btn-arrow {
+    transform: translateX(2px);
+  }
 }
 
-/* The H1 carries the LCP and paints on the first frame, so it is excluded
-   from the entrance animation on purpose — only supporting copy rises. */
-.zro-hero [data-hero] {
-  animation: zro-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+/* ── Links ──────────────────────────────────────────────────────────────── */
+
+.zro-link {
+  color: rgb(var(--zro-muted));
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.24);
+  text-underline-offset: 4px;
+  transition:
+    color var(--zro-d2) var(--zro-ease),
+    text-decoration-color var(--zro-d2) var(--zro-ease);
 }
 
-@keyframes zro-card-in {
+.zro-link:hover {
+  color: rgb(var(--zro-ink));
+  text-decoration-color: currentColor;
+}
+
+/* ── Surfaces ───────────────────────────────────────────────────────────── */
+
+.zro-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 1.625rem;
+  padding-inline: 0.5rem;
+  border: 1px solid var(--zro-hairline);
+  color: rgb(var(--zro-muted));
+  font-family: var(--zro-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition:
+    color var(--zro-d1) var(--zro-ease),
+    border-color var(--zro-d1) var(--zro-ease);
+}
+
+@media (hover: hover) {
+  .zro-chip:hover {
+    color: rgb(var(--zro-ink));
+    border-color: var(--zro-hairline-strong);
+  }
+}
+
+.zro-card {
+  position: relative;
+  border: 1px solid var(--zro-hairline);
+  background-color: rgb(var(--zro-surface));
+  transition:
+    background-color var(--zro-d2) var(--zro-ease),
+    border-color var(--zro-d2) var(--zro-ease);
+}
+
+.zro-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.16),
+    transparent
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--zro-d2) var(--zro-ease);
+}
+
+@media (hover: hover) {
+  .zro-card:hover {
+    background-color: rgb(var(--zro-surface-2));
+    border-color: var(--zro-hairline-strong);
+  }
+
+  .zro-card:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ── Navigation ─────────────────────────────────────────────────────────── */
+
+.zro-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding-block: 0.35rem;
+  color: rgb(var(--zro-muted));
+  font-family: var(--zro-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 180ms var(--zro-ease);
+}
+
+.zro-nav-link::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background-color: rgb(var(--zro-accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms var(--zro-ease);
+}
+
+.zro-nav-link:hover,
+.zro-nav-link[aria-current] {
+  color: rgb(var(--zro-ink));
+}
+
+.zro-nav-link[aria-current]::after {
+  transform: scaleX(1);
+}
+
+.zro-plate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--zro-hairline-strong);
+  color: rgb(var(--zro-ink));
+  font-family: var(--zro-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: normal;
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────────── */
+
+.zro-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.zro-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(
+    70% 55% at 50% 0%,
+    rgba(255, 255, 255, 0.055),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.zro-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.zro-portrait img {
+  transition: transform 700ms var(--zro-ease);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .zro-portrait:hover img {
+    transform: scale(1.015);
+  }
+}
+
+@keyframes zro-menu-in {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(-4px);
   }
   to {
     opacity: 1;
@@ -109,37 +453,112 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   }
 }
 
-.zro-card {
-  animation: zro-card-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+.zro-menu-panel {
+  animation: zro-menu-in 180ms var(--zro-ease) both;
 }
 
-/* Progressive reveal — only armed once JavaScript has confirmed it will
-   clear it, so content is always visible without scripts. */
-.js [data-reveal] {
+/* ── Motion ─────────────────────────────────────────────────────────────── */
+
+html.js [data-reveal] {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translate3d(0, 14px, 0);
   transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity var(--zro-d3) var(--zro-ease) var(--zro-delay, 0ms),
+    transform 700ms var(--zro-ease) var(--zro-delay, 0ms);
 }
 
-.js [data-reveal].is-visible {
+html.js [data-reveal].is-visible {
   opacity: 1;
   transform: none;
 }
 
+html.js [data-reveal="fade"] {
+  transform: none;
+  transition-property: opacity;
+}
+
+html.js [data-reveal="mask"],
+html.js [data-reveal="rule"] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+html:not(.js) [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+[data-reveal="rule"] {
+  position: relative;
+  height: 1px;
+}
+
+[data-reveal="rule"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--zro-hairline);
+  transform-origin: left;
+}
+
+html.js [data-reveal="rule"]::after {
+  transform: scaleX(0);
+  transition: transform 900ms var(--zro-ease) var(--zro-delay, 120ms);
+}
+
+html.js [data-reveal="rule"].is-visible::after {
+  transform: scaleX(1);
+}
+
+html:not(.js) [data-reveal="rule"]::after {
+  transform: none;
+}
+
+.zro-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.08em 0.12em;
+  margin-block: -0.08em -0.12em;
+}
+
+.zro-mask > span {
+  display: block;
+}
+
+html.js .zro-mask > span {
+  transform: translate3d(0, 112%, 0);
+  transition: transform var(--zro-d4) var(--zro-ease) var(--zro-delay, 0ms);
+}
+
+html.js .zro-mask.is-visible > span {
+  transform: none;
+}
+
+html:not(.js) .zro-mask > span {
+  transform: none;
+}
+
+[data-stagger] > [data-reveal] {
+  --zro-delay: calc(min(var(--zro-i, 0), 6) * 70ms);
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
-  .js [data-reveal],
-  [data-reveal].is-visible,
-  .js [data-reveal].is-visible {
+  html.js [data-reveal],
+  html.js [data-reveal].is-visible,
+  [data-reveal="rule"]::after,
+  html.js [data-reveal="rule"]::after,
+  html.js [data-reveal="rule"].is-visible::after,
+  .zro-mask > span,
+  html.js .zro-mask > span,
+  html.js .zro-mask.is-visible > span {
     opacity: 1;
     transform: none;
     transition: none;
   }
 
-  .zro-hero [data-hero],
-  .zro-card {
-    animation: none;
+  .zro-btn:hover {
+    transform: none;
   }
 }

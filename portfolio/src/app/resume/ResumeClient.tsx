@@ -128,7 +128,7 @@ const PRINT_STYLES = `
   }
   .r-exp-role     { font-size: 9.5pt; font-style: italic; }
   .r-exp-location { font-size: 9pt; font-style: italic; color: #444; }
-  .r-sub-project  { font-size: 9.5pt; font-style: italic; font-weight: 600; margin: 5px 0 2px; }
+  .r-exp-tech     { font-size: 9pt; font-style: italic; color: #222; margin-top: 4px; }
 
   /* ── Projects ── */
   .r-proj-header {
@@ -251,16 +251,14 @@ export default function ResumeClient() {
                   <span className="r-exp-role">{exp.role}</span>
                   <span className="r-exp-location">{exp.location}</span>
                 </div>
-                {exp.projects.map((proj, pi) => (
-                  <div key={pi}>
-                    <div className="r-sub-project">{proj.name}</div>
-                    <ul className="r-bullets">
-                      {proj.bullets.map((b, bi) => (
-                        <li key={bi} dangerouslySetInnerHTML={{ __html: b }} />
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                <ul className="r-bullets">
+                  {exp.bullets.map((b, bi) => (
+                    <li key={bi} dangerouslySetInnerHTML={{ __html: b }} />
+                  ))}
+                </ul>
+                <p className="r-exp-tech">
+                  <strong>Technologies / Skills Used:</strong> {exp.technologies}
+                </p>
               </div>
             ))}
           </div>

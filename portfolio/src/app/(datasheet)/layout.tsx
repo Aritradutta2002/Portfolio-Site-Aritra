@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import "../globals.css";
 import "../../styles/datasheet.css";
 
@@ -10,9 +10,10 @@ import "../../styles/datasheet.css";
  * unused font families). Only the two faces it actually sets are loaded.
  */
 
-const inter = Inter({
-  variable: "--font-inter",
+const instrumentSans = Instrument_Sans({
+  variable: "--font-ds-sans",
   subsets: ["latin"],
+  weight: "variable",
   display: "swap",
 });
 
@@ -36,22 +37,24 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#000000",
+  themeColor: "#0A0A0B",
   colorScheme: "dark",
 };
 
 export default function DatasheetLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  /* The datasheet cannot nest its own <html>/<body> inside the root layout —
+     the parser strips them and the font/style hooks disappear. The font
+     variables live on a display:contents wrapper so they still scope to `/`
+     without touching the legacy routes. */
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} ${datasheetMono.variable} antialiased`}>
-        {/* Effect enhancements only switch on once scripting is confirmed. */}
-        <script
-          dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }}
-        />
-        {children}
-      </body>
-    </html>
+    <div className={`${instrumentSans.variable} ${datasheetMono.variable} contents`}>
+      {/* Effect enhancements only switch on once scripting is confirmed. */}
+      <script
+        dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }}
+      />
+      {children}
+    </div>
   );
 }

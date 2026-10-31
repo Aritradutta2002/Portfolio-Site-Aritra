@@ -59,18 +59,18 @@ const experience = {
   startDate: 'Sep 2024',
   endDate: 'Present',
   description:
-    'Full Stack Application Engineer with 2+ years building scalable Java microservices, end-to-end web applications, and AI-powered features — across the Ultimatix platform and Element Fleet Management.',
+    'Full Stack Application Engineer with 2+ years building scalable Java microservices, end-to-end web applications, and AI-powered features — currently on the remediation phase of a Java modernization initiative for an enterprise fleet-management platform.',
   assignments: [
     {
       client: 'Element Fleet Management',
       role: 'Application Developer',
       period: 'Apr 2026 – Present',
       bullets: [
-        'Modernized microservices from Java 8 / Spring Boot 1.x to Java 21 / Spring Boot 3.x using AWS Transform.',
-        'Migrated infrastructure from JBoss to Azure Tomcat PaaS; refactored the iDeclare monolith into a standalone Spring Boot microservice with JWT-based Spring Security.',
-        'Built Jenkins CI/CD pipelines with Docker deployments and authored 2,000+ JUnit test cases.',
-        'Optimized SQL queries and APIs, achieving up to 20x faster response times.',
-        'Utilized GitHub Copilot, Jira, and Jile within Agile workflows.',
+        'Modernized microservices from Java 8 / Spring Boot 1.x to Java 21 / Spring Boot 4.x using AWS Transform.',
+        'Migrated infrastructure from JBoss to Azure Tomcat PaaS with health checks, deployment slots, and production monitoring.',
+        'Built end-to-end Jenkins CI/CD pipelines with Docker deployments, JaCoCo/JUnit coverage reporting, and SonarQube analysis.',
+        'Optimized SQL queries and REST APIs, achieving up to 20x faster response times.',
+        'Accelerated development and review with GitHub Copilot and Claude Code alongside Jira and Jile.',
       ],
     },
     {
@@ -80,17 +80,17 @@ const experience = {
       bullets: [
         'Executed database migration from Oracle to PostgreSQL.',
         'Developed patent and trademark lifecycle modules using Core Java and Spring Boot.',
-        'Optimized 7+ critical APIs, improving performance up to 30x under production load.',
+        'Optimized 7+ critical APIs, improving performance up to 20x under production load.',
         'Conducted technical interviews and onboarding knowledge transfers.',
       ],
     },
   ],
-  technologies: ['Java 21', 'Java 17', 'Spring Boot 3', 'Spring Security', 'PostgreSQL', 'Oracle', 'AWS Transform', 'AWS', 'Azure PaaS', 'Jenkins', 'Docker', 'Python', 'LangChain', 'Tomcat'],
+  technologies: ['Java 21', 'Java 17', 'Spring Boot 4', 'Spring Security', 'PostgreSQL', 'Oracle', 'AWS Transform', 'AWS', 'Azure PaaS', 'Jenkins', 'Docker', 'Node.js', 'Python', 'LangChain', 'Tomcat', 'Claude Code'],
   achievements: [
-    'Optimized critical APIs achieving up to 30x faster response times under production load',
+    'Optimized critical APIs achieving up to 20x faster response times under production load',
     'Authored 2,000+ JUnit test cases across Jenkins CI/CD pipelines',
     'Delivered zero-downtime production migration for 10K+ daily users',
-    'Modernized Java 8→21 and Spring Boot 1.x→3.x in live production with backward compatibility',
+    'Modernized Java 8→21 and Spring Boot 1.x→4.x in live production with backward compatibility',
     'Conducted technical interviews and led onboarding knowledge transfers',
   ],
 }

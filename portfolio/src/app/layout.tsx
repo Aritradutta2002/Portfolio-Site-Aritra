@@ -53,13 +53,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://aritradutta.dev",
     title: "Aritra Dutta | Full Stack Application Engineer Portfolio",
-    description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 30x API performance gains.",
+    description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 20x API performance gains.",
     siteName: "Aritra Dutta Portfolio",
   },
   twitter: {
     card: "summary_large_image",
     title: "Aritra Dutta | Full Stack Application Engineer Portfolio",
-    description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 30x API performance gains.",
+    description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 20x API performance gains.",
   },
   icons: {
     icon: [

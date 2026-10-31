@@ -1,5 +1,6 @@
 // ─── RESUME DATA ─────────────────────────────────────────────────────────────
-// Edit this file to update your resume everywhere (portfolio + PDF download).
+// Mirrors public/resume.pdf. Edit this file and the PDF together so the page
+// and the downloadable CV never disagree.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const resumeData = {
@@ -9,68 +10,61 @@ export const resumeData = {
     { label: 'Gmail',     href: 'mailto:aritradutta049@gmail.com',                         icon: '✉' },
     { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/aritra-dutta-rick20/',        icon: '🔗' },
     { label: 'GitHub',    href: 'https://github.com/Aritradutta2002',                      icon: '⌥' },
-    { label: 'Portfolio', href: 'https://portfolio-aritra-pearl.vercel.app/',               icon: '🌐' },
+    { label: 'Portfolio', href: 'https://www.aritradutta.tech/',                           icon: '🌐' },
     { label: 'LeetCode',  href: 'https://leetcode.com/u/Ari2001/',                         icon: '⚡' },
     { label: 'CodeChef',  href: 'https://www.codechef.com/users/interover01',              icon: '🍴' },
   ],
 
   /* ── Summary ───────────────────────────────────────────────────────── */
   summary:
-    'Full Stack Application Engineer with 2+ years of experience building scalable Java microservices, end-to-end web applications, and AI-powered features (Java, Spring Boot, Python, LangChain, React, AWS).',
+    'Results-driven Full Stack Application Engineer with 2+ years of experience building scalable Java microservices, end-to-end web applications, and AI-powered features. Proficient in Java, Spring Boot, Python, Generative AI (RAG/LangChain), and React — with a strong focus on backend modernization and intelligent system integration, delivering measurable performance improvements in enterprise, client-facing environments.',
 
   /* ── Technical Skills ──────────────────────────────────────────────── */
   skills: [
-    { category: 'Languages',           items: 'Java, Python, TypeScript, SQL · Spoken: English, Hindi, Bengali' },
-    { category: 'Frameworks & Libs',   items: 'Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, REST APIs, Microservices, LangChain, React, Angular, Tailwind CSS' },
-    { category: 'AI',                  items: 'Generative AI, RAG, LangChain, LLM Integration' },
-    { category: 'Databases',           items: 'PostgreSQL, Oracle, MySQL, Apache Kafka' },
-    { category: 'Tools & Platforms',   items: 'AWS, AWS Transform, Azure PaaS, Docker, Jenkins, Git, Maven, SonarQube, Tomcat, JBoss, GitHub Copilot, CI/CD' },
-    { category: 'Methodologies',       items: 'Agile, Scrum, Jira, Jile, Code Review' },
+    { category: 'Programming Languages', items: 'Java, Python, TypeScript, SQL' },
+    { category: 'Frameworks & Libraries', items: 'Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, REST APIs, Microservices, LangChain, React, Angular, Tailwind CSS' },
+    { category: 'Databases',             items: 'PostgreSQL, Oracle, MySQL, Apache Kafka' },
+    { category: 'Tools & Platforms',     items: 'AWS, AWS Transform, Azure PaaS, Docker, Jenkins, Git, Maven, SonarQube, Tomcat, JBoss, Node.js, GitHub Copilot, Claude Code, CI/CD' },
+    { category: 'Soft Skills',           items: 'Agile, Scrum, Jira, Jile, Code Review' },
+    { category: 'Languages',             items: 'English, Hindi, Bengali' },
   ],
 
   /* ── Experience ────────────────────────────────────────────────────── */
   experience: [
     {
-      company:   'Tata Consultancy Services (TCS)',
+      company:   'Tata Consultancy Services',
       dateRange: 'Sep 2024 – Present',
-      role:      'System Engineer',
-      location:  'Bhubaneswar, India',
-      projects: [
-        {
-          name: 'Element Fleet Management — Application Developer (Apr 2026 – Present)',
-          bullets: [
-            'Modernized microservices from <strong>Java 8 / Spring Boot 1.x to Java 21 / Spring Boot 3.x</strong> using <strong>AWS Transform</strong>.',
-            'Migrated infrastructure from <strong>JBoss to Azure Tomcat PaaS</strong>; refactored the <strong>iDeclare monolith into a standalone Spring Boot microservice</strong> with JWT-based Spring Security.',
-            'Built <strong>Jenkins CI/CD pipelines</strong> with Docker deployments and authored <strong>2,000+ JUnit test cases</strong>.',
-            'Optimized SQL queries and APIs, achieving up to <strong>20x faster response times</strong>.',
-            'Utilized <strong>GitHub Copilot, Jira, and Jile</strong> within Agile workflows.',
-          ],
-        },
-        {
-          name: 'Ultimatix Platform — Application Developer (Sep 2024 – Mar 2026)',
-          bullets: [
-            'Executed <strong>database migration from Oracle to PostgreSQL</strong>.',
-            'Developed <strong>patent and trademark lifecycle modules</strong> using Core Java and Spring Boot.',
-            'Optimized <strong>7+ critical APIs</strong>, improving performance up to <strong>30x</strong> under production load.',
-            'Conducted <strong>technical interviews</strong> and onboarding knowledge transfers.',
-          ],
-        },
+      role:      'System Engineer · Full-time',
+      location:  'On-site · Bhubaneswar, Odisha',
+      bullets: [
+        'Led the remediation phase of a <strong>Java microservices modernization initiative</strong>, migrating backend services from <strong>Java 8 to Java 21 and Spring Boot 1.x to 4.x</strong>, improving maintainability, security, and long-term support.',
+        'Migrated critical applications from <strong>legacy JBoss infrastructure to Azure Tomcat PaaS</strong>, configuring health checks, deployment slots, and monitoring to ensure high availability in production.',
+        'Utilized <strong>AWS Transform</strong> tooling to accelerate dependency upgrades, code refactoring, and compatibility validation across Java microservices running on AWS-based infrastructure.',
+        'Built and maintained <strong>end-to-end Jenkins CI/CD pipelines</strong> with Docker-based deployments, automated build and release workflows, <strong>JaCoCo/JUnit test coverage reporting</strong>, and enhanced code quality through <strong>SonarQube</strong> analysis.',
+        'Optimized complex SQL queries and REST APIs, delivering up to <strong>20× faster response times</strong> for critical business workflows in production environments.',
+        'Managed <strong>Git and GitHub workflows</strong>, including complex merge conflict resolution, pull request reviews, branch management, release merges, and enforcement of code review best practices across distributed development teams.',
+        'Collaborated with <strong>UI/UX teams</strong> to implement and refine user-facing features, ensuring responsive design, usability improvements, and alignment with business requirements.',
+        'Created, configured, and monitored <strong>Jenkins build and deployment jobs</strong>, troubleshooting pipeline failures and supporting continuous delivery practices across multiple environments.',
+        'Conducted <strong>API validation and integration testing</strong> using Postman and Swagger/OpenAPI, partnering with QA teams to verify backend functionality, troubleshoot issues, and ensure release readiness.',
+        'Leveraged <strong>GitHub Copilot and Claude Code</strong> to accelerate development, refactoring, documentation, and peer-review activities, improving engineering productivity across modernization initiatives.',
       ],
+      technologies:
+        'Java, Spring Boot, Azure, AWS, Jenkins, Docker, SQL, React, AWS Transform, CI/CD, Tomcat, Node.js, Claude Code, GitHub Copilot',
     },
   ],
 
   /* ── Projects ──────────────────────────────────────────────────────── */
   projects: [
     {
-      title:  'AlgoGuru – Programming Learning Platform',
-      stack:  'React, TypeScript, Tailwind CSS, Supabase, Java, Python, LangChain',
+      title:  'AlgoGuru',
+      stack:  'React, TypeScript, Tailwind CSS, Java, Python, LangChain, RAG, Supabase, Node.js',
       liveUrl:   'https://www.algoguru.online/',
       githubUrl: 'https://github.com/Aritradutta2002',
       bullets: [
-        'Designed, built, and deployed a <strong>full-stack competitive programming platform</strong> end-to-end — live at <a href="https://www.algoguru.online/">algoguru.online</a> with a custom purchased domain and production deployment.',
-        'Features a <strong>Java Playground</strong>, <strong>role-based authentication</strong>, user progress tracking, and interactive problem sets built with React, TypeScript, Tailwind CSS, and a Supabase backend.',
-        'Integrated an AI-powered <strong>"Guru Bot"</strong> using <strong>Python, LangChain, and RAG</strong> for contextual problem-solving guidance.',
-        'Sole developer responsible for the complete product lifecycle — from architecture and implementation to deployment and domain configuration.',
+        'Designed, built, and deployed a <strong>full-stack competitive programming learning platform</strong> end-to-end, including production deployment and custom domain configuration.',
+        'Integrated a <strong>Generative AI-powered Guru Bot</strong> to deliver context-aware algorithm explanations and intelligent, document-grounded problem-solving assistance.',
+        'Built a <strong>Java-based code playground</strong> with role-based authentication, user progress tracking, and interactive problem sets using <strong>React, TypeScript, and Tailwind CSS</strong>.',
+        'Owned the complete product lifecycle — architecture, AI integration, implementation, deployment, and ongoing maintenance.',
       ],
     },
   ],
@@ -78,7 +72,7 @@ export const resumeData = {
   /* ── Education ─────────────────────────────────────────────────────── */
   education: [
     {
-      institution: 'Maulana Abul Kalam Azad University of Technology (MAKAUT)',
+      institution: 'Maulana Abul Kalam Azad University of Technology',
       location:    'Kolkata, India',
       degree:      'B.Tech, Electronics &amp; Communication Engineering',
       grade:       'CGPA: 8.79 / 10',
@@ -86,15 +80,11 @@ export const resumeData = {
     },
   ],
 
-  /* ── Achievements & Certifications ────────────────────────────────── */
+  /* ── Awards & Achievements ────────────────────────────────────────── */
   achievements: [
     {
-      title: 'Enterprise Java Modernisation — AWS Transform',
-      detail: 'Led remediation of enterprise microservices: Java 8 → 21, Spring Boot 1.x → 3.x, with up to 20× faster critical production APIs.',
-    },
-    {
       title: 'Competitive Programming',
-      detail: '700+ problems solved across platforms — <a href="https://leetcode.com/u/Ari2001/">LeetCode</a> Rating <strong>1672</strong> · <a href="https://codeforces.com">Codeforces</a> <strong>1046 (Div 2)</strong> · <a href="https://www.codechef.com/users/interover01">CodeChef</a> <strong>1708 (3-Star)</strong> · CSES Problem Set.',
+      detail: '700+ problems solved across competitive programming platforms — <a href="https://leetcode.com/u/Ari2001/">LeetCode</a> <strong>1672</strong> · <a href="https://codeforces.com">Codeforces</a> <strong>1046</strong> · <a href="https://www.codechef.com/users/interover01">CodeChef</a> <strong>1708 (3-Star)</strong> · CSES Problem Set.',
     },
   ],
 }

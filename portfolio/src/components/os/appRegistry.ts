@@ -39,7 +39,7 @@ export const APPS: AppDefinition[] = [
     id: 'experience',
     label: 'Experience',
     icon: 'experience',
-    description: 'Roles at TCS — Element Fleet and Ultimatix',
+    description: 'System Engineer at TCS — enterprise Java modernization',
     keywords: ['work', 'job', 'career', 'tcs', 'roles'],
     dock: true,
     desktop: true,

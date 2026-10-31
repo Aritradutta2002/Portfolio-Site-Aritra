@@ -24,10 +24,18 @@ module.exports = {
           3: '#F472B6', // pink
         },
         aurorastrong: 'var(--aurora-text)', // text-safe accent per theme
-        /* Muted text — AA-safe on the #08080A card surface (5.1:1) as well
-           as on pure black (6.0:1), so it never drops below 4.5:1 at 10px. */
+        /* Datasheet palette — scoped tokens defined in styles/datasheet.css.
+           Only `.zro-root` renders these, so legacy routes are unaffected. */
         zro: {
-          muted: '#9a9aa3',
+          canvas: 'rgb(var(--zro-canvas) / <alpha-value>)',
+          surface: 'rgb(var(--zro-surface) / <alpha-value>)',
+          'surface-2': 'rgb(var(--zro-surface-2) / <alpha-value>)',
+          ink: 'rgb(var(--zro-ink) / <alpha-value>)',
+          muted: 'rgb(var(--zro-muted) / <alpha-value>)',
+          faint: 'rgb(var(--zro-faint) / <alpha-value>)',
+          accent: 'rgb(var(--zro-accent) / <alpha-value>)',
+          line: 'var(--zro-hairline)',
+          'line-strong': 'var(--zro-hairline-strong)',
         },
       },
       fontFamily: {
@@ -35,8 +43,21 @@ module.exports = {
         mono: ['var(--font-geist-mono)', 'var(--font-fira-code)', 'monospace'],
         display: ['var(--font-display)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         /* Zro datasheet — scoped so the legacy sites keep their own typefaces. */
-        'ds-sans': ['var(--font-inter)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        'ds-sans': ['var(--font-ds-sans)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         'ds-mono': ['var(--font-ds-mono)', 'var(--font-geist-mono)', 'ui-monospace', 'monospace'],
+      },
+      letterSpacing: {
+        'zro-tight': '-0.03em',
+        'zro-tighter': '-0.045em',
+        'zro-label': '0.14em',
+        'zro-eyebrow': '0.18em',
+      },
+      transitionTimingFunction: {
+        'zro-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
+        'zro-inout': 'cubic-bezier(0.65, 0, 0.35, 1)',
+      },
+      transitionDuration: {
+        zro: '240ms',
       },
       /* Modular type scale — 1.25 ratio */
       fontSize: {

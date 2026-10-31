@@ -1,4 +1,6 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
+import { Button } from "./ui/Button";
 import {
   CONTACT_LINKS,
   HEADLINE_METRICS,
@@ -7,51 +9,57 @@ import {
 
 export function Hero() {
   return (
-    <section className="zro-hero border-b border-zinc-900">
-      <div className="mx-auto max-w-6xl px-6 pb-4 pt-16 md:pt-24">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center lg:gap-10">
+    <section className="zro-hero border-b border-zro-line">
+      <div className="mx-auto flex max-w-6xl flex-col px-6 pt-14 md:px-8 md:pt-20 lg:min-h-[calc(100svh-4rem)] lg:pt-16">
+        <div className="grid flex-1 grid-cols-1 items-center gap-12 py-10 lg:grid-cols-12 lg:gap-12 lg:py-12">
           <div className="lg:col-span-7">
             {/* Mobile identification block — the desktop figure carries this. */}
-            <div className="mb-6 flex items-center gap-4 lg:hidden">
-              <div className="relative h-24 w-[72px] shrink-0 overflow-hidden border border-zinc-700">
+            <div className="mb-7 flex items-center gap-4 lg:hidden">
+              <div className="relative h-[118px] w-[92px] shrink-0 overflow-hidden border border-zro-line bg-zro-surface">
                 <Image
                   src="/aritra-portrait-sm.webp"
                   alt=""
                   fill
-                  sizes="72px"
+                  sizes="92px"
                   className="object-cover"
                 />
               </div>
-              {/* The H1 below already states the name — this block only
-                  needs to carry the role and location. */}
-              <div className="text-ds-2xs uppercase tracking-[0.14em] text-zro-muted">
-                <div>{PORTFOLIO_HEADER.role}</div>
-                <div className="mt-1">{PORTFOLIO_HEADER.location}</div>
+              <div className="zro-eyebrow">
+                {PORTFOLIO_HEADER.location}
               </div>
             </div>
 
             <div
-              data-hero
-              className="flex items-center gap-3 text-ds-2xs uppercase tracking-[0.18em] text-zinc-400"
+              data-reveal="fade"
+              className="flex items-center gap-2.5"
             >
               <span
                 aria-hidden="true"
-                className="h-1.5 w-1.5 bg-white motion-safe:animate-pulse"
+                className="h-1.5 w-1.5 rounded-full bg-zro-accent motion-safe:animate-pulse"
               />
-              {PORTFOLIO_HEADER.availability}
+              <span className="zro-eyebrow">{PORTFOLIO_HEADER.availability}</span>
             </div>
 
-            {/* Name and role share one display type block: the role is part
-                of the name a visitor learns first, and keeping it out of a
-                separate paragraph block stops it painting late on its own. */}
-            <h1 className="mt-5 max-w-3xl font-ds-sans font-medium text-white">
-              <span className="block text-ds-h1">{PORTFOLIO_HEADER.name}</span>
-              <span className="mt-3 block text-ds-xl text-zinc-300">
+            {/* Name and role share one display block; only the role line is
+                revealed so the H1 (the LCP element) paints on the first frame. */}
+            <h1 className="mt-6 max-w-4xl">
+              <span className="zro-display block text-zro-ink">
+                {PORTFOLIO_HEADER.name}
+              </span>
+              <span
+                data-reveal
+                style={{ "--zro-delay": "80ms" } as CSSProperties}
+                className="mt-4 block text-[1.375rem] leading-[1.45] tracking-[-0.02em] text-zro-muted"
+              >
                 {PORTFOLIO_HEADER.role} at {PORTFOLIO_HEADER.company}.
               </span>
             </h1>
 
-            <p className="mt-4 max-w-xl text-ds-sm leading-relaxed text-zinc-400">
+            <p
+              data-reveal
+              style={{ "--zro-delay": "150ms" } as CSSProperties}
+              className="zro-lede mt-6 max-w-[52ch] text-zro-muted"
+            >
               <span className="lg:hidden">2+ years</span>
               <span className="hidden lg:inline">
                 {PORTFOLIO_HEADER.location} · 2+ years
@@ -60,62 +68,59 @@ export function Hero() {
             </p>
 
             <div
-              data-hero
-              style={{ animationDelay: "90ms" }}
-              className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4"
+              data-reveal
+              style={{ "--zro-delay": "220ms" } as CSSProperties}
+              className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4"
             >
-              <a
-                href={CONTACT_LINKS.resumePdf}
-                className="border border-white bg-white px-6 py-3.5 text-ds-sm font-medium text-black transition-colors hover:bg-zinc-200"
-              >
+              <Button href={CONTACT_LINKS.resumePdf} variant="solid" arrow>
                 Download resume
-              </a>
-              <a
-                href={`mailto:${CONTACT_LINKS.email}`}
-                className="border border-zinc-700 bg-[#08080a] px-6 py-3.5 text-ds-sm text-white transition-colors hover:border-white"
-              >
+              </Button>
+              <Button href={`mailto:${CONTACT_LINKS.email}`} variant="outline">
                 Email me
-              </a>
-              <a
-                href="#experience"
-                className="text-ds-sm text-zinc-300 underline decoration-zinc-600 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
-              >
+              </Button>
+              <Button href="#experience" variant="quiet" arrow>
                 Read experience
-              </a>
+              </Button>
             </div>
           </div>
 
           <div className="hidden lg:col-span-5 lg:block">
-            <div className="relative mx-auto w-full max-w-[420px]">
-              <div
-                aria-hidden="true"
-                className="absolute -left-3 -top-3 hidden h-full w-full border border-zinc-800 sm:block"
-              />
-              <figure className="group relative overflow-hidden border border-zinc-700 bg-[#08080a]">
-                <div className="relative aspect-[4/5] w-full">
-                  <Image
-                    src="/aritra-portrait.webp"
-                    alt={`${PORTFOLIO_HEADER.name}, ${PORTFOLIO_HEADER.role}`}
-                    fill
-                    sizes="(max-width: 1024px) 0px, 420px"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:transform-none"
-                  />
-                </div>
-                <figcaption className="border-t border-zinc-800 bg-black px-4 py-3 text-ds-2xs uppercase tracking-[0.14em] text-zinc-300">
-                  {PORTFOLIO_HEADER.name} · {PORTFOLIO_HEADER.location}
-                </figcaption>
-              </figure>
-            </div>
+            <figure
+              data-reveal="fade"
+              className="zro-portrait mx-auto w-full max-w-[400px] overflow-hidden border border-zro-line bg-zro-surface"
+            >
+              <div className="relative aspect-[4/5] w-full">
+                <Image
+                  src="/aritra-portrait.webp"
+                  alt={`${PORTFOLIO_HEADER.name}, ${PORTFOLIO_HEADER.role}`}
+                  fill
+                  sizes="(max-width: 1024px) 0px, 400px"
+                  className="object-cover"
+                />
+              </div>
+              <figcaption className="border-t border-zro-line px-4 py-3 text-[0.6875rem] uppercase leading-relaxed tracking-[0.14em] text-zro-faint">
+                {PORTFOLIO_HEADER.name} · {PORTFOLIO_HEADER.location}
+              </figcaption>
+            </figure>
           </div>
         </div>
 
-        <dl className="mt-14 grid grid-cols-1 gap-px border border-zinc-800 bg-zinc-800 sm:grid-cols-3">
-          {HEADLINE_METRICS.map((metric) => (
-            <div key={metric.label} className="bg-black p-5">
-              <dt className="text-ds-2xs uppercase tracking-[0.14em] text-zro-muted">
-                {metric.label}
-              </dt>
-              <dd className="zro-metric mt-2 text-[1.65rem] font-semibold italic leading-none text-white">
+        <dl className="grid grid-cols-1 border-t border-zro-line sm:grid-cols-3">
+          {HEADLINE_METRICS.map((metric, index) => (
+            <div
+              key={metric.label}
+              data-reveal="fade"
+              style={
+                { "--zro-delay": `${300 + index * 70}ms` } as CSSProperties
+              }
+              className={`py-6 ${
+                index > 0
+                  ? "border-t border-zro-line sm:border-l sm:border-t-0 sm:pl-8"
+                  : ""
+              }`}
+            >
+              <dt className="zro-eyebrow">{metric.label}</dt>
+              <dd className="zro-metric mt-2 text-[1.875rem] font-medium leading-none text-zro-ink">
                 {metric.value}
               </dd>
             </div>

@@ -14,9 +14,16 @@ export function RevealProvider() {
         .querySelectorAll<HTMLElement>("[data-reveal]")
         .forEach((el) => el.classList.add("is-visible"));
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onMotionChange = (event: MediaQueryListEvent) => {
+      if (event.matches) revealAll();
+    };
+
+    motion.addEventListener("change", onMotionChange);
+
+    if (motion.matches) {
       revealAll();
-      return;
+      return () => motion.removeEventListener("change", onMotionChange);
     }
 
     const observed = new Set<Element>();
@@ -49,6 +56,7 @@ export function RevealProvider() {
     return () => {
       observer.disconnect();
       mutations.disconnect();
+      motion.removeEventListener("change", onMotionChange);
       // Never leave content hidden if this island unmounts mid-viewport.
       revealAll();
     };
