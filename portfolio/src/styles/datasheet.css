@@ -43,11 +43,13 @@
 
 .zro-root {
   color-scheme: dark;
-  background-color: rgb(var(--zro-canvas));
+  background-color: transparent;
   color: rgb(var(--zro-ink));
   font-family: var(--zro-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  position: relative;
+  z-index: 10;
 }
 
 html:has(.zro-root) {
@@ -63,9 +65,29 @@ body:has(.zro-root) {
   scrollbar-color: rgb(var(--zro-surface-2)) rgb(var(--zro-canvas-deep));
 }
 
-/* The legacy film-grain overlay would sit above the datasheet hairlines. */
-body:has(.zro-root)::after {
-  display: none;
+/* ── 4-Layer Background System Utilities (Plan.md) ───────────────────────── */
+
+/* 72px grid with top-center radial mask */
+.luxe-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 75%);
+}
+
+/* Layer 4: Tactile micro film grain (0.032 opacity, seamless SVG noise) */
+.luxe-grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 html:has(.zro-root) ::-webkit-scrollbar {

@@ -8,6 +8,7 @@ import { BenchmarksSection } from "@/components/zro/BenchmarksSection";
 import { FooterSection } from "@/components/zro/FooterSection";
 import { RevealProvider } from "@/components/zro/RevealProvider";
 import { SectionHeader } from "@/components/zro/ui/SectionHeader";
+import { Backdrop } from "@/components/luxe/Backdrop";
 import { PROJECTS } from "@/data/portfolioCatalog";
 
 const TITLE = "Aritra Dutta — Full Stack Application Engineer";
@@ -41,7 +42,8 @@ export const metadata: Metadata = {
 
 export default function PortfolioHomePage() {
   return (
-    <div className="zro-root min-h-screen bg-zro-canvas text-zro-ink">
+    <div className="zro-root luxe-grain relative min-h-screen text-zro-ink">
+      <Backdrop />
       <a
         href="#about"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-zro-ink focus:bg-zro-ink focus:px-4 focus:py-2 focus:text-zro-canvas"
@@ -52,7 +54,7 @@ export default function PortfolioHomePage() {
       <RevealProvider />
       <Navbar />
 
-      <main>
+      <main className="relative z-10">
         <Hero />
         <AboutSection />
 

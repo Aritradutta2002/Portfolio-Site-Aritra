@@ -1,6 +1,9 @@
-import type { CSSProperties } from "react";
+'use client'
+
+import type { CSSProperties, MouseEvent } from "react";
 import Image from "next/image";
 import { Button } from "./ui/Button";
+import { ParticleNetworkBFS } from "@/components/luxe/ParticleNetworkBFS";
 import {
   CONTACT_LINKS,
   HEADLINE_METRICS,
@@ -8,9 +11,46 @@ import {
 } from "@/data/portfolioCatalog";
 
 export function Hero() {
+  const handleHeroClick = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (
+      target.closest(
+        'a, button, input, textarea, select, [role="button"], [contenteditable="true"]'
+      )
+    ) {
+      return;
+    }
+    if (typeof window !== "undefined" && window.getSelection()?.toString()) {
+      return;
+    }
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("particle:wave", {
+          detail: { x: event.clientX, y: event.clientY },
+        })
+      );
+    }
+  };
+
   return (
-    <section className="zro-hero border-b border-zro-line">
-      <div className="mx-auto flex max-w-6xl flex-col px-6 pt-14 md:px-8 md:pt-20 lg:min-h-[calc(100svh-4rem)] lg:pt-16">
+    <section
+      onClick={handleHeroClick}
+      className="zro-hero relative overflow-hidden border-b border-zro-line cursor-default"
+    >
+      {/* Hand-written Canvas 2D BFS Particle Network Engine */}
+      <ParticleNetworkBFS className="pointer-events-none absolute inset-0 z-0 h-full w-full" />
+
+      {/* Hero Focus Vignette: Guarantees high text contrast & legibility */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[1]"
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(ellipse 65% 55% at 50% 40%, transparent 35%, rgba(10, 10, 11, 0.72) 100%)",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-6 pt-14 md:px-8 md:pt-20 lg:min-h-[calc(100svh-4rem)] lg:pt-16">
         <div className="grid flex-1 grid-cols-1 items-center gap-12 py-10 lg:grid-cols-12 lg:gap-12 lg:py-12">
           <div className="lg:col-span-7">
             {/* Mobile identification block — the desktop figure carries this. */}
