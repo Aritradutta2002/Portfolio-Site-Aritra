@@ -436,22 +436,30 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   isolation: isolate;
 }
 
-.zro-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: radial-gradient(
-    70% 55% at 50% 0%,
-    rgba(255, 255, 255, 0.055),
-    transparent 70%
-  );
-  pointer-events: none;
+.zro-hero-bg {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
 }
 
-.zro-hero > * {
+.zro-hero-bg canvas,
+.zro-hero canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+.zro-hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 10;
 }
 
 .zro-portrait img {

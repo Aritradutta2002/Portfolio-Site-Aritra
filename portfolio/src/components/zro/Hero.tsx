@@ -37,21 +37,24 @@ export function Hero() {
       onClick={handleHeroClick}
       className="zro-hero relative overflow-hidden border-b border-zro-line cursor-default"
     >
-      {/* Hand-written Canvas 2D BFS Particle Network Engine */}
-      <ParticleNetworkBFS className="pointer-events-none absolute inset-0 z-0 h-full w-full" />
-
-      {/* Hero Focus Vignette: Guarantees high text contrast & legibility */}
+      {/* Background Layer: Canvas 2D BFS Engine + Hero Focus Vignette */}
       <div
-        className="pointer-events-none absolute inset-0 z-[1]"
+        className="zro-hero-bg pointer-events-none absolute inset-0 z-0 overflow-hidden"
         aria-hidden="true"
-        style={{
-          background:
-            "radial-gradient(ellipse 65% 55% at 50% 40%, transparent 35%, rgba(10, 10, 11, 0.72) 100%)",
-        }}
-      />
+      >
+        <ParticleNetworkBFS className="pointer-events-none absolute inset-0 h-full w-full" />
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 65% 55% at 50% 40%, transparent 35%, rgba(10, 10, 11, 0.72) 100%)",
+          }}
+        />
+      </div>
 
-      <div className="relative z-10 mx-auto flex max-w-6xl flex-col px-6 pt-14 md:px-8 md:pt-20 lg:min-h-[calc(100svh-4rem)] lg:pt-16">
-        <div className="grid flex-1 grid-cols-1 items-center gap-12 py-10 lg:grid-cols-12 lg:gap-12 lg:py-12">
+      {/* Foreground Hero Content (Tightened top spacing to remove excess dead space) */}
+      <div className="zro-hero-content relative z-10 mx-auto flex max-w-6xl flex-col px-6 pt-6 md:px-8 md:pt-8 lg:min-h-[calc(100svh-4rem)] lg:pt-8">
+        <div className="grid flex-1 grid-cols-1 items-center gap-12 py-6 md:py-8 lg:grid-cols-12 lg:gap-12 lg:py-10">
           <div className="lg:col-span-7">
             {/* Mobile identification block — the desktop figure carries this. */}
             <div className="mb-7 flex items-center gap-4 lg:hidden">
