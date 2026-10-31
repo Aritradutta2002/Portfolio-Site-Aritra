@@ -3,17 +3,15 @@
 import { useEffect, useRef } from 'react'
 
 /**
- * Layer 2 — Hand-written Canvas 2D BFS Particle Network Engine
+ * Layer 2 — Hand-written Canvas 2D BFS Particle Network Engine (Premium Visual Edition)
  *
- * Architecture:
- * - 69 drifting nodes with stable indices and edge pinning.
- * - Distance-based proximity links (quadratic falloff under 15% viewport diagonal).
- * - Breadth-First Search (BFS) lightning wave propagation with comet-tail animation.
- * - Theme-aware palette (Option A: Champagne Gold / Brass).
- * - Content-first event delegation via `particle:wave` CustomEvent.
- * - Performance guard: IntersectionObserver pauses RAF loop when out of viewport.
- * - Memory guard: Click-spawned nodes are capped and recycled.
- * - Accessibility guard: prefers-reduced-motion scales drift speed down to 35%.
+ * Enhancements:
+ * 1. Multi-Pass Glowing Lightning: Ethereal champagne bloom halo (shadowBlur: 14) + razor-sharp white-hot core + leading tip spark.
+ * 2. Celestial Star Halo: Dynamic radial gradient halos on nodes that flare intensely on wavefront arrival.
+ * 3. Mouse Gravitational Magnetism: Nearby nodes gently drift toward the cursor with spring dampening, with micro-filament connection.
+ * 4. Autonomous Living Waves: Gentle periodic lightning triggers every 8.5s of idle time from active nodes.
+ * 5. Performance guard: IntersectionObserver pauses RAF loop when out of viewport; tab visibility pauses RAF.
+ * 6. Memory & Motion: Particle cap/recycling queue and prefers-reduced-motion scaling.
  */
 
 type Theme = {
@@ -37,7 +35,7 @@ const MAX_PARTICLES = 120
 // Palette Option A: Champagne Gold / Brass
 const themes: Record<'dark' | 'light', Theme> = {
   dark: {
-    dot: [190, 185, 175],         // subtle warm zinc/stone
+    dot: [190, 185, 175],         // subtle warm stone/zinc
     glow: [211, 171, 99],         // champagne gold (#D3AB63 / #C8A46B)
     flare: [255, 248, 230],       // bright white-gold peak
     line: '160, 155, 145',        // warm muted hairline
@@ -72,8 +70,8 @@ class Particle {
     y?: number,
   ) {
     const angle = 2 * Math.PI * Math.random()
-    this.size = 0.0012 + 0.001 * Math.random()
-    const speed = 0.00002 + 0.00002 * Math.random()
+    this.size = 0.0013 + 0.001 * Math.random()
+    const speed = 0.000022 + 0.00002 * Math.random()
     this.vx = speed * Math.cos(angle)
     this.vy = speed * Math.sin(angle)
 
@@ -113,8 +111,8 @@ class Particle {
       this.y = perimeter - 2 * width - height
     }
 
-    const speed = 0.00002 + 0.00002 * Math.random()
-    this.size = 0.0012 + 0.001 * Math.random()
+    const speed = 0.000022 + 0.00002 * Math.random()
+    this.size = 0.0013 + 0.001 * Math.random()
     this.vx = speed * Math.cos(angle)
     this.vy = speed * Math.sin(angle)
     this.pulse = 1
@@ -148,14 +146,28 @@ class Particle {
   draw(ctx: CanvasRenderingContext2D, diag: number, theme: Theme) {
     if (!this.active) return
     const p = this.pulse >= 0 && this.pulse < 1 ? Math.sin(Math.PI * Math.sqrt(this.pulse)) : 0
-    const radius = Math.max(this.size * diag, 1.25) + Math.max(0.0014 * diag, 1.2) * p
+    const radius = Math.max(this.size * diag, 1.3) + Math.max(0.0015 * diag, 1.3) * p
 
     const [r1, g1, b1] = theme.dot
-    const [r2, g2, b2] = p > 0.5 ? theme.flare : theme.glow
+    const [r2, g2, b2] = p > 0.4 ? theme.flare : theme.glow
     const r = Math.round(r1 + (r2 - r1) * p)
     const g = Math.round(g1 + (g2 - g1) * p)
     const b = Math.round(b1 + (b2 - b1) * p)
 
+    // Dynamic celestial radial halo for active / pulsing stars
+    if (p > 0.05) {
+      const haloRadius = radius * 3.4
+      const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, haloRadius)
+      grad.addColorStop(0, `rgba(${theme.flare.join(',')}, ${0.8 * p})`)
+      grad.addColorStop(0.35, `rgba(${theme.glow.join(',')}, ${0.4 * p})`)
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)')
+      ctx.beginPath()
+      ctx.arc(this.x, this.y, haloRadius, 0, Math.PI * 2)
+      ctx.fillStyle = grad
+      ctx.fill()
+    }
+
+    // Star body
     ctx.beginPath()
     ctx.arc(this.x, this.y, radius, 0, Math.PI * 2)
     ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
@@ -209,7 +221,7 @@ class BFSWave {
         continue
       }
       const distance = Math.hypot(p1.x - p2.x, p1.y - p2.y)
-      edge.progress += 0.00095 * diag * dt // Propagation speed
+      edge.progress += 0.001 * diag * dt // Propagation speed
       if (edge.progress >= distance) {
         this.edges.splice(i, 1)
         p1.deg = Math.max(0, p1.deg - 1)
@@ -222,8 +234,10 @@ class BFSWave {
   }
 
   draw(ctx: CanvasRenderingContext2D, diag: number, theme: Theme) {
-    ctx.lineWidth = Math.max(0.0007 * diag, 0.85)
-    ctx.strokeStyle = `rgba(${theme.glow.join(',')}, ${theme.treeAlpha})`
+    if (!this.edges.length) return
+
+    const tail = 0.035 * diag
+    const edgeCoords: { x1: number; y1: number; x2: number; y2: number }[] = []
 
     for (const edge of this.edges) {
       const p1 = this.particles[edge.from]
@@ -232,15 +246,52 @@ class BFSWave {
       const distance = Math.hypot(p1.x - p2.x, p1.y - p2.y)
       if (!distance) continue
 
-      const tail = 0.032 * diag
       const headRatio = Math.min((edge.progress / distance) * ((distance + tail) / distance), 1)
       const tailRatio = Math.max(headRatio - tail / distance, 0)
 
-      ctx.beginPath()
-      ctx.moveTo(p1.x + (p2.x - p1.x) * tailRatio, p1.y + (p2.y - p1.y) * tailRatio)
-      ctx.lineTo(p1.x + (p2.x - p1.x) * headRatio, p1.y + (p2.y - p1.y) * headRatio)
-      ctx.stroke()
+      edgeCoords.push({
+        x1: p1.x + (p2.x - p1.x) * tailRatio,
+        y1: p1.y + (p2.y - p1.y) * tailRatio,
+        x2: p1.x + (p2.x - p1.x) * headRatio,
+        y2: p1.y + (p2.y - p1.y) * headRatio,
+      })
     }
+
+    if (!edgeCoords.length) return
+
+    // Pass 1: Luminous Ambient Bloom Halo (glowing atmospheric trail)
+    ctx.save()
+    ctx.lineWidth = Math.max(0.0024 * diag, 2.6)
+    ctx.strokeStyle = `rgba(${theme.glow.join(',')}, 0.38)`
+    ctx.shadowColor = `rgba(${theme.glow.join(',')}, 0.85)`
+    ctx.shadowBlur = 14
+    ctx.beginPath()
+    for (const { x1, y1, x2, y2 } of edgeCoords) {
+      ctx.moveTo(x1, y1)
+      ctx.lineTo(x2, y2)
+    }
+    ctx.stroke()
+    ctx.restore()
+
+    // Pass 2: Sharp White-Hot Electric Core
+    ctx.save()
+    ctx.lineWidth = Math.max(0.00075 * diag, 0.95)
+    ctx.strokeStyle = `rgba(${theme.flare.join(',')}, ${theme.treeAlpha})`
+    ctx.beginPath()
+    for (const { x1, y1, x2, y2 } of edgeCoords) {
+      ctx.moveTo(x1, y1)
+      ctx.lineTo(x2, y2)
+    }
+    ctx.stroke()
+
+    // Pass 3: Glowing Tip Spark at wavefront head
+    for (const { x2, y2 } of edgeCoords) {
+      ctx.beginPath()
+      ctx.arc(x2, y2, Math.max(0.0016 * diag, 1.8), 0, Math.PI * 2)
+      ctx.fillStyle = `rgb(${theme.flare.join(',')})`
+      ctx.fill()
+    }
+    ctx.restore()
   }
 
   get active() {
@@ -269,7 +320,10 @@ export function ParticleNetworkBFS({ className = '' }: ParticleNetworkBFSProps) 
     const extras: number[] = [] // indices of click-spawned nodes
     let animationFrameId = 0
     let lastTime = performance.now()
+    let lastInteractionTime = performance.now()
     let isVisible = true
+    let mouseX = -9999
+    let mouseY = -9999
 
     // Theme detection with dynamic class observer
     const html = document.documentElement
@@ -336,6 +390,39 @@ export function ParticleNetworkBFS({ className = '' }: ParticleNetworkBFSProps) 
       const diag = Math.hypot(width, height)
       const activeCount = particles.reduce((count, p) => count + Number(p.active), 0)
 
+      // Gravitational drift toward cursor within 130px
+      if (mouseX >= 0 && mouseY >= 0) {
+        for (const p of particles) {
+          if (!p.active) continue
+          const distToMouse = Math.hypot(p.x - mouseX, p.y - mouseY)
+          if (distToMouse < 130 && distToMouse > 2) {
+            const pull = (1 - distToMouse / 130) * 0.35
+            p.x += (mouseX - p.x) * pull * 0.04
+            p.y += (mouseY - p.y) * pull * 0.04
+          }
+        }
+      }
+
+      // Autonomous Ambient Impulse every ~8.5 seconds of idle time
+      if (time - lastInteractionTime > 8500 && waves.length === 0 && particles.length > 0) {
+        const activeNodes = particles
+          .map((p, i) => ({ p, i }))
+          .filter(
+            ({ p }) =>
+              p.active &&
+              p.x > width * 0.15 &&
+              p.x < width * 0.85 &&
+              p.y > height * 0.15 &&
+              p.y < height * 0.85,
+          )
+
+        if (activeNodes.length > 0) {
+          const randomPick = activeNodes[Math.floor(Math.random() * activeNodes.length)]
+          waves.push(new BFSWave(randomPick.i, particles, () => threshold))
+          lastInteractionTime = time
+        }
+      }
+
       particles.forEach((p) => p.update(dt * motionScale, diag, activeCount))
       waves.forEach((wave) => wave.update(dt, diag))
       waves = waves.filter((wave) => wave.active)
@@ -364,14 +451,36 @@ export function ParticleNetworkBFS({ className = '' }: ParticleNetworkBFSProps) 
         }
       }
 
-      // 2. Active BFS lightning wavefronts
+      // 2. Cursor connection filament to closest star
+      if (mouseX >= 0 && mouseY >= 0) {
+        let nearestNode: Particle | null = null
+        let minDist = 95
+        for (const p of particles) {
+          if (!p.active) continue
+          const d = Math.hypot(p.x - mouseX, p.y - mouseY)
+          if (d < minDist) {
+            minDist = d
+            nearestNode = p
+          }
+        }
+        if (nearestNode) {
+          ctx.strokeStyle = `rgba(${theme.glow.join(',')}, ${(1 - minDist / 95) * 0.35})`
+          ctx.lineWidth = 0.85
+          ctx.beginPath()
+          ctx.moveTo(mouseX, mouseY)
+          ctx.lineTo(nearestNode.x, nearestNode.y)
+          ctx.stroke()
+        }
+      }
+
+      // 3. Active BFS multi-pass luminous waves
       waves.forEach((wave) => wave.draw(ctx, diag, theme))
 
-      // 3. Constellation nodes
+      // 4. Constellation stars with celestial halos
       particles.forEach((particle) => particle.draw(ctx, diag, theme))
     }
 
-    // Fire wave from specific coordinates (canvas-local or viewport client coords)
+    // Fire wave from coordinates
     const fireAt = (clientX: number, clientY: number) => {
       const rect = canvas.getBoundingClientRect()
       const x = clientX - rect.left
@@ -379,13 +488,15 @@ export function ParticleNetworkBFS({ className = '' }: ParticleNetworkBFSProps) 
 
       if (x < 0 || x > width || y < 0 || y > height) return
 
+      lastInteractionTime = performance.now()
+
       let index: number
       if (particles.length < MAX_PARTICLES) {
         particles.push(new Particle(() => width, () => height, () => threshold, x, y))
         index = particles.length - 1
         extras.push(index)
       } else {
-        // Recycle oldest click-spawned node to keep memory stable
+        // Recycle oldest click-spawned node to maintain stable memory
         while (extras.length && !particles[extras[0]].active) extras.shift()
         const recycled = extras.shift()
         if (recycled === undefined) return
@@ -404,6 +515,18 @@ export function ParticleNetworkBFS({ className = '' }: ParticleNetworkBFSProps) 
       fireAt(e.clientX, e.clientY)
     }
 
+    const handlePointerMove = (e: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouseX = e.clientX - rect.left
+      mouseY = e.clientY - rect.top
+      lastInteractionTime = performance.now()
+    }
+
+    const handlePointerLeave = () => {
+      mouseX = -9999
+      mouseY = -9999
+    }
+
     const handleCustomWave = (e: Event) => {
       const customEvent = e as CustomEvent<{ x: number; y: number }>
       if (customEvent.detail) {
@@ -412,17 +535,20 @@ export function ParticleNetworkBFS({ className = '' }: ParticleNetworkBFSProps) 
     }
 
     // IntersectionObserver to pause loop when scrolled out of view
-    const observer = new IntersectionObserver(([entry]) => {
-      const nextVisible = entry.isIntersecting && !document.hidden
-      if (nextVisible && !isVisible) {
-        isVisible = true
-        lastTime = performance.now()
-        animationFrameId = requestAnimationFrame(animate)
-      } else if (!nextVisible && isVisible) {
-        isVisible = false
-        cancelAnimationFrame(animationFrameId)
-      }
-    }, { threshold: 0.05 })
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const nextVisible = entry.isIntersecting && !document.hidden
+        if (nextVisible && !isVisible) {
+          isVisible = true
+          lastTime = performance.now()
+          animationFrameId = requestAnimationFrame(animate)
+        } else if (!nextVisible && isVisible) {
+          isVisible = false
+          cancelAnimationFrame(animationFrameId)
+        }
+      },
+      { threshold: 0.05 },
+    )
 
     observer.observe(canvas)
 
@@ -440,6 +566,8 @@ export function ParticleNetworkBFS({ className = '' }: ParticleNetworkBFSProps) 
     resize()
     media.addEventListener('change', handleThemeChange)
     window.addEventListener('particle:wave', handleCustomWave)
+    window.addEventListener('pointermove', handlePointerMove, { passive: true })
+    document.addEventListener('mouseleave', handlePointerLeave)
     document.addEventListener('visibilitychange', handleVisibilityChange)
     canvas.addEventListener('click', handleClick)
     animationFrameId = requestAnimationFrame(animate)
@@ -451,6 +579,8 @@ export function ParticleNetworkBFS({ className = '' }: ParticleNetworkBFSProps) 
       media.removeEventListener('change', handleThemeChange)
       reducedMotionQuery.removeEventListener('change', handleMotionChange)
       window.removeEventListener('particle:wave', handleCustomWave)
+      window.removeEventListener('pointermove', handlePointerMove)
+      document.removeEventListener('mouseleave', handlePointerLeave)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       canvas.removeEventListener('click', handleClick)
     }

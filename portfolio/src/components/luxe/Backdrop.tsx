@@ -24,22 +24,21 @@ export function Backdrop() {
       {/* 72px Radially Masked Grid */}
       <div className="luxe-grid-bg absolute inset-0" />
 
-      {/* Top Center Champagne Gold Spotlight */}
+      {/* Top Center Champagne Gold Spotlight with Slow Ambient Breathing Cycle */}
       <div
-        className="absolute left-1/2 top-[-320px] h-[640px] w-[1100px] max-w-none -translate-x-1/2 rounded-full"
+        className="luxe-spotlight absolute left-1/2 top-[-320px] h-[640px] w-[1100px] max-w-none -translate-x-1/2 rounded-full"
         style={{
-          background: 'radial-gradient(closest-side, rgba(211, 171, 99, 0.14), transparent 70%)',
-          filter: 'blur(32px)',
-          willChange: 'transform',
+          background: 'radial-gradient(closest-side, rgba(211, 171, 99, 0.15), transparent 70%)',
+          filter: 'blur(34px)',
         }}
       />
 
       {/* Bottom Left Emerald Aurora Pool (Desktop only) */}
       <div
-        className="absolute bottom-[-280px] left-[-200px] hidden h-[520px] w-[520px] rounded-full md:block"
+        className="luxe-aurora-pool absolute bottom-[-280px] left-[-200px] hidden h-[520px] w-[520px] rounded-full md:block"
         style={{
-          background: 'radial-gradient(closest-side, rgba(52, 211, 153, 0.07), transparent 70%)',
-          filter: 'blur(30px)',
+          background: 'radial-gradient(closest-side, rgba(52, 211, 153, 0.08), transparent 70%)',
+          filter: 'blur(32px)',
         }}
       />
 
