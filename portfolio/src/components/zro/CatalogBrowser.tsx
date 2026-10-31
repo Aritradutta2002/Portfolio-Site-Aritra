@@ -28,9 +28,9 @@ export function CatalogBrowser() {
         totalCount={systems.length}
       />
 
-      <div>
-        {systems.map((item) => (
-          <CatalogEntry key={item.id} item={item} />
+      <div className="space-y-6">
+        {systems.map((item, index) => (
+          <CatalogEntry key={item.id} item={item} index={index} />
         ))}
       </div>
     </>

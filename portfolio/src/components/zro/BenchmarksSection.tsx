@@ -3,22 +3,32 @@ import { BENCHMARKS_DATA, CONTACT_LINKS } from "@/data/portfolioCatalog";
 export function BenchmarksSection() {
   return (
     <section
+      id="benchmarks"
       aria-labelledby="benchmarks-heading"
-      className="border-t border-zinc-800/90 py-16 md:py-24"
+      className="border-b border-zinc-900 py-16 md:py-24"
     >
-      <div id="benchmarks" className="scroll-mt-24">
-        <div className="text-ds-xs uppercase tracking-[0.16em] text-zro-muted">
-          Algorithmic &amp; Academic Telemetry
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="max-w-2xl">
+          <div className="text-ds-2xs uppercase tracking-[0.18em] text-zro-muted">
+            04 / Benchmarks
+          </div>
+          <h2
+            id="benchmarks-heading"
+            className="mt-3 font-ds-sans text-ds-h2 font-medium text-white"
+          >
+            Verified benchmarks.
+          </h2>
+          <p className="mt-4 text-ds-md leading-relaxed text-zinc-400">
+            Competitive programming ratings, academic record, and enterprise
+            recognition — the measurable side of the work.
+          </p>
         </div>
-        <h2
-          id="benchmarks-heading"
-          className="mt-2 font-ds-sans text-ds-h2 font-medium text-white"
-        >
-          Verified Benchmarks &amp; Credentials
-        </h2>
 
         {/* Hairline telemetry grid — gap-px draws exact 1px rules */}
-        <div className="mt-10 grid grid-cols-1 gap-px border border-zinc-800 bg-zinc-800 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          data-reveal
+          className="mt-10 grid grid-cols-1 gap-px border border-zinc-800 bg-zinc-800 sm:grid-cols-2 lg:grid-cols-4"
+        >
           <div className="bg-[#08080a] p-6">
             <div className="text-ds-2xs uppercase tracking-wider text-zro-muted">
               Problems Solved
@@ -93,7 +103,7 @@ export function BenchmarksSection() {
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div data-reveal className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="border border-zinc-800/90 bg-[#0a0a0c] p-6">
             <div className="text-ds-2xs uppercase tracking-[0.14em] text-zro-muted">
               Enterprise Recognition

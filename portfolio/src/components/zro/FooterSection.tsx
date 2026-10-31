@@ -8,36 +8,45 @@ const PROFILE_LINKS = [
 ] as const;
 
 const INTERFACE_LINKS = [
-  { label: "Datasheet Catalog (Default)", href: "/", current: true },
-  { label: "Interactive Desktop OS (/desktop)", href: CONTACT_LINKS.desktopView },
-  { label: "Plain Text Spec (/classic)", href: CONTACT_LINKS.classicView },
-  { label: "Resume PDF (/resume.pdf)", href: CONTACT_LINKS.resumePdf },
+  { label: "Interactive Desktop OS", href: CONTACT_LINKS.desktopView },
+  { label: "Plain-text version", href: CONTACT_LINKS.classicView },
+  { label: "Resume PDF", href: CONTACT_LINKS.resumePdf },
 ] as const;
 
 export function FooterSection() {
   return (
-    <footer className="border-t border-zinc-800/90 bg-black">
-      <div className="mx-auto max-w-5xl px-6 pb-16 pt-20">
-        <div>
-          <h2 className="font-ds-sans text-ds-cta font-medium text-white">
-            Deploy Aritra on your next architecture
+    <footer id="contact" className="bg-black">
+      <div className="mx-auto max-w-6xl px-6 pb-14 pt-20">
+        <div data-reveal className="max-w-3xl">
+          <div className="text-ds-2xs uppercase tracking-[0.18em] text-zro-muted">
+            05 / Contact
+          </div>
+          <h2 className="mt-3 font-ds-sans text-ds-cta font-medium text-white">
+            Let&apos;s build something that ships.
           </h2>
           <p className="mt-4 max-w-xl text-ds-md leading-relaxed text-zinc-400 md:text-ds-lg">
-            Available for Backend, Cloud Microservices, and Full-Stack
-            Application Engineering discussions.
+            Open to backend, cloud, and full-stack engineering roles. Based in
+            Bhubaneswar, India — happy to talk architecture, Java, or the next
+            system you need to modernise.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-5">
             <a
               href={`mailto:${CONTACT_LINKS.email}`}
               className="border border-white bg-white px-6 py-3.5 text-ds-sm font-medium text-black transition-colors hover:bg-zinc-200"
             >
-              Initiate engineering contact →
+              Email me →
             </a>
             <a
               href={CONTACT_LINKS.resumePdf}
-              className="border border-zinc-700 bg-[#0a0a0c] px-6 py-3.5 text-ds-sm text-white transition-colors hover:border-white"
+              className="border border-zinc-700 bg-[#08080a] px-6 py-3.5 text-ds-sm text-white transition-colors hover:border-white"
             >
-              Download Resume (PDF)
+              Download resume
+            </a>
+            <a
+              href={`mailto:${CONTACT_LINKS.email}`}
+              className="text-ds-sm text-zinc-300 underline decoration-zinc-600 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
+            >
+              {CONTACT_LINKS.email}
             </a>
           </div>
         </div>
@@ -77,19 +86,14 @@ export function FooterSection() {
 
           <div className="space-y-2.5 md:col-span-3">
             <div className="pb-1 uppercase tracking-[0.16em] text-zro-muted">
-              Interface Modes
+              Other views
             </div>
             <ul className="space-y-2 text-zinc-400">
               {INTERFACE_LINKS.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    aria-current={"current" in link ? "page" : undefined}
-                    className={
-                      "current" in link
-                        ? "text-white"
-                        : "transition-colors hover:text-white"
-                    }
+                    className="transition-colors hover:text-white"
                   >
                     {link.label}
                   </a>
@@ -103,7 +107,7 @@ export function FooterSection() {
           <span>
             © {new Date().getFullYear()} {PORTFOLIO_HEADER.name}
           </span>
-          <span>Built with Next.js · TypeScript</span>
+          <span>Bhubaneswar, India</span>
         </div>
       </div>
     </footer>

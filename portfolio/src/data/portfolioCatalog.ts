@@ -49,11 +49,9 @@ export const PORTFOLIO_HEADER = {
   role: "System Engineer · Full Stack Application Engineer",
   company: "Tata Consultancy Services",
   location: "Bhubaneswar, India",
-  announcement:
-    "Enterprise Java Modernisation (20–30x API Speedup) & 700+ CP Problems Solved",
-  heroHeadline: "Every system, in full.",
+  heroHeadline: "I build enterprise systems that move faster.",
   heroSubtitle:
-    "The production Java 21 microservices, cloud PaaS migrations, and AI-powered platforms engineered by Aritra Dutta — with the numbers that matter: runtime remediation, measured API latency gains, and unit test coverage.",
+    "Java 21 microservices, Azure PaaS migrations, and AI-powered platforms — engineered at TCS with measured 20–30x API gains.",
 };
 
 export const CATALOG_ITEMS: SystemCatalogItem[] = [

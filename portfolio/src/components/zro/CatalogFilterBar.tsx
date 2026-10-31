@@ -21,7 +21,7 @@ export function CatalogFilterBar({
   totalCount,
 }: CatalogFilterBarProps) {
   return (
-    <div className="flex flex-col gap-4 pb-4 pt-8 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-4 pb-5 pt-2 sm:flex-row sm:items-center sm:justify-between">
       <div
         role="group"
         aria-label="Filter production systems by category"
@@ -52,7 +52,7 @@ export function CatalogFilterBar({
         aria-live="polite"
         className="text-ds-xs uppercase tracking-[0.14em] text-zro-muted zro-metric"
       >
-        Showing [{totalCount}] production systems
+        Showing [{totalCount}] systems
       </div>
     </div>
   );
