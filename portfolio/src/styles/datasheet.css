@@ -9,8 +9,12 @@
 
 /* ── Tokens ─────────────────────────────────────────────────────────────── */
 
+/* Default / Dark Theme: Obsidian & Champagne Gold */
 .zro-root,
-:root:has(.zro-root) {
+:root:has(.zro-root),
+.dark .zro-root,
+:root.dark:has(.zro-root),
+html.dark .zro-root {
   --zro-canvas: 10 10 11;
   --zro-canvas-deep: 6 6 7;
   --zro-surface: 16 16 19;
@@ -21,28 +25,50 @@
   --zro-accent: 200 164 107;
   --zro-hairline: rgba(255, 255, 255, 0.09);
   --zro-hairline-strong: rgba(255, 255, 255, 0.18);
+  --zro-grid-line: rgba(255, 255, 255, 0.04);
+  --zro-spotlight: rgba(211, 171, 99, 0.14);
+  --zro-vignette: rgba(0, 0, 0, 0.4);
+  --zro-aurora-pool: rgba(52, 211, 153, 0.07);
   --zro-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --zro-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
   --zro-d1: 160ms;
   --zro-d2: 240ms;
   --zro-d3: 600ms;
   --zro-d4: 800ms;
-  /* Overrides the global 6–10rem rhythm without touching other routes. */
   --section-pad-y: clamp(5rem, 8vw, 7.5rem);
+}
+
+/* Light / Day Theme: Warm Porcelain & Burnished Brass */
+:root:not(.dark):has(.zro-root),
+html:not(.dark) .zro-root,
+html.light .zro-root,
+.light .zro-root {
+  --zro-canvas: 248 249 250;
+  --zro-canvas-deep: 240 242 245;
+  --zro-surface: 255 255 255;
+  --zro-surface-2: 243 244 247;
+  --zro-ink: 18 20 29;
+  --zro-muted: 82 88 102;
+  --zro-faint: 128 134 148;
+  --zro-accent: 184 134 43;
+  --zro-hairline: rgba(18, 20, 29, 0.08);
+  --zro-hairline-strong: rgba(18, 20, 29, 0.16);
+  --zro-grid-line: rgba(18, 20, 29, 0.04);
+  --zro-spotlight: rgba(184, 134, 43, 0.08);
+  --zro-vignette: rgba(18, 20, 29, 0.03);
+  --zro-aurora-pool: rgba(16, 185, 129, 0.04);
 }
 
 /* Font stacks resolve where the next/font classes live (the datasheet
    wrapper), so they are declared on .zro-root and inherit downward. */
 .zro-root {
   --zro-sans: var(--font-ds-sans), system-ui, sans-serif;
-  --zro-mono: var(--font-ds-mono), ui-monospace, SFMono-Regular, Menlo,
-    monospace;
+  --zro-mono: var(--font-ds-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* ── Canvas ─────────────────────────────────────────────────────────────── */
 
 .zro-root {
-  color-scheme: dark;
   background-color: transparent;
   color: rgb(var(--zro-ink));
   font-family: var(--zro-sans);
@@ -50,19 +76,29 @@
   text-rendering: optimizeLegibility;
   position: relative;
   z-index: 10;
+  transition: color var(--zro-d2) var(--zro-ease);
 }
 
 html:has(.zro-root) {
-  color-scheme: dark;
   background-color: rgb(var(--zro-canvas-deep));
   scrollbar-width: thin;
   scrollbar-color: rgb(var(--zro-surface-2)) rgb(var(--zro-canvas-deep));
+  transition: background-color var(--zro-d2) var(--zro-ease);
+}
+
+html.dark:has(.zro-root) {
+  color-scheme: dark;
+}
+
+html:not(.dark):has(.zro-root) {
+  color-scheme: light;
 }
 
 body:has(.zro-root) {
   background-color: rgb(var(--zro-canvas));
   color: rgb(var(--zro-ink));
   scrollbar-color: rgb(var(--zro-surface-2)) rgb(var(--zro-canvas-deep));
+  transition: background-color var(--zro-d2) var(--zro-ease), color var(--zro-d2) var(--zro-ease);
 }
 
 /* ── 4-Layer Background System Utilities (Plan.md) ───────────────────────── */
@@ -72,8 +108,8 @@ body:has(.zro-root) {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(var(--zro-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--zro-grid-line) 1px, transparent 1px);
   background-size: 72px 72px;
   -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 75%);
   mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 75%);
@@ -276,11 +312,21 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   }
 
   .zro-btn--solid:hover {
+    --zro-btn-bg: rgb(var(--zro-ink) / 0.88);
+    --zro-btn-border: rgb(var(--zro-ink) / 0.88);
+  }
+
+  html.dark .zro-btn--solid:hover {
     --zro-btn-bg: #ffffff;
     --zro-btn-border: #ffffff;
   }
 
   .zro-btn--outline:hover {
+    --zro-btn-border: var(--zro-hairline-strong);
+    --zro-btn-bg: rgb(var(--zro-ink) / 0.06);
+  }
+
+  html.dark .zro-btn--outline:hover {
     --zro-btn-border: rgba(255, 255, 255, 0.34);
     --zro-btn-bg: rgba(255, 255, 255, 0.05);
   }
@@ -1366,8 +1412,8 @@ html:not(.js) .zro-skill-card .zro-chip {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    linear-gradient(var(--zro-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--zro-grid-line) 1px, transparent 1px);
   background-size: 72px 72px;
   -webkit-mask-image: radial-gradient(
     ellipse 85% 55% at 50% 100%,

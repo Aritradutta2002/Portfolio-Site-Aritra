@@ -37,8 +37,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0A0A0B",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F8F9FA" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0A0B" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function DatasheetLayout({

@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/Button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
 import { lockScroll } from "@/lib/scrollBridge";
 
@@ -217,7 +218,7 @@ export function Navbar() {
       data-hidden={hidden && !menuOpen}
       className={`zro-header sticky top-0 z-40 border-b ${
         scrolled || menuOpen
-          ? "border-zro-line bg-zro-canvas/80 shadow-[0_24px_48px_-40px_rgba(0,0,0,0.9)] backdrop-blur-xl"
+          ? "border-zro-line bg-zro-canvas/80 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.08)] dark:shadow-[0_24px_48px_-40px_rgba(0,0,0,0.9)] backdrop-blur-xl"
           : "border-transparent bg-transparent"
       }`}
     >
@@ -276,6 +277,10 @@ export function Navbar() {
           >
             Résumé
           </Button>
+          <ThemeToggle
+            className="relative h-8 w-8 flex items-center justify-center border border-zro-line bg-zro-surface/40 text-zro-muted hover:text-zro-ink hover:border-zro-accent/60 transition-colors duration-200"
+            iconSize={15}
+          />
           <span
             aria-hidden="true"
             className="zro-nav-indicator"
@@ -292,14 +297,19 @@ export function Navbar() {
           />
         </nav>
 
-        <button
-          ref={menuButtonRef}
-          type="button"
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-          onClick={() => setMenuOpen((open) => !open)}
-          className="inline-flex h-9 w-9 items-center justify-center border border-zro-line text-zro-ink transition-colors hover:border-zro-line-strong sm:hidden"
-        >
+        <div className="flex items-center gap-2 sm:hidden">
+          <ThemeToggle
+            className="inline-flex h-9 w-9 items-center justify-center border border-zro-line bg-zro-surface/40 text-zro-ink transition-colors hover:border-zro-line-strong"
+            iconSize={16}
+          />
+          <button
+            ref={menuButtonRef}
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="inline-flex h-9 w-9 items-center justify-center border border-zro-line text-zro-ink transition-colors hover:border-zro-line-strong"
+          >
           <span className="sr-only">
             {menuOpen ? "Close menu" : "Open menu"}
           </span>
@@ -324,7 +334,8 @@ export function Navbar() {
               />
             )}
           </svg>
-        </button>
+          </button>
+        </div>
       </div>
 
       {menuOpen ? (
@@ -356,18 +367,22 @@ export function Navbar() {
               </a>
             ))}
             <div
-              className="mt-5 flex"
+              className="mt-5 flex items-center gap-2.5"
               style={{ "--i": NAV_LINKS.length } as CSSProperties}
             >
               <Button
                 href={CONTACT_LINKS.resumePdf}
                 variant="outline"
-                className="w-full"
+                className="flex-1"
                 arrow
                 external
               >
                 Download résumé
               </Button>
+              <ThemeToggle
+                className="inline-flex h-10 w-10 items-center justify-center border border-zro-line bg-zro-surface text-zro-ink"
+                iconSize={16}
+              />
             </div>
 
             <div

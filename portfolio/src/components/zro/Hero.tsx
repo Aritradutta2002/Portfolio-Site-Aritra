@@ -49,7 +49,7 @@ export function Hero() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 65% 55% at 50% 40%, transparent 35%, rgba(10, 10, 11, 0.72) 100%)",
+              "radial-gradient(ellipse 65% 55% at 50% 40%, transparent 35%, rgb(var(--zro-canvas) / 0.72) 100%)",
           }}
         />
       </div>
