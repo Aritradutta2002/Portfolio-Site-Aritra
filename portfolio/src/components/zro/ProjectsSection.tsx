@@ -229,75 +229,92 @@ export function ProjectsSection() {
 
                 {/* Right Column: Interactive IDE / Terminal Mockup */}
                 <div className="lg:col-span-5">
-                  <div className="border border-zro-line bg-black/60 rounded-none overflow-hidden shadow-2xl backdrop-blur-md">
+                  <div className="border border-zinc-800/80 bg-[#0B0D13] dark:border-white/10 dark:bg-black/80 rounded-none overflow-hidden shadow-2xl backdrop-blur-md">
                     {/* Window Title Bar */}
-                    <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5 bg-white/[0.02]">
+                    <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5 bg-white/[0.03]">
                       <div className="flex items-center gap-2">
                         <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80 inline-block" />
                         <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80 inline-block" />
                         <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80 inline-block" />
                       </div>
-                      <span className="font-mono text-[0.6875rem] text-zro-muted">
+                      <span className="font-mono text-[0.6875rem] text-zinc-300">
                         GuruBotRAG.py · AlgoGuru
                       </span>
-                      <span className="font-mono text-[0.625rem] text-zro-accent">
+                      <span className="font-mono text-[0.625rem] text-amber-400">
                         Python 3.11
                       </span>
                     </div>
 
                     {/* Code Content */}
                     <div className="p-4 font-mono text-[0.75rem] leading-[1.7] text-zinc-300 overflow-x-auto">
-                      <p className="text-zinc-500">
+                      <p className="text-zinc-500 italic">
                         # Autonomous RAG Algorithm Tutor
                       </p>
                       <p>
-                        <span className="text-purple-400">from</span> langchain{" "}
-                        <span className="text-purple-400">import</span>{" "}
-                        RetrievalQA
+                        <span className="text-purple-400 font-medium">from</span>{" "}
+                        <span className="text-zinc-200">langchain</span>{" "}
+                        <span className="text-purple-400 font-medium">import</span>{" "}
+                        <span className="text-cyan-300">RetrievalQA</span>
                       </p>
                       <p>
-                        <span className="text-purple-400">class</span>{" "}
-                        <span className="text-yellow-300">GuruBotTutor</span>:
+                        <span className="text-purple-400 font-medium">class</span>{" "}
+                        <span className="text-yellow-300 font-semibold">GuruBotTutor</span>:
                       </p>
-                      <p className="pl-4">
-                        <span className="text-purple-400">def</span>{" "}
-                        <span className="text-blue-400">generate_hint</span>(self,
-                        code, problem_id):
+                      <p className="pl-4 text-zinc-200">
+                        <span className="text-purple-400 font-medium">def</span>{" "}
+                        <span className="text-blue-400 font-medium">generate_hint</span>(
+                        <span className="text-purple-400">self</span>,{" "}
+                        <span className="text-amber-300">code</span>,{" "}
+                        <span className="text-amber-300">problem_id</span>):
                       </p>
-                      <p className="pl-8 text-zinc-400">
-                        doc = self.vector_db.lookup(problem_id)
+                      <p className="pl-8 text-zinc-200">
+                        <span className="text-cyan-300 font-medium">doc</span>
+                        {" = "}
+                        <span className="text-purple-400">self</span>
+                        .vector_db.
+                        <span className="text-blue-400">lookup</span>
+                        (<span className="text-amber-300">problem_id</span>)
                       </p>
-                      <p className="pl-8 text-zinc-400">
-                        prompt = self.build_prompt(doc, code)
+                      <p className="pl-8 text-zinc-200">
+                        <span className="text-cyan-300 font-medium">prompt</span>
+                        {" = "}
+                        <span className="text-purple-400">self</span>
+                        .
+                        <span className="text-blue-400">build_prompt</span>
+                        (<span className="text-amber-300">doc</span>,{" "}
+                        <span className="text-amber-300">code</span>)
                       </p>
-                      <p className="pl-8">
-                        <span className="text-purple-400">return</span>{" "}
-                        self.llm.stream(prompt)
+                      <p className="pl-8 text-zinc-200">
+                        <span className="text-purple-400 font-medium">return</span>{" "}
+                        <span className="text-purple-400">self</span>
+                        .llm.
+                        <span className="text-blue-400">stream</span>
+                        (<span className="text-amber-300">prompt</span>)
                       </p>
                     </div>
 
                     {/* Live System Telemetry Strip */}
-                    <div className="border-t border-white/10 bg-white/[0.02] p-3 text-[0.6875rem] font-mono space-y-1.5">
+                    <div className="border-t border-white/10 bg-black/40 p-3 text-[0.6875rem] font-mono space-y-1.5">
                       <div className="flex items-center justify-between text-zinc-400">
                         <span>Production URL:</span>
                         <a
                           href="https://www.algoguru.online"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-emerald-400 hover:underline"
+                          className="text-emerald-400 hover:text-emerald-300 hover:underline font-medium"
                         >
                           https://www.algoguru.online ↗
                         </a>
                       </div>
                       <div className="flex items-center justify-between text-zinc-400">
                         <span>System Health:</span>
-                        <span className="text-emerald-400">
+                        <span className="text-emerald-400 font-medium">
                           200 OK · 99.9% Uptime
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-zinc-400">
                         <span>Runtime Sandbox:</span>
-                        <span className="text-zinc-200">
+                        <span className="text-zinc-200 font-medium">
                           In-Browser Java 21 Engine
                         </span>
                       </div>
