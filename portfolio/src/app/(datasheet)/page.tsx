@@ -8,8 +8,15 @@ import { BenchmarksSection } from "@/components/zro/BenchmarksSection";
 import { FooterSection } from "@/components/zro/FooterSection";
 import { RevealProvider } from "@/components/zro/RevealProvider";
 import { SectionHeader } from "@/components/zro/ui/SectionHeader";
+import { MotionController } from "@/components/zro/MotionController";
+import { DatasheetScroll } from "@/components/zro/DatasheetScroll";
+import { BackToTop } from "@/components/zro/BackToTop";
 import { Backdrop } from "@/components/luxe/Backdrop";
-import { PROJECTS } from "@/data/portfolioCatalog";
+import {
+  CONTACT_LINKS,
+  PORTFOLIO_HEADER,
+  PROJECTS,
+} from "@/data/portfolioCatalog";
 
 const TITLE = "Aritra Dutta — Full Stack Application Engineer";
 const DESCRIPTION =
@@ -30,14 +37,36 @@ export const metadata: Metadata = {
     siteName: "Aritra Dutta",
     title: TITLE,
     description: DESCRIPTION,
-    images: [{ url: "/aritra-portrait.webp", width: 640, height: 878 }],
+    /* Image comes from ./opengraph-image.tsx (file convention). */
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
-    images: ["/aritra-portrait.webp"],
+    /* Image comes from ./twitter-image.tsx (file convention). */
   },
+};
+
+const PERSON_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: PORTFOLIO_HEADER.name,
+  jobTitle: PORTFOLIO_HEADER.role,
+  url: "https://www.aritradutta.tech/",
+  image: "https://www.aritradutta.tech/aritra-portrait.webp",
+  email: `mailto:${CONTACT_LINKS.email}`,
+  worksFor: { "@type": "Organization", name: PORTFOLIO_HEADER.company },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Bhubaneswar",
+    addressCountry: "IN",
+  },
+  sameAs: [
+    CONTACT_LINKS.github,
+    CONTACT_LINKS.linkedin,
+    CONTACT_LINKS.leetcode,
+    CONTACT_LINKS.codechef,
+  ],
 };
 
 export default function PortfolioHomePage() {
@@ -51,7 +80,17 @@ export default function PortfolioHomePage() {
         Skip to content
       </a>
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(PERSON_JSON_LD).replace(/</g, "\\u003c"),
+        }}
+      />
+
+      <div className="zro-progress" aria-hidden="true" />
       <RevealProvider />
+      <MotionController />
+      <DatasheetScroll />
       <Navbar />
 
       <main className="relative z-10">
@@ -86,6 +125,7 @@ export default function PortfolioHomePage() {
       </main>
 
       <FooterSection />
+      <BackToTop />
 
       <noscript>
         <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>

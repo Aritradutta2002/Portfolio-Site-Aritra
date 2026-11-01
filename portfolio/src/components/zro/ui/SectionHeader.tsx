@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 interface SectionHeaderProps {
   id: string;
   index: string;
@@ -15,8 +17,14 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className={className}>
-      <p className="zro-eyebrow" data-reveal="fade">
-        {index}
+      <p className="zro-eyebrow zro-index" data-reveal="fade">
+        <span>{index}</span>
+        <span
+          aria-hidden="true"
+          data-reveal="rule"
+          className="zro-index-rule"
+          style={{ "--zro-delay": "180ms" } as CSSProperties}
+        />
       </p>
       <h2 id={id} className="zro-title mt-4 text-zro-ink">
         <span className="zro-mask" data-reveal="mask">

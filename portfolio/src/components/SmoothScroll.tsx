@@ -4,9 +4,10 @@ import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import type Lenis from 'lenis'
 
-/* The datasheet is a static document and the OS owns a fixed viewport, so
-   neither benefits from a RAF-driven smooth-scroll loop. Keeping Lenis off
-   those two routes also makes native hash links land immediately. */
+/* The datasheet (`/`) runs its own Lenis instance (see zro/DatasheetScroll)
+   that is wired into its anchor links, scroll lock and reduced-motion
+   handling, so this global one must stay off it. The OS owns a fixed viewport
+   and does not benefit from smooth scroll at all. */
 const NATIVE_SCROLL_ROUTES = new Set(['/', '/desktop'])
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {

@@ -1,9 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import Link from "next/link";
 import { Button } from "./ui/Button";
 import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
+import { lockScroll } from "@/lib/scrollBridge";
 
 const NAV_LINKS = [
   { label: "About", href: "#about" },
@@ -14,23 +22,62 @@ const NAV_LINKS = [
 
 const SECTION_IDS = NAV_LINKS.map((link) => link.href.slice(1));
 
+/** Scroll distance before the header may tuck away, and the dead-zone. */
+const HIDE_AFTER = 320;
+const SCROLL_DEADZONE = 6;
+
+interface Indicator {
+  x: number;
+  y: number;
+  width: number;
+}
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [indicator, setIndicator] = useState<Indicator | null>(null);
+
+  const headerRef = useRef<HTMLElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuOpenRef = useRef(false);
 
   useEffect(() => {
+    menuOpenRef.current = menuOpen;
+  }, [menuOpen]);
+
+  /* Scrolled state + hide on scroll down / reveal on scroll up. */
+  useEffect(() => {
     let frame = 0;
-    const onScroll = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        setScrolled(window.scrollY > 8);
-      });
+    let lastY = window.scrollY;
+
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      setScrolled(y > 8);
+
+      if (menuOpenRef.current || y <= HIDE_AFTER / 4) {
+        setHidden(false);
+        lastY = y;
+        return;
+      }
+
+      const delta = y - lastY;
+      if (Math.abs(delta) < SCROLL_DEADZONE) return;
+      lastY = y;
+
+      const keyboardInside = headerRef.current?.querySelector(":focus-visible");
+      if (delta > 0 && y > HIDE_AFTER && !keyboardInside) setHidden(true);
+      else if (delta < 0) setHidden(false);
     };
 
-    onScroll();
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
@@ -39,6 +86,7 @@ export function Navbar() {
     };
   }, []);
 
+  /* Active section tracking. */
   useEffect(() => {
     const sections = SECTION_IDS.map((id) =>
       document.getElementById(id)
@@ -75,13 +123,73 @@ export function Navbar() {
     return () => observer.disconnect();
   }, []);
 
+  /* Sliding indicator under the active desktop link. */
+  const placeIndicator = useCallback(() => {
+    const nav = navRef.current;
+    const link = active
+      ? nav?.querySelector<HTMLElement>(`a[href="#${active}"]`)
+      : null;
+
+    if (!nav || !link || link.offsetWidth === 0) {
+      setIndicator(null);
+      return;
+    }
+
+    setIndicator({
+      x: link.offsetLeft,
+      y: link.offsetTop + link.offsetHeight - 1,
+      width: link.offsetWidth,
+    });
+  }, [active]);
+
+  useLayoutEffect(() => {
+    placeIndicator();
+  }, [placeIndicator]);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const observer = new ResizeObserver(placeIndicator);
+    observer.observe(nav);
+    document.fonts?.ready.then(placeIndicator).catch(() => undefined);
+    return () => observer.disconnect();
+  }, [placeIndicator]);
+
+  /* Mobile menu: scroll lock, focus management, Escape, focus trap. */
   useEffect(() => {
     if (!menuOpen) return;
 
+    lockScroll(true);
+    const header = headerRef.current;
+    header?.querySelector<HTMLElement>("#mobile-nav a")?.focus();
+
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      setMenuOpen(false);
-      menuButtonRef.current?.focus();
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+        return;
+      }
+
+      if (event.key !== "Tab" || !header) return;
+
+      const focusable = Array.from(
+        header.querySelectorAll<HTMLElement>(
+          "#mobile-nav a[href], #mobile-nav button, button[aria-controls='mobile-nav']"
+        )
+      ).filter((el) => el.offsetParent !== null);
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const current = document.activeElement;
+
+      if (event.shiftKey && current === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && current === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
     const desktop = window.matchMedia("(min-width: 640px)");
@@ -93,6 +201,7 @@ export function Navbar() {
     desktop.addEventListener("change", onDesktop);
 
     return () => {
+      lockScroll(false);
       window.removeEventListener("keydown", onKeyDown);
       desktop.removeEventListener("change", onDesktop);
     };
@@ -103,7 +212,9 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
+      ref={headerRef}
+      data-hidden={hidden && !menuOpen}
+      className={`zro-header sticky top-0 z-40 border-b ${
         scrolled || menuOpen
           ? "border-zro-line bg-zro-canvas/85 backdrop-blur-md"
           : "border-transparent bg-transparent"
@@ -123,7 +234,11 @@ export function Navbar() {
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-7 sm:flex">
+        <nav
+          ref={navRef}
+          aria-label="Primary"
+          className="relative hidden items-center gap-7 sm:flex"
+        >
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -141,6 +256,20 @@ export function Navbar() {
           >
             Resume
           </Button>
+          <span
+            aria-hidden="true"
+            className="zro-nav-indicator"
+            data-ready={indicator !== null}
+            style={
+              indicator
+                ? ({
+                    "--ix": `${indicator.x}px`,
+                    "--iy": `${indicator.y}px`,
+                    width: indicator.width,
+                  } as CSSProperties)
+                : undefined
+            }
+          />
         </nav>
 
         <button
@@ -187,12 +316,13 @@ export function Navbar() {
             aria-label="Mobile"
             className="mx-auto flex max-w-6xl flex-col px-6 py-5"
           >
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map((link, index) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 aria-current={current(link.href)}
+                style={{ "--i": index } as CSSProperties}
                 className={`flex items-center justify-between border-b border-zro-line py-3.5 font-ds-mono text-[0.6875rem] uppercase tracking-[0.14em] transition-colors ${
                   active === link.href.slice(1)
                     ? "text-zro-ink"
@@ -205,13 +335,18 @@ export function Navbar() {
                 </span>
               </a>
             ))}
-            <Button
-              href={CONTACT_LINKS.resumePdf}
-              variant="outline"
-              className="mt-5 w-full"
+            <div
+              className="mt-5 flex"
+              style={{ "--i": NAV_LINKS.length } as CSSProperties}
             >
-              Download resume
-            </Button>
+              <Button
+                href={CONTACT_LINKS.resumePdf}
+                variant="outline"
+                className="w-full"
+              >
+                Download resume
+              </Button>
+            </div>
           </nav>
         </div>
       ) : null}

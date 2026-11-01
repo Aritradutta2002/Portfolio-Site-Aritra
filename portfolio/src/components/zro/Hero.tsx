@@ -3,6 +3,7 @@
 import type { CSSProperties, MouseEvent } from "react";
 import Image from "next/image";
 import { Button } from "./ui/Button";
+import { AnimatedMetric } from "./AnimatedMetric";
 import { ParticleNetworkBFS } from "@/components/luxe/ParticleNetworkBFS";
 import {
   CONTACT_LINKS,
@@ -35,6 +36,7 @@ export function Hero() {
   return (
     <section
       onClick={handleHeroClick}
+      data-spot
       className="zro-hero relative overflow-hidden border-b border-zro-line cursor-default"
     >
       {/* Background Layer: Canvas 2D BFS Engine + Hero Focus Vignette */}
@@ -43,6 +45,7 @@ export function Hero() {
         aria-hidden="true"
       >
         <ParticleNetworkBFS className="pointer-events-none absolute inset-0 h-full w-full" />
+        <div className="zro-hero-light" />
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -78,7 +81,7 @@ export function Hero() {
             >
               <span
                 aria-hidden="true"
-                className="h-1.5 w-1.5 rounded-full bg-zro-accent motion-safe:animate-pulse"
+                className="zro-pulse-dot h-1.5 w-1.5 rounded-full bg-zro-accent"
               />
               <span className="zro-eyebrow">{PORTFOLIO_HEADER.availability}</span>
             </div>
@@ -115,10 +118,19 @@ export function Hero() {
               style={{ "--zro-delay": "220ms" } as CSSProperties}
               className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4"
             >
-              <Button href={CONTACT_LINKS.resumePdf} variant="solid" arrow>
+              <Button
+                href={CONTACT_LINKS.resumePdf}
+                variant="solid"
+                arrow
+                magnetic
+              >
                 Download resume
               </Button>
-              <Button href={`mailto:${CONTACT_LINKS.email}`} variant="outline">
+              <Button
+                href={`mailto:${CONTACT_LINKS.email}`}
+                variant="outline"
+                magnetic
+              >
                 Email me
               </Button>
               <Button href="#experience" variant="quiet" arrow>
@@ -132,14 +144,19 @@ export function Hero() {
               data-reveal="fade"
               className="zro-portrait mx-auto w-full max-w-[400px] overflow-hidden border border-zro-line bg-zro-surface"
             >
-              <div className="relative aspect-[4/5] w-full">
-                <Image
-                  src="/aritra-portrait.webp"
-                  alt={`${PORTFOLIO_HEADER.name}, ${PORTFOLIO_HEADER.role}`}
-                  fill
-                  sizes="(max-width: 1024px) 0px, 400px"
-                  className="object-cover"
-                />
+              <div
+                data-scroll
+                className="zro-portrait-frame relative aspect-[4/5] w-full overflow-hidden"
+              >
+                <div className="zro-portrait-media">
+                  <Image
+                    src="/aritra-portrait.webp"
+                    alt={`${PORTFOLIO_HEADER.name}, ${PORTFOLIO_HEADER.role}`}
+                    fill
+                    sizes="(max-width: 1024px) 0px, 400px"
+                    className="object-cover"
+                  />
+                </div>
               </div>
               <figcaption className="border-t border-zro-line px-4 py-3 text-[0.6875rem] uppercase leading-relaxed tracking-[0.14em] text-zro-faint">
                 {PORTFOLIO_HEADER.name} · {PORTFOLIO_HEADER.location}
@@ -148,7 +165,12 @@ export function Hero() {
           </div>
         </div>
 
-        <dl className="grid grid-cols-1 border-t border-zro-line sm:grid-cols-3">
+        <div
+          data-reveal="rule"
+          style={{ "--zro-delay": "260ms" } as CSSProperties}
+          aria-hidden="true"
+        />
+        <dl className="grid grid-cols-1 sm:grid-cols-3">
           {HEADLINE_METRICS.map((metric, index) => (
             <div
               key={metric.label}
@@ -164,7 +186,10 @@ export function Hero() {
             >
               <dt className="zro-eyebrow">{metric.label}</dt>
               <dd className="zro-metric mt-2 text-[1.875rem] font-medium leading-none text-zro-ink">
-                {metric.value}
+                <AnimatedMetric
+                  value={metric.value}
+                  delay={380 + index * 90}
+                />
               </dd>
             </div>
           ))}

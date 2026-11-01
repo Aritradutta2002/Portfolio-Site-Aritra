@@ -222,15 +222,17 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   text-decoration: none;
   white-space: nowrap;
   user-select: none;
+  /* --tx/--ty are the magnetic offset written by MotionController. */
+  transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0);
   transition:
     background-color var(--zro-d2) var(--zro-ease),
     border-color var(--zro-d2) var(--zro-ease),
     color var(--zro-d2) var(--zro-ease),
-    transform var(--zro-d1) var(--zro-ease);
+    transform 380ms var(--zro-ease);
 }
 
 .zro-btn:active {
-  transform: none;
+  transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(0.985);
 }
 
 .zro-btn--solid {
@@ -270,7 +272,7 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
 
 @media (hover: hover) {
   .zro-btn:hover {
-    transform: translateY(-1px);
+    transform: translate3d(var(--tx, 0px), calc(var(--ty, 0px) - 1px), 0);
   }
 
   .zro-btn--solid:hover {
@@ -349,20 +351,48 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
     border-color var(--zro-d2) var(--zro-ease);
 }
 
-.zro-card::before {
+/* Cursor-lit surface. `--mx/--my` are written by MotionController for any
+   `[data-spot]` element. ::before lights the 1px border, ::after washes the
+   fill; both sit under the content (children are lifted to z-index 1). */
+.zro-card::before,
+.zro-card::after {
   content: "";
   position: absolute;
-  inset: 0 0 auto;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.16),
-    transparent
-  );
-  opacity: 0;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
-  transition: opacity var(--zro-d2) var(--zro-ease);
+  opacity: 0;
+  transition: opacity 420ms var(--zro-ease);
+}
+
+.zro-card::before {
+  padding: 1px;
+  background: radial-gradient(
+    360px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(var(--zro-accent) / 0.9),
+    rgb(var(--zro-accent) / 0.12) 45%,
+    transparent 70%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+
+.zro-card::after {
+  background: radial-gradient(
+    480px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(var(--zro-accent) / 0.07),
+    transparent 62%
+  );
+}
+
+.zro-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 @media (hover: hover) {
@@ -371,7 +401,8 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
     border-color: var(--zro-hairline-strong);
   }
 
-  .zro-card:hover::before {
+  .zro-card:hover::before,
+  .zro-card:hover::after {
     opacity: 1;
   }
 }
@@ -591,4 +622,716 @@ html:not(.js) .zro-mask > span {
   .zro-btn:hover {
     transform: none;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Premium motion layer
+   Driven by MotionController (CSS variables only) + DatasheetScroll (Lenis).
+   Every rule here has a reduced-motion / no-JS fallback at the end.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Lenis housekeeping (only applies while Lenis is running). */
+html.lenis:has(.zro-root),
+html.lenis:has(.zro-root) body {
+  height: auto;
+}
+
+html.lenis:has(.zro-root) {
+  scroll-behavior: auto !important;
+}
+
+html.lenis:has(.zro-root) [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+html.lenis.lenis-stopped:has(.zro-root) {
+  overflow: hidden;
+}
+
+/* ── Scroll progress hairline ───────────────────────────────────────────── */
+
+.zro-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--zro-accent) / 0.35),
+    rgb(var(--zro-accent))
+  );
+  transform-origin: left;
+  transform: scaleX(var(--scroll-p, 0));
+  will-change: transform;
+}
+
+/* ── Header states ──────────────────────────────────────────────────────── */
+
+.zro-header {
+  transition:
+    transform 460ms var(--zro-ease),
+    background-color 300ms var(--zro-ease),
+    border-color 300ms var(--zro-ease);
+}
+
+.zro-header[data-hidden="true"] {
+  transform: translate3d(0, -100%, 0);
+}
+
+/* Sliding indicator replaces the per-link underline for the current page. */
+.zro-nav-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1px;
+  width: 0;
+  background-color: rgb(var(--zro-accent));
+  opacity: 0;
+  transform: translate3d(var(--ix, 0px), var(--iy, 0px), 0);
+  transition:
+    transform 520ms var(--zro-ease),
+    width 520ms var(--zro-ease),
+    opacity 240ms var(--zro-ease);
+  pointer-events: none;
+}
+
+.zro-nav-indicator[data-ready="true"] {
+  opacity: 1;
+}
+
+.zro-nav-link[aria-current]::after {
+  transform: scaleX(0);
+}
+
+.zro-nav-link[aria-current]:hover::after {
+  transform: scaleX(0);
+}
+
+@keyframes zro-menu-item-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.zro-menu-panel a,
+.zro-menu-panel .zro-btn {
+  animation: zro-menu-item-in 420ms var(--zro-ease) both;
+  animation-delay: calc(var(--i, 0) * 50ms + 40ms);
+}
+
+/* ── Back to top ────────────────────────────────────────────────────────── */
+
+.zro-top {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 45;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--zro-hairline-strong);
+  background-color: rgb(var(--zro-canvas) / 0.85);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: rgb(var(--zro-ink));
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  visibility: hidden;
+  transition:
+    opacity 360ms var(--zro-ease),
+    transform 360ms var(--zro-ease),
+    visibility 0s linear 360ms,
+    border-color 200ms var(--zro-ease),
+    background-color 200ms var(--zro-ease);
+}
+
+.zro-top[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+@media (hover: hover) {
+  .zro-top:hover {
+    border-color: rgb(var(--zro-accent));
+    background-color: rgb(var(--zro-surface-2));
+  }
+
+  .zro-top:hover svg {
+    transform: translateY(-2px);
+  }
+}
+
+.zro-top svg {
+  transition: transform 240ms var(--zro-ease);
+}
+
+/* ── Hero: cursor light, portrait frame, parallax ───────────────────────── */
+
+.zro-hero-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    520px circle at var(--mx, 62%) var(--my, 38%),
+    rgb(var(--zro-accent) / 0.1),
+    transparent 62%
+  );
+  transition: opacity 700ms var(--zro-ease);
+}
+
+@media (hover: hover) {
+  .zro-hero:hover .zro-hero-light {
+    opacity: 1;
+  }
+}
+
+/* Entrance: soft focus-pull on the hero copy. The H1 name is deliberately
+   excluded so the LCP element paints on the first frame. */
+html.js .zro-hero [data-reveal]:not([data-reveal="fade"]):not([data-reveal="rule"]) {
+  filter: blur(6px);
+  transition:
+    opacity var(--zro-d3) var(--zro-ease) var(--zro-delay, 0ms),
+    transform 800ms var(--zro-ease) var(--zro-delay, 0ms),
+    filter 800ms var(--zro-ease) var(--zro-delay, 0ms);
+}
+
+html.js .zro-hero [data-reveal].is-visible:not([data-reveal="fade"]) {
+  filter: none;
+}
+
+.zro-portrait {
+  position: relative;
+}
+
+/* Registration marks: four brass corner ticks outside the plate. */
+.zro-portrait-frame {
+  position: relative;
+}
+
+.zro-portrait-frame::before,
+.zro-portrait-frame::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  border: 0 solid rgb(var(--zro-accent));
+  opacity: 0.9;
+}
+
+.zro-portrait-frame::before {
+  top: 8px;
+  left: 8px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.zro-portrait-frame::after {
+  right: 8px;
+  bottom: 8px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+.zro-portrait-media {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(0, calc(var(--sv, 0) * -16px), 0) scale(1.08);
+  will-change: transform;
+}
+
+.zro-portrait-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 55%, rgba(10, 10, 11, 0.55) 100%),
+    radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      rgb(var(--zro-accent) / 0.08),
+      transparent 70%
+    );
+}
+
+.zro-pulse-dot {
+  position: relative;
+}
+
+.zro-pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--zro-accent) / 0.6);
+  animation: zro-ping 2.4s var(--zro-ease) infinite;
+}
+
+@keyframes zro-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  80%,
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* ── Ambient backdrop parallax ──────────────────────────────────────────── */
+
+.zro-backdrop-drift {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(0, calc(var(--scroll-p, 0) * -140px), 0);
+  will-change: transform;
+}
+
+/* ── Section header ─────────────────────────────────────────────────────── */
+
+.zro-index {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.zro-index-rule {
+  width: 2.75rem;
+  flex: none;
+}
+
+[data-reveal="rule"].zro-index-rule::after {
+  background-color: rgb(var(--zro-accent) / 0.7);
+}
+
+/* ── Experience timeline ────────────────────────────────────────────────── */
+
+.zro-timeline {
+  position: relative;
+  padding-left: 1.75rem;
+}
+
+.zro-timeline::before,
+.zro-timeline::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 1px;
+  pointer-events: none;
+}
+
+.zro-timeline::before {
+  background-color: var(--zro-hairline);
+}
+
+.zro-timeline::after {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--zro-accent) / 0.2),
+    rgb(var(--zro-accent))
+  );
+  transform-origin: top;
+  transform: scaleY(1);
+}
+
+html.js .zro-timeline::after {
+  transform: scaleY(var(--sd, 0));
+  will-change: transform;
+}
+
+.zro-timeline-item {
+  position: relative;
+}
+
+.zro-timeline-item::before {
+  content: "";
+  position: absolute;
+  top: 2.3rem;
+  left: -1.75rem;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--zro-hairline-strong);
+  background-color: rgb(var(--zro-canvas));
+  transition:
+    background-color 500ms var(--zro-ease) 150ms,
+    border-color 500ms var(--zro-ease) 150ms,
+    box-shadow 500ms var(--zro-ease) 150ms;
+}
+
+.zro-timeline-item.is-visible::before,
+html:not(.js) .zro-timeline-item::before {
+  border-color: rgb(var(--zro-accent));
+  background-color: rgb(var(--zro-accent));
+  box-shadow: 0 0 0 4px rgb(var(--zro-accent) / 0.14);
+}
+
+/* ── Skills: staggered chips ────────────────────────────────────────────── */
+
+.zro-skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.zro-skill-list .zro-chip {
+  height: 1.875rem;
+  padding-inline: 0.625rem;
+  font-size: 0.75rem;
+  color: rgb(var(--zro-ink));
+}
+
+html.js .zro-skill-row .zro-chip {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity 600ms var(--zro-ease) calc(120ms + var(--ci, 0) * 32ms),
+    transform 700ms var(--zro-ease) calc(120ms + var(--ci, 0) * 32ms),
+    color var(--zro-d1) var(--zro-ease),
+    border-color var(--zro-d1) var(--zro-ease),
+    background-color var(--zro-d1) var(--zro-ease);
+}
+
+html.js .zro-skill-row.is-visible .zro-chip {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: hover) {
+  .zro-skill-list .zro-chip:hover {
+    border-color: rgb(var(--zro-accent) / 0.7);
+    background-color: rgb(var(--zro-accent) / 0.08);
+    transition-delay: 0s;
+  }
+}
+
+/* ── Footer / contact ───────────────────────────────────────────────────── */
+
+.zro-copy {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgb(var(--zro-muted));
+  font: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 255, 255, 0.24);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition:
+    color var(--zro-d2) var(--zro-ease),
+    text-decoration-color var(--zro-d2) var(--zro-ease);
+}
+
+.zro-copy:hover {
+  color: rgb(var(--zro-ink));
+  text-decoration-color: currentColor;
+}
+
+.zro-copy-status {
+  font-family: var(--zro-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--zro-accent));
+  opacity: 0;
+  transform: translate3d(0, -3px, 0);
+  transition:
+    opacity 240ms var(--zro-ease),
+    transform 240ms var(--zro-ease);
+}
+
+.zro-copy-status[data-show="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.zro-foot-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition:
+    color var(--zro-d2) var(--zro-ease),
+    transform var(--zro-d2) var(--zro-ease);
+}
+
+@media (hover: hover) {
+  .zro-foot-link:hover {
+    color: rgb(var(--zro-ink));
+    transform: translate3d(3px, 0, 0);
+  }
+}
+
+/* ── Reduced motion: motion layer ───────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .zro-progress {
+    transition: none;
+  }
+
+  .zro-header,
+  .zro-header[data-hidden="true"] {
+    transform: none;
+    transition: none;
+  }
+
+  .zro-nav-indicator,
+  .zro-top,
+  .zro-hero-light,
+  .zro-copy-status,
+  .zro-foot-link {
+    transition: none;
+  }
+
+  .zro-portrait-media {
+    transform: scale(1.02);
+    will-change: auto;
+  }
+
+  .zro-backdrop-drift {
+    transform: none;
+    will-change: auto;
+  }
+
+  .zro-pulse-dot::after {
+    animation: none;
+    opacity: 0;
+  }
+
+  .zro-menu-panel a,
+  .zro-menu-panel .zro-btn {
+    animation: none;
+  }
+
+  html.js .zro-hero [data-reveal],
+  html.js .zro-hero [data-reveal].is-visible {
+    filter: none;
+    transition: none;
+  }
+
+  html.js .zro-skill-row .zro-chip,
+  html.js .zro-skill-row.is-visible .zro-chip {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  html.js .zro-timeline::after {
+    transform: scaleY(1);
+  }
+
+  .zro-btn,
+  .zro-btn:active,
+  .zro-btn:hover {
+    transform: none;
+  }
+}
+
+/* No-JS: nothing may stay hidden. */
+html:not(.js) .zro-skill-row .zro-chip {
+  opacity: 1;
+  transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Footer
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.zro-footer {
+  isolation: isolate;
+}
+
+/* Gold pool above the CTA + a grid that fades upward from the base. */
+.zro-footer-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 60% 38% at 50% 0%,
+      rgb(var(--zro-accent) / 0.1),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 55% 30% at 50% 100%,
+      rgb(var(--zro-accent) / 0.09),
+      transparent 72%
+    );
+}
+
+.zro-footer-ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 85% 55% at 50% 100%,
+    #000 10%,
+    transparent 75%
+  );
+  mask-image: radial-gradient(
+    ellipse 85% 55% at 50% 100%,
+    #000 10%,
+    transparent 75%
+  );
+}
+
+/* Top edge: a brass gradient hairline that draws in from the left. */
+.zro-footer-rule {
+  position: absolute;
+  inset: 0 0 auto;
+}
+
+[data-reveal="rule"].zro-footer-rule::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--zro-accent) / 0.55) 30%,
+    rgb(var(--zro-accent) / 0.55) 70%,
+    transparent
+  );
+}
+
+.zro-footer .zro-cta {
+  font-size: clamp(3rem, 8.2vw, 6rem);
+  line-height: 0.98;
+}
+
+/* Contact card: a quiet raised panel with the shared cursor spotlight. */
+.zro-contact-card {
+  align-self: start;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 30px 60px -40px rgba(0, 0, 0, 0.8);
+}
+
+/* ── Wordmark ───────────────────────────────────────────────────────────── */
+
+.zro-wordmark {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+  font-family: var(--zro-sans);
+  font-weight: 600;
+  line-height: 0.82;
+  letter-spacing: -0.06em;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  /* The name is sized from the container width (not the viewport) so it
+     always spans the content column exactly and is never clipped. */
+  container-type: inline-size;
+  -webkit-mask-image: linear-gradient(180deg, #000 35%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 35%, transparent 100%);
+}
+
+.zro-wordmark-base,
+.zro-wordmark-lit {
+  display: block;
+  /* Glyph run is ~7.2em wide, so 13.5cqi leaves a ~3% safety margin. */
+  font-size: 13.5cqi;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.zro-footer .zro-lede {
+  text-wrap: pretty;
+}
+
+.zro-wordmark-base {
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.025) 85%
+  );
+}
+
+/* Brass layer revealed only under the cursor. */
+.zro-wordmark-lit {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    180deg,
+    rgb(var(--zro-accent) / 0.95),
+    rgb(var(--zro-accent) / 0.2) 90%
+  );
+  opacity: 0;
+  transition: opacity 600ms var(--zro-ease);
+  -webkit-mask-image: radial-gradient(
+    300px circle at var(--mx, -400px) var(--my, -400px),
+    #000,
+    transparent 70%
+  );
+  mask-image: radial-gradient(
+    300px circle at var(--mx, -400px) var(--my, -400px),
+    #000,
+    transparent 70%
+  );
+}
+
+@media (hover: hover) {
+  .zro-wordmark:hover .zro-wordmark-lit {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zro-wordmark-lit {
+    transition: none;
+  }
+}
+
+/* Contact card rows: label above value on narrow screens so the email never
+   wraps; label beside value from 640px. */
+.zro-contact-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.375rem;
+}
+
+@media (min-width: 640px) and (max-width: 1023px),
+  (min-width: 1280px) {
+  .zro-contact-row {
+    grid-template-columns: 6rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+/* The "Copied" confirmation sits under the address so it takes no row width. */
+.zro-copy-status {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  pointer-events: none;
 }

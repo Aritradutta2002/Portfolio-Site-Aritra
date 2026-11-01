@@ -69,14 +69,14 @@ export function AboutSection() {
               </span>
             </div>
 
-            <div data-stagger>
+            <div data-stagger data-scroll className="zro-timeline">
               {EXPERIENCE.map((role, index) => (
                 <article
                   key={role.id}
                   id={role.id}
                   data-reveal
                   style={{ "--zro-i": index } as CSSProperties}
-                  className="border-b border-zro-line py-8 transition-colors duration-200 hover:border-zro-line-strong"
+                  className="zro-timeline-item border-b border-zro-line py-8 hover:border-zro-line-strong"
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                     <h4 className="text-[1.0625rem] font-medium tracking-[-0.015em] text-zro-ink">

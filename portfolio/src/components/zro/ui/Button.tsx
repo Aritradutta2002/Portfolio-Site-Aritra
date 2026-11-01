@@ -9,6 +9,8 @@ interface ButtonProps {
   size?: "md" | "sm";
   arrow?: boolean;
   external?: boolean;
+  /** Pulls the button slightly toward the cursor (desktop, motion-safe). */
+  magnetic?: boolean;
   className?: string;
 }
 
@@ -19,6 +21,7 @@ export function Button({
   size = "md",
   arrow = false,
   external = false,
+  magnetic = false,
   className = "",
 }: ButtonProps) {
   const classes = [
@@ -41,6 +44,8 @@ export function Button({
     </>
   );
 
+  const magnet = magnetic ? { "data-magnetic": "" } : {};
+
   if (external) {
     return (
       <a
@@ -48,6 +53,7 @@ export function Button({
         target="_blank"
         rel="noopener noreferrer"
         className={classes}
+        {...magnet}
       >
         {content}
       </a>
@@ -55,7 +61,7 @@ export function Button({
   }
 
   return (
-    <a href={href} className={classes}>
+    <a href={href} className={classes} {...magnet}>
       {content}
     </a>
   );

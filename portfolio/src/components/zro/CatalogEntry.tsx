@@ -12,6 +12,7 @@ export function CatalogEntry({ item, index }: CatalogEntryProps) {
     <article
       id={item.id}
       data-reveal
+      data-spot
       style={{ "--zro-i": index } as CSSProperties}
       className="zro-card p-6 md:p-8"
     >

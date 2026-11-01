@@ -53,7 +53,33 @@ export function RevealProvider() {
     const mutations = new MutationObserver(observeNew);
     mutations.observe(document.body, { childList: true, subtree: true });
 
+    /* The observer's bottom margin means an element resting in the last few
+       percent of the viewport can never cross the threshold once the page can
+       scroll no further. At the end of the page, reveal whatever is on screen. */
+    let endFrame = 0;
+    const flushAtEnd = () => {
+      endFrame = 0;
+      const atEnd =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      if (!atEnd) return;
+      document
+        .querySelectorAll<HTMLElement>("[data-reveal]:not(.is-visible)")
+        .forEach((el) => {
+          if (el.getBoundingClientRect().top < window.innerHeight) {
+            el.classList.add("is-visible");
+            observer.unobserve(el);
+          }
+        });
+    };
+    const onScrollEnd = () => {
+      if (!endFrame) endFrame = requestAnimationFrame(flushAtEnd);
+    };
+    window.addEventListener("scroll", onScrollEnd, { passive: true });
+
     return () => {
+      window.removeEventListener("scroll", onScrollEnd);
+      cancelAnimationFrame(endFrame);
       observer.disconnect();
       mutations.disconnect();
       motion.removeEventListener("change", onMotionChange);

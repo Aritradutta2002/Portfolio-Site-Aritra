@@ -29,13 +29,24 @@ export function SkillsMatrix() {
                 key={group.domain}
                 data-reveal="fade"
                 style={{ "--zro-i": index } as CSSProperties}
-                className="group grid grid-cols-1 gap-2 border-b border-zro-line py-5 sm:grid-cols-12"
+                className="zro-skill-row group grid grid-cols-1 gap-3 border-b border-zro-line py-5 sm:grid-cols-12"
               >
-                <dt className="zro-eyebrow transition-colors duration-200 group-hover:text-zro-ink sm:col-span-4">
+                <dt className="zro-eyebrow pt-1.5 transition-colors duration-200 group-hover:text-zro-ink sm:col-span-4">
                   {group.domain}
                 </dt>
-                <dd className="text-[0.9375rem] leading-relaxed text-zro-ink sm:col-span-8">
-                  {group.items.join(", ")}
+                <dd className="sm:col-span-8">
+                  <ul className="zro-skill-list">
+                    {group.items.map((item, itemIndex) => (
+                      <li key={item}>
+                        <span
+                          className="zro-chip"
+                          style={{ "--ci": itemIndex } as CSSProperties}
+                        >
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </dd>
               </div>
             ))}
