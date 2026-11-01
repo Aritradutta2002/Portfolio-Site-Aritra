@@ -45,12 +45,12 @@ const themes: Record<'dark' | 'light', Theme> = {
     treeAlpha: 0.95,              // crisp, glowing lightning bolt
   },
   light: {
-    dot: [115, 110, 100],
-    glow: [154, 116, 24],         // deep rich gold
-    flare: [205, 160, 50],
-    line: '120, 115, 105',
-    lineAlpha: 0.32,
-    treeAlpha: 0.88,
+    dot: [130, 145, 168],
+    glow: [37, 99, 235],          // vibrant royal electric blue (#2563EB)
+    flare: [56, 189, 248],        // bright luminous sky-blue crest (#38BDF8)
+    line: '148, 163, 184',
+    lineAlpha: 0.28,
+    treeAlpha: 0.95,
   },
 }
 
