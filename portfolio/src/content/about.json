@@ -17,7 +17,21 @@
       "institution": "Maulana Abul Kalam Azad University of Technology (MAKAUT)",
       "location": "Kolkata, India",
       "period": "2020 – 2024",
-      "cgpa": "8.79"
+      "grade": "CGPA 8.79 / 10"
+    },
+    {
+      "degree": "Higher Secondary — Physics, Chemistry & Mathematics",
+      "institution": "Kirnahar Shib Chandra High School",
+      "location": "Kirnahar, India",
+      "period": "Mar 2018 – Mar 2020",
+      "grade": "92%"
+    },
+    {
+      "degree": "Secondary (WBBSE)",
+      "institution": "Kirnahar Shib Chandra High School",
+      "location": "Kirnahar, India",
+      "period": "2017 – 2018",
+      "grade": "91%"
     }
   ],
   "certifications": [

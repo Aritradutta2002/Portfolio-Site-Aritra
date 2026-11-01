@@ -118,7 +118,7 @@ export default function AboutApp() {
       <Section title="Education">
         {about.education.map((e) => (
           <div
-            key={e.institution}
+            key={`${e.institution}-${e.period}`}
             className="rounded-xl border border-black/[0.07] bg-[#FAFAFC] px-3.5 py-3 dark:border-white/[0.10] dark:bg-[#252528]"
           >
             <div className="flex items-baseline justify-between gap-3">
@@ -127,7 +127,7 @@ export default function AboutApp() {
                 className="shrink-0 rounded-md px-2 py-[2px] text-[11px] font-semibold"
                 style={{ background: ACCENT_SOFT, color: ACCENT }}
               >
-                CGPA {e.cgpa}
+                {e.grade}
               </span>
             </div>
             <p className="mt-0.5 text-[12px] text-[#3C3C43] dark:text-[#d1d1d6]">{e.institution}</p>

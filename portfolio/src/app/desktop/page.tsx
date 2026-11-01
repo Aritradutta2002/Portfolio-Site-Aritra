@@ -76,8 +76,8 @@ function SemanticContent() {
       <section>
         <h2>Education</h2>
         {about.education.map((e) => (
-          <p key={e.institution}>
-            {e.degree} — {e.institution}, {e.location} ({e.period}), CGPA {e.cgpa}
+          <p key={`${e.institution}-${e.period}`}>
+            {e.degree} — {e.institution}, {e.location} ({e.period}), {e.grade}
           </p>
         ))}
       </section>

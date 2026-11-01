@@ -78,6 +78,20 @@ export const resumeData = {
       grade:       'CGPA: 8.79 / 10',
       dateRange:   '2020 – 2024',
     },
+    {
+      institution: 'Kirnahar Shib Chandra High School',
+      location:    'Kirnahar, India',
+      degree:      'Higher Secondary — Physics, Chemistry &amp; Mathematics',
+      grade:       'Grade: 92%',
+      dateRange:   'Mar 2018 – Mar 2020',
+    },
+    {
+      institution: 'Kirnahar Shib Chandra High School',
+      location:    'Kirnahar, India',
+      degree:      'Secondary (WBBSE)',
+      grade:       'Grade: 91%',
+      dateRange:   '2017 – 2018',
+    },
   ],
 
   /* ── Awards & Achievements ────────────────────────────────────────── */

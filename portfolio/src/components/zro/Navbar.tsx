@@ -9,6 +9,7 @@ import {
   type CSSProperties,
 } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "./ui/Button";
 import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
 import { lockScroll } from "@/lib/scrollBridge";
@@ -216,7 +217,7 @@ export function Navbar() {
       data-hidden={hidden && !menuOpen}
       className={`zro-header sticky top-0 z-40 border-b ${
         scrolled || menuOpen
-          ? "border-zro-line bg-zro-canvas/85 backdrop-blur-md"
+          ? "border-zro-line bg-zro-canvas/80 shadow-[0_24px_48px_-40px_rgba(0,0,0,0.9)] backdrop-blur-xl"
           : "border-transparent bg-transparent"
       }`}
     >
@@ -224,20 +225,33 @@ export function Navbar() {
         <Link
           href="/"
           aria-label={`${PORTFOLIO_HEADER.name}, back to top`}
-          className="group flex items-center gap-3"
+          className="zro-logo group flex min-w-0 items-center gap-3"
         >
-          <span className="zro-plate" aria-hidden="true">
-            AD
+          <span className="zro-avatar">
+            <Image
+              src="/aritra-avatar.webp"
+              alt=""
+              width={96}
+              height={96}
+              priority
+              className="zro-avatar-img"
+            />
+            <span aria-hidden="true" className="zro-avatar-dot" />
           </span>
-          <span className="hidden text-[0.8125rem] font-medium tracking-[-0.01em] text-zro-ink transition-opacity group-hover:opacity-70 sm:inline">
-            {PORTFOLIO_HEADER.name}
+          <span className="flex min-w-0 flex-col leading-none">
+            <span className="truncate text-[0.8125rem] font-medium tracking-[-0.01em] text-zro-ink transition-opacity group-hover:opacity-80">
+              {PORTFOLIO_HEADER.name}
+            </span>
+            <span className="zro-metric mt-1 hidden truncate text-[0.5625rem] uppercase tracking-[0.14em] text-zro-faint md:block">
+              {PORTFOLIO_HEADER.role}
+            </span>
           </span>
         </Link>
 
         <nav
           ref={navRef}
           aria-label="Primary"
-          className="relative hidden items-center gap-7 sm:flex"
+          className="relative hidden items-center gap-6 sm:flex"
         >
           {NAV_LINKS.map((link) => (
             <a
@@ -249,12 +263,18 @@ export function Navbar() {
               {link.label}
             </a>
           ))}
+          <span
+            aria-hidden="true"
+            className="h-4 w-px shrink-0 bg-zro-line"
+          />
           <Button
             href={CONTACT_LINKS.resumePdf}
             variant="outline"
             size="sm"
+            arrow
+            external
           >
-            Resume
+            Résumé
           </Button>
           <span
             aria-hidden="true"
@@ -343,9 +363,24 @@ export function Navbar() {
                 href={CONTACT_LINKS.resumePdf}
                 variant="outline"
                 className="w-full"
+                arrow
+                external
               >
-                Download resume
+                Download résumé
               </Button>
+            </div>
+
+            <div
+              className="mt-5 flex items-start gap-2.5 border-t border-zro-line pt-4"
+              style={{ "--i": NAV_LINKS.length + 1 } as CSSProperties}
+            >
+              <span
+                aria-hidden="true"
+                className="zro-pulse-dot mt-[0.3rem] h-1.5 w-1.5 shrink-0 bg-zro-accent"
+              />
+              <span className="zro-metric text-[0.625rem] uppercase leading-[1.6] tracking-[0.08em] text-zro-faint">
+                {PORTFOLIO_HEADER.availability}
+              </span>
             </div>
           </nav>
         </div>

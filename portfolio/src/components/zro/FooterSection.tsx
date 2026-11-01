@@ -9,7 +9,7 @@ const NAVIGATE_LINKS = [
   { label: "Experience", href: "#experience" },
   { label: "Work", href: "#work" },
   { label: "Skills", href: "#skills" },
-  { label: "Achievements", href: "#achievements" },
+  { label: "Education", href: "#education" },
 ] as const;
 
 const PROFILE_LINKS = [

@@ -460,6 +460,58 @@ html:has(.zro-root) ::-webkit-scrollbar-thumb:hover {
   letter-spacing: normal;
 }
 
+/* Logo avatar: square portrait plate with a brass presence dot. */
+.zro-avatar {
+  position: relative;
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  overflow: hidden;
+  padding: 2px;
+  border: 1px solid var(--zro-hairline-strong);
+  background-color: rgb(var(--zro-surface));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  transition: border-color var(--zro-d2) var(--zro-ease);
+}
+
+.zro-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  transition: transform 600ms var(--zro-ease);
+}
+
+.zro-avatar-dot {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 7px;
+  height: 7px;
+  background-color: rgb(var(--zro-accent));
+  box-shadow: 0 0 0 2px rgba(10, 10, 11, 0.85);
+}
+
+@media (hover: hover) {
+  .zro-logo:hover .zro-avatar {
+    border-color: rgb(var(--zro-accent) / 0.65);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .zro-logo:hover .zro-avatar-img {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zro-avatar,
+  .zro-avatar-img {
+    transition: none;
+  }
+}
+
 /* ── Hero ───────────────────────────────────────────────────────────────── */
 
 .zro-hero {
@@ -982,6 +1034,12 @@ html:not(.js) .zro-timeline-item::before {
 
 /* ── Skills: staggered chips ────────────────────────────────────────────── */
 
+.zro-skill-card {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.03) inset,
+    0 24px 48px -36px rgba(0, 0, 0, 0.75);
+}
+
 .zro-skill-list {
   display: flex;
   flex-wrap: wrap;
@@ -998,7 +1056,7 @@ html:not(.js) .zro-timeline-item::before {
   color: rgb(var(--zro-ink));
 }
 
-html.js .zro-skill-row .zro-chip {
+html.js .zro-skill-card .zro-chip {
   opacity: 0;
   transform: translate3d(0, 8px, 0);
   transition:
@@ -1009,7 +1067,7 @@ html.js .zro-skill-row .zro-chip {
     background-color var(--zro-d1) var(--zro-ease);
 }
 
-html.js .zro-skill-row.is-visible .zro-chip {
+html.js .zro-skill-card.is-visible .zro-chip {
   opacity: 1;
   transform: none;
 }
@@ -1019,6 +1077,127 @@ html.js .zro-skill-row.is-visible .zro-chip {
     border-color: rgb(var(--zro-accent) / 0.7);
     background-color: rgb(var(--zro-accent) / 0.08);
     transition-delay: 0s;
+  }
+}
+
+/* ── Selected work ──────────────────────────────────────────────────────── */
+
+.zro-work-card {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.03) inset,
+    0 30px 60px -44px rgba(0, 0, 0, 0.85);
+}
+
+.zro-work-plate {
+  border-color: rgb(var(--zro-accent) / 0.4);
+  color: rgb(var(--zro-accent));
+  transition:
+    background-color var(--zro-d2) var(--zro-ease),
+    border-color var(--zro-d2) var(--zro-ease),
+    color var(--zro-d2) var(--zro-ease);
+}
+
+.zro-work-panel {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.028),
+      rgba(255, 255, 255, 0.006)
+    );
+}
+
+@media (hover: hover) {
+  .zro-work-card:hover .zro-work-plate {
+    background-color: rgb(var(--zro-accent));
+    border-color: rgb(var(--zro-accent));
+    color: rgb(var(--zro-canvas));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zro-work-plate {
+    transition: none;
+  }
+}
+
+/* ── Education ──────────────────────────────────────────────────────────── */
+
+.zro-edu-card {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.03) inset,
+    0 24px 48px -36px rgba(0, 0, 0, 0.75);
+}
+
+.zro-edu-plate {
+  border-color: rgb(var(--zro-accent) / 0.4);
+  color: rgb(var(--zro-accent));
+  transition:
+    background-color var(--zro-d2) var(--zro-ease),
+    border-color var(--zro-d2) var(--zro-ease),
+    color var(--zro-d2) var(--zro-ease);
+}
+
+.zro-edu-score {
+  text-align: left;
+}
+
+.zro-edu-meter {
+  position: relative;
+  width: 6rem;
+  height: 2px;
+  margin-inline-start: 0;
+  overflow: hidden;
+  background-color: var(--zro-hairline);
+}
+
+.zro-edu-meter-fill {
+  display: block;
+  height: 100%;
+  width: var(--p, 0%);
+  background: linear-gradient(
+    90deg,
+    rgb(var(--zro-accent) / 0.25),
+    rgb(var(--zro-accent))
+  );
+  transform-origin: left;
+}
+
+html.js .zro-edu-meter-fill {
+  transform: scaleX(0);
+  transition: transform 900ms var(--zro-ease) 280ms;
+}
+
+html.js [data-reveal].is-visible .zro-edu-meter-fill {
+  transform: scaleX(1);
+}
+
+@media (min-width: 640px) {
+  .zro-edu-score {
+    text-align: right;
+  }
+
+  .zro-edu-meter {
+    margin-inline-start: auto;
+  }
+}
+
+@media (hover: hover) {
+  .zro-edu-card:hover .zro-edu-plate {
+    background-color: rgb(var(--zro-accent));
+    border-color: rgb(var(--zro-accent));
+    color: rgb(var(--zro-canvas));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .zro-edu-meter-fill,
+  html.js [data-reveal].is-visible .zro-edu-meter-fill {
+    transform: none;
+    transition: none;
+  }
+
+  .zro-edu-plate {
+    transition: none;
   }
 }
 
@@ -1131,8 +1310,8 @@ html.js .zro-skill-row.is-visible .zro-chip {
     transition: none;
   }
 
-  html.js .zro-skill-row .zro-chip,
-  html.js .zro-skill-row.is-visible .zro-chip {
+  html.js .zro-skill-card .zro-chip,
+  html.js .zro-skill-card.is-visible .zro-chip {
     opacity: 1;
     transform: none;
     transition: none;
@@ -1150,7 +1329,7 @@ html.js .zro-skill-row.is-visible .zro-chip {
 }
 
 /* No-JS: nothing may stay hidden. */
-html:not(.js) .zro-skill-row .zro-chip {
+html:not(.js) .zro-skill-card .zro-chip {
   opacity: 1;
   transform: none;
 }

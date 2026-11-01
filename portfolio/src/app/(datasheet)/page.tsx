@@ -103,19 +103,31 @@ export default function PortfolioHomePage() {
           className="border-b border-zro-line"
         >
           <div className="mx-auto max-w-6xl px-6 md:px-8">
-            <div className="max-w-2xl">
-              <SectionHeader
-                id="work-heading"
-                index="02"
-                title="Selected work"
-                description="A product I own end-to-end — built, deployed and maintained on a custom domain."
-              />
-            </div>
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+              <div className="lg:col-span-4">
+                <SectionHeader
+                  id="work-heading"
+                  index="02"
+                  title="Selected work"
+                  description="A product I own end-to-end — built, deployed and maintained on a custom domain."
+                />
 
-            <div data-stagger className="mt-10 space-y-5">
-              {PROJECTS.map((item, index) => (
-                <CatalogEntry key={item.id} item={item} index={index} />
-              ))}
+                <div className="mt-8 border-t border-zro-line pt-5">
+                  <p className="zro-metric text-[1.75rem] font-medium leading-none text-zro-ink">
+                    {String(PROJECTS.length).padStart(2, "0")}
+                  </p>
+                  <p className="zro-eyebrow mt-2">
+                    {PROJECTS.length === 1 ? "Project" : "Projects"} shipped
+                    end-to-end
+                  </p>
+                </div>
+              </div>
+
+              <div data-stagger className="space-y-5 lg:col-span-8">
+                {PROJECTS.map((item, index) => (
+                  <CatalogEntry key={item.id} item={item} index={index} />
+                ))}
+              </div>
             </div>
           </div>
         </section>

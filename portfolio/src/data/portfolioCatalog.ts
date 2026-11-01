@@ -208,13 +208,41 @@ export const ACHIEVEMENTS = {
   },
 };
 
-export const EDUCATION = {
-  institution: "Maulana Abul Kalam Azad University of Technology (MAKAUT)",
-  degree: "B.Tech, Electronics & Communication Engineering",
-  period: "2020 – 2024",
-  location: "Kolkata, India",
-  cgpa: "8.79 / 10",
-};
+export const EDUCATION = [
+  {
+    level: "B.Tech",
+    degree: "Electronics & Communication Engineering",
+    institution: "Maulana Abul Kalam Azad University of Technology (MAKAUT)",
+    period: "2020 – 2024",
+    location: "Kolkata, India",
+    score: "8.79",
+    scoreSuffix: "/ 10",
+    scoreLabel: "CGPA",
+    percent: 87.9,
+  },
+  {
+    level: "Higher Secondary",
+    degree: "Science — Physics, Chemistry & Mathematics",
+    institution: "Kirnahar Shib Chandra High School",
+    period: "Mar 2018 – Mar 2020",
+    location: "Kirnahar, India",
+    score: "92",
+    scoreSuffix: "%",
+    scoreLabel: "Grade",
+    percent: 92,
+  },
+  {
+    level: "Secondary (WBBSE)",
+    degree: "Madhyamik — Class X",
+    institution: "Kirnahar Shib Chandra High School",
+    period: "2017 – 2018",
+    location: "Kirnahar, India",
+    score: "91",
+    scoreSuffix: "%",
+    scoreLabel: "Grade",
+    percent: 91,
+  },
+];
 
 export const SPOKEN_LANGUAGES = ["English", "Hindi", "Bengali"];
 

@@ -2,6 +2,11 @@ import type { CSSProperties } from "react";
 import { SKILL_GROUPS } from "@/data/portfolioCatalog";
 import { SectionHeader } from "./ui/SectionHeader";
 
+const TOTAL_SKILLS = SKILL_GROUPS.reduce(
+  (total, group) => total + group.items.length,
+  0,
+);
+
 export function SkillsMatrix() {
   return (
     <section
@@ -18,39 +23,64 @@ export function SkillsMatrix() {
               title="Skills"
               description="The stack I work in day to day — enterprise Java on the backend, cloud and CI/CD around it, and React or AI tooling at the edges."
             />
+
+            <div className="mt-8 flex items-stretch border-t border-zro-line pt-5">
+              <div className="pr-8">
+                <p className="zro-metric text-[1.75rem] font-medium leading-none text-zro-ink">
+                  {SKILL_GROUPS.length}
+                </p>
+                <p className="zro-eyebrow mt-2">Domains</p>
+              </div>
+              <div className="border-l border-zro-line pl-8">
+                <p className="zro-metric text-[1.75rem] font-medium leading-none text-zro-ink">
+                  {TOTAL_SKILLS}
+                </p>
+                <p className="zro-eyebrow mt-2">Technologies</p>
+              </div>
+            </div>
           </div>
 
-          <dl
+          <div
             data-stagger
-            className="border-t border-zro-line lg:col-span-8"
+            className="gap-4 sm:columns-2 lg:col-span-8"
           >
             {SKILL_GROUPS.map((group, index) => (
               <div
                 key={group.domain}
-                data-reveal="fade"
+                data-reveal
+                data-spot
                 style={{ "--zro-i": index } as CSSProperties}
-                className="zro-skill-row group grid grid-cols-1 gap-3 border-b border-zro-line py-5 sm:grid-cols-12"
+                className="zro-card zro-skill-card group mb-4 break-inside-avoid p-5 md:p-6"
               >
-                <dt className="zro-eyebrow pt-1.5 transition-colors duration-200 group-hover:text-zro-ink sm:col-span-4">
-                  {group.domain}
-                </dt>
-                <dd className="sm:col-span-8">
-                  <ul className="zro-skill-list">
-                    {group.items.map((item, itemIndex) => (
-                      <li key={item}>
-                        <span
-                          className="zro-chip"
-                          style={{ "--ci": itemIndex } as CSSProperties}
-                        >
-                          {item}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </dd>
+                <div className="flex items-baseline justify-between gap-3 border-b border-zro-line pb-3">
+                  <div className="flex min-w-0 items-baseline gap-2.5">
+                    <span className="zro-metric text-[0.625rem] tracking-[0.08em] text-zro-accent">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="truncate text-[0.9375rem] font-medium tracking-[-0.01em] text-zro-ink">
+                      {group.domain}
+                    </h3>
+                  </div>
+                  <span className="zro-metric shrink-0 text-[0.625rem] text-zro-faint">
+                    {group.items.length}
+                  </span>
+                </div>
+
+                <ul className="zro-skill-list mt-4">
+                  {group.items.map((item, itemIndex) => (
+                    <li key={item}>
+                      <span
+                        className="zro-chip"
+                        style={{ "--ci": itemIndex } as CSSProperties}
+                      >
+                        {item}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
-          </dl>
+          </div>
         </div>
       </div>
     </section>
