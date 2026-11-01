@@ -3,11 +3,10 @@
 import type { CSSProperties, MouseEvent } from "react";
 import Image from "next/image";
 import { Button } from "./ui/Button";
-import { AnimatedMetric } from "./AnimatedMetric";
+import { HeroChatbot } from "./HeroChatbot";
 import { ParticleNetworkBFS } from "@/components/luxe/ParticleNetworkBFS";
 import {
   CONTACT_LINKS,
-  HEADLINE_METRICS,
   PORTFOLIO_HEADER,
 } from "@/data/portfolioCatalog";
 
@@ -165,35 +164,21 @@ export function Hero() {
           </div>
         </div>
 
+        {/* Separator hairline */}
         <div
           data-reveal="rule"
           style={{ "--zro-delay": "260ms" } as CSSProperties}
           aria-hidden="true"
         />
-        <dl className="grid grid-cols-1 sm:grid-cols-3">
-          {HEADLINE_METRICS.map((metric, index) => (
-            <div
-              key={metric.label}
-              data-reveal="fade"
-              style={
-                { "--zro-delay": `${300 + index * 70}ms` } as CSSProperties
-              }
-              className={`py-6 ${
-                index > 0
-                  ? "border-t border-zro-line sm:border-l sm:border-t-0 sm:pl-8"
-                  : ""
-              }`}
-            >
-              <dt className="zro-eyebrow">{metric.label}</dt>
-              <dd className="zro-metric mt-2 text-[1.875rem] font-medium leading-none text-zro-ink">
-                <AnimatedMetric
-                  value={metric.value}
-                  delay={380 + index * 90}
-                />
-              </dd>
-            </div>
-          ))}
-        </dl>
+
+        {/* Ask Me Anything Chatbot replacing the static 3 metrics */}
+        <div
+          data-reveal="fade"
+          style={{ "--zro-delay": "300ms" } as CSSProperties}
+          className="pb-10 pt-4"
+        >
+          <HeroChatbot />
+        </div>
       </div>
     </section>
   );

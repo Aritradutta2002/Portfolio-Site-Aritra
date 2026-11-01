@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/zro/Navbar";
 import { Hero } from "@/components/zro/Hero";
 import { AboutSection } from "@/components/zro/AboutSection";
-import { CatalogEntry } from "@/components/zro/CatalogEntry";
+import { ProjectsSection } from "@/components/zro/ProjectsSection";
 import { SkillsMatrix } from "@/components/zro/SkillsMatrix";
 import { BenchmarksSection } from "@/components/zro/BenchmarksSection";
 import { FooterSection } from "@/components/zro/FooterSection";
 import { RevealProvider } from "@/components/zro/RevealProvider";
-import { SectionHeader } from "@/components/zro/ui/SectionHeader";
 import { MotionController } from "@/components/zro/MotionController";
 import { DatasheetScroll } from "@/components/zro/DatasheetScroll";
 import { BackToTop } from "@/components/zro/BackToTop";
@@ -15,7 +14,6 @@ import { Backdrop } from "@/components/luxe/Backdrop";
 import {
   CONTACT_LINKS,
   PORTFOLIO_HEADER,
-  PROJECTS,
 } from "@/data/portfolioCatalog";
 
 const TITLE = "Aritra Dutta — Full Stack Application Engineer";
@@ -97,40 +95,7 @@ export default function PortfolioHomePage() {
         <Hero />
         <AboutSection />
 
-        <section
-          id="work"
-          aria-labelledby="work-heading"
-          className="border-b border-zro-line"
-        >
-          <div className="mx-auto max-w-6xl px-6 md:px-8">
-            <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-              <div className="lg:col-span-4">
-                <SectionHeader
-                  id="work-heading"
-                  index="02"
-                  title="Selected work"
-                  description="A product I own end-to-end — built, deployed and maintained on a custom domain."
-                />
-
-                <div className="mt-8 border-t border-zro-line pt-5">
-                  <p className="zro-metric text-[1.75rem] font-medium leading-none text-zro-ink">
-                    {String(PROJECTS.length).padStart(2, "0")}
-                  </p>
-                  <p className="zro-eyebrow mt-2">
-                    {PROJECTS.length === 1 ? "Project" : "Projects"} shipped
-                    end-to-end
-                  </p>
-                </div>
-              </div>
-
-              <div data-stagger className="space-y-5 lg:col-span-8">
-                {PROJECTS.map((item, index) => (
-                  <CatalogEntry key={item.id} item={item} index={index} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        <ProjectsSection />
 
         <SkillsMatrix />
         <BenchmarksSection />

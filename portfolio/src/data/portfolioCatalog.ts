@@ -8,9 +8,10 @@
 
 export type SystemCategory =
   | "ALL"
+  | "GENAI & FULL-STACK"
   | "JAVA / SPRING"
   | "CLOUD & PAAS"
-  | "GENAI & FULL-STACK";
+  | "ALGORITHMS & TOOLS";
 
 /** An individual project never belongs to the pseudo-category "ALL". */
 export type CatalogCategory = Exclude<SystemCategory, "ALL">;
@@ -42,6 +43,10 @@ export interface ProjectItem {
   bullets: string[];
   stack: string[];
   links?: { label: string; href: string }[];
+  featured?: boolean;
+  metric?: Metric;
+  demoUrl?: string;
+  githubUrl?: string;
 }
 
 export interface SkillGroup {
@@ -108,16 +113,18 @@ export const PROJECTS: ProjectItem[] = [
   {
     id: "algoguru",
     name: "AlgoGuru",
-    kind: "Full-stack platform · Founder-built",
+    kind: "Full-Stack & GenAI Platform · Founder-Built",
     categories: ["GENAI & FULL-STACK", "JAVA / SPRING"],
     years: "2024 – Present",
+    featured: true,
+    metric: { label: "Live Domain", value: "algoguru.online" },
     summary:
-      "A full-stack competitive-programming learning platform with an in-browser Java playground and a retrieval-augmented AI tutor, designed, built and deployed end-to-end.",
+      "A flagship full-stack competitive-programming learning platform with an in-browser Java code playground and an autonomous retrieval-augmented AI tutor, architected and shipped end-to-end.",
     bullets: [
-      "Designed, built and deployed the platform end-to-end, including production deployment and custom domain configuration.",
-      "Integrated a Generative AI-powered Guru Bot delivering context-aware, document-grounded algorithm explanations.",
-      "Built a Java code playground with role-based authentication, user progress tracking and interactive problem sets.",
-      "Owned the complete product lifecycle — architecture, AI integration, implementation, deployment and ongoing maintenance.",
+      "Architected, built and deployed the entire platform into production on a custom purchased domain (algoguru.online).",
+      "Engineered 'Guru Bot' — an autonomous AI tutor using Python, LangChain, and RAG to deliver context-grounded, document-verified algorithm explanations and space/time complexity breakdowns.",
+      "Built a secure in-browser Java code playground with test case validation, role-based authentication, and user progress persistence.",
+      "Designed data schemas and security policies with Supabase and PostgreSQL, implementing granular row-level security (RLS).",
     ],
     stack: [
       "React",
@@ -128,12 +135,128 @@ export const PROJECTS: ProjectItem[] = [
       "LangChain",
       "RAG",
       "Supabase",
+      "PostgreSQL",
       "Node.js",
     ],
     links: [
       { label: "algoguru.online", href: "https://www.algoguru.online/" },
-      { label: "Source", href: "https://github.com/Aritradutta2002" },
+      { label: "Source Code", href: "https://github.com/Aritradutta2002" },
     ],
+    demoUrl: "https://www.algoguru.online/",
+    githubUrl: "https://github.com/Aritradutta2002",
+  },
+  {
+    id: "microservices-modernization",
+    name: "Enterprise Microservices Modernization",
+    kind: "Enterprise Architecture & Cloud Remediation · TCS",
+    categories: ["JAVA / SPRING", "CLOUD & PAAS"],
+    years: "2024 – Present",
+    featured: true,
+    metric: { label: "Max Speedup", value: "20× Faster" },
+    summary:
+      "Remediation and modernization of mission-critical Java microservices for enterprise fleet management, upgrading legacy backends to Java 21, Spring Boot 4, and Azure Tomcat PaaS.",
+    bullets: [
+      "Led the remediation phase migrating backend services from Java 8 to Java 21 and Spring Boot 1.x to 4.x, resolving critical CVE vulnerabilities and cutting technical debt.",
+      "Migrated production workloads from legacy on-premises JBoss servers to Azure Tomcat PaaS with health probes and zero-downtime deployment slots.",
+      "Accelerated dependency upgrades, refactoring and backward-compatibility validation with AWS Transform.",
+      "Refactored complex SQL query joins and REST APIs, delivering up to 20× faster response times on high-throughput production endpoints.",
+      "Built Jenkins CI/CD automation with Docker containers, SonarQube code quality gates, and JaCoCo coverage metrics.",
+    ],
+    stack: [
+      "Java 21",
+      "Spring Boot 4",
+      "Azure Tomcat PaaS",
+      "AWS Transform",
+      "Jenkins",
+      "Docker",
+      "SQL",
+      "SonarQube",
+      "Postman",
+    ],
+    links: [
+      { label: "TCS Experience Details", href: "#experience" },
+    ],
+  },
+  {
+    id: "algorithm-visualizer",
+    name: "Algorithm & Sorting Visualizer",
+    kind: "Interactive Web Engine · Open Source",
+    categories: ["ALGORITHMS & TOOLS", "GENAI & FULL-STACK"],
+    years: "2023 – 2024",
+    metric: { label: "Engine", value: "Real-Time 60 FPS" },
+    summary:
+      "An interactive computer science platform designed to visually dissect and animate sorting algorithms with real-time controls, time/space complexity meters, and step execution.",
+    bullets: [
+      "Engineered dynamic frame-by-frame visual animations for Bubble Sort, Merge Sort, Quick Sort, and Insertion Sort.",
+      "Implemented real-time execution controls: array size customization, speed slider, step-by-step playback, and pause/resume.",
+      "Designed responsive canvas rendering with color-coded state indicators for comparisons, swaps, and sorted partitions.",
+    ],
+    stack: ["JavaScript", "C++", "HTML5 Canvas", "CSS3 Animations", "Algorithms"],
+    links: [
+      { label: "GitHub Repository", href: "https://github.com/Aritradutta2002/new_Sorting_Visualizer" },
+    ],
+    githubUrl: "https://github.com/Aritradutta2002/new_Sorting_Visualizer",
+  },
+  {
+    id: "huffzip",
+    name: "HuffZip — Lossless File Compressor",
+    kind: "Systems Utility & Algorithm Visualizer",
+    categories: ["ALGORITHMS & TOOLS"],
+    years: "2023",
+    metric: { label: "Complexity", value: "O(N log N)" },
+    summary:
+      "A high-performance lossless data compression utility using the Huffman Coding algorithm, paired with an interactive visualizer of the Huffman tree construction.",
+    bullets: [
+      "Implemented byte-frequency analysis, min-heap priority queue construction, and variable-length prefix code generation in C++.",
+      "Engineered bitstream packing and unpacking routines for efficient file compression and lossless decompression.",
+      "Designed an interactive visualizer showing step-by-step tree merges, frequency weights, and binary encoding paths.",
+    ],
+    stack: ["C++", "JavaScript", "Bitwise Operations", "Min-Heap", "Data Structures"],
+    links: [
+      { label: "GitHub Repository", href: "https://github.com/Aritradutta2002/File_Compressor" },
+    ],
+    githubUrl: "https://github.com/Aritradutta2002/File_Compressor",
+  },
+  {
+    id: "leetcode-vault",
+    name: "LeetCode & Algorithmic Problem Vault",
+    kind: "Engineering Knowledge Base · 530+ Commits",
+    categories: ["ALGORITHMS & TOOLS", "JAVA / SPRING"],
+    years: "2022 – Present",
+    metric: { label: "Problems Solved", value: "700+ Solved" },
+    summary:
+      "A rigorously maintained algorithmic problem repository with 537+ commits, covering data structures, dynamic programming, graphs, and advanced competitive programming patterns.",
+    bullets: [
+      "Contains 700+ verified solutions across LeetCode (Rating 1672), CodeChef (Rating 1708, 3★), and Codeforces.",
+      "Each problem includes comprehensive time and space complexity evaluations, edge-case analysis, and multi-approach evolutions.",
+      "Over 100 solutions solved from the renowned CSES Problem Set.",
+    ],
+    stack: ["Java 21", "C++", "Python", "Data Structures", "Dynamic Programming", "Graph Theory"],
+    links: [
+      { label: "GitHub Repository", href: "https://github.com/Aritradutta2002/LeetCode-Directory" },
+      { label: "LeetCode Profile (1672)", href: "https://leetcode.com/u/Ari2001/" },
+    ],
+    githubUrl: "https://github.com/Aritradutta2002/LeetCode-Directory",
+  },
+  {
+    id: "chatgpt-studio",
+    name: "ChatGPT & AI Conversational Studio",
+    kind: "AI Assistant Interface · LLM Application",
+    categories: ["GENAI & FULL-STACK"],
+    years: "2023 – 2024",
+    metric: { label: "LLM Engine", value: "GPT-4 API" },
+    summary:
+      "An intuitive conversational AI application built with Streamlit and Python, featuring real-time response streaming, customizable sampling parameters, and prompt experimentation.",
+    bullets: [
+      "Integrated OpenAI GPT-4 API with adjustable temperature, top-p, max tokens, and custom system instructions.",
+      "Built real-time token streaming with conversational history buffer and session state persistence.",
+      "Designed clean UI for prompt engineering experimentation and structured output validation.",
+    ],
+    stack: ["Python", "Streamlit", "OpenAI GPT-4", "Prompt Engineering", "REST APIs"],
+    links: [
+      { label: "GitHub Repository", href: "https://github.com/Aritradutta2002/ChatGPT-clone" },
+    ],
+    githubUrl: "https://github.com/Aritradutta2002/ChatGPT-clone",
   },
 ];
 
