@@ -10,6 +10,7 @@ import { RevealProvider } from "@/components/zro/RevealProvider";
 import { MotionController } from "@/components/zro/MotionController";
 import { DatasheetScroll } from "@/components/zro/DatasheetScroll";
 import { BackToTop } from "@/components/zro/BackToTop";
+import { SectionRail } from "@/components/zro/SectionRail";
 import { Backdrop } from "@/components/luxe/Backdrop";
 import {
   CONTACT_LINKS,
@@ -90,6 +91,7 @@ export default function PortfolioHomePage() {
       <MotionController />
       <DatasheetScroll />
       <Navbar />
+      <SectionRail />
 
       <main className="relative z-10">
         <Hero />

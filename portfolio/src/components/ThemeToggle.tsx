@@ -37,6 +37,7 @@ export function ThemeToggle({ className, iconSize = 16 }: ThemeToggleProps) {
       <span
         className={className || defaultClasses}
         aria-hidden="true"
+        data-theme-toggle-placeholder=""
       />
     )
   }

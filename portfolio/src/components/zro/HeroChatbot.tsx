@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useTransition } from "react";
+import React, { useState, useRef, useEffect, useTransition, type CSSProperties } from "react";
 import {
   Smile,
   Briefcase,
@@ -25,8 +25,7 @@ interface CategoryCard {
   id: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  iconColor: string;
-  activeBorderColor: string;
+  accent: string;
   query: string;
 }
 
@@ -35,40 +34,35 @@ const CATEGORIES: CategoryCard[] = [
     id: "me",
     label: "Me",
     icon: Smile,
-    iconColor: "text-[#0D9488] dark:text-[#2DD4BF]",
-    activeBorderColor: "border-[#0D9488] ring-[#0D9488]/30",
+    accent: "#2dd4bf",
     query: "Tell me about yourself, your background, and your role",
   },
   {
     id: "projects",
     label: "Projects",
     icon: Briefcase,
-    iconColor: "text-[#10B981] dark:text-[#34D399]",
-    activeBorderColor: "border-[#10B981] ring-[#10B981]/30",
+    accent: "#34d399",
     query: "What are your top projects and what did you build?",
   },
   {
     id: "skills",
     label: "Skills",
     icon: Layers,
-    iconColor: "text-[#8B5CF6] dark:text-[#A78BFA]",
-    activeBorderColor: "border-[#8B5CF6] ring-[#8B5CF6]/30",
+    accent: "#a78bfa",
     query: "What is your core tech stack, languages, and frameworks?",
   },
   {
     id: "fun",
     label: "Fun",
     icon: PartyPopper,
-    iconColor: "text-[#EC4899] dark:text-[#F472B6]",
-    activeBorderColor: "border-[#EC4899] ring-[#EC4899]/30",
+    accent: "#f472b6",
     query: "What do you like to do for fun, hobbies, and outside of work?",
   },
   {
     id: "contact",
     label: "Contact",
     icon: Contact,
-    iconColor: "text-[#D97706] dark:text-[#FBBF24]",
-    activeBorderColor: "border-[#D97706] ring-[#D97706]/30",
+    accent: "#fbbf24",
     query: "How can I contact or hire you?",
   },
 ];
@@ -76,6 +70,17 @@ const CATEGORIES: CategoryCard[] = [
 /**
  * Lightweight safe markdown renderer for bold, links, code, and lists.
  */
+function safeHref(href: string): string | undefined {
+  return /^(https?:|mailto:|tel:|\/|#)/i.test(href.trim()) ? href : undefined;
+}
+
+function toPlainText(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*`]/g, "")
+    .trim();
+}
+
 function FormattedMessage({ text }: { text: string }) {
   const lines = text.split("\n");
 
@@ -91,34 +96,33 @@ function FormattedMessage({ text }: { text: string }) {
       }
 
       if (match[2] && match[3]) {
-        // [label](url)
+        const href = safeHref(match[3]);
         parts.push(
-          <a
-            key={match.index}
-            href={match[3]}
-            target={match[3].startsWith("http") ? "_blank" : undefined}
-            rel="noopener noreferrer"
-            className="text-blue-500 dark:text-blue-400 font-medium underline decoration-blue-500/50 underline-offset-2 transition-colors hover:text-blue-600 dark:hover:text-blue-300"
-          >
-            {match[2]}
-          </a>
+          href ? (
+            <a
+              key={match.index}
+              href={href}
+              target={href.startsWith("http") ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              className="font-medium text-zro-ink underline decoration-zro-accent/50 underline-offset-2 transition-colors hover:decoration-zro-accent"
+            >
+              {match[2]}
+            </a>
+          ) : (
+            match[2]
+          )
         );
       } else if (match[4]) {
-        // **bold**
         parts.push(
-          <strong
-            key={match.index}
-            className="font-semibold text-zinc-900 dark:text-zinc-100"
-          >
+          <strong key={match.index} className="font-semibold text-zro-ink">
             {match[4]}
           </strong>
         );
       } else if (match[5]) {
-        // `code`
         parts.push(
           <code
             key={match.index}
-            className="rounded bg-zinc-200/70 px-1 py-0.5 font-mono text-[0.8em] text-zinc-800 dark:bg-white/10 dark:text-zinc-200"
+            className="border border-zro-line bg-zro-surface px-1 py-0.5 font-mono text-[0.8em] text-zro-ink"
           >
             {match[5]}
           </code>
@@ -135,7 +139,7 @@ function FormattedMessage({ text }: { text: string }) {
   };
 
   return (
-    <div className="space-y-2 text-[0.875rem] leading-relaxed text-zinc-600 dark:text-zinc-300">
+    <div className="space-y-2 text-[0.875rem] leading-relaxed text-zro-muted">
       {lines.map((line, i) => {
         const trimmed = line.trim();
         if (!trimmed) {
@@ -144,7 +148,7 @@ function FormattedMessage({ text }: { text: string }) {
         if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
           return (
             <div key={i} className="flex items-start gap-2 pl-1">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+              <span className="mt-2 h-1 w-1.5 shrink-0 bg-zro-accent" />
               <span>{renderInline(trimmed.substring(2))}</span>
             </div>
           );
@@ -154,7 +158,7 @@ function FormattedMessage({ text }: { text: string }) {
           if (numMatch) {
             return (
               <div key={i} className="flex items-start gap-2 pl-1">
-                <span className="font-mono text-[0.8rem] font-bold text-blue-500">
+                <span className="font-mono text-[0.8rem] font-semibold text-zro-accent">
                   {numMatch[1]}.
                 </span>
                 <span>{renderInline(numMatch[2])}</span>
@@ -174,14 +178,18 @@ export function HeroChatbot() {
   const [currentResponse, setCurrentResponse] = useState<Message | null>(null);
   const [loading, setLoading] = useState(false);
   const [isAnswerOpen, setIsAnswerOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [announcement, setAnnouncement] = useState("");
   const answerCardRef = useRef<HTMLDivElement>(null);
+  const typewriterRef = useRef<number>(0);
   const [, startTransition] = useTransition();
+
+  useEffect(() => () => window.clearInterval(typewriterRef.current), []);
 
   const handleQuery = async (queryText: string, categoryId?: string) => {
     const textToSend = queryText.trim();
     if (!textToSend || loading) return;
 
+    window.clearInterval(typewriterRef.current);
     setInput("");
     setActiveCategory(categoryId || null);
     setIsAnswerOpen(true);
@@ -210,7 +218,6 @@ export function HeroChatbot() {
         data.reply ||
         "I'm sorry, I couldn't process that. Please ask about Aritra's experience or projects!";
 
-      // Typewriter effect
       setCurrentResponse({
         id: `resp-${Date.now()}`,
         role: "assistant",
@@ -223,10 +230,10 @@ export function HeroChatbot() {
 
       let currentLen = 0;
       const step = Math.max(4, Math.ceil(rawReply.length / 35));
-      const interval = setInterval(() => {
+      typewriterRef.current = window.setInterval(() => {
         currentLen += step;
         if (currentLen >= rawReply.length) {
-          clearInterval(interval);
+          window.clearInterval(typewriterRef.current);
           startTransition(() => {
             setCurrentResponse({
               id: `resp-${Date.now()}`,
@@ -236,6 +243,7 @@ export function HeroChatbot() {
               isStreaming: false,
             });
           });
+          setAnnouncement(toPlainText(rawReply));
         } else {
           const slice = rawReply.substring(0, currentLen);
           setCurrentResponse({
@@ -250,13 +258,15 @@ export function HeroChatbot() {
     } catch (err) {
       console.error("Chat error:", err);
       setLoading(false);
+      const errorCopy =
+        "I encountered a momentary connection hiccup. You can also view Aritra's full experience in the sections below or download his [Resume PDF](/resume.pdf).";
       setCurrentResponse({
         id: `err-${Date.now()}`,
         role: "assistant",
-        content:
-          "I encountered a momentary connection hiccup. You can also view Aritra's full experience in the sections below or download his [Resume PDF](/resume.pdf).",
+        content: errorCopy,
         category: categoryId,
       });
+      setAnnouncement(toPlainText(errorCopy));
     }
   };
 
@@ -270,157 +280,175 @@ export function HeroChatbot() {
   }, [isAnswerOpen, currentResponse]);
 
   const handleCloseAnswer = () => {
+    window.clearInterval(typewriterRef.current);
     setIsAnswerOpen(false);
     setActiveCategory(null);
     setCurrentResponse(null);
+    setAnnouncement("");
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-4xl py-2">
-      {/* Subtle colorful aura backdrop matching the user's screenshot */}
-      <div
-        className="pointer-events-none absolute -inset-x-4 -top-8 h-44 bg-gradient-to-r from-purple-400/15 via-teal-300/15 to-emerald-400/15 blur-3xl opacity-75 dark:opacity-40"
-        aria-hidden="true"
-      />
+    <div className="zro-ask relative mx-auto w-full max-w-4xl">
+      <div className="zro-ask-topline">
+        <span className="zro-eyebrow flex items-center gap-2 text-zro-muted">
+          <Sparkles className="h-3.5 w-3.5 text-zro-accent" aria-hidden="true" />
+          Ask my résumé
+        </span>
+        <span className="zro-ask-live zro-metric">
+          <span className="zro-pulse-dot h-1.5 w-1.5 bg-zro-accent" />
+          AI · grounded in verified facts
+        </span>
+      </div>
 
-      <div className="relative z-10 flex flex-col gap-3.5 sm:gap-4">
-        {/* Top Search / Prompt Pill Bar */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleQuery(input);
-          }}
-          className="group relative flex w-full items-center rounded-full border border-zinc-200/90 bg-white/95 px-5 py-2 sm:px-6 sm:py-2.5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-200 hover:border-zinc-300 hover:shadow-[0_6px_30px_-4px_rgba(0,0,0,0.09)] dark:border-white/10 dark:bg-[#121215]/95 dark:shadow-[0_4px_24px_-4px_rgba(0,0,0,0.4)] dark:hover:border-white/20"
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleQuery(input);
+        }}
+        className="zro-ask-bar"
+      >
+        <span aria-hidden="true" className="zro-ask-prompt">
+          &gt;
+        </span>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask me anything — experience, projects, stack…"
+          disabled={loading}
+          aria-label="Ask a question about Aritra"
+          className="zro-ask-input"
+        />
+        <kbd aria-hidden="true" className="zro-ask-kbd">
+          Enter ↵
+        </kbd>
+        <button
+          type="submit"
+          disabled={loading || !input.trim()}
+          aria-label="Submit question"
+          className="zro-ask-submit"
         >
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me anything..."
-            disabled={loading}
-            className="flex-1 bg-transparent pr-4 font-sans text-base sm:text-lg text-zinc-800 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50 dark:text-zinc-100 dark:placeholder:text-zinc-500"
-          />
+          {loading ? (
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : (
+            <ArrowRight className="h-4 w-4" />
+          )}
+        </button>
+      </form>
 
-          <button
-            type="submit"
-            disabled={loading || !input.trim()}
-            aria-label="Submit query"
-            className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full bg-[#3B82F6] text-white shadow-md shadow-blue-500/25 transition-all duration-150 hover:bg-[#2563EB] hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100 disabled:shadow-none"
-          >
-            {loading ? (
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            ) : (
-              <ArrowRight className="h-5 w-5 stroke-[2.5]" />
-            )}
-          </button>
-        </form>
+      <div
+        className="zro-ask-chips"
+        role="group"
+        aria-label="Suggested questions"
+      >
+        {CATEGORIES.map((cat) => {
+          const Icon = cat.icon;
+          const isActive = activeCategory === cat.id && isAnswerOpen;
 
-        {/* 5 Category Cards */}
-        <div className="grid grid-cols-2 gap-2.5 xs:grid-cols-5 sm:grid-cols-5 sm:gap-3.5">
-          {CATEGORIES.map((cat) => {
-            const Icon = cat.icon;
-            const isActive = activeCategory === cat.id && isAnswerOpen;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => handleQuery(cat.query, cat.id)}
+              disabled={loading}
+              data-active={isActive}
+              style={{ "--ask-accent": cat.accent } as CSSProperties}
+              className="zro-ask-chip"
+            >
+              <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>{cat.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
-            return (
+      {isAnswerOpen && (
+        <div
+          ref={answerCardRef}
+          role="region"
+          aria-label="AI answer"
+          className="zro-ask-answer"
+        >
+          <div className="zro-ask-answer-head">
+            <span className="zro-eyebrow flex items-center gap-2 !text-zro-ink">
+              <span className="zro-pulse-dot h-1.5 w-1.5 bg-zro-accent" />
+              {activeCategory
+                ? `${CATEGORIES.find((c) => c.id === activeCategory)?.label} · AI Answer`
+                : "AI Answer"}
+              {currentResponse?.isStreaming && (
+                <span className="zro-metric text-[0.625rem] normal-case tracking-normal text-zro-faint">
+                  · generating
+                </span>
+              )}
+            </span>
+
+            <div className="flex items-center gap-1">
               <button
-                key={cat.id}
                 type="button"
-                onClick={() => handleQuery(cat.query, cat.id)}
-                disabled={loading}
-                className={`group flex flex-col items-center justify-center gap-2 rounded-2xl border bg-white/95 px-3 py-4 sm:px-4 sm:py-5 shadow-[0_2px_12px_-2px_rgba(0,0,0,0.04)] backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-[#121215]/95 dark:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.3)] ${
-                  isActive
-                    ? `ring-2 ${cat.activeBorderColor} shadow-md`
-                    : "border-zinc-200/80 hover:border-zinc-300 dark:border-white/10 dark:hover:border-white/20"
-                }`}
+                onClick={() => {
+                  const cat = CATEGORIES.find((c) => c.id === activeCategory);
+                  if (cat) handleQuery(cat.query, cat.id);
+                }}
+                className="zro-ask-icon-btn"
+                title="Regenerate answer"
+                aria-label="Regenerate answer"
               >
-                <Icon
-                  className={`h-6 w-6 sm:h-7 sm:w-7 ${cat.iconColor} transition-transform duration-200 group-hover:scale-110`}
-                />
-                <span className="font-medium text-xs sm:text-sm text-zinc-700 transition-colors group-hover:text-zinc-900 dark:text-zinc-200 dark:group-hover:text-white">
-                  {cat.label}
-                </span>
+                <RotateCcw className="h-3.5 w-3.5" />
               </button>
-            );
-          })}
-        </div>
-
-        {/* Dynamic Answer Panel (Opens below when user queries or clicks a card) */}
-        {isAnswerOpen && (
-          <div
-            ref={answerCardRef}
-            className="animate-in fade-in slide-in-from-top-2 relative overflow-hidden rounded-2xl border border-zinc-200/90 bg-white/95 p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] backdrop-blur-md dark:border-white/10 dark:bg-[#151518]/95 dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)] duration-200"
-          >
-            {/* Top Bar of Answer Panel */}
-            <div className="mb-4 flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-white/5">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  {activeCategory
-                    ? `${CATEGORIES.find((c) => c.id === activeCategory)?.label} · AI Answer`
-                    : "AI Answer"}
-                </span>
-                {currentResponse?.isStreaming && (
-                  <span className="font-mono text-[0.6875rem] text-blue-500">
-                    · generating...
-                  </span>
-                )}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const cat = CATEGORIES.find((c) => c.id === activeCategory);
-                    if (cat) handleQuery(cat.query, cat.id);
-                  }}
-                  className="rounded-full p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-white/10 dark:hover:text-zinc-200"
-                  title="Regenerate"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCloseAnswer}
-                  className="rounded-full p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-white/10 dark:hover:text-zinc-200"
-                  title="Close"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Content */}
-            {loading && !currentResponse ? (
-              <div className="flex items-center gap-2 py-4 text-zinc-500 dark:text-zinc-400">
-                <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.3s]" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.15s]" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-blue-500" />
-                <span className="ml-2 font-mono text-xs">
-                  Thinking &amp; synthesizing facts...
-                </span>
-              </div>
-            ) : currentResponse ? (
-              <FormattedMessage text={currentResponse.content} />
-            ) : null}
-
-            {/* Footer subtle tip */}
-            <div className="mt-4 flex items-center justify-between border-t border-zinc-100 pt-3 font-mono text-[0.6875rem] text-zinc-400 dark:border-white/5 dark:text-zinc-500">
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="h-3 w-3 text-blue-500" />
-                Grounded in verified experience &amp; resume facts
-              </span>
               <button
                 type="button"
                 onClick={handleCloseAnswer}
-                className="underline hover:text-zinc-700 dark:hover:text-zinc-300"
+                className="zro-ask-icon-btn"
+                title="Close answer"
+                aria-label="Close answer"
               >
-                Done / Close
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>
-        )}
-      </div>
+
+          {loading && !currentResponse ? (
+            <div className="flex items-center gap-2 py-4 font-mono text-[0.75rem] text-zro-muted">
+              <span className="zro-ask-dot" />
+              <span className="zro-ask-dot [animation-delay:-0.15s]" />
+              <span className="zro-ask-dot" />
+              <span className="ml-2">Thinking &amp; synthesizing facts…</span>
+            </div>
+          ) : currentResponse ? (
+            <FormattedMessage text={currentResponse.content} />
+          ) : null}
+
+          <div className="zro-ask-answer-foot">
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="h-3 w-3 text-zro-accent" aria-hidden="true" />
+              Grounded in verified experience &amp; résumé facts
+            </span>
+            <button
+              type="button"
+              onClick={handleCloseAnswer}
+              className="zro-foot-link"
+            >
+              Done
+              <span aria-hidden="true">↑</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/*
+        The visible answer streams character by character. Announcing every
+        mutation would flood screen readers, so the final reply is written
+        once into this persistent status region instead.
+      */}
+      <p
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-busy={currentResponse?.isStreaming ?? false}
+        className="sr-only"
+      >
+        {announcement}
+      </p>
     </div>
   );
 }

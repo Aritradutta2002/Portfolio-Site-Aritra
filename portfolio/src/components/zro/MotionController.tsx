@@ -100,12 +100,22 @@ export function MotionController() {
     let pointerFrame = 0;
     let lastEvent: PointerEvent | null = null;
     let magnet: HTMLElement | null = null;
+    let tilt: HTMLElement | null = null;
 
     const resetMagnet = () => {
       if (!magnet) return;
       magnet.style.removeProperty("--tx");
       magnet.style.removeProperty("--ty");
       magnet = null;
+    };
+
+    const resetTilt = () => {
+      if (!tilt) return;
+      tilt.style.removeProperty("--rx");
+      tilt.style.removeProperty("--ry");
+      tilt.style.removeProperty("--gx");
+      tilt.style.removeProperty("--gy");
+      tilt = null;
     };
 
     const applyPointer = () => {
@@ -122,7 +132,10 @@ export function MotionController() {
         spot.style.setProperty("--my", `${(event.clientY - rect.top).toFixed(1)}px`);
       }
 
-      if (reduced) return;
+      if (reduced) {
+        resetTilt();
+        return;
+      }
 
       const next = target.closest<HTMLElement>("[data-magnetic]");
       if (magnet && magnet !== next) resetMagnet();
@@ -134,6 +147,21 @@ export function MotionController() {
         next.style.setProperty("--ty", `${clamp(dy * 0.3, -6, 6).toFixed(2)}px`);
         magnet = next;
       }
+
+      /* Subtle 3D tilt for project artwork. Values are degrees, capped low so
+         the effect reads as depth rather than a gimmick. */
+      const nextTilt = target.closest<HTMLElement>("[data-tilt]");
+      if (tilt && tilt !== nextTilt) resetTilt();
+      if (nextTilt) {
+        const rect = nextTilt.getBoundingClientRect();
+        const px = (event.clientX - rect.left) / rect.width - 0.5;
+        const py = (event.clientY - rect.top) / rect.height - 0.5;
+        nextTilt.style.setProperty("--rx", `${clamp(-py * 5, -5, 5).toFixed(2)}deg`);
+        nextTilt.style.setProperty("--ry", `${clamp(px * 7, -7, 7).toFixed(2)}deg`);
+        nextTilt.style.setProperty("--gx", `${((px + 0.5) * 100).toFixed(1)}%`);
+        nextTilt.style.setProperty("--gy", `${((py + 0.5) * 100).toFixed(1)}%`);
+        tilt = nextTilt;
+      }
     };
 
     const onPointerMove = (event: PointerEvent) => {
@@ -142,7 +170,10 @@ export function MotionController() {
       if (!pointerFrame) pointerFrame = requestAnimationFrame(applyPointer);
     };
 
-    const onLeaveDocument = () => resetMagnet();
+    const onLeaveDocument = () => {
+      resetMagnet();
+      resetTilt();
+    };
 
     if (finePointer) {
       // Reduced motion keeps spotlights following the pointer (a lighting
@@ -162,6 +193,7 @@ export function MotionController() {
       document.documentElement.removeEventListener("mouseleave", onLeaveDocument);
       window.removeEventListener("blur", onLeaveDocument);
       resetMagnet();
+      resetTilt();
     };
   }, []);
 

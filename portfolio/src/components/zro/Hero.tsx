@@ -60,17 +60,24 @@ export function Hero() {
           <div className="lg:col-span-7">
             {/* Mobile identification block — the desktop figure carries this. */}
             <div className="mb-7 flex items-center gap-4 lg:hidden">
-              <div className="relative h-[118px] w-[92px] shrink-0 overflow-hidden border border-zro-line bg-zro-surface">
+              <div className="zro-hero-id-photo relative h-[104px] w-[84px] shrink-0 overflow-hidden border border-zro-line bg-zro-surface">
                 <Image
                   src="/aritra-portrait-sm.webp"
                   alt=""
                   fill
-                  sizes="92px"
+                  sizes="84px"
                   className="object-cover"
                 />
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 bottom-0 h-px bg-zro-accent/70"
+                />
               </div>
-              <div className="zro-eyebrow">
-                {PORTFOLIO_HEADER.location}
+              <div>
+                <p className="zro-eyebrow">{PORTFOLIO_HEADER.location}</p>
+                <p className="zro-metric mt-1.5 text-[0.625rem] uppercase tracking-[0.12em] text-zro-faint">
+                  Portfolio · 2026
+                </p>
               </div>
             </div>
 
@@ -82,7 +89,9 @@ export function Hero() {
                 aria-hidden="true"
                 className="zro-pulse-dot h-1.5 w-1.5 rounded-full bg-zro-accent"
               />
-              <span className="zro-eyebrow">{PORTFOLIO_HEADER.availability}</span>
+              <span className="zro-eyebrow zro-hero-availability">
+                {PORTFOLIO_HEADER.availability}
+              </span>
             </div>
 
             {/* Name and role share one display block; only the role line is
@@ -136,13 +145,38 @@ export function Hero() {
                 Read experience
               </Button>
             </div>
+
+            <ul
+              data-reveal
+              style={{ "--zro-delay": "280ms" } as CSSProperties}
+              className="zro-hero-proof"
+              aria-label="Career highlights"
+            >
+              <li>
+                <strong>TCS</strong>
+                <span>Enterprise Java</span>
+              </li>
+              <li>
+                <strong>20×</strong>
+                <span>API speed-up</span>
+              </li>
+              <li>
+                <strong>700+</strong>
+                <span>DSA problems</span>
+              </li>
+              <li>
+                <strong>1672</strong>
+                <span>LeetCode</span>
+              </li>
+            </ul>
           </div>
 
           <div className="hidden lg:col-span-5 lg:block">
             <figure
               data-reveal="fade"
-              className="zro-portrait mx-auto w-full max-w-[400px] overflow-hidden border border-zro-line bg-zro-surface"
+              className="zro-portrait mx-auto w-full max-w-[400px] overflow-visible border border-zro-line bg-zro-surface"
             >
+              <span className="zro-portrait-halo" aria-hidden="true" />
               <div
                 data-scroll
                 className="zro-portrait-frame relative aspect-[4/5] w-full overflow-hidden"
@@ -156,9 +190,12 @@ export function Hero() {
                     className="object-cover"
                   />
                 </div>
+                <span className="zro-portrait-tag" aria-hidden="true">
+                  Java 21 · Azure · RAG
+                </span>
               </div>
               <figcaption className="border-t border-zro-line px-4 py-3 text-[0.6875rem] uppercase leading-relaxed tracking-[0.14em] text-zro-faint">
-                {PORTFOLIO_HEADER.name} · {PORTFOLIO_HEADER.location}
+                {PORTFOLIO_HEADER.name} · {PORTFOLIO_HEADER.role}
               </figcaption>
             </figure>
           </div>
@@ -167,15 +204,15 @@ export function Hero() {
         {/* Separator hairline */}
         <div
           data-reveal="rule"
-          style={{ "--zro-delay": "260ms" } as CSSProperties}
+          style={{ "--zro-delay": "340ms" } as CSSProperties}
           aria-hidden="true"
         />
 
         {/* Ask Me Anything Chatbot replacing the static 3 metrics */}
         <div
           data-reveal="fade"
-          style={{ "--zro-delay": "300ms" } as CSSProperties}
-          className="pb-10 pt-4"
+          style={{ "--zro-delay": "380ms" } as CSSProperties}
+          className="pb-9 pt-3.5"
         >
           <HeroChatbot />
         </div>
