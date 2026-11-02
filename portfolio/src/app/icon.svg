@@ -1,95 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <!-- Deep obsidian radial background -->
-    <radialGradient id="bg" cx="50%" cy="30%" r="80%">
-      <stop offset="0%" stop-color="#16151D"/>
-      <stop offset="55%" stop-color="#0B0B0F"/>
-      <stop offset="100%" stop-color="#040406"/>
-    </radialGradient>
-
-    <!-- Metallic champagne gold outer border -->
-    <linearGradient id="rim" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFE8A3" stop-opacity="0.95"/>
-      <stop offset="25%" stop-color="#E5B842" stop-opacity="0.6"/>
-      <stop offset="50%" stop-color="#9A7418" stop-opacity="0.2"/>
-      <stop offset="75%" stop-color="#C8A46B" stop-opacity="0.5"/>
-      <stop offset="100%" stop-color="#FFE8A3" stop-opacity="0.9"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6D28D9"/>
+      <stop offset="0.55" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#F472B6"/>
     </linearGradient>
-
-    <!-- Soft cyan-gold ambient core glow -->
-    <radialGradient id="ambient-glow" cx="50%" cy="46%" r="48%">
-      <stop offset="0%" stop-color="#E5B842" stop-opacity="0.32"/>
-      <stop offset="45%" stop-color="#22D3EE" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
-    </radialGradient>
-
-    <!-- Facet Light (Left Wing) -->
-    <linearGradient id="facet-light" x1="10%" y1="0%" x2="90%" y2="100%">
-      <stop offset="0%" stop-color="#FFFDF7"/>
-      <stop offset="20%" stop-color="#FCE598"/>
-      <stop offset="60%" stop-color="#D4A747"/>
-      <stop offset="100%" stop-color="#916B1E"/>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.28"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
-
-    <!-- Facet Shade (Right Wing) -->
-    <linearGradient id="facet-shade" x1="80%" y1="0%" x2="20%" y2="100%">
-      <stop offset="0%" stop-color="#FCE598"/>
-      <stop offset="40%" stop-color="#B88A2D"/>
-      <stop offset="85%" stop-color="#644811"/>
-      <stop offset="100%" stop-color="#3A2805"/>
-    </linearGradient>
-
-    <!-- Horizontal Tech Crossbar -->
-    <linearGradient id="crossbar-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#D4A747"/>
-      <stop offset="50%" stop-color="#FFF6D6"/>
-      <stop offset="100%" stop-color="#E5B842"/>
-    </linearGradient>
-
-    <!-- Diamond Accent -->
-    <linearGradient id="diamond-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="50%" stop-color="#FFE082"/>
-      <stop offset="100%" stop-color="#D4A747"/>
-    </linearGradient>
-
-    <!-- Shadow filter for 3D depth -->
-    <filter id="emblem-shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.75"/>
-      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#E5B842" flood-opacity="0.3"/>
-    </filter>
   </defs>
 
-  <!-- Squircle Base Frame -->
-  <rect width="512" height="512" rx="118" fill="url(#bg)"/>
-  
-  <!-- Outer Metallic Border -->
-  <rect x="10" y="10" width="492" height="492" rx="108" fill="none" stroke="url(#rim)" stroke-width="7"/>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="116" fill="url(#gloss)"/>
 
-  <!-- Inner Subtle Hairline -->
-  <rect x="20" y="20" width="472" height="472" rx="98" fill="none" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="2"/>
-
-  <!-- Core Ambient Glow -->
-  <circle cx="256" cy="250" r="170" fill="url(#ambient-glow)"/>
-
-  <!-- Emblem Group with Shadow -->
-  <g filter="url(#emblem-shadow)">
-    <!-- Architectural Monogram 'A' -->
-    <!-- Left Facet -->
-    <path d="M 256 82 L 112 408 L 186 408 L 228 308 L 284 308 L 256 238 Z" fill="url(#facet-light)"/>
-
-    <!-- Right Facet -->
-    <path d="M 256 82 L 256 238 L 284 308 L 326 408 L 400 408 Z" fill="url(#facet-shade)"/>
-
-    <!-- High-Precision Tech Crossbar (Floating Bridge) -->
-    <path d="M 198 326 L 314 326 L 298 362 L 214 362 Z" fill="url(#crossbar-grad)"/>
-
-    <!-- Inner Code Glyph Diamond (Apex Cutout) -->
-    <polygon points="256,186 282,238 256,270 230,238" fill="#07070A"/>
-    <polygon points="256,198 274,238 256,260 238,238" fill="url(#diamond-grad)"/>
-
-    <!-- Illuminated Apex Beacon -->
-    <circle cx="256" cy="82" r="9" fill="#FFFFFF"/>
-    <circle cx="256" cy="82" r="18" fill="#FFE082" fill-opacity="0.45"/>
+  <!-- Bold "A" monogram: thick strokes stay legible at 16px -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="64" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M132 410 L256 106 L380 410"/>
+    <path d="M188 322 H324"/>
   </g>
 </svg>

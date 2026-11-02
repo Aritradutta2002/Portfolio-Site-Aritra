@@ -1,90 +1,98 @@
 import { NextResponse } from "next/server";
-import { SYSTEM_PROMPT, getLocalFallbackAnswer } from "@/lib/portfolioContext";
+import { getLocalFallbackAnswer } from "@/lib/portfolioContext";
+import {
+  callNvidiaChat,
+  trimHistory,
+  type ChatMessage,
+} from "@/lib/nvidiaChat";
+import {
+  checkDailyRateLimit,
+  getRateLimitHeaders,
+} from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
-interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-}
-
 export async function POST(req: Request) {
   try {
+    // 1. Check daily rate limit (10 requests/day per IP)
+    const rateLimit = checkDailyRateLimit(req);
+    const rateLimitHeaders = getRateLimitHeaders(rateLimit);
+
+    if (!rateLimit.allowed) {
+      const quotaExhaustedReply =
+        "You've reached your daily limit of 10 questions! 🎯\n\n" +
+        "- Browse his enterprise experience and live projects below.\n" +
+        "- Grab his verified [Résumé PDF](/resume.pdf).\n" +
+        "- Reach out directly at [aritradutta049@gmail.com](mailto:aritradutta049@gmail.com).\n\n" +
+        "⚡ Daily quota resets at midnight UTC. Thank you for visiting!";
+
+      return NextResponse.json(
+        {
+          reply: quotaExhaustedReply,
+          provider: "rate-limited",
+          rateLimited: true,
+          remaining: 0,
+          limit: rateLimit.limit,
+          resetAt: rateLimit.resetAt,
+        },
+        {
+          status: 429,
+          headers: rateLimitHeaders,
+        }
+      );
+    }
+
     const body = await req.json();
-    const messages: ChatMessage[] = body.messages || [];
+    const rawMessages = Array.isArray(body?.messages) ? body.messages : [];
+    const messages: ChatMessage[] = trimHistory(rawMessages);
 
     if (!messages.length) {
       return NextResponse.json(
         { error: "No messages provided." },
-        { status: 400 }
+        { status: 400, headers: rateLimitHeaders }
       );
     }
 
-    const latestMessage = messages[messages.length - 1];
-    const userQuery = latestMessage.content || "";
+    const latestUser =
+      [...messages].reverse().find((m) => m.role === "user")?.content || "";
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.NVIDIA_API_KEY;
 
-    // If API key is present, attempt to call Google Gemini API
+    // 2. Primary engine: NVIDIA LLM Inference.
+    // Gracefully degrades to local engine if key has entitlement or network limits.
     if (apiKey) {
       try {
-        const contents = messages.map((m) => ({
-          role: m.role === "assistant" ? "model" : "user",
-          parts: [{ text: m.content }],
-        }));
-
-        // Try gemini-2.5-flash first, then gemini-1.5-flash if needed
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
-        const res = await fetch(geminiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const reply = await callNvidiaChat(messages, apiKey);
+        return NextResponse.json(
+          {
+            reply,
+            provider: "nvidia",
+            remaining: rateLimit.remaining,
+            limit: rateLimit.limit,
+            resetAt: rateLimit.resetAt,
           },
-          body: JSON.stringify({
-            system_instruction: {
-              parts: [{ text: SYSTEM_PROMPT }],
-            },
-            contents,
-            generationConfig: {
-              temperature: 0.3,
-              maxOutputTokens: 800,
-            },
-          }),
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          const candidate = data.candidates?.[0];
-          const text =
-            candidate?.content?.parts?.[0]?.text ||
-            candidate?.parts?.[0]?.text;
-
-          if (text) {
-            return NextResponse.json({
-              reply: text,
-              provider: "gemini",
-            });
-          }
-        } else {
-          console.warn(
-            `[API/Chat] Gemini API returned status ${res.status}. Falling back to local responder.`
-          );
-        }
-      } catch (geminiError) {
+          { headers: rateLimitHeaders }
+        );
+      } catch (nvidiaError) {
         console.warn(
-          "[API/Chat] Gemini call failed, using local fallback:",
-          geminiError
+          "[API/Chat] NVIDIA call failed, using local fallback:",
+          nvidiaError instanceof Error ? nvidiaError.message : nvidiaError
         );
       }
     }
 
-    // Fallback: Intelligent portfolio knowledge base
-    const fallbackAnswer = getLocalFallbackAnswer(userQuery);
-    return NextResponse.json({
-      reply: fallbackAnswer,
-      provider: "local",
-    });
+    // 3. Fallback: Ultra-compact, grounded local knowledge responder.
+    const fallbackAnswer = getLocalFallbackAnswer(latestUser);
+    return NextResponse.json(
+      {
+        reply: fallbackAnswer,
+        provider: "local",
+        remaining: rateLimit.remaining,
+        limit: rateLimit.limit,
+        resetAt: rateLimit.resetAt,
+      },
+      { headers: rateLimitHeaders }
+    );
   } catch (error) {
     console.error("[API/Chat] Error in chat handler:", error);
     return NextResponse.json(

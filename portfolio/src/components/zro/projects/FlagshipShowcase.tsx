@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
+  ArrowUp,
   ArrowUpRight,
   Bot,
   CheckCircle2,
@@ -180,8 +181,16 @@ function Tutor() {
       </div>
 
       <div className="zro-demo-input">
-        <span>Ask a follow-up about the proof…</span>
-        <span aria-hidden="true">↵</span>
+        <span className="zro-demo-input-prompt" aria-hidden="true">
+          &gt;
+        </span>
+        <span className="zro-demo-input-text">
+          Ask a follow-up about the proof…
+        </span>
+        <span className="zro-demo-input-caret" aria-hidden="true" />
+        <span className="zro-demo-input-send" aria-hidden="true">
+          <ArrowUp className="h-2.5 w-2.5" strokeWidth={2.5} />
+        </span>
       </div>
 
       <div className="zro-demo-followups">

@@ -47,36 +47,11 @@ const TECH_COUNT = TECH_GROUPS.reduce(
   0
 );
 
-const MARQUEE_ITEMS = Array.from(
-  new Set(TECH_GROUPS.flatMap((group) => group.items))
-);
-
 const PRINCIPLES = [
   "Measure before and after — every optimisation needs a number.",
   "Ship in small, testable slices that stay reversible.",
   "Leave the system easier to operate than you found it.",
 ];
-
-function MarqueeTrack({
-  hidden = false,
-}: {
-  hidden?: boolean;
-}) {
-  return (
-    <ul
-      className="zro-marquee-track"
-      aria-hidden={hidden || undefined}
-      aria-label={hidden ? undefined : "Full technology toolkit"}
-    >
-      {MARQUEE_ITEMS.map((item) => (
-        <li key={`${hidden ? "dup-" : ""}${item}`}>
-          <span aria-hidden="true" />
-          {item}
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 export function SkillsMatrix() {
   return (
@@ -190,19 +165,6 @@ export function SkillsMatrix() {
               })}
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="zro-toolkit mt-14">
-        <div className="zro-toolkit-head mx-auto max-w-6xl px-6 md:px-8">
-          <p className="zro-eyebrow">The full toolkit</p>
-          <p className="zro-metric">
-            {TECH_COUNT} technologies · continuously expanding
-          </p>
-        </div>
-        <div className="zro-marquee">
-          <MarqueeTrack />
-          <MarqueeTrack hidden />
         </div>
       </div>
     </section>

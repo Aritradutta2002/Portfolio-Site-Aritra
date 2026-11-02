@@ -25,13 +25,6 @@ const datasheetMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  icons: {
-    icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/icon.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: [{ url: "/apple-icon.png", sizes: "512x512", type: "image/png" }],
-  },
 };
 
 export const viewport: Viewport = {

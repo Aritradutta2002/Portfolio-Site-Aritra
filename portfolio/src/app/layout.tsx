@@ -61,16 +61,6 @@ export const metadata: Metadata = {
     title: "Aritra Dutta | Full Stack Application Engineer Portfolio",
     description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 20x API performance gains.",
   },
-  icons: {
-    icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/icon.png", sizes: "512x512", type: "image/png" },
-    ],
-    shortcut: "/favicon.ico",
-    apple: [{ url: "/apple-icon.png", sizes: "512x512", type: "image/png" }],
-  },
 };
 
 export default function RootLayout({
