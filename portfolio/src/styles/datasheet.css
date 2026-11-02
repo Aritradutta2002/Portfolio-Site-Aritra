@@ -5312,7 +5312,7 @@ html.js .zro-edu-timeline::after {
 .zro-edu-node {
   position: absolute;
   z-index: 2;
-  top: 1.92rem;
+  top: calc(1.5rem + 0.875rem - 3.5px);
   left: -1.12rem;
   width: 7px;
   height: 7px;
@@ -5322,6 +5322,12 @@ html.js .zro-edu-timeline::after {
     background-color 500ms var(--zro-ease) 150ms,
     border-color 500ms var(--zro-ease) 150ms,
     box-shadow 500ms var(--zro-ease) 150ms;
+}
+
+@media (min-width: 768px) {
+  .zro-edu-node {
+    top: calc(1.75rem + 0.875rem - 3.5px);
+  }
 }
 
 .zro-edu-item.is-visible .zro-edu-node {

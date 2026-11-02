@@ -56,7 +56,7 @@ export function BenchmarksSection() {
                   data-reveal
                   data-spot
                   style={{ "--zro-i": index } as CSSProperties}
-                  className="zro-card zro-edu-card zro-edu-item group"
+                  className="zro-card zro-edu-card zro-edu-item group p-6 md:p-7"
                 >
                   <span className="zro-edu-node" aria-hidden="true" />
                   <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
