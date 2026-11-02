@@ -1211,11 +1211,10 @@ html.js .zro-skill-card.is-visible .zro-chip {
 
 .zro-edu-meter {
   position: relative;
-  width: 6rem;
-  height: 2px;
-  margin-inline-start: 0;
+  width: 100%;
+  height: 3px;
   overflow: hidden;
-  background-color: var(--zro-hairline);
+  background-color: var(--zro-hairline-strong);
 }
 
 .zro-edu-meter-fill {
@@ -1224,7 +1223,7 @@ html.js .zro-skill-card.is-visible .zro-chip {
   width: var(--p, 0%);
   background: linear-gradient(
     90deg,
-    rgb(var(--zro-accent) / 0.25),
+    rgb(var(--zro-accent) / 0.55),
     rgb(var(--zro-accent))
   );
   transform-origin: left;
@@ -1242,10 +1241,6 @@ html.js [data-reveal].is-visible .zro-edu-meter-fill {
 @media (min-width: 640px) {
   .zro-edu-score {
     text-align: right;
-  }
-
-  .zro-edu-meter {
-    margin-inline-start: auto;
   }
 }
 
@@ -2358,28 +2353,6 @@ html:not(.dark) .zro-profile-status {
     );
 }
 
-.zro-profile-memoji {
-  position: absolute;
-  z-index: 3;
-  top: 0.7rem;
-  right: 0.7rem;
-  display: block;
-  width: 3rem;
-  height: 3rem;
-  overflow: hidden;
-  border: 2px solid rgb(var(--zro-canvas));
-  border-radius: 999px;
-  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.8);
-  transform: rotate(3deg);
-  transition: transform 320ms var(--zro-ease);
-}
-
-@media (hover: hover) {
-  .zro-profile-memoji:hover {
-    transform: rotate(0deg) scale(1.08);
-  }
-}
-
 .zro-fact-list {
   display: flex;
   flex-direction: column;
@@ -2871,7 +2844,6 @@ html:not(.js) .zro-exp-toggle {
 
 @media (prefers-reduced-motion: reduce) {
   .zro-profile-media img,
-  .zro-profile-memoji,
   .zro-social-link,
   .zro-inline-link,
   .zro-inline-link svg,

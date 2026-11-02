@@ -37,11 +37,11 @@ export function ProfileCard() {
 
       <figure className="zro-profile-media relative mt-4 aspect-[4/3.85] w-full overflow-hidden border border-zro-line bg-zro-surface">
         <Image
-          src="/aritra-portrait.webp"
-          alt={`${PORTFOLIO_HEADER.name}, ${PORTFOLIO_HEADER.role}`}
+          src="/aritra-memoji.jpg"
+          alt={`Illustrated avatar of ${PORTFOLIO_HEADER.name}`}
           fill
           sizes="(max-width: 1024px) 100vw, 380px"
-          className="object-cover object-[50%_32%]"
+          className="object-cover object-[50%_18%]"
         />
         <span className="zro-profile-shade" aria-hidden="true" />
         <span
@@ -61,17 +61,6 @@ export function ProfileCard() {
             {PORTFOLIO_HEADER.role}
           </p>
         </figcaption>
-
-        <span className="zro-profile-memoji" title="Aritra's memoji">
-          <Image
-            src="/aritra-memoji.jpg"
-            alt=""
-            width={96}
-            height={96}
-            sizes="48px"
-            className="h-full w-full object-cover object-top"
-          />
-        </span>
       </figure>
 
       <dl className="zro-fact-list mt-5 border-t border-zro-line pt-1">
