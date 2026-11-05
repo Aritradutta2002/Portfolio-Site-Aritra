@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-11-05T06:20:00Z",
+  "commit": "a691523",
+  "branch": "feature/vengenceui",
+  "build": {
+    "nextVersion": "15.5.12",
+    "reactVersion": "19.1.0",
+    "duration_seconds": 13.7,
+    "routes": {
+      "/": {
+        "size_kb": 28.4,
+        "first_load_js_kb": 184
+      },
+      "/classic": {
+        "size_kb": 33.4,
+        "first_load_js_kb": 193
+      },
+      "/desktop": {
+        "size_kb": 4.76,
+        "first_load_js_kb": 151
+      },
+      "/blog": {
+        "size_kb": 8.34,
+        "first_load_js_kb": 155
+      },
+      "/resume": {
+        "size_kb": 4.96,
+        "first_load_js_kb": 111
+      }
+    },
+    "shared_first_load_js_kb": 102,
+    "middleware_size_kb": 34
+  },
+  "targets": {
+    "lcp_target_seconds": 2.5,
+    "cls_target": 0.1,
+    "inp_target_ms": 200,
+    "tbt_target_ms": 200,
+    "js_size_budget_increase_max_kb": 60,
+    "lighthouse_mobile_floor": 90
+  }
+}

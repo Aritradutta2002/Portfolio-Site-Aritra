@@ -1,1880 +1,1217 @@
-# Background System — Logic, Animation & Replication Plan
+# Portfolio Migration & Transformation Plan — aritrodutta.tech
 
-**Repository:** `Portfolio-Site-Aritra`
-**Reference implementation:** `portfolio/` (Next.js 15, React 19, Tailwind 3)
-**Purpose of this document:** explain exactly how the site's background is built, then provide a step-by-step, copy-paste guide to reproduce the same look and behavior in another application (React, Next.js, Vue, Svelte, or plain HTML). If the target app is not a display-only portfolio, read **§11 first** — it defines when to reduce, relocate, or disable each layer instead of copying it 1:1.
+**Version:** v2 (final)  
+**Goal:** Turn the live portfolio into a very animated, premium, fully responsive site using the best components from **Vengeance UI**, **Skiper UI** and (optionally) **Animmaster Lib**, executed phase by phase by a coding agent (Claude Code / GitHub Copilot).
 
-**Key fact:** the background needs **no extra dependencies**. The canvas engine is hand-written (no Three.js, no particles library). Only the hero *content* uses Framer Motion; the background itself is plain Canvas 2D + CSS.
-
----
-
-## Table of contents
-
-1. [What "the background" actually is](#1-what-the-background-actually-is)
-2. [Source file map](#2-source-file-map)
-3. [Design tokens and theming contract](#3-design-tokens-and-theming-contract)
-4. [Layer 1 — Ambient backdrop](#4-layer-1--ambient-backdrop)
-5. [Layer 2 — Particle network engine](#5-layer-2--particle-network-engine)
-6. [Layer 3 — Hero composition and click-through](#6-layer-3--hero-composition-and-click-through)
-7. [Layer 4 — Film grain](#7-layer-4--film-grain)
-8. [Animation inventory and timing](#8-animation-inventory-and-timing)
-9. [Performance, accessibility, lifecycle](#9-performance-accessibility-lifecycle)
-10. [Step-by-step replication guide](#10-step-by-step-replication-guide)
-11. [Adapting this to a different application (decision guide)](#11-adapting-this-to-a-different-application-decision-guide)
-12. [Framework-specific notes](#12-framework-specific-notes)
-13. [Tuning cookbook](#13-tuning-cookbook)
-14. [QA checklist and acceptance criteria](#14-qa-checklist-and-acceptance-criteria)
-15. [Known pitfalls](#15-known-pitfalls)
-16. [Appendix — plain-JS version](#16-appendix--plain-js-version)
-17. [Copy checklist](#17-copy-checklist)
+### What changed from v1
+- Install mechanics for Vengeance UI and Skiper UI are now **confirmed from their docs** (see §6).
+- Animation engine corrected: both registries ship components that import **`framer-motion`**, so that is the default engine (§4.1 rule 6).
+- Added: stack-mismatch decision tree, design-direction phase with a **Refined vs Signature** track, component verification registry, `/desktop` + `/classic` upgrade, SEO + structured data, automated tests + CI, hosting/redirects, analytics, security hygiene, Skiper attribution requirement, post-launch checklist.
 
 ---
 
-## 1. What "the background" actually is
+## 0. How to use this file
 
-The background is a **four-layer composition**, not a single component:
+1. Save as `PLAN.md` at the repo root.
+2. Paste the block in **§4.3** into `AGENTS.md` (also valid as `CLAUDE.md` or `.github/copilot-instructions.md`).
+3. Answer the decisions in **§3** (defaults apply if you don't).
+4. Run phases **in order**. One phase = one branch = one PR. Paste that phase's **Prompt** into the agent.
+5. Do not start a phase until the previous phase's **Acceptance** list is fully ticked.
+6. After each phase the agent appends to `docs/transformation-log.md` (template in §14).
 
-| Stack (bottom → top) | Layer |
-|---|---|
-| page background | body color (`--background`) |
-| `z-0` | fixed ambient backdrop: base + grid + gold/emerald glows + vignette |
-| `z-0` | particle canvas, then hero focus vignette (both inside the hero) |
-| `z-10` | hero content / page content |
-| `z-70` | film grain overlay (fixed, pointer-events: none) |
-| `z-105` | scroll progress line |
-| `z-120` | custom cursor (desktop only) |
-
-| Layer | File / selector | Motion? | Cost |
-|---|---|---|---|
-| Ambient backdrop (base + grid + gold/emerald glows + inset vignette) | `Backdrop.tsx` / `.luxe-grid-bg` | Static | CSS gradients, composited once |
-| Particle network (dots, proximity lines, BFS lightning on click) | `ParticleNetworkBFS.tsx` | Continuous + interactive | Canvas 2D, ~2.3k distance checks/frame |
-| Hero focus vignette | inline style in `Hero.tsx` | Static | one radial gradient |
-| Film grain | `.luxe-grain::after` | Static | tiled inline SVG noise at 3.2% opacity |
-| Extra atmosphere (optional): gold dot cursor, scroll progress, marquee, orbit rings | `Cursor.tsx`, `ScrollProgress.tsx`, `Marquee.tsx`, `Hero.tsx` | CSS/Framer | lightweight |
-
-The visual identity is: **near-black obsidian, a faint 72px engineering grid that fades downward, two soft colored light pools (champagne gold top, emerald bottom-left), a vignette, low-opacity grain, and a living constellation of nodes that "electrocutes" itself when clicked.**
-
-> **Important stacking caveat:** in this repo the backdrop is rendered at `-z-10` inside a page wrapper that has an opaque `bg-background`. Depending on stacking-context rules in your target app, a negative-z fixed child can be painted *behind* that opaque wrapper and become invisible. The replication guide below uses the safer pattern: backdrop at `z-0` as a sibling, content wrapped at `z-10`. Verify visually in the target app.
+**Tracks.** Tasks tagged **[A+B]** always run. Tasks tagged **[B]** run only on the **Signature** track (default). Choose **Refined** (Track A) by skipping every **[B]** task.
 
 ---
 
-## 2. Source file map
+## 1. Goals and non-goals
 
-| Concern | Path |
-|---|---|
-| Ambient backdrop | `portfolio/src/components/luxe/Backdrop.tsx` |
-| **Particle engine used in production** | `portfolio/src/components/luxe/ParticleNetworkBFS.tsx` |
-| Alternative engine (glowing lightning, full-viewport, lifecycle guards; currently unused) | `portfolio/src/components/luxe/ParticleNetwork.tsx` |
-| Hero composition / click-through | `portfolio/src/components/sections/Hero.tsx` |
-| Grid, grain, cursor, reveal, reduced-motion CSS | `portfolio/src/app/globals.css` |
-| Color tokens (light/dark) | `portfolio/src/app/globals.css` lines 9–53 |
-| Tailwind token mapping | `portfolio/tailwind.config.cjs` |
-| Page mount | `portfolio/src/app/page.tsx` |
-| Body grain class | `portfolio/src/app/layout.tsx` line 68 |
-| Theme class strategy | `portfolio/src/components/ThemeProvider.tsx` (`next-themes`, `attribute="class"`) |
-| Optional cursor | `portfolio/src/components/luxe/Cursor.tsx` |
-| Hero reveal gate | `portfolio/src/lib/luxe.ts` (`useLuxeReady`, `luxeParent`, `luxeChild`) |
-| Preloader (gates hero entrance) | `portfolio/src/components/luxe/Preloader.tsx` |
+**Goals**
+- Premium, memorable motion: smooth scroll, masked text reveals, scroll-driven storytelling, refined micro-interactions, one standout hero.
+- Fully responsive 320px → 1920px+, with touch-appropriate behavior (no cursor-only effects on phones).
+- Fast: LCP < 2.5s, CLS < 0.1, INP < 200ms on a throttled mid-range phone.
+- Preserve what is already distinctive: AI résumé companion, `/desktop`, `/classic`, light/dark themes, AlgoGuru live-product mock, the numbers (20×, 700+, 1672, 8.79).
+- Fix correctness issues found in the audit (domain/OG mismatch, broken anchors, typo).
+- Production hygiene: SEO, structured data, tests, CI, redirects, analytics, rollback.
+
+**Non-goals**
+- Rewriting copy or changing any claim/metric.
+- Changing the AI résumé backend, routes, or rate limiting.
+- Heavy 3D/WebGL on the default page (allowed only behind an opt-in flag, Phase 11).
 
 ---
 
-## 3. Design tokens and theming contract
+## 2. Current state (read from the public page) and what must be verified
 
-The background only needs a handful of tokens. They are stored as **space-separated RGB triplets** so Tailwind can inject alpha with `rgb(var(--token) / 0.05)`.
+Observed at `https://www.aritrodutta.tech/` (text only; visuals/code not seen):
+
+- **Sections:** Hero → About → Experience (TCS, expandable responsibilities) → competitive-programming strip → Projects (6 cards, discipline filter chips) → Skills (daily drivers + 6 groups, 39 technologies) → Education → Contact.
+- **Extras:** "Ask my résumé" AI input (daily limit shown as 10/10), `/desktop` interactive OS view, `/classic` plain-text view, `resume.pdf`, light/dark color scheme, live IST clock, mobile menu, large footer name mark.
+- **Nav:** top nav = About, Projects, Skills, Contact, Résumé. Mobile menu = 01–05 without Experience.
+- **Known issues**
+  - `canonical`, `og:url`, OG/Twitter image URLs point to `aritradutta.tech`, but assets are served from `aritrodutta.tech`.
+  - Hero CTA "Read experience" → `#experience`, but the nav has no Experience item.
+  - Footer "Work" → `#work`, but the section id is `#projects`.
+  - Typo "Jile" in Practices.
+  - Hero says "Full Stack Application Engineer"; experience entry says "System Engineer" (confirm intentional).
+- **Assumptions Phase 0 must verify (never trust blindly):** Next.js (metadata suggests it), App Router, TypeScript, Tailwind (v3 vs v4), existing animation libs, host (Vercel?), analytics, AI feature has a **server-side** rate limit.
+
+---
+
+## 3. Decisions needed before starting
+
+| # | Decision | Locked Resolution |
+|---|---|---|
+| D1 | Canonical domain | **`aritrodutta.tech`** (canonical, metadataBase, OG); `aritradutta.tech` 301-redirects to it |
+| D2 | Buy/use Animmaster (paid)? | **No** → free/native primitives only, skip §11b |
+| D3 | Buy Skiper UI Premium ($129)? | **No** → free components only (`@skiper-ui/skiper2`), skip §11a |
+| D4 | Dual titles ("Full Stack Application Engineer" vs "System Engineer") | **Keep both**: Hero emphasizes full-stack systems scope; Experience accurately reflects TCS title |
+| D5 | Light + dark themes | **Keep both**: Dark space is primary; luxury porcelain light mode adheres to WCAG AA 4.5:1 |
+| D6 | Track | **B – Signature** (refined motion, subtle grain, inline AI pill, Geist precision typography) |
+| D7 | Hosting | **Vercel** (Next.js App Router target with edge redirects) |
+| D8 | Analytics | **Vercel Analytics + Speed Insights** |
+| D9 | Skiper free-tier attribution | **Yes**: Include discreet attribution link in footer credits per license |
+
+---
+
+## 4. Agent guide
+
+### 4.1 Operating rules
+
+1. **Audit before editing.** Phase 0 is read-only.
+2. **One phase = one branch = one PR.** Branch: `feat/portfolio-p<NN>-<slug>`.
+3. **Protected (never modify):** AI résumé API routes, rate-limit logic, env files, `resume.pdf`, content/data files (except the confirmed typo and anything listed in the approved-copy table), analytics IDs/secrets.
+4. **Content is frozen.** No rephrasing, no invented metrics, testimonials or claims. Any copy change must be listed in the PR and in the approved-copy table of the log.
+5. **Reuse before adding.** Use existing utilities/components first.
+6. **One animation engine.** Use whatever the repo already has (`framer-motion` or `motion`). If none, install **`framer-motion`** (the Vengeance UI and Skiper UI registry components import it). Never have both `framer-motion` and `motion` installed without a logged decision.
+7. **Registry components are copied code.** After `shadcn add`, files live in the repo: refactor to project tokens, delete demo code, add props, fix imports, add pointer/reduced-motion handling.
+8. **Animate `transform` and `opacity` only** for continuous effects. No width/height/top/left (exception: height-auto expand/collapse via Motion layout).
+9. **Every animation has three behaviors:** fine pointer, touch, and `prefers-reduced-motion`.
+10. **Heavy = lazy.** Canvas/WebGL or > ~15 KB gzip → `next/dynamic` (`ssr: false` where needed), load on idle or visibility.
+11. **No layout shift.** Reserve space for anything animating in. Fonts via `next/font`.
+12. **Nested scroll + Lenis:** any inner scroll container (AI answer panel, case-study modal, sheet menu) gets `data-lenis-prevent`; call `lenis.stop()` while modals are open.
+13. **SSR safety:** pointer/media-query hooks start at the non-interactive default and update in an effect (avoid hydration mismatch).
+14. **Prove it.** At phase end run §4.2 and paste results in the PR.
+15. **Stop and ask** (concrete question + recommended default) when blocked or when licensing, domain or content is ambiguous.
+16. **Licensing.** Paid code (Animmaster, Skiper Premium) only with owner confirmation; never commit the raw zip; never paste paid source into public places. Free Skiper components require attribution (D9). Record every component's license in `docs/components.md`.
+17. **Don't expand scope.** No unrelated refactors, dependency upgrades or renames.
+
+### 4.2 Verification commands (adapt names to the repo's scripts)
+
+```bash
+npm run lint
+npm run typecheck            # or: npx tsc --noEmit
+npm run build
+npm run test:e2e             # after Phase 13
+npx lhci autorun             # after Phase 13; otherwise run Lighthouse manually
+```
+
+Manual each phase: 320 / 375 / 414 / 768 / 1024 / 1280 / 1536 / 1920 widths, keyboard-only pass, OS "Reduce motion" on, light and dark theme.
+
+### 4.3 Paste into `AGENTS.md`
+
+```markdown
+# Agent instructions — Portfolio (aritrodutta.tech)
+
+You are upgrading an existing, live portfolio. Follow PLAN.md phase by phase.
+
+## Hard rules
+- Content is frozen: no copy rewrites, no new claims or metrics.
+- Never modify: AI resume API/routes/rate limit, env files, resume.pdf, analytics IDs.
+- One animation engine (framer-motion or motion, whichever the repo already uses). Never both.
+- Animate transform/opacity only. Respect prefers-reduced-motion. No cursor effects on touch.
+- Heavy components are lazy-loaded (next/dynamic). No layout shift.
+- Inner scroll containers need data-lenis-prevent. Stop Lenis while modals are open.
+- Mobile first: every change must work at 320px.
+- Paid code (Animmaster, Skiper Premium) only if the owner confirms a license.
+- Registry components: refactor to project tokens, delete demo code, log source + license in docs/components.md.
+
+## Workflow
+1. Read PLAN.md (current phase) and docs/AUDIT.md.
+2. Summarize what you found in <=10 lines before editing.
+3. Make the smallest change set that satisfies the phase Acceptance list.
+4. Run lint, typecheck, build (and tests once they exist). Fix everything you introduced.
+5. Update docs/transformation-log.md and tick the checklist.
+6. Write the PR description: what changed, screenshots/GIF notes, perf numbers, open questions.
+
+## Definition of done
+Lint + typecheck + build + tests pass, no console errors, no CLS regressions, reduced-motion works,
+keyboard navigation works, 320px–1920px verified, Lighthouse mobile performance >= 90.
+```
+
+### 4.4 Running phases in your tools
+
+- **Claude Code:** start a fresh session per phase; paste the phase prompt; let it read `AGENTS.md`/`CLAUDE.md`. Use plan mode for Phases 0, 3 and 11.
+- **GitHub Copilot (agent mode):** attach `PLAN.md`, `docs/AUDIT.md` and `docs/components.md` as context; put the §4.3 block in `.github/copilot-instructions.md`.
+- **Review pass:** run the §13 review prompt in a *different* session than the one that wrote the code.
+
+---
+
+## 5. Design and motion system
+
+### 5.1 Tokens (create once, reuse everywhere)
 
 ```css
 :root {
-  color-scheme: light;
+  /* color — dark-first; body text contrast >= 4.5:1 */
+  --bg: #0a0a0b;               /* matches existing dark background */
+  --surface: #111113;
+  --surface-2: #17171a;
+  --border: rgba(255,255,255,.08);
+  --text: #f4f4f5;
+  --muted: #a1a1aa;
+  --accent: #3b82f6;          /* electric sapphire blue accent */
 
-  --bg: 247 245 240;          /* page base — porcelain */
-  --surface: 255 255 255;
-  --card: 255 255 255;
-  --ink: 16 18 24;
-  --muted: 94 100 114;
-  --line: 16 18 24;           /* grid + link lines */
-  --background: #F7F5F0;      /* literal hex for body / sections */
-  --foreground: #101218;
+  /* typography */
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
 
-  --gold: #9A7418;
-  --gold-soft: rgba(154, 116, 24, 0.12);
-  --gold-ink: #FFFFFF;
-  --gold-deep: #7A5C12;
+  /* radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* motion */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --dur-micro: 150ms;
+  --dur-ui: 280ms;
+  --dur-reveal: 700ms;
+
+  /* layout */
+  --maxw: 1240px;
+  --section-y: clamp(72px, 10vw, 160px);
 }
 
-.dark {
-  color-scheme: dark;
-
-  --bg: 7 8 12;               /* obsidian */
-  --surface: 14 16 22;
-  --card: 19 21 29;
-  --ink: 244 241 234;
-  --muted: 161 165 179;
-  --line: 255 255 255;
-  --background: #07080C;
-  --foreground: #F4F1EA;
-
-  --gold: #D3AB63;            /* champagne */
-  --gold-soft: rgba(211, 171, 99, 0.13);
-  --gold-ink: #0B0A06;
-  --gold-deep: #B08D45;
+[data-theme="light"], .light {
+  /* color — luxury porcelain theme; contrast >= 4.5:1 */
+  --bg: #fcfcfd;
+  --surface: #f4f4f6;
+  --surface-2: #eaecef;
+  --border: rgba(0,0,0,.08);
+  --text: #09090b;
+  --muted: #64748b;
+  --accent: #2563eb;
 }
 ```
 
-**Theming contract for the canvas:**
+Light theme and dark theme both adhere to WCAG AA contrast (≥4.5:1 on body text). Map tokens into the detected Tailwind version (v4: `@theme inline`; v3: `theme.extend`).
 
-- The app puts `dark` or `light` on `<html>` (`next-themes` with `attribute="class"`, `defaultTheme="dark"`).
-- If neither class is present, the canvas falls back to `prefers-color-scheme`.
-- A `MutationObserver` watches `<html class>` so the canvas recolors immediately when the user flips the theme toggle. (The production BFS file currently only listens to the OS media query — the portable version below adds the class observer.)
+### 5.2 Motion spec
 
-**If your target app does not use next-themes:** toggle a `dark`/`light` class on `<html>` yourself, or set `data-theme` and change the observer's `attributeFilter` + selector accordingly. Nothing else in the engine depends on the theme library.
-
----
-
-## 4. Layer 1 — Ambient backdrop
-
-### 4.1 Anatomy
-
-| Element | Geometry | Paint |
+| Use | Duration | Easing / spring |
 |---|---|---|
-| Base | `inset: 0` | `var(--background)` |
-| Grid | full screen | 1px lines every **72px**, `rgb(var(--line) / 0.05)`, radially masked from top center (`ellipse 90% 70% at 50% 0%`, solid until 30%, gone by 75%) |
-| Gold spotlight | `1100 × 640`, centered horizontally, top `-320px` | `radial-gradient(closest-side, rgba(211,171,99,0.13), transparent 70%)`, `blur(30px)` |
-| Emerald pool | `520 × 520`, bottom `-280px`, left `-200px`, hidden below `md` (768px) | `radial-gradient(closest-side, rgba(52,211,153,0.06), transparent 70%)`, `blur(30px)` |
-| Inset vignette | full screen | `box-shadow: inset 0 0 220px rgba(0,0,0,0.35)` |
-
-Notes:
-
-- The gold/emerald RGBA values are **hard-coded** (not theme tokens). They read as warm/cool light pools in both themes. If you need them theme-aware, move to variables.
-- `max-w-none` on the gold blob matters if Tailwind's image reset (`max-width: 100%`) would otherwise clamp its 1100px width.
-- The whole layer is `pointer-events: none` and `aria-hidden="true"` — it must never intercept clicks.
-
-### 4.2 Portable CSS + markup (no React required)
-
-```css
-.luxe-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;                 /* repo uses -10; see stacking caveat */
-  overflow: hidden;
-  pointer-events: none;
-  background: var(--background);
-}
-
-.luxe-backdrop__grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgb(var(--line) / 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(var(--line) / 0.05) 1px, transparent 1px);
-  background-size: 72px 72px;
-  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 75%);
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 75%);
-}
-
-.luxe-backdrop__spot {
-  position: absolute;
-  left: 50%;
-  top: -320px;
-  width: 1100px;
-  height: 640px;
-  max-width: none;
-  transform: translateX(-50%);
-  border-radius: 9999px;
-  background: radial-gradient(closest-side, rgba(211, 171, 99, 0.13), transparent 70%);
-  filter: blur(30px);
-}
-
-.luxe-backdrop__pool {
-  position: absolute;
-  left: -200px;
-  bottom: -280px;
-  width: 520px;
-  height: 520px;
-  border-radius: 9999px;
-  background: radial-gradient(closest-side, rgba(52, 211, 153, 0.06), transparent 70%);
-  filter: blur(30px);
-}
-
-@media (max-width: 767px) {
-  .luxe-backdrop__pool { display: none; }
-}
-
-.luxe-backdrop__vignette {
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 220px rgba(0, 0, 0, 0.35);
-}
-```
-
-```html
-<div class="luxe-backdrop" aria-hidden="true">
-  <div class="luxe-backdrop__grid"></div>
-  <div class="luxe-backdrop__spot"></div>
-  <div class="luxe-backdrop__pool"></div>
-  <div class="luxe-backdrop__vignette"></div>
-</div>
-```
-
-### 4.3 React equivalent (source)
-
-```tsx
-'use client'
-
-/* Fixed premium backdrop: grid + gold spotlight + grain + vignette */
-export function LuxeBackdrop() {
-  return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div className="absolute inset-0 bg-background" />
-      <div className="luxe-grid-bg absolute inset-0" />
-      <div
-        className="absolute left-1/2 top-[-320px] h-[640px] w-[1100px] max-w-none -translate-x-1/2 rounded-full"
-        style={{
-          background: 'radial-gradient(closest-side, rgba(211,171,99,0.13), transparent 70%)',
-          filter: 'blur(30px)',
-        }}
-      />
-      <div
-        className="absolute bottom-[-280px] left-[-200px] hidden h-[520px] w-[520px] rounded-full md:block"
-        style={{
-          background: 'radial-gradient(closest-side, rgba(52,211,153,0.06), transparent 70%)',
-          filter: 'blur(30px)',
-        }}
-      />
-      <div className="absolute inset-0" style={{ boxShadow: 'inset 0 0 220px rgba(0,0,0,0.35)' }} />
-    </div>
-  )
-}
-```
-
-Mount it **once per page**, before the content, and make sure the content sits above it:
-
-```tsx
-<div className="relative min-h-screen">
-  <LuxeBackdrop />
-  <div className="relative z-10">{/* page content */}</div>
-</div>
-```
-
----
-
-## 5. Layer 2 — Particle network engine
-
-This is the heart of the background. Production file: `ParticleNetworkBFS.tsx`.
-
-### 5.1 Mental model
-
-1. **69 drifting nodes** live on a canvas that fills the hero.
-2. Every pair closer than **15% of the viewport diagonal** is connected by a faint line whose opacity falls off with distance.
-3. Clicking anywhere spawns a node at the pointer and starts a **Breadth-First traversal of that proximity graph**. Each edge is animated as a short comet-tail segment travelling from its parent node to its child at constant pixel speed.
-4. When a segment arrives, the child node flashes (pulse animation) and **expands**, emitting its own segments. The wave therefore spreads outward like lightning through the network, branches, and dies out.
-5. The result is an ambient constellation that is calm until touched, then briefly alive.
-
-There are **no libraries** — only `requestAnimationFrame`, `CanvasRenderingContext2D`, `Math.hypot`, and a `MutationObserver`.
-
-### 5.2 Units and formulas (resolution independence)
-
-All values are normalized to the canvas diagonal so the look is identical on a phone and a 4K monitor.
-
-```
-diag      = hypot(width, height)                  // CSS pixels
-threshold = 0.15 * diag                           // connection / wave radius
-radius    = max(size * diag, 1.25)                // dot radius, size ∈ [0.0012, 0.0022]
-speedX    = (0.00002 … 0.00004) * diag            // px per millisecond
-waveSpeed = 0.0009 * diag                         // px per millisecond
-tail      = 0.03 * diag                           // length of the lightning segment
-lineWidth = max(0.0006 * diag, 0.75)              // px
-```
-
-At a 1440×900 viewport (`diag ≈ 1697`):
-
-| Quantity | Value |
-|---|---|
-| Connection radius | ≈ 255 px |
-| Drift speed | 34 – 68 px/s |
-| Wave speed | ≈ 1527 px/s |
-| Lightning tail | ≈ 51 px |
-| Dot radius | 2.0 – 3.7 px (clamped min 1.25) |
-| Base line width | 1.02 px |
-
-**Time units:** `dt` is in **milliseconds** and clamped to `100` per frame (`Math.min(time - lastTime, 100)`). That clamp prevents a huge jump after a background tab, and it is why speeds above are per-ms, not per-second.
-
-### 5.3 Particle lifecycle
-
-Each node (`Particle`) has `x, y, vx, vy, size, pulse, deg, active`.
-
-**Spawn (initial):**
-
-- Position is randomized across `[-threshold, width + threshold]` so nodes can start just off-screen and drift in.
-- Velocity: random angle, speed `0.00002–0.00004 × diag` per ms.
-- `pulse = -20 * random()` → a staggered fade-in over up to ~4 s (pulse climbs at `0.005` per ms, so 0→1 takes 200 ms; the negative start delays it).
-- `size = 0.0012 + 0.001 * random()`.
-
-**Update:**
-
-```ts
-pulse = min(pulse + 0.005 * dt, 1)
-x += vx * diag * dt
-y += vy * diag * dt
-```
-
-**Culling / respawn:**
-
-- If the node is not part of an active wave (`deg === 0`) and leaves the canvas by more than one `threshold`, it is marked `active = false`.
-- Inactive nodes respawn only while the field is under the target count. They are placed on a random point of the rectangle **perimeter** (expanded by `threshold`) and given an **inward-facing velocity** (±0.7 rad jitter around the inward normal), so the field stays populated forever.
-- **`deg` is a pin.** While a node has active lightning edges attached, it is *not* culled even if it drifts off-screen. This keeps edge endpoints valid mid-flight. `deg` is decremented when each edge completes.
-- Nodes are **never spliced** from the array. Indices are stable, because waves store `from`/`to` **indices**, not object references. Reusing/teleporting a node in place is safe.
-
-**Dot appearance:**
-
-```
-p = (pulse >= 0 && pulse < 1) ? sin(PI * sqrt(pulse)) : 0
-radius = max(size * diag, 1.25) + max(0.0012 * diag, 1) * p
-color  = lerp(theme.dot, theme.glow, p)
-```
-
-So each node normally sits at the muted dot color, and briefly flares/expands toward the lightning color when a wave reaches it (or when it spawns from a click, since newborn click nodes start at `pulse = 0`).
-
-### 5.4 The BFS lightning wave
-
-```ts
-class BFSWave {
-  vis: boolean[]                 // one flag per particle index
-  edges: { from, to, progress }[] // progress in pixels
-
-  constructor(startIndex, particles, getThreshold) {
-    vis = new Array(particles.length).fill(false)
-    visit(startIndex)
-  }
-
-  visit(index) {
-    const start = particles[index]
-    if (!start || vis[index]) return
-    start.pulse = 0            // flash as the wavefront arrives
-    vis[index] = true
-
-    for (let i = 0; i < particles.length; i++) {
-      const target = particles[i]
-      if (!vis[i] && target.active) {
-        if (hypot(start - target) <= threshold) {
-          edges.push({ from: index, to: i, progress: 0 })
-          start.deg++; target.deg++
-        }
-      }
-    }
-  }
-
-  update(dt, diag) {
-    for (each edge, backwards) {
-      edge.progress += 0.0009 * diag * dt        // constant px/ms
-      if (edge.progress >= distance(from, to)) {
-        remove edge
-        from.deg--; to.deg--
-        reached.push(to)                          // expand next frame
-      }
-    }
-    reached.forEach(node => visit(node))
-  }
-}
-```
-
-Key details:
-
-- **It is a wavefront flood fill, not strict level-order BFS.** An edge becomes a "source" only when its own segment finishes, which naturally produces distance-ordered propagation across varying edge lengths.
-- A target is not marked visited until it is *expanded*, so several parents can emit edges toward it, and duplicate edges are possible. That is visually acceptable and is one reason `deg` exists.
-- `progress` is measured in **pixels**, not 0–1. This gives the wave a constant physical speed regardless of edge length.
-- A wave is discarded when it has no edges left (`edges.length === 0`), so completed waves cost nothing.
-- If the start node has no neighbours within the threshold, the wave dies immediately and nothing appears. Dense fields give dramatic chains; sparse fields give a single hop.
-
-### 5.5 Rendering order (per frame)
-
-1. `ctx.setTransform(dpr, 0, 0, dpr, 0, 0)` — draw in CSS pixels, stay crisp on retina.
-2. `clearRect(0, 0, width, height)`.
-3. Set base line width.
-4. **Base links:** double loop `i` over nodes, `j < i`; if `distance < threshold`, stroke with
-   `rgba(line, lineAlpha * (1 - distance / threshold))` — closer pairs are brighter; lines vanish at the threshold.
-5. **Waves:** single stroke style, comet-tail segment:
-   ```
-   tail      = 0.03 * diag
-   headRatio = min((progress / distance) * ((distance + tail) / distance), 1)
-   tailRatio = max(headRatio - tail / distance, 0)
-   line from lerp(from, to, tailRatio) to lerp(from, to, headRatio)
-   ```
-6. **Dots:** pulse-mapped radius and dot→glow color lerp.
-
-There is **no shadow blur / glow filter** in the production BFS canvas; the lightning reads as a glowing bolt purely from the cyan/blue stroke plus the white-hot dot flashes. That keeps the frame cheap.
-
-### 5.6 Theme palettes
-
-```ts
-const themes = {
-  dark: {
-    dot: [161, 161, 170],       // zinc-400
-    glow: [56, 189, 248],       // sky-400  (wave + flare)
-    line: '113, 113, 122',      // zinc-500
-    lineAlpha: 0.5,
-    treeAlpha: 0.85,
-  },
-  light: {
-    dot: [113, 113, 122],
-    glow: [2, 132, 199],        // sky-600
-    line: '113, 113, 122',
-    lineAlpha: 0.55,
-    treeAlpha: 0.9,
-  },
-}
-```
-
-Resolution:
-
-```
-override = html.classList.contains('dark')  ? true
-         : html.classList.contains('light') ? false
-         : null
-dark = override ?? matchMedia('(prefers-color-scheme: dark)').matches
-```
-
-### 5.7 Configuration reference
-
-| Constant | Value | Effect | Safe range |
-|---|---|---|---|
-| `COUNT` | 69 | Ambient node target | 40 (calm) – 110 (busy) |
-| connection threshold | `0.15 × diag` | Graph radius; also click-wave radius | 0.10 – 0.20 |
-| node speed | `0.00002–0.00004 × diag / ms` | Drift | halve for slower, double for livelier |
-| node size | `0.0012–0.0022 × diag` | Dot radius | 0.0008 – 0.003 |
-| pulse speed | `0.005 / ms` | 200 ms flare | 0.003 – 0.01 |
-| wave speed | `0.0009 × diag / ms` | Lightning travel | 0.0004 (slow crawl) – 0.0018 (snap) |
-| tail | `0.03 × diag` | Bolt segment length | 0.01 – 0.06 |
-| `lineAlpha` | 0.5 dark / 0.55 light | Ambient web opacity | 0.25 – 0.65 |
-| `treeAlpha` | 0.85 dark / 0.9 light | Bolt opacity | 0.6 – 1 |
-| `MAX_PARTICLES` | 120 (portable) | Click-spawn cap | 90 – 160 |
-| DPR cap | 2 | Retina sharpness vs fill cost | keep 2, 1.5 on low-end |
-
-### 5.8 Portable React component (copy-paste)
-
-This is the production engine hardened with four small changes (the first three are marked `PORT` in the code):
-
-1. follows the app theme class as well as the OS preference,
-2. caps click-spawned particles and recycles them instead of growing forever,
-3. respects `prefers-reduced-motion` by slowing drift to 35%,
-4. uses `Math.max(rect.width, 1)` to avoid a zero-sized canvas edge case.
-
-```tsx
-'use client'
-
-import { useEffect, useRef } from 'react'
-
-type Theme = {
-  dot: [number, number, number]
-  glow: [number, number, number]
-  line: string
-  lineAlpha: number
-  treeAlpha: number
-}
-
-type Edge = { from: number; to: number; progress: number }
-
-const COUNT = 69
-const MAX_PARTICLES = 120
-
-const themes: Record<'dark' | 'light', Theme> = {
-  dark: {
-    dot: [161, 161, 170],
-    glow: [56, 189, 248],
-    line: '113, 113, 122',
-    lineAlpha: 0.5,
-    treeAlpha: 0.85,
-  },
-  light: {
-    dot: [113, 113, 122],
-    glow: [2, 132, 199],
-    line: '113, 113, 122',
-    lineAlpha: 0.55,
-    treeAlpha: 0.9,
-  },
-}
-
-class Particle {
-  active = true
-  pulse = 1
-  deg = 0
-  size: number
-  vx: number
-  vy: number
-  x: number
-  y: number
-
-  constructor(
-    private readonly getWidth: () => number,
-    private readonly getHeight: () => number,
-    private readonly getThreshold: () => number,
-    x?: number,
-    y?: number,
-  ) {
-    const angle = 2 * Math.PI * Math.random()
-    this.size = 0.0012 + 0.001 * Math.random()
-    const speed = 0.00002 + 0.00002 * Math.random()
-    this.vx = speed * Math.cos(angle)
-    this.vy = speed * Math.sin(angle)
-
-    if (x !== undefined && y !== undefined) {
-      this.x = x
-      this.y = y
-      this.pulse = 0 // click-spawned nodes flare immediately
-    } else {
-      const threshold = getThreshold()
-      this.x = -threshold + (getWidth() + 2 * threshold) * Math.random()
-      this.y = -threshold + (getHeight() + 2 * threshold) * Math.random()
-      this.pulse = -20 * Math.random() // staggered fade-in
-    }
-  }
-
-  respawn() {
-    const width = this.getWidth()
-    const height = this.getHeight()
-    const threshold = this.getThreshold()
-    const perimeter = 2 * (width + height) * Math.random()
-    let angle = (1 / 6 + (2 * Math.random()) / 3) * Math.PI
-
-    if (perimeter < width) {
-      this.x = perimeter
-      this.y = -threshold
-    } else if (perimeter - width < height) {
-      angle += Math.PI / 2
-      this.x = width + threshold
-      this.y = perimeter - width
-    } else if (perimeter - width - height < width) {
-      angle += Math.PI
-      this.x = perimeter - width - height
-      this.y = height + threshold
-    } else {
-      angle += (3 * Math.PI) / 2
-      this.x = -threshold
-      this.y = perimeter - 2 * width - height
-    }
-
-    const speed = 0.00002 + 0.00002 * Math.random()
-    this.size = 0.0012 + 0.001 * Math.random()
-    this.vx = speed * Math.cos(angle)
-    this.vy = speed * Math.sin(angle)
-    this.pulse = 1
-    this.active = true
-  }
-
-  update(dt: number, diag: number, activeCount: number) {
-    // Never splice particles: wave edges reference stable indices.
-    if (!this.active) {
-      if (activeCount < COUNT) this.respawn()
-      return
-    }
-
-    const threshold = this.getThreshold()
-    if (
-      !this.deg &&
-      (this.x < -threshold ||
-        this.x > this.getWidth() + threshold ||
-        this.y < -threshold ||
-        this.y > this.getHeight() + threshold)
-    ) {
-      this.active = false
-      return
-    }
-
-    this.pulse = Math.min(this.pulse + 0.005 * dt, 1)
-    this.x += this.vx * diag * dt
-    this.y += this.vy * diag * dt
-  }
-
-  draw(ctx: CanvasRenderingContext2D, diag: number, theme: Theme) {
-    if (!this.active) return
-    const p = this.pulse >= 0 && this.pulse < 1 ? Math.sin(Math.PI * Math.sqrt(this.pulse)) : 0
-    const radius = Math.max(this.size * diag, 1.25) + Math.max(0.0012 * diag, 1) * p
-    const [r1, g1, b1] = theme.dot
-    const [r2, g2, b2] = theme.glow
-    ctx.beginPath()
-    ctx.arc(this.x, this.y, radius, 0, Math.PI * 2)
-    ctx.fillStyle = `rgb(${r1 + (r2 - r1) * p}, ${g1 + (g2 - g1) * p}, ${b1 + (b2 - b1) * p})`
-    ctx.fill()
-  }
-}
-
-class BFSWave {
-  private readonly vis: boolean[]
-  private readonly edges: Edge[] = []
-
-  constructor(
-    startIndex: number,
-    private readonly particles: Particle[],
-    private readonly getThreshold: () => number,
-  ) {
-    this.vis = Array(particles.length).fill(false)
-    this.visit(startIndex)
-  }
-
-  private visit(index: number) {
-    const start = this.particles[index]
-    if (!start || this.vis[index]) return
-    start.pulse = 0
-    this.vis[index] = true
-
-    for (let i = 0; i < this.particles.length; i++) {
-      const target = this.particles[i]
-      if (!this.vis[i] && target.active) {
-        const distance = Math.hypot(start.x - target.x, start.y - target.y)
-        if (distance <= this.getThreshold()) {
-          this.edges.push({ from: index, to: i, progress: 0 })
-          start.deg++
-          target.deg++
-        }
-      }
-    }
-  }
-
-  update(dt: number, diag: number) {
-    while (this.vis.length < this.particles.length) this.vis.push(false)
-    const reachedNodes: number[] = []
-
-    for (let i = this.edges.length - 1; i >= 0; i--) {
-      const edge = this.edges[i]
-      const p1 = this.particles[edge.from]
-      const p2 = this.particles[edge.to]
-      if (!p1 || !p2) {
-        this.edges.splice(i, 1)
-        continue
-      }
-      const distance = Math.hypot(p1.x - p2.x, p1.y - p2.y)
-      edge.progress += 0.0009 * diag * dt
-      if (edge.progress >= distance) {
-        this.edges.splice(i, 1)
-        p1.deg = Math.max(0, p1.deg - 1)
-        p2.deg = Math.max(0, p2.deg - 1)
-        reachedNodes.push(edge.to)
-      }
-    }
-
-    reachedNodes.forEach((node) => this.visit(node))
-  }
-
-  draw(ctx: CanvasRenderingContext2D, diag: number, theme: Theme) {
-    ctx.lineWidth = Math.max(0.0006 * diag, 0.75)
-    ctx.strokeStyle = `rgba(${theme.glow.join(',')}, ${theme.treeAlpha})`
-
-    for (const edge of this.edges) {
-      const p1 = this.particles[edge.from]
-      const p2 = this.particles[edge.to]
-      if (!p1 || !p2) continue
-      const distance = Math.hypot(p1.x - p2.x, p1.y - p2.y)
-      if (!distance) continue
-
-      const tail = 0.03 * diag
-      const headRatio = Math.min((edge.progress / distance) * ((distance + tail) / distance), 1)
-      const tailRatio = Math.max(headRatio - tail / distance, 0)
-
-      ctx.beginPath()
-      ctx.moveTo(p1.x + (p2.x - p1.x) * tailRatio, p1.y + (p2.y - p1.y) * tailRatio)
-      ctx.lineTo(p1.x + (p2.x - p1.x) * headRatio, p1.y + (p2.y - p1.y) * headRatio)
-      ctx.stroke()
-    }
-  }
-
-  get active() {
-    return this.edges.length > 0
-  }
-}
-
-export default function ParticleNetwork({ className = '' }: { className?: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx = canvas?.getContext('2d')
-    if (!canvas || !ctx) return
-
-    let width = 0
-    let height = 0
-    let pixelRatio = 1
-    let threshold = 0
-    let particles: Particle[] = []
-    let waves: BFSWave[] = []
-    const extras: number[] = [] // indices of click-spawned nodes, for recycling
-    let animationFrameId = 0
-    let lastTime = performance.now()
-
-    /* PORT: follow OS preference + the app's html.dark / html.light class */
-    const html = document.documentElement
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    let override: boolean | null = html.classList.contains('dark')
-      ? true
-      : html.classList.contains('light')
-        ? false
-        : null
-    let theme: Theme = (override ?? media.matches) ? themes.dark : themes.light
-
-    const applyTheme = () => {
-      theme = (override ?? media.matches) ? themes.dark : themes.light
-    }
-    const handleThemeChange = () => {
-      if (override === null) applyTheme()
-    }
-    const themeObserver = new MutationObserver(() => {
-      override = html.classList.contains('dark')
-        ? true
-        : html.classList.contains('light')
-          ? false
-          : null
-      applyTheme()
-    })
-    themeObserver.observe(html, { attributes: true, attributeFilter: ['class'] })
-
-    /* PORT: gentle motion instead of full-speed drift for reduced-motion users */
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const motionScale = reduced ? 0.35 : 1
-
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect()
-      const nextRatio = Math.min(window.devicePixelRatio || 1, 2)
-      if (rect.width === width && rect.height === height && nextRatio === pixelRatio) return
-
-      width = Math.max(rect.width, 1)
-      height = Math.max(rect.height, 1)
-      pixelRatio = nextRatio
-      threshold = 0.15 * Math.hypot(width, height)
-      canvas.width = Math.round(width * pixelRatio)
-      canvas.height = Math.round(height * pixelRatio)
-
-      if (!particles.length) {
-        particles = Array.from(
-          { length: COUNT },
-          () => new Particle(() => width, () => height, () => threshold),
-        )
-      }
-    }
-
-    const animate = (time: number) => {
-      animationFrameId = requestAnimationFrame(animate)
-      resize()
-
-      const dt = Math.min(time - lastTime, 100)
-      lastTime = time
-      const diag = Math.hypot(width, height)
-      const activeCount = particles.reduce((count, p) => count + Number(p.active), 0)
-
-      particles.forEach((p) => p.update(dt * motionScale, diag, activeCount))
-      waves.forEach((wave) => wave.update(dt, diag))
-      waves = waves.filter((wave) => wave.active)
-
-      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
-      ctx.clearRect(0, 0, width, height)
-      ctx.lineWidth = Math.max(0.0006 * diag, 0.75)
-
-      for (let i = 0; i < particles.length; i++) {
-        if (!particles[i].active) continue
-        for (let j = 0; j < i; j++) {
-          if (!particles[j].active) continue
-          const distance = Math.hypot(
-            particles[i].x - particles[j].x,
-            particles[i].y - particles[j].y,
-          )
-          if (distance < threshold) {
-            ctx.strokeStyle = `rgba(${theme.line}, ${theme.lineAlpha * (1 - distance / threshold)})`
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.stroke()
-          }
-        }
-      }
-
-      waves.forEach((wave) => wave.draw(ctx, diag, theme))
-      particles.forEach((particle) => particle.draw(ctx, diag, theme))
-    }
-
-    /* Click: spawn a node at the pointer and fire a traversal from it */
-    const handleClick = (event: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect()
-      const x = event.clientX - rect.left
-      const y = event.clientY - rect.top
-      let index: number
-
-      if (particles.length < MAX_PARTICLES) {
-        particles.push(new Particle(() => width, () => height, () => threshold, x, y))
-        index = particles.length - 1
-        extras.push(index)
-      } else {
-        // PORT: recycle the oldest click-spawned node instead of growing forever
-        while (extras.length && !particles[extras[0]].active) extras.shift()
-        const recycled = extras.shift()
-        if (recycled === undefined) return
-        Object.assign(
-          particles[recycled],
-          new Particle(() => width, () => height, () => threshold, x, y),
-        )
-        extras.push(recycled)
-        index = recycled
-      }
-
-      waves.push(new BFSWave(index, particles, () => threshold))
-    }
-
-    resize()
-    media.addEventListener('change', handleThemeChange)
-    canvas.addEventListener('click', handleClick)
-    animationFrameId = requestAnimationFrame(animate)
-
-    return () => {
-      cancelAnimationFrame(animationFrameId)
-      media.removeEventListener('change', handleThemeChange)
-      themeObserver.disconnect()
-      canvas.removeEventListener('click', handleClick)
-    }
-  }, [])
-
-  return <canvas ref={canvasRef} className={className} aria-hidden="true" />
-}
-```
-
-> The media listener is registered once, next to the click listener, and removed in the cleanup. If you copy from the repo original instead, keep its single registration and add the class observer from this version.
-
-### 5.9 The alternative engine in the repo
-
-`ParticleNetwork.tsx` is a second, unused implementation. It is useful if you want a **stronger lightning glow** or a **full-page** field.
-
-| Aspect | `ParticleNetworkBFS` (live) | `ParticleNetwork` (alternative) |
-|---|---|---|
-| Nodes | 69 + click-spawned | 70 + click-spawned `extras` |
-| Click behavior | Spawns a node, waves from it | Spawns a node, waves from it |
-| Wave rendering | Comet-tail segment, no shadow blur | 3-pass stroke: glow (`shadowBlur 14`), hot core, spark tip |
-| Wave speed | `0.0009 × diag / ms` | `750 px/s` fixed |
-| Line alpha | 0.5 / 0.55 | 0.26 / 0.32 |
-| Theme | OS media query only | OS + `html` class override |
-| Lifecycle | Always animating | `IntersectionObserver` + `visibilitychange` pause, self-restarting loop |
-| Reduced motion | Not handled | Drift scaled to 0.35 |
-| Particle cap | None (grows) | `MAX_PARTICLES = 160`, recycles extras |
-| Managers | Unlimited waves (grows) | `MAX_MANAGERS = 4` (oldest dropped) |
-
-If you want the "electric" look with visible bloom, port `ParticleNetwork.tsx`. If you want the calm hero look of this site, port `ParticleNetworkBFS.tsx`.
-
-### 5.10 Lifecycle gotchas to keep
-
-- **Resize guard:** `resize()` runs every frame but exits early unless CSS size or DPR changed. It is cheap; do not move it to a scroll handler only.
-- **DPR:** canvas backing store is `CSS size × min(devicePixelRatio, 2)`, and the context is scaled back down. Never draw using `devicePixelRatio` math manually.
-- **Clear, don't fade:** the canvas is fully cleared each frame; there is no motion-blur trail. The "tail" is a drawn segment, not persistence.
-- **Stable indices:** do not filter the particle array while waves are alive. Mark `active = false` and reuse in place.
-- **`deg` pinning:** never cull a node that has wave edges attached.
-- **Cleanup:** cancel the RAF, remove the theme listener, disconnect the observer and canvas listener on unmount (React Strict Mode will run the effect twice in development).
-
----
-
-## 6. Layer 3 — Hero composition and click-through
-
-The canvas only fills the hero, not the whole page. The hero is built so that **every click passes through the copy to the canvas**.
-
-```tsx
-<section
-  id="home"
-  className="relative overflow-hidden bg-background !pb-0 !pt-0"
->
-  <ParticleNetwork className="absolute inset-0 h-full w-full" />
-
-  {/* Focus vignette: keeps centered copy crisp over the field */}
-  <div
-    className="pointer-events-none absolute inset-0"
-    aria-hidden="true"
-    style={{
-      background:
-        'radial-gradient(ellipse 62% 52% at 50% 42%, transparent 40%, rgb(var(--bg) / 0.55) 100%)',
-    }}
-  />
-
-  {/* Content is click-through; only links/buttons opt back in */}
-  <div className="pointer-events-none relative z-10">
-    <h1>Aritra Dutta</h1>
-    <a className="pointer-events-auto" href="#work">View my work</a>
-  </div>
-</section>
-```
-
-Why this works:
-
-- The canvas is `absolute inset-0` inside a `relative overflow-hidden` section, so it never leaks outside the hero.
-- The vignette is drawn **above the canvas** and fades the field into the page background at the edges. Formula: transparent until 40% of the ellipse, then to `--bg` at 100%, centered at `50% 42%` (slightly above center, around the portrait/name).
-- Content has `pointer-events-none`, so clicks on the name/tagline/empty space hit the canvas underneath. Interactive children (`a`, `button`) set `pointer-events-auto`.
-- Content is `z-10` to stack above canvas and vignette.
-
-Sizing requirements for the target app:
-
-- The section must have a real height (`min-h-[100svh]`, a fixed height, or content height). A canvas with `height: 100%` inside an auto-height parent collapses to the canvas default 150px.
-- The canvas must be `display: block` to avoid inline baseline gaps.
-- Do **not** apply `transform`, `filter`, `opacity < 1`, or `will-change` to the section unless intentional — those create stacking contexts and can change what the canvas covers.
-- If content needs text selection, `pointer-events-none` still allows selection in most browsers, but links/buttons need `pointer-events-auto`.
-
-Mobile:
-
-- Taps fire `click` (after the usual delay in old browsers), so the effect works. If you want instant response, listen to `pointerdown` instead and ignore multi-touch/scroll gestures.
-- Consider disabling clicks on touch to avoid accidental bolts while scrolling, or keep them — the site keeps them.
-
----
-
-## 7. Layer 4 — Film grain
-
-Grain is applied to `<body>` with a utility class, not a component.
-
-```css
-.luxe-grain::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 70;
-  pointer-events: none;
-  opacity: 0.032;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-```
-
-```tsx
-<body className="... luxe-grain">
-```
-
-```html
-<body class="luxe-grain">
-```
-
-Details:
-
-- A 160×160 tiled SVG `feTurbulence` texture; `stitchTiles="stitch"` makes the tile seamless.
-- Opacity **0.032** is deliberately almost subliminal. Raising it above ~0.06 looks dirty.
-- `position: fixed` + `z-index: 70` means it sits above cards and the navbar but below the cursor (`z-120`) and scroll progress (`z-105`). It is purely decorative (`pointer-events: none`).
-- Grain is **not** animated. Animating noise is expensive and distracting; the "film" feel comes from the static texture plus vignette.
-
----
-
-## 8. Animation inventory and timing
-
-### Background-related
-
-| Animation | Driver | Timing |
-|---|---|---|
-| Particle drift | Canvas rAF | 24–48 px/s (at 1200px diag) |
-| Node fade-in on spawn | Canvas | 0 → 1 in 200 ms, staggered up to ~4 s |
-| Node flare on wave arrival | Canvas | 200 ms, sinusoidal radius + color |
-| Base link opacity | Canvas | Continuous function of distance, no keyframes |
-| Lightning traversal | Canvas | `0.9 × diag` px/s; each edge lasts `distance / speed` |
-| Lightning tail | Canvas | `3%` of diagonal (~36–51 px) |
-| Theme recolor | JS + CSS | Instant on class toggle |
-| Grain / grid / glows | none | static |
-
-### Foreground atmosphere that completes the look (optional)
-
-| Element | Source | Timing |
-|---|---|---|
-| Hero content reveal | Framer Motion `luxeParent/luxeChild` | stagger `0.08s`, child `0.7s`, ease `[0.22, 1, 0.36, 1]`, y `30px` |
-| Hero reveal gate | `useLuxeReady` | after preloader (`~1.5s`) or immediately on repeat/reduced motion |
-| Preloader | `Preloader.tsx` | 1.3 s counter (cubic ease), 200 ms hold, 0.9 s curtain wipe |
-| Orbit ring | Hero | spin 22 s linear |
-| Asterisk | Hero | rotate 12 s linear |
-| Scroll cue | Hero | 1.7 s loop |
-| Status dot | Hero | `pulseDot` 2.2 s |
-| Marquee | `Marquee.tsx` | 34 s linear, pauses on hover |
-| Scroll progress | `ScrollProgress.tsx` | spring (stiffness 140, damping 28) |
-| Cursor ring | `Cursor.tsx` | lerp factor 0.14 per frame, 38px → 72px on `data-cursor` |
-
-**Reduced motion:** global CSS collapses CSS animations/transitions to `0.01ms` and disables the cursor. The production BFS canvas ignores this preference (a gap); the portable component above slows drift to 35% instead of freezing it, which matches the alternative engine's approach.
-
-**Important:** the canvas starts immediately on mount, *independently* of the preloader. Only hero text waits for `luxe-ready`. Do not gate the canvas on the preloader or the background will be blank during the reveal.
-
----
-
-## 9. Performance, accessibility, lifecycle
-
-### Performance
-
-- **Node budget:** 69 nodes → `69 × 68 / 2 = 2346` distance checks per frame. That is trivial. The cost is stroke count: dense fields can draw several hundred 1px line segments.
-- **DPR cap 2** prevents 3x phones/4K from quadrupling fill cost.
-- **No shadow blur** in the live engine. If you port the alternative engine, `shadowBlur` per edge is the expensive part; cap concurrent waves (the alternative uses 4).
-- **Static CSS** for grid/glow/vignette; no JS scroll parallax. This keeps the background off the main-thread scroll path.
-- **`content-visibility: auto`** on `section[id]` lets offscreen sections skip rendering. If you use a full-page fixed canvas, add `IntersectionObserver` to pause when it is not visible (alternative engine does this).
-- **Tab hidden:** browsers throttle/pause rAF automatically. The loop does not manually pause in BFS; the timestamp clamp (`dt ≤ 100ms`) prevents a visual jump on return.
-- **Estimated frame cost:** well under 4 ms on a mid-range laptop at 1440×900. Verify in your app; if you exceed ~8 ms, lower `COUNT` to 45–55 and/or the DPR cap to 1.5.
-
-### Accessibility
-
-- Canvas and decorative divs carry `aria-hidden="true"`.
-- All ambient layers are `pointer-events: none`; they never block focus or selection.
-- The lightning is decorative. Nothing depends on seeing or clicking it; keyboard users are unaffected.
-- `prefers-reduced-motion` handling: CSS for foreground, 35% drift in the portable engine. Consider disabling click waves entirely under reduced motion if your audience is motion-sensitive.
-- Theme contrast: node/line colors are deliberately low-contrast decoration. Never put essential text directly on the busiest part of the field without the hero vignette.
-
-### Lifecycle
-
-- `'use client'` in Next.js; all `window`/`document` access is inside `useEffect`, so SSR is safe.
-- Resize listener: not needed — the animation loop's guarded `resize()` covers it. (The alternative engine registers one manually; either works.)
-- Cleanup: RAF, media listener, MutationObserver, click listener. Without cleanup, Strict Mode double-mounts in dev and leaves ghost loops.
-
----
-
-## 10. Step-by-step replication guide
-
-**Estimated effort:** 45–90 minutes for a full port; 20 minutes for backdrop-only.
-
-### 10.1 Decide the scope
-
-| Option | What you get | Use when |
-|---|---|---|
-| **A. Backdrop only** | Grid + gold/emerald glows + vignette + grain | You want the "premium dark" atmosphere with zero animation |
-| **B. Full hero (recommended)** | A + particle constellation + click lightning + focus vignette | Replicating this site's actual look |
-| **C. Full-page field** | B but canvas fixed behind all content, lower opacity, `pointer-events: none`, click disabled or captured on a hero layer | You want the network everywhere; be careful with readability and battery |
-
-Option B is documented end-to-end below; A skips steps 4–5; C uses the alternative engine with `position: fixed`.
-
-> **Porting to a different product?** Read §11 before choosing. The correct scope, density, and click model depend on the target app's content and brand; the portfolio defaults are not automatically the best fit.
-
-### 10.2 Add the tokens
-
-1. Copy the `:root` and `.dark` blocks from §3 into your global stylesheet.
-2. Make sure your app toggles `class="dark"` / `class="light"` on `<html>`, or adapt the theme selector.
-3. If your design tokens are hex/rgba rather than RGB triplets, either convert them to triplets (best, keeps `rgb(var(--x) / a)` working) or replace the CSS `rgb(var(--line) / 0.05)` occurrences with `color-mix(in srgb, var(--line) 5%, transparent)`.
-
-### 10.3 Add the backdrop CSS and mount it
-
-1. Paste the CSS from §4.2 into your global stylesheet (or translate it to utility classes).
-2. Add the markup from §4.2 as the **first child** of your page shell, before content.
-3. Set the shell to `position: relative`; give content `position: relative; z-index: 10`.
-4. Remove any opaque background from intermediate wrappers so the grid/glows can show through, or accept that the backdrop only appears where wrappers are transparent. The body background color should match `--background`.
-
-### 10.4 Add the particle canvas
-
-1. Create `components/ParticleNetwork.tsx` with the code from §5.8.
-2. In your hero section:
-   - `position: relative; overflow: hidden;`
-   - canvas: `position: absolute; inset: 0; width: 100%; height: 100%; display: block;`
-   - ensure the section has a real height (`min-height: 100svh` or content).
-3. Add the focus vignette div from §6 directly after the canvas.
-4. Put hero content in a wrapper with `position: relative; z-index: 10; pointer-events: none`, and add `pointer-events: auto` to every link/button.
-5. Verify clicks fire: add `console.log('wave')` inside `handleClick` temporarily.
-
-### 10.5 Wire the theme
-
-- If you use `next-themes`: `<ThemeProvider attribute="class" defaultTheme="dark">`; nothing else needed — the component's MutationObserver sees the class.
-- If you use a custom toggle: `document.documentElement.classList.toggle('dark')`; same observer picks it up.
-- If you use only system preference: delete the observer and rely on the media query listener.
-- Test: toggling the theme should recolor dots/lines/bolts within one frame, with no canvas recreation.
-
-### 10.6 Add grain (optional but recommended)
-
-1. Add `.luxe-grain::after` from §7 to global CSS.
-2. Add `luxe-grain` to `<body>`.
-3. Keep opacity ≤ 0.04.
-
-### 10.7 Verify the click-through
-
-- Click on the hero headline: a bolt should originate at the pointer.
-- Click on a CTA: it should navigate, not spawn a bolt (because it has `pointer-events: auto`).
-- Click in the empty margin: bolt.
-- Scroll the page: the hero canvas scrolls away with the section (not fixed).
-- Resize the window: node density and radius rescale, canvas stays sharp.
-
-### 10.8 Done checklist
-
-- [ ] Grid visible at the top, fading out by ~75% of the viewport.
-- [ ] Warm glow at top center, subtle emerald only on desktop.
-- [ ] Vignette darkens the corners.
-- [ ] Grain visible at 100% zoom (barely) and invisible on photos.
-- [ ] Dots drift slowly and wrap around edges.
-- [ ] Lines fade with distance and disappear at the threshold.
-- [ ] Click produces a branching lightning wave with a comet tail.
-- [ ] Node flashes as the wave arrives.
-- [ ] Theme toggle recolors everything instantly.
-- [ ] No layout shift on load; canvas fills its section.
-- [ ] No console errors on mount/unmount (React Strict Mode).
-- [ ] Reduced-motion users see gentler drift.
-- [ ] 60 fps on a mid-range laptop; no long frames while scrolling.
-
----
-
-## 11. Adapting this to a different application (decision guide)
-
-The portfolio background works because the hero is **mostly empty, dark, and display-only**. Copying it 1:1 into a content-heavy app, dashboard, docs site, or checkout flow will hurt readability, INP, and conversion. The rule is:
-
-> **Visual intensity ∝ empty space × brand boldness ÷ content density.**
-
-This section turns that rule into concrete decisions. Use the defaults unless the target app gives you a reason to deviate.
-
-### Quick decision tree (read this first)
-
-1. **Does the first viewport contain a form, table, or more than a few lines of body copy?**
-   → Use the **static backdrop only** (grid + one glow + vignette + optional grain). No canvas.
-2. **Is the hero sparse and display-only (portfolio, launch, campaign)?**
-   → Use the **hero-only canvas**, then pick the click model in §11.4.
-3. **Is the product mostly authenticated app screens (dashboard, admin, inbox)?**
-   → **No particles.** Optionally keep a very subtle grid in the app shell.
-4. **Is it a marketing or creative site with card-based content below the fold?**
-   → Either hero-only, or a fixed full-page canvas with an IntersectionObserver pause.
-5. **Is the device touch-first or low-end?**
-   → Halve density, cap DPR at 1.5, and disable click-spawned waves (keep ambient drift or freeze).
-6. **Anything still ambiguous?**
-   → Ship the **§11.10 recommended default**: hero-only, brand-tinted, content-first, 56 nodes, grain scoped to the hero.
-
-### 11.1 Inputs to collect before writing code
-
-| Question | Why it matters | Default if unknown |
-|---|---|---|
-| What is the app's primary job? (convert / read / operate / browse) | Marketing pages can afford motion; tools cannot | Marketing |
-| How dense is the hero? (headline only, or headline + form + cards) | Dense heroes need lower density or no canvas | 3–5 elements |
-| Brand accent color and dark/light default | Particle glow and line tint must come from the brand | Dark, one accent |
-| Does the hero contain forms, tables, CTAs, or selectable copy? | Decides the click model | Yes → content-first |
-| Framework and rendering mode (SSR/SSG/SPA) | Effect placement and hydration safety | Next.js App Router |
-| Mobile share and low-end audience | Density, DPR, and click behavior | 50% mobile |
-| Existing motion policy / accessibility budget | Reduced motion, toggle, vestibular safety | Respect OS setting |
-| Existing z-index scale and modal layers | Grain and canvas stacking | Content 10, grain below modals |
-
-### 11.2 Decision 1 — Coverage
-
-| Option | Behavior | Best for | Watch out |
-|---|---|---|---|
-| **Hero-only** (recommended) | Canvas is absolute inside the hero; scrolls away | Marketing pages, portfolios, landing pages | Needs a real hero height |
-| **Fixed full-page** | Canvas fixed behind all content; pages need transparent surfaces | Creative/agency sites with card-based content | Must pause off-screen; never behind long text/forms |
-| **Route-specific** | Landing page gets the full effect, app routes get nothing | SaaS with marketing + product in one codebase | Keep the engine out of authenticated layouts |
-| **Backdrop only** | Grid + glows + vignette, no canvas | Dashboards, docs, e-commerce | Zero interaction cost |
-
-**Rule of thumb:** if more than ~30% of the first viewport is text/controls, use hero-only or backdrop-only. Do not put a moving particle field behind a form.
-
-### 11.3 Decision 2 — Density and intensity
-
-Match the engine constants to content density instead of using the portfolio values blindly.
-
-| Hero density | `COUNT` | `threshold` | `lineAlpha` | Click waves | Grain |
+| Hover, press, focus | 120–180ms | ease-out |
+| Menus, dock, pill expand | 250–350ms | spring `{ stiffness: 300, damping: 30 }` |
+| Section reveal | 600–800ms | `--ease-out`, y 24→0, opacity 0→1 |
+| Masked line reveal **[B]** | 700–900ms | `--ease-out`, translateY 105%→0 inside `overflow:hidden` |
+| Stagger between siblings | 60–80ms | max 8 items, then batch |
+| Count-up numbers | 1200–1600ms | ease-out, once |
+| Route transition | 350–500ms | ease-in-out |
+
+Rules: reveal **once** (`viewport={{ once: true, margin: "-10%" }}`); no looping animation near body text; at most **one** continuous ambient effect per viewport; wrap the app in `<MotionConfig reducedMotion="user">` so transform/layout animations switch off automatically for reduced-motion users.
+
+### 5.3 Shared primitives (Phase 2)
+
+- `components/motion/Reveal.tsx` — fade/slide on view (`delay`, `y`, `once`).
+- `components/motion/Stagger.tsx` — parent/child variants.
+- `components/motion/SplitReveal.tsx` **[B]** — masked line/word reveal for headings.
+- `components/motion/CountUp.tsx` — number animation; final value under reduced motion.
+- `hooks/usePointerFine.ts` — `(hover: hover) and (pointer: fine)`, SSR-safe.
+- `hooks/useInViewPause.ts` — pauses loops when offscreen.
+- `components/providers/SmoothScroll.tsx` — Lenis (`lenis` / `lenis/react`), off for reduced motion; in-page link clicks use `lenis.scrollTo(hash, { offset })`.
+- `components/ScrollProgress.tsx` — thin progress bar via `useScroll`.
+- `components/Cursor.tsx` **[B]** — custom dot+ring cursor, fine pointer only (Phase 3).
+
+### 5.4 Interaction State Matrix
+
+What the user SEES across interactive features:
+
+| FEATURE | LOADING | EMPTY | ERROR | SUCCESS / ACTIVE | PARTIAL / STREAMING |
 |---|---|---|---|---|---|
-| Sparse / display-only | 60–80 | `0.15 × diag` | 0.45–0.55 | Yes | 0.03 |
-| Medium (CTA, short form) | 40–55 | `0.13 × diag` | 0.30–0.40 | Optional | 0.02 |
-| Dense (cards, table, inputs) | 0 | — | — | No | 0–0.015 |
-| Full-page creative | 80–110 | `0.16 × diag` | 0.35–0.45 | Delegated | 0.03 |
+| **AI Résumé Pill** (Phase 6) | 3-dot subtle pulse (`--muted`, 1.2s cycle) inside input area | Friendly prompt: *"No details found in résumé. Ask about TCS impact, AlgoGuru, or LeetCode."* | Amber hairline banner with error text + *"Retry"* button | Pill expands to max-w 640px; rendered Markdown answer with syntax highlighting | Live streaming tokens with blinking 2px `--accent` caret |
+| **AI Daily Limit** (Phase 6) | Query count updates instantly (`x/10`) | — | When `0/10`: Pill border turns subtle red; input disabled; tooltip: *"Daily limit reached. Resets at 00:00 UTC."* | Counter badge shows remaining queries (e.g. `8/10`) | Disabled submit button with cooldown countdown |
+| **Project Filters** (Phase 8) | Instant filter transition with `AnimatePresence popLayout` | Clean card: *"No projects in this discipline yet."* + *"Reset filters"* action button | Fallback: reset to *"All"* view if invalid filter in query | Cards smoothly re-order without layout jump; active chip highlighted with pill background | Instant layout re-flow; no layout shift |
+| **Case Study Drawer** (Phase 8) | Skeleton wireframe with subtle shimmer for diagrams and benchmarks | Notice: *"Full case study writing in progress"* with GitHub link | Error banner with *"Failed to load case study. Open repository on GitHub"* link | Smooth drawer slide-over with focus trap, ESC to close, scroll-lock | Progressive text-first render while images/canvases hydrate |
+| **AlgoGuru Demo** (Phase 8) | Syntax-highlighted code block visible immediately (no blank box) | — | — | Typing line-by-line; green badge transition *"3/3 passed · 4ms · O(n)"* | Static syntax block under `prefers-reduced-motion` |
+| **Email Copy / CTAs** (Phase 9) | Click scale 0.98 | — | — | Icon swaps to checkmark; tooltip: *"Copied to clipboard!"* (2s duration) | Native `mailto:` fallback if clipboard API unavailable |
 
-Also scale by area, not just by taste: `COUNT ≈ 69 × (viewportArea / (1440 × 900))`, clamped to the range above. A 4K monitor should not have the same 69 nodes as a phone.
+### 5.5 User Journey Storyboard & Time-Horizon Arc
 
-### 11.4 Decision 3 — Click model
-
-This is the most important behavioral change for a non-portfolio app.
-
-| Model | How it works | Pros | Cons | Use when |
+| STEP | TIME HORIZON | USER ACTION | EMOTIONAL STATE | PLAN SPECIFICATION |
 |---|---|---|---|---|
-| **Portfolio click-through** | Hero content wrapper has `pointer-events: none`; clicks fall to the canvas | Maximum effect; clicking text works | Text cannot be selected; links need explicit opt-in | Display-only hero |
-| **Content-first delegation** (recommended) | Content keeps normal pointer events; a section-level `click` handler ignores interactive targets and forwards coordinates to the engine | Preserves selection and normal UX; no accidental waves on buttons | Clicking content may still wave unless filtered | Apps with copy, forms, or links |
-| **Ambient-only** | No click; a timer starts a wave from a random node every 8–12 s | Always alive, zero interaction risk | Less personal | Content-heavy pages |
-| **None** | No waves | Safest | Loses the signature moment | Dashboards, checkout |
-
-Content-first pattern (keep the canvas non-interactive):
-
-```tsx
-<section
-  className="relative"
-  onClick={(event) => {
-    const target = event.target as HTMLElement
-    if (target.closest('a, button, input, textarea, select, [role="button"], [contenteditable="true"]')) return
-    if (window.getSelection()?.toString()) return // don't interrupt text selection
-    window.dispatchEvent(
-      new CustomEvent('particle:wave', { detail: { x: event.clientX, y: event.clientY } }),
-    )
-  }}
->
-  <ParticleNetwork className="pointer-events-none absolute inset-0 h-full w-full" />
-  {/* vignette, then normal content with default pointer events */}
-</section>
-```
-
-In the engine, refactor `handleClick` into `fireAt(clientX, clientY)` and listen for that event, so the canvas itself needs no pointer events. `fireAt` must convert viewport coordinates to canvas-local coordinates (`clientX - canvas.getBoundingClientRect().left`, same for `y`). This is the single biggest usability improvement over the portfolio implementation.
-
-### 11.5 Decision 4 — Palette
-
-- **Glow:** use the brand's primary accent, not the portfolio cyan. Convert to an RGB triplet for the engine palette.
-- **Dots/links:** keep them neutral (gray in dark mode, slate in light mode). Tinting everything makes the field look like a screensaver.
-- **Light theme:** lower `lineAlpha` by ~0.05–0.1 versus dark, and darken the glow. Cyan-on-white looks toy-like; a deep brand tone reads better.
-- **Two accents:** if the brand has a secondary color, use it for the wide ambient pool (the portfolio's emerald role), not for the lightning.
-- **Contrast:** put the hero vignette behind text and check the worst-case contrast; never rely on the particle field itself for contrast.
-
-Example remap:
-
-```ts
-// brand #7C5CFF, dark theme
-dark: { dot: [161, 161, 170], glow: [124, 92, 255], line: '113, 113, 122', lineAlpha: 0.45, treeAlpha: 0.9 }
-// light theme
-light: { dot: [71, 85, 105], glow: [91, 61, 214], line: '100, 116, 139', lineAlpha: 0.4, treeAlpha: 0.85 }
-```
-
-### 11.6 Decision 5 — Effects budget by device
-
-| Condition | Changes |
-|---|---|
-| Desktop, fine pointer | Full effect, click waves enabled |
-| Tablet | 75% density, 80% alpha, clicks optional |
-| Mobile / coarse pointer | 50–65% density, DPR cap 1.5, disable click spawns or make waves ambient-only |
-| Low-end device / low FPS | Reduce `COUNT`, disable waves, keep static backdrop |
-| `prefers-reduced-motion` | 35% drift or static field; no auto waves; no parallax |
-| `prefers-reduced-data` / save-data | Static CSS backdrop only |
-| Print | Hide canvas, glows, grain; keep readable text |
-
-Do not decide by user-agent. Use capability and preference signals: `matchMedia('(pointer: coarse)')`, `matchMedia('(prefers-reduced-motion: reduce)')`, `navigator.connection?.saveData`, and a measured FPS sample.
-
-### 11.7 Decision matrix by app type
-
-| Target app | Backdrop | Particles | Click | Grain | Additional changes |
-|---|---|---|---|---|---|
-| Portfolio / personal site | Full | Hero-only, 60–80 | Portfolio or content-first | 0.03 | Closest to this repo |
-| SaaS marketing site | Grid + one glow | Hero-only, 45–60 | Ambient-only or empty-space only | 0.02, hero-scoped | Reduce glow opacity behind pricing |
-| SaaS product / dashboard | Subtle grid only | None | None | None | Keep the app shell clean |
-| Blog / documentation | Very subtle grid or none | None | None | None | Reading comfort first |
-| E-commerce / checkout | Brand gradient only | Hero-only, 30–40 | None | 0.015, hero only | Never animate near buy CTAs |
-| Creative agency | Full | Full-page fixed, 80–110 | Delegated | 0.03 | Pause with IntersectionObserver |
-| Resume / CV page | Backdrop + grain | None | None | 0.02 | Ensure print styles hide effects |
-| Event / launch page | Full | Hero, 50–70 | Yes | 0.03 | Add a motion toggle for accessibility |
-
-### 11.8 Improvements to make in the target app
-
-These are deliberate upgrades over the original implementation. Apply the ones that fit the target; items 1–4 are recommended almost everywhere, and item 5 for any fixed canvas.
-
-1. **Content-first click handling** — preserve text selection and normal controls (§11.4).
-2. **Theme-class awareness** — already added in §5.8; otherwise the canvas ignores the app's theme toggle.
-3. **Particle cap + recycling** — prevents unbounded growth on repeated clicks.
-4. **Reduced-motion scaling** — 35% drift; optionally disable waves entirely.
-5. **Visibility and off-screen pause** — mandatory for a fixed full-page canvas:
-
-   ```ts
-   let running = !document.hidden
-   const io = new IntersectionObserver(([entry]) => {
-     running = entry.isIntersecting && !document.hidden
-     if (running) kick()
-     else cancelAnimationFrame(raf)
-   })
-   io.observe(canvas)
-   document.addEventListener('visibilitychange', () => {
-     running = !document.hidden
-     if (running) kick()
-   })
-   ```
-
-6. **Adaptive quality** — sample the first ~2 seconds; if average frame time exceeds ~22 ms, downgrade once (lower `COUNT`, DPR cap 1.5, disable click waves). Keep it one-way to avoid oscillation.
-7. **Batched link rendering** — for `COUNT > 120`, bucket line alphas into 6–8 levels and stroke one path per bucket instead of one path per pair. At 69 nodes this is unnecessary.
-8. **Spatial grid for very high density** — only if you go above ~150 nodes; otherwise the O(n²) pair loop is cheaper than the bookkeeping.
-9. **A persisted motion toggle** — "Reduce animations" in settings or footer, stored in `localStorage`, overriding the OS preference in both directions.
-10. **Static fallback** — if canvas creation fails or JS is disabled, the CSS backdrop alone must still look intentional.
-11. **Scoped grain** — in app contexts, put grain below modals/dropdowns (or only on the hero). A full-screen `z-70` overlay above dialogs can look like dirty glass.
-12. **Light-theme pass** — verify dots, lines, and bolts on pure white; lower alpha and darken the glow.
-13. **No custom cursor** — the portfolio's gold cursor is charming on a portfolio and hostile in a tool. Drop it unless the brand is explicitly experiential.
-14. **No preloader gate** — never delay an app's content for a background animation.
-
-### 11.9 Keep, change, drop
-
-| Item | Verdict | Reason |
-|---|---|---|
-| 72px grid + radial mask | Keep, tune spacing | Cheap and brand-neutral |
-| Gold/emerald light pools | Change colors/opacity | Must match the target brand |
-| Inset vignette | Keep | Protects text contrast |
-| BFS particle engine | Keep, retune or hero-scope | Signature effect; density is the variable |
-| Click-through content (`pointer-events: none`) | Change to content-first | Breaks selection in real apps |
-| Film grain at `z-70` | Change/scope | Can sit above modals and forms |
-| Custom cursor | Drop | Usability and accessibility risk |
-| Preloader | Drop | Delays content; not a background concern |
-| Marquee | Drop unless brand-appropriate | Separate from the background |
-
-### 11.10 Recommended default (no other constraints)
-
-If you have no strong reason to deviate, ship this:
-
-- **Coverage:** hero-only canvas; fixed backdrop only on the landing route.
-- **Density:** `COUNT = 56`, `threshold = 0.14 × diag`, drift at the original speed.
-- **Palette:** neutral dots/lines, brand-primary glow, light-theme alpha reduced by 0.08.
-- **Click:** content-first delegation on desktop; ambient-only (or none) on touch.
-- **Effects:** grain `0.02`, scoped to the hero; grid 72px; one glow, no second pool unless the brand has a secondary color.
-- **Performance:** DPR cap 2, pause off-screen, one-way quality downgrade, reduced-motion scaling.
-- **Safety:** static CSS fallback, feature flag, persisted motion toggle.
-- **Exclude:** custom cursor, preloader, marquee, full-page particle field.
-
-This keeps the recognizable feel while behaving like a good citizen in a product or content site.
-
-### 11.11 Rollout and measurement
-
-1. Implement behind a flag (`?bg=on|off`, env var, or settings toggle).
-2. Measure before/after: LCP, INP, long tasks, and a 10-second FPS sample on a mid-range phone.
-3. Keep the static backdrop as the fallback path.
-4. Roll out to the landing page first; only extend to app routes if metrics hold.
-5. Add a user-facing "Reduce motion" toggle and persist it.
-6. Review with real content: the busiest page, the longest form, and the smallest phone.
+| **1** | **Visceral (0–5s)** | Lands on page; scans first viewport | **Authority & Confidence:** "This engineer builds serious distributed systems." | 0ms FCP, static bold H1, top frosted glass nav, subtle vignette Animated Rays, Technical Proof Ribbon (20×, 700+, 1672). |
+| **2** | **Interactive (5s–30s)** | Spots inline AI résumé pill; clicks quick prompt chip (e.g. *"TCS Experience"*) | **Engagement & Delight:** "Fast, transparent, intelligent." | In-place smooth expansion (max-w 640px), 3-dot pulse, streaming tokens with blinking caret, clean markdown output. |
+| **3** | **Narrative (30s–2m)** | Scrolls through About narrative and TCS career highlights | **Substance:** "Real systems engineering depth, not just marketing fluff." | Editorial story panel, current focus "Right now", 4 TCS highlight cards with height-auto expand/collapse. |
+| **4** | **Technical Proof (2m–4m)** | Tests project filter chips, watches AlgoGuru demo, opens case study drawer | **Respect:** "Strong algorithmic craft and architecture chops." | Zero layout jump popLayout filtering, line-by-line typing mock, slide-over drawer with architecture topology. |
+| **5** | **Discovery (4m–6m)** | Notices `/desktop` OS mode or `/classic` printable sheet in nav | **Memorability:** "Distinctive personality and multi-faceted talent." | Working MacOS-style windowing on `/desktop`; clean semantic A4 print sheet on `/classic`. |
+| **6** | **Reflective (Post-visit)** | Copies email / downloads résumé / reaches out on LinkedIn | **High Intent:** "Top candidate; must schedule technical screen." | One-click copy with 2s toast confirmation, working direct PDF download, fast sub-2.5s LCP everywhere. |
 
 ---
 
-## 12. Framework-specific notes
+## 6. Components, install mechanics and licensing
 
-### Next.js (App Router) — same as this repo
+### 6.1 Confirmed install facts
 
+**Vengeance UI** (`vengenceui.com`)
+- Registry is shadcn-compatible. Two ways to add a component:
+  - Direct URL: `npx shadcn@latest add https://www.vengenceui.com/r/<name>.json`
+  - Namespaced: add to `components.json`
+    ```json
+    { "registries": { "@vengeanceui": "https://www.vengenceui.com/r/{name}.json" } }
+    ```
+    then `npx shadcn@latest add @vengeanceui/<name>`
+- Dependencies in its docs: `clsx`, `tailwind-merge`, `framer-motion`; needs `lib/utils.ts` with the `cn` helper. Its docs target Tailwind v4 + Next.js App Router.
+- Component slugs below come from the site's component URLs. **Verify each** (`curl -sI https://www.vengenceui.com/r/<slug>.json` → expect 200) before relying on it; if one 404s, pick the closest from `https://www.vengenceui.com/components` and log the substitution.
+
+**Skiper UI** (`skiper-ui.com`)
+- `npx shadcn add @skiper-ui/skiper<NN>` writes `src/components/ui/skiper-ui/skiper<NN>.tsx`.
+- Dependencies: `clsx framer-motion lucide-react tailwind-merge` + `lib/utils.ts` `cn`.
+- Some components are **free**, some **premium**. Premium source is only available with a paid membership.
+- **License:** free to use and modify (personal and commercial), **attribution to Skiper UI is required for the free version**; no attribution required with Pro. Skiper states many components are recreations/adaptations of others, so check the credits note in each component.
+- Dynamic Island is tagged **free** on its listing (`skiper2`). Confirm before installing.
+
+**Animmaster Lib** (`animmasterlib.dev`) — paid; delivered as a zip via Google Drive; ~60% HTML/CSS/JS, ~30% React, ~10% Next. Read `https://animmasterlib.dev/terms.html` before use.
+
+### 6.2 Adoption matrix
+
+| Section | Component | Library | Slug / command | Free? |
+|---|---|---|---|---|
+| Nav (desktop) | Spotlight Navbar (Top fixed frosted glass) | Vengeance | `spotlight-navbar` | Yes |
+| Hero entrance | In-situ stagger reveal (no splash blocker) | Motion | lightweight entrance stagger (≤300ms) | Free |
+| Hero background | Animated Rays | Vengeance | `animated-rays` (docs example confirmed) | Yes |
+| Hero role text | Flip Text / Morph Text | Vengeance | `flip-text` / `morph-text` | Yes |
+| AI résumé pill | Dynamic Island | Skiper | `@skiper-ui/skiper2` | Free (verify) |
+| About / Experience bento | Staggered Grid + Cursor Card | Vengeance | `staggered-grid`, `cursor-card` | Yes |
+| Project case studies | Slide-over Case Study Drawer | Motion / custom | `case-study-drawer` | Free |
+| Skills matrix | Structured Skills Matrix Grid | Custom Tailwind | Grouped Domain Grid (no auto-scroll) | Free |
+| CTAs | Animated hover button | Vengeance | `my-animated-button` | Yes |
+| Smooth scroll | Lenis | npm | `npm i lenis` | Yes |
+| Premium extras **[B, D3=yes]** | Image reveal (`skiper71`), image cursor trail (`skiper18`), hover members (`skiper6`), drag & scroll (`skiper5`) | Skiper Premium | — | **Paid** |
+| Text animation / page transition **[D2=yes]** | from owned pack | Animmaster | manual | **Paid** |
+
+Every adopted component gets a row in `docs/components.md` (§14).
+
+### 6.3 Stack mismatch decision tree (used in Phase 0)
+
+| Verdict | Condition | Action |
+|---|---|---|
+| **S1** | Next.js App Router + Tailwind | Proceed as written |
+| **S2** | Next.js (Pages Router) | Proceed; adapt `layout`/`template` tasks to `_app`/`_document`; use `next/dynamic` the same way |
+| **S3** | Next.js without Tailwind | Add Tailwind (v4 per Vengeance docs) alongside existing CSS, scoped to new components; log migration notes |
+| **S4** | React SPA (Vite/CRA) | Recommend migrating to Next.js App Router (**stop and get approval**); otherwise port components and replace `next/image`, `next/dynamic`, metadata with equivalents |
+| **S5** | Non-React (static HTML, Astro, Svelte, etc.) | Recommend migrating to Next.js (**stop and get approval**). Migration checklist: scaffold Next, move content into typed data files, preserve every URL (redirect map), carry over assets, port the AI endpoint as a route handler, keep `/desktop` and `/classic`, port analytics, re-verify OG, deploy to preview, compare before/after |
+
+For S4/S5 the agent writes `docs/MIGRATION.md` (URL map, redirect map, content inventory, risks) and **stops for approval** before coding.
+
+---
+
+## 7. Phase overview
+
+| # | Phase | Size | Track |
+|---|---|---|---|
+| 0 | Audit + stack verdict | S | A+B |
+| 1 | Correctness fixes | S | A+B |
+| 2 | Foundations + component registry | M | A+B |
+| 3 | Design direction + global systems | M | A+B / B |
+| 4 | Navigation | M | A+B |
+| 5 | Hero + instant entrance | M | A+B |
+| 6 | AI résumé pill | S | A+B |
+| 7 | About + Experience | M | A+B / B |
+| 8 | Projects | L | A+B |
+| 9 | Skills, Education, Contact, Footer | M | A+B |
+| 10 | `/desktop` + `/classic` | M | A+B |
+| 11 | Optional premium (Skiper Premium, Animmaster, WebGL) | M | B, opt-in |
+| 12 | SEO, structured data, analytics | S | A+B |
+| 13 | Tests + CI | M | A+B |
+| 14 | Performance + polish | M | A+B |
+| 15 | QA, release, post-launch | M | A+B |
+
+Each phase below: **Goal → Tasks → Acceptance → Prompt**.
+
+---
+
+## 8. Phases
+
+### Phase 0 — Audit and stack verdict (read-only)
+
+**Goal:** Know exactly what exists; choose S1–S5.
+
+**Tasks**
+- Detect: Next.js version + router, TypeScript, Tailwind version, package manager, installed animation/UI libs, `components.json`, theme and font implementation, host config (`vercel.json`, etc.), analytics scripts, env var names (not values).
+- Route map (`/`, `/desktop`, `/classic`, API routes). Section→component map. Every anchor id and every `href="#…"`.
+- Animation inventory (CSS keyframes, Motion/Framer, GSAP, canvas).
+- Metadata audit (canonical, og:url, images, `metadataBase`), redirects, `robots`/`sitemap` presence.
+- Confirm the AI résumé rate limit is **server-side** (read-only; report only).
+- Lighthouse baselines (mobile 4× CPU + desktop) in `docs/baseline/`.
+- `npm audit` summary (report only).
+
+**Acceptance**
+- [ ] `docs/AUDIT.md` with stack verdict (S1–S5), route/section/anchor maps, animation inventory, protected-files list, risks + recommended defaults.
+- [ ] Baselines saved.
+- [ ] No source files changed.
+- [ ] If verdict is S4/S5: `docs/MIGRATION.md` written and work stopped for approval.
+
+**Prompt**
+```text
+Follow AGENTS.md. Do Phase 0 only: a READ-ONLY audit. Do not edit source files.
+
+Produce docs/AUDIT.md with:
+1. Stack: Next.js version + router type, TypeScript, Tailwind version, package manager, installed animation/UI libs, components.json status, theming and font implementation, host/deploy config, analytics scripts, env var NAMES only.
+2. Stack verdict S1-S5 per PLAN.md section 6.3.
+3. Route map including API routes. Mark the AI resume feature (component + API route + rate limit) PROTECTED and state whether the rate limit is enforced server-side.
+4. Section map: homepage section -> component file -> section id.
+5. Anchor audit: every in-page href="#..." and whether the id exists (suspects: #experience, #work).
+6. Animation inventory with file paths.
+7. Metadata audit: canonical, og:url, OG/Twitter image URLs, metadataBase; which domain each uses; robots/sitemap/redirect status.
+8. Baseline Lighthouse (mobile with 4x CPU slowdown, and desktop) saved under docs/baseline/ with LCP, CLS, INP/TBT and total JS size.
+9. npm audit summary (report only).
+10. Risks and open questions, each with a recommended default.
+
+If the verdict is S4 or S5, also write docs/MIGRATION.md (URL map, redirect map, content inventory, risks) and STOP for approval.
+End with a <=10 line summary. Do not start Phase 1.
 ```
-src/
-├─ app/
-│  ├─ layout.tsx        // body className includes "luxe-grain"
-│  ├─ globals.css       // tokens + backdrop + grain
-│  └─ page.tsx          // <LuxeBackdrop /> + <ParticleNetwork /> in hero
-├─ components/
-│  ├─ LuxeBackdrop.tsx  // 'use client' is optional; it has no hooks
-│  └─ ParticleNetwork.tsx // MUST be 'use client'
+
+---
+
+### Phase 1 — Correctness fixes
+
+**Goal:** Remove known defects before layering polish.
+
+**Tasks**
+- Resolve D1: set `metadataBase`, canonical, `openGraph.url`, OG/Twitter image URLs to the same domain; verify image routes return 200.
+- Make the non-canonical host (and `www`/apex variants) 301 to the canonical (prefer host/DNS-level; otherwise `redirects()` in `next.config`).
+- Fix anchors: nav, mobile menu, hero CTA, footer all point to existing ids; add **Experience** to the top nav and mobile menu; footer "Work" → Projects id.
+- Fix "Jile" (confirm intended word; if unclear, remove and flag).
+- Add `scroll-margin-top` to all section ids.
+- Log D4 mismatch; do not change titles.
+
+**Acceptance**
+- [ ] Every `href="#x"` resolves.
+- [ ] OG/Twitter URLs resolve (200) on the canonical domain; non-canonical host redirects 301.
+- [ ] Nav, mobile menu, footer list the same sections in the same order.
+- [ ] Only the typo changed in copy; listed in PR and approved-copy table.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 1 and docs/AUDIT.md. Branch feat/portfolio-p01-fixes.
+
+Fix:
+1. Domain: set metadataBase, canonical, openGraph.url and OG/Twitter image URLs to <CANONICAL_DOMAIN> (ask me if not provided). Verify OG image routes return 200. Make the other host and www/apex variants 301 to the canonical (prefer host-level config; otherwise next.config redirects).
+2. Anchors: nav, mobile menu, hero CTA and footer must all point to existing ids. Add "Experience" to the top nav and mobile menu. Footer "Work" must target the Projects id.
+3. Copy: fix "Jile" in Practices (if the intended word is unclear, remove it and tell me).
+4. Add scroll-margin-top to every section id.
+5. Do NOT change hero/experience job titles; just log the mismatch.
+
+Output a before/after table of every changed link and string. Run lint, typecheck, build. Stop after Phase 1.
 ```
 
-- Add `'use client'` to the canvas component only.
-- Import it in a Server Component page; that is allowed (the client boundary is the canvas itself).
-- Do **not** import `window`-using code at module scope.
+---
 
-### Vite / CRA React
+### Phase 2 — Foundations and component registry
 
-- Drop the component in `src/components/`.
-- Put tokens/backdrop CSS in `src/index.css`.
-- Add `luxe-grain` to `<body class="luxe-grain">` in `index.html`.
-- Theme: toggle `document.documentElement.classList`; no provider needed.
+**Goal:** Install plumbing; verify every component before using it.
 
-### Vue 3
+**Tasks**
+- Branch, deps: engine per rule 6, `lenis`, `clsx`, `tailwind-merge`, `lucide-react` (if missing); ensure `lib/utils.ts` has `cn`.
+- Add `registries` entry for `@vengeanceui` to `components.json` (§6.1).
+- **Verify components:** for each slug in §6.2, `curl -sI` the registry URL; install in a scratch branch, read its source, list dependencies, check license/attribution, note any extra setup (Tailwind keyframes, CSS vars). Fill `docs/components.md`. Remove installs that are not used.
+- Add tokens (§5.1), motion constants (§5.2), primitives (§5.3, except Cursor).
+- Mount `<MotionConfig reducedMotion="user">`, `SmoothScroll`, `ScrollProgress` in root layout. Lenis off on reduced motion and on `/desktop` if it conflicts.
+- Create `docs/transformation-log.md`, PR template.
 
-- Use the same classes: `onMounted` → run the `useEffect` body; `onBeforeUnmount` → cleanup.
-- Keep the engine in a plain `.ts` file (`createParticleNetwork(canvas)`), and call it from the component. This is the cleanest port and avoids duplicating class logic.
+**Acceptance**
+- [ ] `docs/components.md` has one row per intended component (source URL, install command, deps, license, attribution, status OK/substituted).
+- [ ] Site looks the same as before except smooth scroll + progress bar.
+- [ ] `/desktop` and AI input work; reduced-motion disables Lenis.
+- [ ] Lint, typecheck, build pass; Lighthouse mobile within 3 points of baseline.
 
-### Svelte / SvelteKit
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 2 (and section 6) and docs/AUDIT.md. Branch feat/portfolio-p02-foundations.
 
-- `onMount(() => { const cleanup = createParticleNetwork(canvas); return cleanup })`.
-- Same plain-JS engine module as Vue.
+1. Dependencies: use the animation engine already in the repo; if none, install framer-motion. Install lenis, clsx, tailwind-merge, lucide-react if missing. Ensure lib/utils.ts exports cn.
+2. Add the "registries": {"@vengeanceui": "https://www.vengenceui.com/r/{name}.json"} entry to components.json.
+3. Component verification: for each slug in PLAN.md 6.2, run `curl -sI https://www.vengenceui.com/r/<slug>.json` and record the status. Try installing each in a scratch branch, read the source, list its dependencies, extra setup (tailwind keyframes, CSS variables), and license/attribution. Fill docs/components.md. If a slug 404s, choose the closest alternative from https://www.vengenceui.com/components and log the substitution. Revert installs you will not use.
+4. Add design/motion tokens from PLAN.md section 5 mapped into the detected Tailwind version. Reuse the site's existing accent and light-theme tokens.
+5. Build primitives from PLAN.md 5.3 (Reveal, Stagger, SplitReveal, CountUp, usePointerFine, useInViewPause, SmoothScroll, ScrollProgress). Pointer hooks must be SSR-safe.
+6. Mount MotionConfig reducedMotion="user", SmoothScroll and ScrollProgress in the root layout. Disable Lenis for reduced motion and on /desktop if it conflicts. Add data-lenis-prevent to existing inner scroll containers.
+7. Create docs/transformation-log.md and .github/pull_request_template.md from PLAN.md section 14.
 
-### Plain HTML / no build step
+The site must look identical except for smooth scrolling and a thin progress bar. Run lint, typecheck, build; report Lighthouse mobile vs baseline. Stop after Phase 2.
+```
 
-- Use the appendix in §16. Include the tokens, backdrop CSS, and grain CSS inline or in a stylesheet.
-- Everything is ES2017+; no transpiler required.
+---
 
-### Tailwind notes
+### Phase 3 — Design direction and global systems
 
-If you keep Tailwind, map the tokens in `tailwind.config` (as this repo does):
+**Goal:** Lock the visual language once, so later phases stay consistent.
 
-```js
-colors: {
-  background: 'rgb(var(--bg) / <alpha-value>)',
-  surface: 'rgb(var(--surface) / <alpha-value>)',
-  card: 'rgb(var(--card) / <alpha-value>)',
-  ink: 'rgb(var(--ink) / <alpha-value>)',
-  muted: 'rgb(var(--muted) / <alpha-value>)',
-  line: 'rgb(var(--line) / <alpha-value>)',
-  gold: {
-    DEFAULT: 'var(--gold)',
-    soft: 'var(--gold-soft)',
-    ink: 'var(--gold-ink)',
-    deep: 'var(--gold-deep)',
-  },
+**Tasks**
+- **[A+B]** Typography via `next/font`: **Locked to Geist (Display & Sans body) + Geist Mono (code, metrics, chips, timestamps)** via `next/font/google`. Define a responsive type scale with `clamp()`:
+  - Display/H1: `clamp(2.5rem, 5vw, 4.25rem)` (weight 700, letter-spacing `-0.03em`)
+  - H2 Section Header: `clamp(1.75rem, 3.5vw, 2.5rem)` (weight 600, letter-spacing `-0.02em`)
+  - H3 Card Title: `clamp(1.125rem, 2vw, 1.35rem)` (weight 600)
+  - Body: `1rem` / `16px` (line-height 1.6, weight 400)
+  - Mono labels / badges: `0.75rem` / `12px` (uppercase, tracking `0.08em`)
+- **[B]** Atmosphere: subtle grain overlay (SVG noise, 3–4% opacity, `pointer-events:none`), hairline borders (`--border`), subtle vignette on hero.
+- **[B]** `Cursor` component: dot + ring, states (default, link, "View", text), fine pointer only; native cursor kept for inputs/text selection; off under reduced motion.
+- **[A+B]** Page enter transition via `template.tsx` (opacity/translate only); optional curtain wipe on route changes.
+- **[A+B]** `docs/DESIGN.md`: tokens, type scale, spacing, motion spec, component states, do/don't.
+- Take screenshots at 375 / 768 / 1440 in dark and light, attach to PR, **stop for owner approval**.
+
+**Acceptance**
+- [ ] `docs/DESIGN.md` committed with tokens and type scale; screenshots attached.
+- [ ] No CLS from font swap (`display: swap` + `size-adjust` via `next/font`).
+- [ ] Cursor never renders on touch; reduced motion = native cursor.
+- [ ] Contrast ≥ 4.5:1 body in both themes.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 3 and docs/AUDIT.md. Branch feat/portfolio-p03-design. Track: <A or B>.
+
+1. Typography: implement Geist (Display & Body) and Geist Mono via next/font/google with the clamp()-based type scale from PLAN.md Phase 3.
+2. Track B: add subtle grain overlay (SVG noise, 3-4% opacity, pointer-events none), hairline borders, and cursor-following glow in the hero (fine pointer only).
+3. Track B: build components/Cursor.tsx (dot + ring, link/"View"/text states). Fine pointer only; keep native cursor for inputs and text selection; disabled under reduced motion.
+4. Add an enter transition in app/template.tsx (opacity/translate only).
+5. Write docs/DESIGN.md (tokens, type scale, spacing, motion, component states, do/don't).
+6. Capture screenshots at 375, 768 and 1440 in dark and light themes and list them in the PR. STOP and wait for my approval before Phase 4.
+
+No copy changes. Run lint, typecheck, build.
+```
+
+---
+
+### Phase 4 — Navigation
+
+**Goal:** Clean, high-performance top navigation with an active section indicator and zero floating collision.
+
+**Tasks**
+- Install Spotlight Navbar (`spotlight-navbar`) from `@vengeanceui`; refactor to tokens.
+- Desktop (≥1024px): fixed top frosted glass navbar (`h-14`, `backdrop-blur-md`, hairline border `--border`, sticky `top-0`, z-index 40) containing: Brand mark, section links (About, Experience, Projects, Skills, Education, Contact), **Desktop OS** (`/desktop`), **Résumé** (`resume.pdf`), and Theme Toggle.
+- Mobile/tablet (<1024px): compact top bar (`h-14`) with brand + theme toggle + hamburger button opening a full-screen sheet; focus trap, `Esc` closes, scroll lock (`lenis.stop()`), `data-lenis-prevent` on sheet, `dvh` safe-area insets.
+- Active-section indicator: subtle spotlight / indicator driven by `IntersectionObserver`.
+- Smooth scrolling via Lenis with proper navbar height offset (`scroll-margin-top: 4rem`).
+
+**Acceptance**
+- [ ] Labels and ordering identical across top nav, mobile sheet, and footer.
+- [ ] Keyboard accessible: logical tab order, Enter activates, visible focus ring, `Esc` closes sheet.
+- [ ] Active section updates smoothly without jank; in-page links use Lenis with correct navbar offset.
+- [ ] No horizontal scroll at 320px; touch targets ≥ 44px.
+- [ ] No bottom floating widgets colliding with viewport or mobile keyboards.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 4, docs/components.md, docs/DESIGN.md. Branch feat/portfolio-p04-nav.
+
+1. Install spotlight-navbar from @vengeanceui; refactor to our tokens; remove demo code.
+2. Desktop (>=1024px): fixed top frosted glass bar (h-14, backdrop-blur-md, top-0, z-40) with About, Experience, Projects, Skills, Education, Contact, Desktop OS (/desktop), Resume (resume.pdf), theme toggle.
+3. Mobile/tablet (<1024px): compact top bar + full-screen sheet with focus trap, Esc to close, lenis.stop() while open, data-lenis-prevent, safe-area insets.
+4. Active-section highlighting via IntersectionObserver. In-page links scroll via Lenis with correct navbar offset (scroll-margin-top).
+5. Theme toggle preserved in navbar.
+6. All motion respects prefers-reduced-motion.
+
+Acceptance: keyboard accessible, 44px touch targets, no horizontal scroll at 320px, same labels/order in nav, mobile menu and footer. Run lint, typecheck, build; report Lighthouse. Stop after Phase 4.
+```
+
+---
+
+### Phase 5 — Hero and instant entrance
+
+**Goal:** A confident, memorable first screen without hurting LCP. Instant hydration without blocking splash screens.
+
+**Tasks**
+- Animated Rays hero background, lazy-loaded (`next/dynamic`); enforce a central dark radial vignette mask (`radial-gradient(circle at center, rgba(10,10,11,0.92) 20%, rgba(10,10,11,0.6) 80%, transparent 100%)`) over the canvas layer so rays provide subtle peripheral ambiance without compromising H1/subtitle contrast; static gradient fallback on small screens and reduced motion; pause offscreen.
+- Secondary line (e.g., "Java 21 · Azure · RAG") cycles via Flip/Morph Text. **H1 stays static** (SEO/a11y). Fixed-height wrapper.
+- **[B]** H1 and subtitle use `SplitReveal` (masked lines).
+- **Technical Proof Ribbon:** Consolidate core quantitative metrics (TCS 20× latency reduction, 700+ DSA problems, 1672 contest rating, 8.79/10 CGPA) into a sleek, unified horizontal technical ledger/ribbon anchored at the bottom of the Hero leading into Experience. `CountUp` once on first in-view.
+- Instant hydration: **no blocking full-screen loader**. Lightweight in-situ entry stagger of badge, H1, subtitle, and CTAs (duration ≤ 300ms total, initial mount only, disabled under reduced motion).
+- LCP image: `next/image` with `priority`, correct `sizes`, fixed dimensions.
+
+**Acceptance**
+- [ ] LCP < 2.5s on throttled mobile; LCP element is portrait or H1.
+- [ ] Content is immediately visible on mount (0ms delay to FCP); no splash screen blocks interaction.
+- [ ] Rays pause offscreen and are off under reduced motion; zero CLS from rotating text.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 5, docs/components.md, docs/DESIGN.md. Branch feat/portfolio-p05-hero. Track: <A or B>.
+
+1. Use animated-rays as the hero background, lazy-loaded (next/dynamic). Static CSS gradient fallback on small screens and under reduced motion; pause when offscreen (useInViewPause).
+2. Use flip-text (or morph-text) ONLY for a secondary line (the focus keywords). Keep the H1 static. Use a fixed-height wrapper: zero layout shift.
+3. Track B: reveal the H1 and subtitle with SplitReveal (masked lines).
+4. Replace static hero numbers with CountUp (once, on first view); keep exact values and labels.
+5. Instant hydration: do NOT add a full-screen loader. Implement a lightweight in-situ entrance stagger (<=300ms total) for badge, H1, subtitle and CTAs on initial mount; skip under reduced motion.
+6. Portrait uses next/image with priority and correct sizes.
+
+No copy changes. Run lint, typecheck, build; report Lighthouse mobile before/after. Stop after Phase 5.
+```
+
+---
+
+### Phase 6 — "Ask my résumé" pill
+
+**Goal:** Make the AI feature a signature interactive showcase inside the Hero section **without touching its backend or causing floating layout collisions**.
+
+**Tasks**
+- Install Skiper UI Dynamic Island (`@skiper-ui/skiper2`) after confirming it is free; add credit per D9 in footer.
+- **Placement & Spatial Layout:** Anchor the pill **inline inside the Hero section**, placed directly beneath the primary CTA buttons. It does NOT float globally or block other page sections.
+- Wrap the existing input in the expanding pill:
+  - **Collapsed:** Centered pill with subtle pulse, "Ask my résumé" label + live remaining daily query counter (`10/10`).
+  - **Expanded (on focus/click):** Expands in-place with smooth layout transition (max-w 640px) revealing: the prompt input + existing quick-prompt chips (Experience, Projects, Stack, LeetCode, Contact) + streaming answer area (max-height 320px, internal scroll with `data-lenis-prevent`).
+- Existing props, handlers, API calls, limit logic unchanged.
+
+**Acceptance**
+- [ ] Network requests/payloads identical to before (diffed).
+- [ ] Pill expands smoothly inline in the Hero without shifting or breaking hero height.
+- [ ] `Enter` submits, `Esc` collapses; `aria-live="polite"` on answers.
+- [ ] iOS Safari with on-screen keyboard: handled cleanly with `dvh`; does not jump or break viewport.
+- [ ] Limit-reached and error states styled cleanly.
+- [ ] Attribution line present (if Skiper free component used).
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 6 and docs/AUDIT.md. Branch feat/portfolio-p06-ai-pill.
+
+The "Ask my resume" component and its API route are PROTECTED: do not change the API route, request/response shape, rate limiting or the 10/day logic. Presentation only.
+
+1. Confirm @skiper-ui/skiper2 (Dynamic Island) is a free component, then `npx shadcn add @skiper-ui/skiper2`. Refactor to our tokens. Add the Skiper UI credit required by its free license to the footer credits.
+2. Position the pill INLINE within the Hero section beneath the primary CTA group. It does not float globally.
+3. Wrap the existing input/chips/answer UI in the expanding pill: collapsed = label + remaining count; expanded on focus/tap = input + quick-prompt chips + streaming answer area (max-height 320px, internal scroll, data-lenis-prevent).
+4. Enter submits, Esc collapses, aria-live="polite" on the answer region, iOS keyboard handled with dvh.
+5. Style limit-reached and error states.
+6. Prove no backend change: list files touched and confirm nothing under the API route directory changed.
+
+Run lint, typecheck, build. Stop after Phase 6.
+```
+
+---
+
+### Phase 7 — About and Experience
+
+**Goal:** Editorial narrative and technical career depth without redundant card spam.
+
+**Tasks**
+- **[A+B]** About Section: Dedicate to editorial narrative and current technical focus ("Beyond Code", real engineering philosophy, "Right now", profile card) in a clean layout. **Do NOT repeat quantitative stats already displayed in the Technical Proof Ribbon**.
+- **[A+B]** TCS Experience Block: Highlight the four key technical achievements (latency reduction, microservices architecture, batch pipeline, cloud reliability). "View full responsibilities" = height-auto expand/collapse with staggered list, `aria-expanded`, focus kept on toggle.
+- **[A+B]** Pull-quote: once-only subtle text reveal.
+- **[B]** Experience storytelling: clean responsive layout (1 col <640px, 2 cols tablet, 3-4 cols desktop). Cursor spotlight only with `usePointerFine`. No scroll-jacking or scroll traps.
+
+**Acceptance**
+- [ ] No redundant metric duplication between Hero/Proof Ribbon and About.
+- [ ] Grid: 1 col <640px, 2 cols tablet, 3–4 cols desktop; no overflow.
+- [ ] Expand/collapse has no layout jump; keyboard works.
+- [ ] Spotlight never runs on touch.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 7, docs/components.md, docs/DESIGN.md. Branch feat/portfolio-p07-experience. Track: <A or B>.
+
+1. About Section: Focus on editorial narrative, profile, and "Right now" current engineering focus. Do NOT repeat the quantitative stats (20x, 700+, etc.) that are already in the Technical Proof Ribbon.
+2. TCS Experience: Implement the four highlight cards with height-auto expand/collapse for full responsibilities, aria-expanded, focus stays on toggle.
+3. Pull quote: once-only subtle text reveal.
+4. Cursor spotlight only with usePointerFine; on touch use a subtle :active state.
+5. Keep all text and numbers exactly as they are.
+
+Verify 320, 375, 768, 1024, 1440. Run lint, typecheck, build. Stop after Phase 7.
+```
+
+---
+
+### Phase 8 — Projects
+
+**Goal:** The strongest section: smooth filtering, richer case studies, live-feeling AlgoGuru card.
+
+**Tasks**
+- Filter chips: Motion `layout` + `AnimatePresence mode="popLayout"`; chip counts unchanged.
+- Cards: spotlight hover (fine pointer) + lift; inline visuals (service topology, canvas bars, Huffman tree, chat bubble) animate once in view, pause offscreen, canvas lazy-loaded.
+- "Read the case study": **Slide-over Case Study Drawer** on desktop (slides from right, width `50vw`, focus trap, `role="dialog"`, `aria-modal="true"`, `Esc` closes, scroll lock, `data-lenis-prevent`) / **Bottom Sheet** on mobile (`max-h-[85dvh]`, drag-to-dismiss). Replaces gimmick folder-preview to ensure full architectural write-ups and topology diagrams are readable.
+- AlgoGuru mock: code types line by line on view, then "3 / 3 test cases passed · 4 ms · O(n)" animates in; final state instantly under reduced motion.
+- **[B]** Subtle 3D tilt on the flagship card (fine pointer only, ≤ 6°).
+- No change to text, tags, metrics or links.
+
+**Acceptance**
+- [ ] Filtering never causes scroll jump or overlap.
+- [ ] Case-study view accessible (focus trap, `aria-modal`, `Esc`, return focus) and works at 320px.
+- [ ] Offscreen visuals paused; no long task > 50ms during scroll at 4× CPU.
+- [ ] All links unchanged.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 8, docs/components.md, docs/DESIGN.md. Branch feat/portfolio-p08-projects. Track: <A or B>.
+
+1. Filter chips: Motion layout animations with AnimatePresence mode="popLayout". No scroll jump, no overlap; keep chip counts as-is.
+2. Cards: spotlight hover (fine pointer only) + small lift. Inline visuals (service topology, canvas bars, Huffman tree, chat bubble) animate once in view and pause offscreen; lazy-load canvas ones.
+3. "Read the case study": build a slide-over case study drawer on desktop (50vw width) and a bottom sheet on mobile (max-h 85dvh). Focus trap, aria-modal, labelled, Esc closes, focus returns, scroll lock, data-lenis-prevent.
+4. AlgoGuru mock: type the code line by line when in view, then animate in "3 / 3 test cases passed - 4 ms - O(n)". Under reduced motion show the final state immediately.
+5. Track B: subtle tilt (max 6 degrees, fine pointer only) on the flagship card.
+6. Do not change any project text, tags, metrics or links.
+
+Verify 320/375/768/1280 and that with 4x CPU throttle there are no long tasks > 50ms while scrolling. Run lint, typecheck, build. Stop after Phase 8.
+```
+
+---
+
+### Phase 9 — Skills, Education, Contact, Footer
+
+**Tasks**
+- **Structured Skills Matrix Grid:** Replace auto-scrolling marquee with a clean, high-density categorical grid grouped by discipline:
+  1. *Languages & Runtimes:* Java 21, TypeScript, Python, C++, SQL.
+  2. *Cloud & Distributed Systems:* Azure, Spring Boot, Microservices, Docker, Kubernetes, Kafka.
+  3. *AI & Architecture:* RAG, Vector DBs, LangChain/LlamaIndex, System Design, REST/gRPC.
+  4. *Storage & Databases:* PostgreSQL, Redis, MongoDB, Hibernate/JPA.
+  5. *Practices & Tools:* Git, CI/CD, Agile, Linux, Unit/Integration Testing.
+  Each skill badge rendered with subtle border, category chip indicator, and crisp typography (staggered in-situ reveal on view, once).
+- Education: vertical timeline with scroll-linked progress line (`useScroll` + `scaleY`).
+- Contact: magnetic CTA (fine pointer only), animated button for résumé; keep IST clock + availability badge untouched; email copy button with 2s checkmark toast.
+- Footer: big name mark reveals on scroll; credits line (Skiper attribution, if free tier used).
+- Small fixed section-number indicator (01 → 05) updated via `IntersectionObserver` (hidden on mobile).
+
+**Acceptance**
+- [ ] Skills grid: immediate scannability across 320px–1920px; zero layout shift; no distracting auto-scroll loops.
+- [ ] Timeline line uses transform only.
+- [ ] Magnetic effect never runs on touch.
+- [ ] Email copy provides 2s toast feedback with checkmark.
+- [ ] Credits present and accurate.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 9, docs/components.md, docs/DESIGN.md. Branch feat/portfolio-p09-finish. Track: <A or B>.
+
+1. Skills: build a structured, high-density Skills Matrix Grid grouped by engineering discipline (Languages, Cloud & Distributed, AI & Architecture, Storage, Practices). Stagger chips on view once; NO infinite moving marquee.
+2. Education: vertical timeline with a scroll-linked progress line (useScroll + scaleY, transform only).
+3. Contact: magnetic CTA (usePointerFine only); resume button with my-animated-button; email copy button with 2s checkmark confirmation toast. Keep IST clock and availability badge untouched.
+4. Footer: scroll-in reveal for the large name mark; add credits line for any library requiring attribution (Skiper free tier).
+5. Small fixed section indicator (01-05) via IntersectionObserver; hidden below 1024px.
+6. No copy changes.
+
+Run lint, typecheck, build. Stop after Phase 9.
+```
+
+---
+
+### Phase 10 — `/desktop` and `/classic`
+
+**Goal:** Make the unique alternate views consistent, accessible and mobile-safe.
+
+**Tasks**
+- Apply tokens/typography to `/desktop` and `/classic`; keep behavior.
+- `/desktop`: keyboard accessible windows (focus, `Esc`, arrow-key nudging optional); on < 768px show a simplified stacked layout or a clear "best on desktop" notice with a link back (no broken drag UI on touch).
+- `/classic`: semantic HTML (`main`, `section`, headings in order), print stylesheet (clean A4), skip link.
+- Both: back-to-main link, no animation requirement (reduced-motion safe), correct `<title>`/meta, `noindex` decision recorded (default: `/classic` indexable, `/desktop` noindex).
+
+**Acceptance**
+- [ ] No horizontal scroll at 320px on either route.
+- [ ] `/desktop` fully keyboard operable; mobile fallback works.
+- [ ] `/classic` passes axe with no serious/critical issues; prints cleanly.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 10 and docs/DESIGN.md. Branch feat/portfolio-p10-alt-views.
+
+1. Apply tokens/typography to /desktop and /classic without changing their behavior or content.
+2. /desktop: make windows keyboard operable (focus management, Esc to close). Below 768px, show a simplified stacked layout or a clear notice with a link back; no broken drag UI on touch.
+3. /classic: semantic HTML (main/section, ordered headings), skip link, print stylesheet for clean A4 output.
+4. Both: link back to the main site, correct title/meta. Robots: /classic indexable, /desktop noindex (tell me if you disagree).
+5. Run axe on both routes and fix serious/critical issues you introduced or find.
+
+Run lint, typecheck, build. Stop after Phase 10.
+```
+
+---
+
+### Phase 11 — Optional premium extras (only if opted in)
+
+**11a — Skiper Premium (D3 = yes, Track B).** Only with a valid license. Candidates: image reveal (`skiper71`) for portrait/project media, image cursor trail (`skiper18`) in the hero (desktop only, 4–6 project thumbnails, throttled), hover members (`skiper6`), things drag-and-scroll (`skiper5`). Add at most **two**. No attribution is required with Pro, but record the license in `docs/components.md`.
+
+**11b — Animmaster (D2 = yes).** Read `terms.html`; keep the zip out of the repo. Choose **one** text animation (hero headline) and **one** page transition (between `/`, `/desktop`, `/classic`). Port to React; remove global side effects; no second scroll engine.
+
+**11c — Hero WebGL (opt-in flag).** Behind `NEXT_PUBLIC_HERO_WEBGL=1`: a lightweight shader/gradient canvas (prefer a tiny library or raw WebGL; avoid heavy 3D engines). Desktop fine pointer only, lazy-loaded on idle, pauses offscreen, falls back to Animated Rays. Hard budget: ≤ 30 KB gzip added JS, 60fps on a mid laptop, GPU-light.
+
+**Acceptance (for any of 11a/b/c)**
+- [ ] Added JS ≤ 30 KB gzip per feature (or lazy-loaded).
+- [ ] Reduced-motion + touch fallbacks.
+- [ ] Lighthouse mobile unchanged (±2) because features are desktop-gated.
+- [ ] License recorded.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 11. Branch feat/portfolio-p11-premium. Do ONLY the sub-phases I enable: 11a=<yes/no>, 11b=<yes/no>, 11c=<yes/no>.
+
+General: lazy-load, desktop fine-pointer only, reduced-motion and touch fallbacks, <=30 KB gzip added JS per feature, record license/source in docs/components.md.
+11a: add at most two Skiper Premium components from my licensed access: <list>. Do not paste their source anywhere public.
+11b: the Animmaster zip is at <PATH_OUTSIDE_REPO> (never copy the zip into the repo). Read its terms and tell me any restriction. Port ONE text animation (hero headline) and ONE page transition to components/animmaster/.
+11c: implement a lightweight hero shader behind NEXT_PUBLIC_HERO_WEBGL=1 with fallback to animated-rays; pause offscreen.
+
+Run lint, typecheck, build; report bundle-size delta and Lighthouse. Stop after Phase 11.
+```
+
+---
+
+### Phase 12 — SEO, structured data, analytics
+
+**Tasks**
+- `app/sitemap.ts`, `app/robots.ts` (allow all; disallow API routes; sitemap URL on canonical domain).
+- JSON-LD `Person` schema on the home page (no email in JSON-LD).
+- Verify OG/Twitter image generation (`opengraph-image`, `twitter-image`) renders correctly on canonical domain, 1200×630.
+- Title/description unchanged unless in approved-copy table; `lang="en"`; `theme-color` for both schemes; favicon set + `manifest`.
+- Custom `not-found.tsx` page in the site's style.
+- Analytics (D8): keep existing; otherwise add Vercel Analytics + Speed Insights (no cookies banner needed for these; if another tool is used, check consent requirements).
+- Security headers in `next.config` (`X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `frame-ancestors`/`X-Frame-Options`); CSP in **report-only** first (the AI endpoint and fonts must keep working).
+
+Reference snippets:
+
+```ts
+// app/sitemap.ts
+import type { MetadataRoute } from "next";
+const base = "https://<CANONICAL_DOMAIN>";
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: `${base}/`, changeFrequency: "monthly", priority: 1 },
+    { url: `${base}/classic`, changeFrequency: "monthly", priority: 0.5 },
+  ];
 }
 ```
 
-And `darkMode: 'class'`. With Tailwind v4, define the same variables in `@theme` or use arbitrary values; the canvas does not care about Tailwind at all.
+```tsx
+// JSON-LD (inject with <script type="application/ld+json">)
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Aritra Dutta",
+  jobTitle: "Full Stack Application Engineer",
+  worksFor: { "@type": "Organization", name: "Tata Consultancy Services" },
+  url: "https://<CANONICAL_DOMAIN>",
+  sameAs: [
+    "https://github.com/Aritradutta2002",
+    "https://www.linkedin.com/in/aritra-dutta-rick20/",
+    "https://leetcode.com/u/Ari2001/",
+    "https://www.codechef.com/users/interover01",
+  ],
+};
+```
+
+**Acceptance**
+- [ ] `/sitemap.xml` and `/robots.txt` return 200 on the canonical domain.
+- [ ] Rich Results Test / schema validator shows a valid `Person`.
+- [ ] OG preview verified in LinkedIn Post Inspector and Twitter/X card preview.
+- [ ] Security headers present; CSP in report-only with no violations from first-party features.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 12. Branch feat/portfolio-p12-seo. Canonical domain: <CANONICAL_DOMAIN>.
+
+1. Add app/sitemap.ts and app/robots.ts (disallow API routes; sitemap on canonical domain).
+2. Add JSON-LD Person (use the snippet in PLAN.md; do not include the email).
+3. Verify opengraph-image/twitter-image render at 1200x630 and resolve on the canonical domain.
+4. Add not-found.tsx in the site style; favicon set + manifest + theme-color for both schemes.
+5. Analytics: keep what exists; if none, add Vercel Analytics and Speed Insights.
+6. Security headers in next.config (X-Content-Type-Options, Referrer-Policy, Permissions-Policy, frame protections). Add CSP as Content-Security-Policy-Report-Only first; list any violations from first-party features.
+7. Do not change title/description copy.
+
+Run lint, typecheck, build. Stop after Phase 12.
+```
 
 ---
 
-## 13. Tuning cookbook
+### Phase 13 — Tests and CI
 
-**"Calmer / more minimal"**
-
-```ts
-COUNT = 45
-threshold = 0.12 * diag
-node speed = 0.000012–0.000025 * diag
-lineAlpha = 0.35
-```
-
-**"Denser, more dramatic network"**
+**Tasks**
+- Playwright smoke tests (Chromium + WebKit): home loads, no console errors, every in-page anchor resolves, nav works on desktop and mobile viewport, filter chips change visible cards, `/desktop` and `/classic` load, AI input renders (mock the API; never call the real model in CI).
+- `@axe-core/playwright` accessibility checks on `/`, `/classic`, `/desktop`.
+- Reduced-motion test (`emulateMedia({ reducedMotion: "reduce" })`): motion entrance skipped, marquee static.
+- Visual snapshots (optional) for 375 / 1440 in dark theme.
+- Lighthouse CI with assertions; GitHub Actions workflow running lint, typecheck, build, e2e, lhci on PRs.
 
 ```ts
-COUNT = 95
-threshold = 0.18 * diag
-lineAlpha = 0.55
-```
+// e2e/smoke.spec.ts
+import { test, expect } from "@playwright/test";
 
-**"Faster, snappier lightning"**
-
-```ts
-waveSpeed = 0.0016 * diag per ms
-tail = 0.045 * diag
-```
-
-**"Slow, cinematic crawl"**
-
-```ts
-waveSpeed = 0.0004 * diag per ms
-tail = 0.02 * diag
-pulse speed = 0.003
-```
-
-**Blue → gold lightning** (match a gold-accented brand):
-
-```ts
-dark:  { glow: [211, 171, 99],  dot: [226, 232, 240] }
-light: { glow: [154, 116, 24],  dot: [71, 85, 105] }
-```
-
-**Green terminal aesthetic**:
-
-```ts
-glow: [52, 211, 153]
-line: '52, 211, 153'
-lineAlpha: 0.18
-```
-
-**Disable click interaction** (for a full-page decorative field):
-
-- Remove `canvas.addEventListener('click', handleClick)` and the handler.
-- Or keep waves but trigger them on a timer: every 6–10 s pick a random active node and start a wave. This gives life without demanding interaction.
-
-**Pause when off-screen** (recommended for full-page / option C):
-
-```ts
-const io = new IntersectionObserver(([entry]) => {
-  running = entry.isIntersecting && !document.hidden
-  if (running) kick()
-  else cancelAnimationFrame(animationFrameId)
-})
-io.observe(canvas)
-```
-
-Also add `document.addEventListener('visibilitychange', ...)` as a belt-and-braces pause.
-
-**Mobile budget:**
-
-- `COUNT` × 0.7
-- DPR cap 1.5
-- Disable click spawns on `(pointer: coarse)` if the field sits behind scrollable content
-- Consider a static CSS-only backdrop on small screens
-
----
-
-## 14. QA checklist and acceptance criteria
-
-### Visual
-
-- Grid lines are exactly 72px apart and fade radially from the top; no visible tiling seams.
-- Gold pool is centered and clipped by the viewport (no horizontal scrollbar).
-- Emerald pool is absent below 768px.
-- Corners are darker than the center (vignette).
-- Grain is uniform, fixed during scroll, and does not tint photos.
-
-### Behavioral
-
-- A click anywhere in the hero (except on links/buttons) starts a wave at the pointer.
-- The wave branches, not just one line; branches terminate at isolated nodes.
-- Each bolt has a bright head and a shortened tail; it does not draw the full edge instantly.
-- Reached nodes flash and slightly grow.
-- Nodes that drift off-screen reappear from the opposite edge with inward velocity.
-- Repeated clicks do not degrade performance indefinitely (cap + recycling).
-- Theme toggle switches palettes without resetting the animation.
-
-### Technical
-
-- `prefers-reduced-motion: reduce` → slower drift, no cursor, CSS animations neutralized.
-- Canvas is `aria-hidden`, not focusable, and does not capture keyboard events.
-- Resize from 320px to 4K keeps dots round and lines crisp.
-- No memory growth after 5 minutes of clicking (heap stable).
-- Unmount/remount leaves exactly one animation loop.
-- Lighthouse: no new accessibility violations; CLS 0 from the background.
-
----
-
-## 15. Known pitfalls
-
-1. **Opaque ancestor hides a `-z-10` backdrop.** If the fixed backdrop uses negative z-index and any wrapper has an opaque background, the wrapper paints over it. Fix: mount the backdrop at `z-0` as a sibling and wrap content at `z-10`, or remove the opaque wrapper background.
-2. **Canvas has zero height.** `height: 100%` inside an auto-height parent collapses. Give the hero `min-height` or explicit height.
-3. **Canvas is inline by default**, adding a few px of baseline gap. Use `display: block`.
-4. **Clicking text doesn't work** because content sits above the canvas with normal pointer events. Use `pointer-events: none` on the content wrapper and `auto` on interactive elements.
-5. **The click never fires** because an overlay (vignette) is above the canvas without `pointer-events: none`.
-6. **Theme toggle doesn't affect the canvas** in the original BFS file — it only follows the OS. Add the class/`MutationObserver` code (already in §5.8).
-7. **Unbounded particle growth** on repeated clicks (original BFS). Cap and recycle.
-8. **Culling breaks bolts:** if a node with `deg > 0` is deactivated or removed, edges reference a dead node. Keep `deg` pinning and never splice.
-9. **`shadowBlur` is expensive:** if porting the alternative engine, limit concurrent waves and avoid per-line shadow in the ambient web.
-10. **rAF after unmount:** missing `cancelAnimationFrame` causes ghost loops in dev/Strict Mode.
-11. **DPR mismatch:** setting `canvas.width` from CSS pixels without the DPR multiplier makes everything blurry; setting it on every frame is wasteful. Resize only when CSS size/DPR changes.
-12. **Time jumps:** without clamping `dt`, returning to a background tab flings nodes across the screen and completes waves instantly.
-13. **Tailwind `max-width: 100%`** clamps the 1100px glow blob; use `max-w-none` or plain CSS.
-14. **`mask-image` needs the `-webkit-` prefix** for older Safari; include both.
-15. **Grain too strong:** >0.05 opacity looks like noise, not film. Keep ~0.03.
-16. **Negative `z-index` inside a transformed/filtered section** is trapped in that stacking context and may disappear. Avoid transforms on ancestors of the backdrop.
-17. **Force-reduced-motion CSS** sets `animation-duration: 0.01ms !important`, which does not affect canvas. Handle reduced motion in JS as well.
-18. **`COUNT` is a soft target, not a hard cap.** The engine samples the active count once per frame and then respawns every inactive node while that snapshot is below `COUNT`. With click-spawned extras, one frame can revive several nodes and the field can settle denser than 69. If you need an exact cap, increment a local budget inside the update loop:
-
-    ```ts
-    let budget = activeCount
-    for (const p of particles) {
-      if (!p.active && budget < COUNT) {
-        p.respawn()
-        budget++
-      }
-    }
-    ```
-
----
-
-## 16. Appendix — plain-JS version
-
-A standalone port for non-React apps. Same algorithm, same constants, no build step. Drop this at the end of `<body>`; the canvas must be sized by CSS.
-
-```html
-<style>
-  .hero {
-    position: relative;
-    overflow: hidden;
-    min-height: 100svh;
-    background: var(--background);
+test("anchors resolve and no console errors", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  await page.goto("/");
+  const hrefs = await page.$$eval('a[href^="#"]', (as) =>
+    as.map((a) => a.getAttribute("href")!).filter((h) => h.length > 1)
+  );
+  for (const h of new Set(hrefs)) {
+    await expect(page.locator(h)).toHaveCount(1);
   }
-  .hero canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
+  expect(errors).toEqual([]);
+});
+```
+
+```json
+// lighthouserc.json
+{
+  "ci": {
+    "collect": { "startServerCommand": "npm run start", "url": ["http://localhost:3000/"], "numberOfRuns": 3 },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }]
+      }
+    }
   }
-  .hero__content {
-    position: relative;
-    z-index: 10;
-    pointer-events: none;
-  }
-  .hero__content a,
-  .hero__content button {
-    pointer-events: auto;
-  }
-  .hero__vignette {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      ellipse 62% 52% at 50% 42%,
-      transparent 40%,
-      rgb(var(--bg) / 0.55) 100%
-    );
-  }
-</style>
+}
+```
 
-<section class="hero">
-  <canvas data-particle-network aria-hidden="true"></canvas>
-  <div class="hero__vignette" aria-hidden="true"></div>
-  <div class="hero__content">
-    <!-- your content -->
-  </div>
-</section>
+**Acceptance**
+- [ ] `npm run test:e2e` green locally and in CI.
+- [ ] No serious/critical axe violations.
+- [ ] CI blocks merges on failures.
 
-<script>
-  ;(() => {
-    const canvas = document.querySelector('[data-particle-network]')
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 13. Branch feat/portfolio-p13-tests.
 
-    const COUNT = 69
-    const MAX_PARTICLES = 120
-    const THEMES = {
-      dark: {
-        dot: [161, 161, 170],
-        glow: [56, 189, 248],
-        line: '113, 113, 122',
-        lineAlpha: 0.5,
-        treeAlpha: 0.85,
-      },
-      light: {
-        dot: [113, 113, 122],
-        glow: [2, 132, 199],
-        line: '113, 113, 122',
-        lineAlpha: 0.55,
-        treeAlpha: 0.9,
-      },
-    }
+1. Add Playwright (Chromium + WebKit) with: anchors-resolve + no-console-errors, desktop and mobile nav, project filter changes visible cards, /desktop and /classic load, AI input renders with the API MOCKED (never hit the real model in CI), reduced-motion behavior (entrance stagger skipped, marquee static).
+2. Add @axe-core/playwright checks for /, /classic, /desktop; fix serious/critical issues you can; list the rest.
+3. Add Lighthouse CI (lighthouserc.json per PLAN.md) and a GitHub Actions workflow that runs lint, typecheck, build, e2e and lhci on pull requests.
+4. Add npm scripts: test:e2e, lhci.
 
-    const html = document.documentElement
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const motionScale = reduced ? 0.35 : 1
-
-    let width = 0
-    let height = 0
-    let dpr = 1
-    let threshold = 0
-    let nodes = []
-    let waves = []
-    const extras = []
-
-    let override = html.classList.contains('dark')
-      ? true
-      : html.classList.contains('light')
-        ? false
-        : null
-    let theme = (override ?? media.matches) ? THEMES.dark : THEMES.light
-    const applyTheme = () => {
-      theme = (override ?? media.matches) ? THEMES.dark : THEMES.light
-    }
-    media.addEventListener('change', () => {
-      if (override === null) applyTheme()
-    })
-    new MutationObserver(() => {
-      override = html.classList.contains('dark')
-        ? true
-        : html.classList.contains('light')
-          ? false
-          : null
-      applyTheme()
-    }).observe(html, { attributes: true, attributeFilter: ['class'] })
-
-    function makeNode(x, y) {
-      const initial = x === undefined
-      const node = {
-        x: initial ? -threshold + (width + 2 * threshold) * Math.random() : x,
-        y: initial ? -threshold + (height + 2 * threshold) * Math.random() : y,
-        vx: 0,
-        vy: 0,
-        size: 0.0012 + 0.001 * Math.random(),
-        pulse: initial ? -20 * Math.random() : 0,
-        deg: 0,
-        active: true,
-      }
-      const angle = 2 * Math.PI * Math.random()
-      const speed = 0.00002 + 0.00002 * Math.random()
-      node.vx = speed * Math.cos(angle)
-      node.vy = speed * Math.sin(angle)
-      return node
-    }
-
-    function respawn(node) {
-      const perimeter = 2 * (width + height) * Math.random()
-      let angle = (1 / 6 + (2 * Math.random()) / 3) * Math.PI
-
-      if (perimeter < width) {
-        node.x = perimeter
-        node.y = -threshold
-      } else if (perimeter - width < height) {
-        angle += Math.PI / 2
-        node.x = width + threshold
-        node.y = perimeter - width
-      } else if (perimeter - width - height < width) {
-        angle += Math.PI
-        node.x = perimeter - width - height
-        node.y = height + threshold
-      } else {
-        angle += (3 * Math.PI) / 2
-        node.x = -threshold
-        node.y = perimeter - 2 * width - height
-      }
-
-      const speed = 0.00002 + 0.00002 * Math.random()
-      node.size = 0.0012 + 0.001 * Math.random()
-      node.vx = speed * Math.cos(angle)
-      node.vy = speed * Math.sin(angle)
-      node.pulse = 1
-      node.active = true
-    }
-
-    function resize() {
-      const rect = canvas.getBoundingClientRect()
-      const nextDpr = Math.min(window.devicePixelRatio || 1, 2)
-      if (rect.width === width && rect.height === height && nextDpr === dpr) return
-
-      width = Math.max(rect.width, 1)
-      height = Math.max(rect.height, 1)
-      dpr = nextDpr
-      threshold = 0.15 * Math.hypot(width, height)
-      canvas.width = Math.round(width * dpr)
-      canvas.height = Math.round(height * dpr)
-
-      if (!nodes.length) {
-        nodes = Array.from({ length: COUNT }, () => makeNode())
-      }
-    }
-
-    function visit(wave, index) {
-      const start = nodes[index]
-      if (!start || wave.vis[index]) return
-      start.pulse = 0
-      wave.vis[index] = true
-
-      for (let i = 0; i < nodes.length; i++) {
-        const target = nodes[i]
-        if (wave.vis[i] || !target.active) continue
-        if (Math.hypot(start.x - target.x, start.y - target.y) <= threshold) {
-          wave.edges.push({ from: index, to: i, progress: 0 })
-          start.deg++
-          target.deg++
-        }
-      }
-    }
-
-    function startWave(index) {
-      const wave = { vis: new Array(nodes.length).fill(false), edges: [] }
-      visit(wave, index)
-      waves.push(wave)
-    }
-
-    function update(dt) {
-      const diag = Math.hypot(width, height)
-      const activeCount = nodes.reduce((n, node) => n + (node.active ? 1 : 0), 0)
-
-      for (const node of nodes) {
-        if (!node.active) {
-          if (activeCount < COUNT) respawn(node)
-          continue
-        }
-        if (
-          !node.deg &&
-          (node.x < -threshold ||
-            node.x > width + threshold ||
-            node.y < -threshold ||
-            node.y > height + threshold)
-        ) {
-          node.active = false
-          continue
-        }
-        node.pulse = Math.min(node.pulse + 0.005 * dt * motionScale, 1)
-        node.x += node.vx * diag * dt * motionScale
-        node.y += node.vy * diag * dt * motionScale
-      }
-
-      for (const wave of waves) {
-        while (wave.vis.length < nodes.length) wave.vis.push(false)
-        const reached = []
-
-        for (let i = wave.edges.length - 1; i >= 0; i--) {
-          const edge = wave.edges[i]
-          const a = nodes[edge.from]
-          const b = nodes[edge.to]
-          if (!a || !b) {
-            wave.edges.splice(i, 1)
-            continue
-          }
-          const distance = Math.hypot(a.x - b.x, a.y - b.y)
-          edge.progress += 0.0009 * diag * dt
-          if (edge.progress >= distance) {
-            wave.edges.splice(i, 1)
-            a.deg = Math.max(0, a.deg - 1)
-            b.deg = Math.max(0, b.deg - 1)
-            reached.push(edge.to)
-          }
-        }
-
-        for (const index of reached) visit(wave, index)
-      }
-
-      waves = waves.filter((wave) => wave.edges.length > 0)
-    }
-
-    function draw() {
-      const diag = Math.hypot(width, height)
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      ctx.clearRect(0, 0, width, height)
-      ctx.lineWidth = Math.max(0.0006 * diag, 0.75)
-
-      for (let i = 0; i < nodes.length; i++) {
-        const a = nodes[i]
-        if (!a.active) continue
-        for (let j = 0; j < i; j++) {
-          const b = nodes[j]
-          if (!b.active) continue
-          const distance = Math.hypot(a.x - b.x, a.y - b.y)
-          if (distance < threshold) {
-            ctx.strokeStyle = `rgba(${theme.line}, ${theme.lineAlpha * (1 - distance / threshold)})`
-            ctx.beginPath()
-            ctx.moveTo(a.x, a.y)
-            ctx.lineTo(b.x, b.y)
-            ctx.stroke()
-          }
-        }
-      }
-
-      ctx.strokeStyle = `rgba(${theme.glow.join(',')}, ${theme.treeAlpha})`
-      for (const wave of waves) {
-        for (const edge of wave.edges) {
-          const a = nodes[edge.from]
-          const b = nodes[edge.to]
-          if (!a || !b) continue
-          const distance = Math.hypot(a.x - b.x, a.y - b.y)
-          if (!distance) continue
-
-          const tail = 0.03 * diag
-          const headRatio = Math.min((edge.progress / distance) * ((distance + tail) / distance), 1)
-          const tailRatio = Math.max(headRatio - tail / distance, 0)
-
-          ctx.beginPath()
-          ctx.moveTo(a.x + (b.x - a.x) * tailRatio, a.y + (b.y - a.y) * tailRatio)
-          ctx.lineTo(a.x + (b.x - a.x) * headRatio, a.y + (b.y - a.y) * headRatio)
-          ctx.stroke()
-        }
-      }
-
-      for (const node of nodes) {
-        if (!node.active) continue
-        const p =
-          node.pulse >= 0 && node.pulse < 1 ? Math.sin(Math.PI * Math.sqrt(node.pulse)) : 0
-        const radius = Math.max(node.size * diag, 1.25) + Math.max(0.0012 * diag, 1) * p
-        const [r1, g1, b1] = theme.dot
-        const [r2, g2, b2] = theme.glow
-        ctx.beginPath()
-        ctx.arc(node.x, node.y, radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgb(${r1 + (r2 - r1) * p}, ${g1 + (g2 - g1) * p}, ${b1 + (b2 - b1) * p})`
-        ctx.fill()
-      }
-    }
-
-    let last = performance.now()
-    let raf = 0
-
-    function frame(time) {
-      raf = requestAnimationFrame(frame)
-      resize()
-      const dt = Math.min(time - last, 100)
-      last = time
-      update(dt)
-      draw()
-    }
-
-    canvas.addEventListener('click', (event) => {
-      const rect = canvas.getBoundingClientRect()
-      const x = event.clientX - rect.left
-      const y = event.clientY - rect.top
-      let index
-
-      if (nodes.length < MAX_PARTICLES) {
-        nodes.push(makeNode(x, y))
-        index = nodes.length - 1
-        extras.push(index)
-      } else {
-        while (extras.length && !nodes[extras[0]].active) extras.shift()
-        index = extras.shift()
-        if (index === undefined) return
-        Object.assign(nodes[index], makeNode(x, y))
-        extras.push(index)
-      }
-
-      startWave(index)
-    })
-
-    resize()
-    raf = requestAnimationFrame(frame)
-    window.addEventListener('beforeunload', () => cancelAnimationFrame(raf), { once: true })
-  })()
-</script>
+Report results. Stop after Phase 13.
 ```
 
 ---
 
-## 17. Copy checklist
+### Phase 14 — Performance and polish
 
-**Minimum files to replicate the full hero background**
+**Tasks**
+- Bundle analyzer; list top 10 client chunks; dynamic-import or remove anything non-essential; strip leftover registry demo code; confirm only one animation engine in the bundle.
+- Images: `next/image`, accurate `sizes`, AVIF/WebP, explicit dimensions; preload only the LCP image; convert large JPGs (e.g., memoji) to WebP/AVIF.
+- Fonts: `next/font`, subset, `display: swap`.
+- Animation hygiene: `will-change` only while animating; loops paused offscreen; no heavy `filter`/`box-shadow` animation at scale.
+- Consistency pass against `docs/DESIGN.md` (durations, easings, reveal distances, hover states).
+- `content-visibility: auto` + `contain-intrinsic-size` on long below-the-fold sections.
+- Low-power mode: on `navigator.hardwareConcurrency <= 4` or `saveData`, downgrade (static rays, no cursor glow, no tilt).
 
-| # | File | Source | Action |
-|---|---|---|---|
-| 1 | Global CSS tokens | `portfolio/src/app/globals.css` lines 9–53 | Copy `:root` + `.dark` |
-| 2 | Grid utility | same file, `.luxe-grid-bg` | Copy |
-| 3 | Grain utility | same file, `.luxe-grain::after` | Copy |
-| 4 | Backdrop component | `portfolio/src/components/luxe/Backdrop.tsx` | Copy, or use CSS/markup from §4.2 |
-| 5 | Particle engine | `portfolio/src/components/luxe/ParticleNetworkBFS.tsx` | Copy, or use §5.8 portable version |
-| 6 | Hero composition | `portfolio/src/components/sections/Hero.tsx` lines 27–52 | Copy structure |
-| 7 | Body grain class | `portfolio/src/app/layout.tsx` line 68 | Add `luxe-grain` |
-| 8 | Theme provider | `portfolio/src/components/ThemeProvider.tsx` | Optional; any class toggle works |
-| 9 | Cursor (optional) | `portfolio/src/components/luxe/Cursor.tsx` + CSS | Optional |
-| 10 | Scroll progress (optional) | `portfolio/src/components/luxe/ScrollProgress.tsx` | Optional, needs Framer Motion |
+**Acceptance**
+- [ ] Lighthouse mobile: Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 95, SEO ≥ 95.
+- [ ] LCP < 2.5s, CLS < 0.1, INP < 200ms (throttled).
+- [ ] Home-route JS documented before/after; target ≤ baseline + 60 KB.
 
-**Port order:** tokens → backdrop → grain → hero markup → canvas → theme observer → verify → tune.
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 14 and docs/baseline/. Branch feat/portfolio-p14-perf.
 
-**Do not port:** the site's profile image, copy, stats, social links, or preloader unless you want the full page experience. The background is independent of all of them.
+1. Run the bundle analyzer; list the 10 largest client chunks; dynamically import or remove non-essential ones; delete unused registry demo code; confirm only one animation engine is bundled.
+2. Images: next/image, accurate sizes, explicit dimensions, AVIF/WebP, only the LCP image preloaded.
+3. Fonts via next/font, subset, display swap.
+4. Animation hygiene: will-change only while animating; pause all loops/canvas offscreen; no heavy filter/box-shadow animation.
+5. Consistency pass against docs/DESIGN.md.
+6. content-visibility:auto + contain-intrinsic-size on long below-the-fold sections.
+7. Low-power downgrade when navigator.hardwareConcurrency <= 4 or Save-Data is on: static rays, no cursor glow, no tilt.
+
+Report before/after: home-route JS size, LCP, CLS, TBT/INP, Lighthouse scores (mobile, 4x CPU). Stop after Phase 14.
+```
 
 ---
 
-*End of plan. If you want the exact look of this site, port `ParticleNetworkBFS.tsx` (not `ParticleNetwork.tsx`) plus `Backdrop.tsx` and the three CSS utilities; everything else is optional atmosphere.*
+### Phase 15 — QA, release, post-launch
+
+**Tasks**
+- Run every checklist in §10–§11; fix in-scope failures.
+- Preview deployment; test on at least one real iPhone and one mid-range Android.
+- Tag the pre-change commit `pre-transformation` (if not yet tagged), merge PRs in order, tag `v2-portfolio`.
+- Production smoke test: redirects (non-canonical host, www/apex), OG previews, `resume.pdf`, AI input end-to-end (one real request by the owner), analytics events.
+- **Post-launch (week 1):** submit the sitemap in Google Search Console (add/verify the canonical property); request indexing for `/`; check Core Web Vitals field data after ~28 days; refresh link previews (LinkedIn Post Inspector); update the links on LinkedIn, GitHub profile, résumé PDF and email signature to the canonical domain; keep the old build's preview URL for a week.
+- Final report: adopted components with sources/licenses, Lighthouse before/after, known issues, rollback instructions.
+
+**Prompt**
+```text
+Follow AGENTS.md. Read PLAN.md Phase 15.
+
+1. Run every item in PLAN.md sections 10 and 11; report pass/fail per item; fix in-scope failures and list the rest.
+2. Confirm the AI resume feature works end-to-end and its limit logic is unchanged (diff against the baseline commit for protected paths).
+3. Confirm /desktop and /classic work and are reachable from the dock and footer.
+4. Verify redirects, sitemap, robots, OG/Twitter previews on the canonical domain.
+5. Produce docs/RELEASE.md: adopted components (name, source, license, attribution), Lighthouse before/after, known issues, rollback steps, post-launch checklist from PLAN.md.
+Do not deploy or merge; prepare release notes only.
+```
+
+---
+
+## 9. Responsive and device behavior matrix
+
+### 9.1 Viewport layout matrix
+
+| Section / Feature | Desktop (≥1024px, Fine Pointer) | Tablet (640–1023px, Touch/Pointer) | Mobile (<640px, Touch, min 320px) | Reduced Motion / Low Power |
+|---|---|---|---|---|
+| **Top Nav** | Top fixed frosted glass bar (`h-14`), active indicator, theme toggle | Compact top bar (`h-14`) + hamburger; full-screen sheet with `dvh` | Compact top bar (`h-14`) + hamburger; full-screen sheet with `dvh` | Static, instant open/close (no spring) |
+| **Hero Background** | Animated Rays + dark radial vignette mask | Reduced intensity Animated Rays + vignette | Static CSS dark radial mesh gradient | Static CSS dark radial mesh gradient |
+| **Hero Headline / Stagger** | In-situ stagger (≤300ms); static H1 + cycling keywords | In-situ stagger (≤300ms); static H1 + keywords | Instant render; static H1 + keywords | Instant render; all text static |
+| **Technical Proof Ribbon** | 4-column unified horizontal ribbon | 4-column wrapped horizontal grid | 2x2 compact technical ledger card | Static values, count-up skipped |
+| **AI Résumé Pill** | Inline Hero pill, expands in-place to max-w 640px | Inline Hero pill, expands in-place to max-w 540px | Inline Hero pill, expands to 100% width (`dvh` keyboard handling) | Static input form, no expansion spring |
+| **About Section** | 2-column editorial story panel + "Right now" card | 1-column story panel + current focus | 1-column clean story panel | Static layout, no reveal stagger |
+| **Experience (TCS)** | 4 highlight cards, height-auto expand/collapse | 4 highlight cards, height-auto expand/collapse | Stacked 1-column cards, full touch targets (≥44px) | Static layout, instant expand/collapse |
+| **Projects Grid** | 2-column card grid + flagship hero feature | 2-column card grid | 1-column stacked cards | Instant filter re-flow (no popLayout spring) |
+| **Case Study View** | Slide-over drawer (w-1/2 screen, focus trap, ESC) | Slide-over drawer (w-2/3 screen, focus trap) | Bottom sheet drawer (`max-h-[85dvh]`, drag-to-dismiss, ESC) | Static modal overlay, no spring transition |
+| **AlgoGuru Live Mock** | Interactive / line-by-line typing when in view | Line-by-line typing when in view | Line-by-line typing when in view | Pre-rendered static syntax block (instant) |
+| **Skills Matrix** | 5-column categorical domain grid | 3-column categorical domain grid | 2-column compact badge grid | Static grid, no chip entrance stagger |
+| **`/desktop` Route** | Full interactive windowing system (draggable/resizable) | Simplified single-window view | Informative notice + direct link to `/classic` | Static non-animated windows |
+| **`/classic` Route** | Clean typographic sheet with A4 print layout | Clean typographic sheet with A4 print layout | Clean 1-column typographic sheet | Identical (native plain HTML/CSS) |
+
+### 9.2 Accessibility & ARIA Architecture
+
+- **Semantic Landmarks:**
+  - `<header role="banner">` wraps the fixed top navigation.
+  - `<nav aria-label="Primary Navigation">` wraps the navigation links.
+  - `<main id="main-content">` wraps all primary content sections.
+  - `<footer role="contentinfo">` wraps the footer and credits.
+- **Skip Link:** Fixed offscreen `<a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black">Skip to content</a>`.
+- **AI Résumé Assistant (`aria-live`):**
+  - Streaming answer container tagged with `aria-live="polite"` and `aria-atomic="false"` so screen readers announce incoming response tokens without stuttering.
+  - Query counter has `aria-label="Remaining daily queries: X of 10"`.
+- **Modals & Drawers (Case Study & Mobile Sheet):**
+  - Elements use `role="dialog"` and `aria-modal="true"`.
+  - Labelled via `aria-labelledby="case-study-title"`.
+  - Strict focus trap when open: Tab cycles strictly within dialog; `ESC` key unmounts/closes dialog; focus returns to the triggering card button.
+- **Touch Target Floor:** Every interactive element (nav links, filter chips, theme toggle, prompt chips, copy button) has an active click/touch bounding box of at least **44×44px**.
+- **Color Contrast:** All body text maintains a contrast ratio of ≥ 4.5:1 against its immediate background in both dark (`#f4f4f5` on `#0a0a0b`) and light (`#09090b` on `#fcfcfd`) modes. Large headings maintain ≥ 3:1.
+
+---
+
+## 10. Performance budgets and accessibility
+
+| Metric | Budget (mobile, 4× CPU, Slow 4G) |
+|---|---|
+| LCP | < 2.5s |
+| CLS | < 0.1 |
+| INP | < 200ms |
+| TBT | < 200ms |
+| Home-route JS (gzip) | Baseline + ≤ 60 KB |
+| Lighthouse | Perf ≥ 90, A11y ≥ 95, BP ≥ 95, SEO ≥ 95 |
+| Long tasks while scrolling | none > 50ms |
+
+**Accessibility checklist**
+- [ ] Everything reachable by keyboard; visible focus ring everywhere.
+- [ ] `prefers-reduced-motion` honored (hero entrance, marquee, tilt, cursor, Lenis).
+- [ ] Contrast ≥ 4.5:1 body, ≥ 3:1 large text/UI, both themes.
+- [ ] Modals/sheets: focus trap, `Esc`, return focus, `aria-modal`, labelled.
+- [ ] Decorative animation `aria-hidden`; rotating text has a static accessible equivalent.
+- [ ] Skip link works.
+- [ ] No content only reachable through hover.
+
+---
+
+## 11. QA checklist
+
+**Cross-device**
+- [ ] Widths: 320, 375, 414, 768, 1024, 1280, 1536, 1920; landscape on phones/tablets.
+- [ ] Browsers: Chrome, Safari (macOS + iOS), Firefox, Edge. Check `backdrop-filter`, `dvh`, sticky, Lenis on iOS.
+- [ ] Slow network + 4× CPU.
+- [ ] Both dark and light themes verified across all viewports.
+- [ ] Routes: `/`, `/desktop`, `/classic`, resume download, all external links.
+
+**Regression**
+- [ ] AI résumé: ask, stream, limit reached, error.
+- [ ] Every number/claim identical to pre-migration (diff via the approved-copy table).
+- [ ] Redirects: non-canonical host, www/apex.
+- [ ] Console clean in production build.
+
+---
+
+## 12. Rollback
+
+- Tag `pre-transformation` before Phase 1 merges.
+- Each phase is a separate PR → revert independently (`git revert <merge-commit>`).
+- Keep the previous production deployment available for instant rollback on the host (Vercel: promote the previous deployment).
+- Keep the old build's preview URL for at least a week after launch.
+- If Lighthouse mobile drops below 85 or INP exceeds 300ms after any phase: stop, revert that phase, investigate before continuing.
+- DNS/redirect changes: record previous values in `docs/RELEASE.md` so they can be restored.
+
+---
+
+## 13. Extra prompts
+
+**Independent review (fresh session)**
+```text
+Review the diff of branch <branch> against main using PLAN.md and AGENTS.md. Check: content unchanged, protected files untouched, reduced-motion and touch fallbacks present, no layout shift, one animation engine only, inner scroll containers have data-lenis-prevent, bundle-size delta, accessibility (focus, aria), component licenses logged. List blockers, then nice-to-haves. Do not edit files.
+```
+
+**Jank investigation**
+```text
+<Section/component> janks on <device/throttle>. Profile it: list long tasks and layout/paint costs. Propose the smallest fix that keeps the design (transform/opacity, IntersectionObserver pausing, dynamic import, content-visibility). Implement it, then show before/after numbers.
+```
+
+**Port a registry component to project tokens**
+```text
+I just ran shadcn add for <component>. Refactor it: replace hard-coded colors/radii/fonts with our tokens, delete demo/unused code, make content come from props, add usePointerFine and reduced-motion handling, fix imports and lint/typecheck. Keep its desktop behavior visually identical.
+```
+
+**Copy-freeze audit**
+```text
+Search the diff for any changed user-facing text or numbers. Print each as "before -> after". Revert anything not in the approved-copy table in docs/transformation-log.md.
+```
+
+**Licensing audit**
+```text
+List every third-party component in the repo that came from Vengeance UI, Skiper UI or Animmaster. For each: source URL, license/attribution requirement, whether attribution appears on the site, and whether any paid code is present without a recorded license. Report only.
+```
+
+---
+
+## 14. Templates
+
+**`docs/transformation-log.md`**
+```markdown
+# Transformation log
+
+## Decisions
+| ID | Decision | Value | Date |
+|----|----------|-------|------|
+| D1 | Canonical domain | | |
+| D6 | Track | | |
+
+## Approved copy changes
+| Location | Before | After | Approved by |
+|----------|--------|-------|-------------|
+| Skills > Practices | Jile | (fixed/removed) | |
+
+## Phase log
+### Phase N — <name> (date)
+- Branch/PR:
+- What changed:
+- Perf (mobile 4x CPU): LCP / CLS / TBT / JS size
+- Open questions:
+```
+
+**`docs/components.md`**
+```markdown
+| Component | Library | Source URL | Install command | Dependencies | License | Attribution needed | Used in | Status |
+|-----------|---------|------------|-----------------|--------------|---------|--------------------|---------|--------|
+| Animated Rays | Vengeance UI | https://www.vengenceui.com/r/animated-rays.json | npx shadcn@latest add @vengeanceui/animated-rays | framer-motion, clsx, tailwind-merge | (verify) | (verify) | Hero | OK |
+```
+
+**`.github/pull_request_template.md`**
+```markdown
+## Phase
+## What changed
+## Screenshots / GIF notes (375, 768, 1440; dark + light)
+## Perf (mobile, 4x CPU): LCP / CLS / TBT / JS size (before → after)
+## Checklist
+- [ ] Content unchanged (or listed in approved-copy table)
+- [ ] Protected files untouched
+- [ ] Reduced motion + touch fallbacks
+- [ ] data-lenis-prevent on inner scroll areas
+- [ ] Lint, typecheck, build, tests pass
+- [ ] docs/components.md updated (license/attribution)
+## Open questions
+```
+
+---
+
+## 15. Final deliverables checklist
+
+- [ ] `docs/AUDIT.md`, `docs/baseline/`, `docs/components.md`, `docs/DESIGN.md`, `docs/transformation-log.md`, `docs/RELEASE.md` (and `docs/MIGRATION.md` if S4/S5)
+- [ ] Phases 0–10 and 12–15 merged (Phase 11 only if opted in)
+- [ ] Lighthouse mobile: Perf ≥ 90, A11y ≥ 95, BP ≥ 95, SEO ≥ 95
+- [ ] Domain/OG/redirect issues resolved and verified in production
+- [ ] Sitemap submitted; JSON-LD valid; link previews verified
+- [ ] Tests + CI green and enforced on PRs
+- [ ] Attribution/credits correct for every adopted library
+- [ ] Tags: `pre-transformation`, `v2-portfolio`
+- [ ] External profiles (LinkedIn, GitHub, résumé, email signature) point to the canonical domain
+
+---
+
+## Implementation Tasks
+
+Synthesized from this review's findings. Each task derives from a specific finding above. Run with Claude Code or Codex; checkbox as you ship.
+
+- [ ] **T1 (P1, human: ~1.5h / CC: ~10min)** — `Hero & Loading` — Remove blocking splash loader and implement lightweight in-situ entrance stagger (≤300ms)
+  - Surfaced by: Pass 1 / Outside Review — [HARD REJECTION] Blocking First-Visit Splash Loader (Phase 5)
+  - Files: `portfolio/src/components/zro/Hero.tsx`, `portfolio/src/app/(datasheet)/page.tsx`
+  - Verify: Initial load renders H1 and portrait instantly with no full-screen overlay; LCP < 2.5s.
+- [ ] **T2 (P1, human: ~2h / CC: ~15min)** — `Navigation & Hero` — Top fixed frosted glass navbar (`h-14`) and anchor AI résumé pill inline inside Hero below CTAs
+  - Surfaced by: Pass 1 / Outside Review — [HARD REJECTION] Dual Navigation & Floating Collision (Phase 4 & Phase 6)
+  - Files: `portfolio/src/components/zro/Navbar.tsx`, `portfolio/src/components/zro/HeroChatbot.tsx`, `portfolio/src/components/zro/Hero.tsx`
+  - Verify: Navbar fixed at top with z-40; AI pill renders inline in Hero; no floating widgets colliding on mobile.
+- [ ] **T3 (P1, human: ~1.5h / CC: ~10min)** — `Hero & About` — Build unified Technical Proof Ribbon and eliminate duplicate metric cards from About
+  - Surfaced by: Pass 1 / Outside Review — [HARD REJECTION HR-5] Redundant Metric Bento Cards (Hero vs About)
+  - Files: `portfolio/src/components/zro/AnimatedMetric.tsx`, `portfolio/src/components/zro/about/ProfileCard.tsx`, `portfolio/src/components/zro/about/StoryPanel.tsx`
+  - Verify: Metrics 20×, 700+, 1672, 8.79 appear once in horizontal ribbon; About section focuses on narrative and "Right now".
+- [ ] **T4 (P1, human: ~2h / CC: ~15min)** — `Interactive States` — Implement full visual state matrix (loading pulse, streaming caret, empty prompts, error banners) for AI Pill
+  - Surfaced by: Pass 2 — Interaction State Coverage (Section 5.4)
+  - Files: `portfolio/src/components/zro/HeroChatbot.tsx`, `portfolio/src/lib/nvidiaChat.ts`
+  - Verify: Test simulated delay (3-dot pulse), empty query (friendly suggestions), 10/10 limit (amber/red badge with UTC reset note), network error (retry button).
+- [ ] **T5 (P1, human: ~1.5h / CC: ~10min)** — `Skills Section` — Replace infinite moving Logo Slider marquee with categorical high-density Skills Matrix Grid
+  - Surfaced by: Pass 4 — [HARD REJECTION HR-6] Skills Marquee Carousel Anti-pattern (Phase 9)
+  - Files: `portfolio/src/components/zro/SkillsMatrix.tsx`, `portfolio/src/data/portfolioCatalog.ts`
+  - Verify: Skills render in structured 5-group grid; zero auto-scrolling motion; fully accessible and scannable on 320px–1920px.
+- [ ] **T6 (P1, human: ~1h / CC: ~10min)** — `Hero Canvas & Contrast` — Add central radial dark vignette mask over Animated Rays canvas
+  - Surfaced by: Pass 4 — [HARD REJECTION HR-4] Background Noise Behind White Text (Phase 5)
+  - Files: `portfolio/src/components/luxe/Backdrop.tsx`, `portfolio/src/styles/datasheet.css`
+  - Verify: Center focal plane is darkened (`rgba(10,10,11,0.92)`); white H1 maintains ≥4.5:1 contrast against rays.
+- [ ] **T7 (P1, human: ~1.5h / CC: ~10min)** — `Design Tokens & Typography` — Lock Geist + Geist Mono and apply explicit light/dark token scales
+  - Surfaced by: Pass 5 — Design System Alignment (Section 5.1 & Phase 3)
+  - Files: `portfolio/src/app/layout.tsx`, `portfolio/src/styles/datasheet.css`, `portfolio/tailwind.config.cjs`
+  - Verify: Geist loaded via `next/font/google`; light mode porcelain theme matches WCAG AA contrast (≥4.5:1).
+- [ ] **T8 (P1, human: ~2h / CC: ~15min)** — `Projects & Drawer` — Implement Slide-over Case Study Drawer on desktop and Bottom Sheet on mobile
+  - Surfaced by: Pass 7 — Case Study Presentation Architecture (Phase 8)
+  - Files: `portfolio/src/components/zro/projects/FlagshipShowcase.tsx`, `portfolio/src/components/zro/projects/ProjectCard.tsx`
+  - Verify: Case study opens from right (50vw) on desktop and bottom (85dvh) on mobile; focus trap and ESC key work.
+
+---
+
+## Design Review Completion Summary
+
+```
++====================================================================+
+|         DESIGN PLAN REVIEW — COMPLETION SUMMARY                    |
++====================================================================+
+| System Audit         | DESIGN.md deferred to P3, UI Scope: High    |
+| Step 0               | 6/10, all 7 dimensions reviewed             |
+| Pass 1  (Info Arch)  | 4/10 → 9/10 after fixes                     |
+| Pass 2  (States)     | 3/10 → 9.5/10 after fixes                   |
+| Pass 3  (Journey)    | 5/10 → 9.5/10 after fixes                   |
+| Pass 4  (AI Slop)    | 4/10 → 9/10 after fixes                     |
+| Pass 5  (Design Sys) | 4/10 → 9.5/10 after fixes                   |
+| Pass 6  (Responsive) | 5/10 → 9.5/10 after fixes                   |
+| Pass 7  (Decisions)  | 4 resolved, 0 deferred                      |
++--------------------------------------------------------------------+
+| NOT in scope         | written (3 items)                           |
+| What already exists  | written (5 items)                           |
+| TODOS.md updates     | 0 items proposed                            |
+| Approved Mockups     | 0 generated (API key unconfigured)          |
+| Decisions made       | 4 added to plan                             |
+| Decisions deferred   | none                                        |
+| Overall design score | 3/10 → 9/10                                 |
++====================================================================+
+```
+
+### NOT in scope
+1. Raw WebGL 3D shader scenes on default load (deferred to opt-in Phase 11c behind flag).
+2. Paid commercial component registries without confirmed license (Animmaster §11b, Skiper Pro §11a).
+3. Backend AI resume route logic, streaming model changes, or rate-limiting modifications (strictly presentation-only).
+
+### What already exists
+1. Dual unique views: `/desktop` (MacOS windowing OS view) and `/classic` (pure typographic printable view).
+2. Verified high-scale metrics (TCS 20× latency reduction, 700+ DSA, 1672 contest rating, 8.79 CGPA).
+3. Porcelain luxury light theme and dark space theme color bases.
+4. AlgoGuru interactive coding problem solver live mock.
+5. AI résumé chatbot API routes and daily usage tracking logic.
+
+### Unresolved Decisions
+_None. All design questions were resolved and merged directly into Plan.md._
+
+---
+
+## GSTACK REVIEW REPORT
+
+| Review | Trigger | Why | Runs | Status | Findings |
+|---|---|---|---|---|---|
+| CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | not_run | — |
+| Outside Review | Codex + in-host | Independent 2nd opinion | 1 | issues_found | in-host: 6 hard rejections; Codex: unavailable (auth) |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 0 | not_run | — |
+| Design Review | `/plan-design-review` | UI/UX gaps | 1 | clean | score: 3/10 → 9/10, 4 decisions |
+| DX Review | `/plan-devex-review` | Developer experience gaps | 0 | not_run | — |
+
+- **OUTSIDE COVERAGE:** In-host subagent completed with 6 hard rejections (resolved in plan); Codex unavailable due to custom endpoint auth.
+- **VERDICT:** DESIGN REVIEW CLEARED — eng review required.
+
+NO UNRESOLVED DECISIONS
+
 
