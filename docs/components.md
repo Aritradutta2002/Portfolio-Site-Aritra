@@ -4,7 +4,7 @@ This document tracks all external components evaluated, verified, and adopted pe
 
 | Component | Library | Source URL / Slug | Install Command | Dependencies | License | Attribution Needed | Used in | Status |
 |---|---|---|---|---|---|---|---|---|
-| **Spotlight Navbar** | Vengeance UI | `https://www.vengenceui.com/r/spotlight-navbar.json` | `npx shadcn@latest add @vengeanceui/spotlight-navbar` | `framer-motion`, `clsx`, `tailwind-merge` | MIT / Free | No | Phase 4 (Navigation) | **OK (Verified 200)** |
+| **Spotlight Navbar** | Vengeance UI | `https://www.vengenceui.com/r/spotlight-navbar.json` | `npx shadcn@latest add @vengeanceui/spotlight-navbar` | `framer-motion`, `clsx`, `tailwind-merge` | MIT / Free | No | Phase 4 (Navigation) | **Adopted & Refactored (`src/components/ui/spotlight-navbar.tsx`)** |
 | **Glass Dock** | Vengeance UI | `https://www.vengenceui.com/r/glass-dock.json` | `npx shadcn@latest add @vengeanceui/glass-dock` | `framer-motion`, `clsx`, `tailwind-merge` | MIT / Free | No | Alternate desktop view | **OK (Verified 200)** |
 | **Animated Rays** | Vengeance UI | `https://www.vengenceui.com/r/animated-rays.json` | `npx shadcn@latest add @vengeanceui/animated-rays` | `framer-motion`, `clsx`, `tailwind-merge` | MIT / Free | No | Phase 5 (Hero background) | **OK (Verified 200)** |
 | **Flip Text** | Vengeance UI | `https://www.vengenceui.com/r/flip-text.json` | `npx shadcn@latest add @vengeanceui/flip-text` | `framer-motion`, `clsx`, `tailwind-merge` | MIT / Free | No | Phase 5 (Hero role keywords) | **OK (Verified 200)** |

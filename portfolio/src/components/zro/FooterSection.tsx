@@ -7,9 +7,10 @@ import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
 const NAVIGATE_LINKS = [
   { label: "About", href: "#about" },
   { label: "Experience", href: "#experience" },
-  { label: "Work", href: "#work" },
+  { label: "Projects", href: "#projects" },
   { label: "Skills", href: "#skills" },
   { label: "Education", href: "#education" },
+  { label: "Contact", href: "#contact" },
 ] as const;
 
 const PROFILE_LINKS = [

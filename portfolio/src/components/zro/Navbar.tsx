@@ -1,186 +1,92 @@
-"use client";
+'use client';
 
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "./ui/Button";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
-import { lockScroll } from "@/lib/scrollBridge";
+import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { SpotlightNavbar } from '@/components/ui/spotlight-navbar';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { Button } from './ui/Button';
+import { CONTACT_LINKS, PORTFOLIO_HEADER } from '@/data/portfolioCatalog';
+import { lockScroll, scrollToTarget } from '@/lib/scrollBridge';
 
-const NAV_LINKS = [
-  { label: "About", href: "#about" },
-  { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Education", href: "#education" },
-  { label: "Contact", href: "#contact" },
+export const NAV_LINKS = [
+  { label: 'About', href: '#about' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Education', href: '#education' },
+  { label: 'Contact', href: '#contact' },
 ] as const;
 
 const SECTION_IDS = NAV_LINKS.map((link) => link.href.slice(1));
 
-/** Scroll distance before the header may tuck away, and the dead-zone. */
-const HIDE_AFTER = 320;
-const SCROLL_DEADZONE = 6;
-
-interface Indicator {
-  x: number;
-  y: number;
-  width: number;
-}
-
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  const [active, setActive] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [indicator, setIndicator] = useState<Indicator | null>(null);
 
   const headerRef = useRef<HTMLElement>(null);
-  const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const menuOpenRef = useRef(false);
+  const sheetRef = useRef<HTMLDivElement>(null);
 
+  // Scroll detection for frosted glass intensity
   useEffect(() => {
-    menuOpenRef.current = menuOpen;
-  }, [menuOpen]);
-
-  /* Scrolled state + hide on scroll down / reveal on scroll up. */
-  useEffect(() => {
-    let frame = 0;
-    let lastY = window.scrollY;
-
-    const update = () => {
-      frame = 0;
-      const y = window.scrollY;
-      setScrolled(y > 8);
-
-      if (menuOpenRef.current || y <= HIDE_AFTER / 4) {
-        setHidden(false);
-        lastY = y;
-        return;
-      }
-
-      const delta = y - lastY;
-      if (Math.abs(delta) < SCROLL_DEADZONE) return;
-      lastY = y;
-
-      const keyboardInside = headerRef.current?.querySelector(":focus-visible");
-      if (delta > 0 && y > HIDE_AFTER && !keyboardInside) setHidden(true);
-      else if (delta < 0) setHidden(false);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 12);
     };
 
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(frame);
-    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  /* Active section tracking. */
+  // Active section tracking via IntersectionObserver
   useEffect(() => {
-    const sections = SECTION_IDS.map((id) =>
-      document.getElementById(id)
-    ).filter((section): section is HTMLElement => section !== null);
+    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (section): section is HTMLElement => section !== null
+    );
 
     if (!sections.length) return;
-
-    const ratios = new Map<string, number>();
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          ratios.set(
-            entry.target.id,
-            entry.isIntersecting ? entry.intersectionRatio : 0
-          );
-        });
-
-        let currentId: string | null = null;
-        let highest = 0;
-        ratios.forEach((ratio, id) => {
-          if (ratio > highest) {
-            highest = ratio;
-            currentId = id;
+          if (entry.isIntersecting) {
+            setActiveSection(`#${entry.target.id}`);
           }
         });
-
-        setActive(currentId);
       },
-      { rootMargin: "-45% 0px -50% 0px", threshold: [0, 0.2, 0.5] }
+      {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: [0, 0.2, 0.5],
+      }
     );
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
 
-  /* Sliding indicator under the active desktop link. */
-  const placeIndicator = useCallback(() => {
-    const nav = navRef.current;
-    const link = active
-      ? nav?.querySelector<HTMLElement>(`a[href="#${active}"]`)
-      : null;
-
-    if (!nav || !link || link.offsetWidth === 0) {
-      setIndicator(null);
-      return;
-    }
-
-    setIndicator({
-      x: link.offsetLeft,
-      y: link.offsetTop + link.offsetHeight - 1,
-      width: link.offsetWidth,
-    });
-  }, [active]);
-
-  useLayoutEffect(() => {
-    placeIndicator();
-  }, [placeIndicator]);
-
-  useEffect(() => {
-    const nav = navRef.current;
-    if (!nav) return;
-    const observer = new ResizeObserver(placeIndicator);
-    observer.observe(nav);
-    document.fonts?.ready.then(placeIndicator).catch(() => undefined);
-    return () => observer.disconnect();
-  }, [placeIndicator]);
-
-  /* Mobile menu: scroll lock, focus management, Escape, focus trap. */
+  // Mobile menu scroll lock, focus trap, and Escape key handling
   useEffect(() => {
     if (!menuOpen) return;
 
     lockScroll(true);
-    const header = headerRef.current;
-    header?.querySelector<HTMLElement>("#mobile-nav a")?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         setMenuOpen(false);
         menuButtonRef.current?.focus();
         return;
       }
 
-      if (event.key !== "Tab" || !header) return;
+      if (event.key !== 'Tab' || !sheetRef.current) return;
 
       const focusable = Array.from(
-        header.querySelectorAll<HTMLElement>(
-          "#mobile-nav a[href], #mobile-nav button, button[aria-controls='mobile-nav']"
+        sheetRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button, input, [tabindex]:not([tabindex="-1"])'
         )
-      ).filter((el) => el.offsetParent !== null);
+      ).filter((el) => el.offsetParent !== null && !el.hasAttribute('disabled'));
+
       if (!focusable.length) return;
 
       const first = focusable[0];
@@ -196,212 +102,224 @@ export function Navbar() {
       }
     };
 
-    const desktop = window.matchMedia("(min-width: 640px)");
-    const onDesktop = (event: MediaQueryListEvent) => {
-      if (event.matches) setMenuOpen(false);
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const handleResize = (e: MediaQueryListEvent) => {
+      if (e.matches) setMenuOpen(false);
     };
 
-    window.addEventListener("keydown", onKeyDown);
-    desktop.addEventListener("change", onDesktop);
+    window.addEventListener('keydown', onKeyDown);
+    mediaQuery.addEventListener('change', handleResize);
+
+    // Initial focus on first link inside sheet
+    const timer = setTimeout(() => {
+      sheetRef.current?.querySelector<HTMLElement>('a[href]')?.focus();
+    }, 50);
 
     return () => {
+      clearTimeout(timer);
       lockScroll(false);
-      window.removeEventListener("keydown", onKeyDown);
-      desktop.removeEventListener("change", onDesktop);
+      window.removeEventListener('keydown', onKeyDown);
+      mediaQuery.removeEventListener('change', handleResize);
     };
   }, [menuOpen]);
 
-  const current = (href: string) =>
-    active === href.slice(1) ? "location" : undefined;
+  // Handle in-page smooth navigation via Lenis bridge
+  const handleNavClick = (href: string, e?: React.MouseEvent) => {
+    if (href.startsWith('#')) {
+      e?.preventDefault();
+      const targetId = href.slice(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        scrollToTarget(target);
+        history.pushState(null, '', href);
+      }
+    }
+    if (menuOpen) {
+      setMenuOpen(false);
+    }
+  };
 
   return (
     <header
       ref={headerRef}
-      data-hidden={hidden && !menuOpen}
-      className={`zro-header sticky top-0 z-40 border-b ${
+      className={`sticky top-0 z-40 h-14 border-b transition-colors duration-200 ${
         scrolled || menuOpen
-          ? "border-zro-line bg-zro-canvas/80 shadow-[0_12px_32px_-16px_rgba(0,0,0,0.08)] dark:shadow-[0_24px_48px_-40px_rgba(0,0,0,0.9)] backdrop-blur-xl"
-          : "border-transparent bg-transparent"
+          ? 'border-black/[0.08] dark:border-white/[0.08] bg-white/80 dark:bg-[#050508]/80 backdrop-blur-md shadow-sm'
+          : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6 md:px-8">
+      <div className="mx-auto flex h-full max-w-[1240px] items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Left: Brand Identity */}
         <Link
           href="/"
+          onClick={(e) => handleNavClick('#top', e)}
           aria-label={`${PORTFOLIO_HEADER.name}, back to top`}
-          className="zro-logo group flex min-w-0 items-center gap-3"
+          className="group flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 rounded-md p-1 -ml-1 select-none"
         >
-          <span className="zro-avatar">
+          <span className="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full ring-1 ring-black/10 dark:ring-white/15">
             <Image
               src="/aritra-avatar.webp"
               alt=""
-              width={96}
-              height={96}
+              width={32}
+              height={32}
               priority
-              className="zro-avatar-img"
+              className="h-full w-full object-cover"
             />
-            <span aria-hidden="true" className="zro-avatar-dot" />
+            <span
+              aria-hidden="true"
+              className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-black"
+            />
           </span>
-          <span className="flex min-w-0 flex-col leading-none">
-            <span className="truncate text-[0.8125rem] font-medium tracking-[-0.01em] text-zro-ink transition-opacity group-hover:opacity-80">
+          <span className="flex flex-col">
+            <span className="truncate text-[13.5px] font-semibold tracking-[-0.01em] text-neutral-900 dark:text-neutral-100 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
               {PORTFOLIO_HEADER.name}
             </span>
-            <span className="zro-metric mt-1 hidden truncate text-[0.5625rem] uppercase tracking-[0.14em] text-zro-faint md:block">
+            <span className="hidden truncate text-[10px] uppercase tracking-[0.08em] text-neutral-500 dark:text-neutral-400 sm:block">
               {PORTFOLIO_HEADER.role}
             </span>
           </span>
         </Link>
 
-        <nav
-          ref={navRef}
-          aria-label="Primary"
-          className="relative hidden items-center gap-6 sm:flex"
-        >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              aria-current={current(link.href)}
-              className="zro-nav-link"
-            >
-              {link.label}
-            </a>
-          ))}
-          <span
-            aria-hidden="true"
-            className="h-4 w-px shrink-0 bg-zro-line"
+        {/* Center: Desktop Spotlight Navbar (>= 1024px) */}
+        <div className="hidden lg:flex items-center justify-center">
+          <SpotlightNavbar
+            items={NAV_LINKS}
+            activeHref={activeSection}
+            onItemClick={(item, _, e) => handleNavClick(item.href, e)}
           />
+        </div>
+
+        {/* Right: Actions (Desktop) */}
+        <div className="hidden lg:flex items-center gap-3">
+          <Link
+            href="/desktop"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-medium text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white rounded-full border border-black/[0.08] dark:border-white/[0.08] hover:border-black/20 dark:hover:border-white/20 transition-colors"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" aria-hidden="true" />
+            Desktop OS
+          </Link>
           <Button
             href={CONTACT_LINKS.resumePdf}
             variant="outline"
             size="sm"
             arrow
             external
+            className="h-8 text-[12px] px-3 font-medium"
           >
             Résumé
           </Button>
           <ThemeToggle
-            className="relative h-8 w-8 flex items-center justify-center border border-zro-line bg-zro-surface/40 text-zro-muted hover:text-zro-ink hover:border-zro-accent/60 transition-colors duration-200"
+            className="relative h-8 w-8 flex items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.03] text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
             iconSize={15}
           />
-          <span
-            aria-hidden="true"
-            className="zro-nav-indicator"
-            data-ready={indicator !== null}
-            style={
-              indicator
-                ? ({
-                    "--ix": `${indicator.x}px`,
-                    "--iy": `${indicator.y}px`,
-                    width: indicator.width,
-                  } as CSSProperties)
-                : undefined
-            }
-          />
-        </nav>
+        </div>
 
-        <div className="flex items-center gap-2 sm:hidden">
+        {/* Right: Mobile / Tablet Controls (< 1024px) */}
+        <div className="flex items-center gap-1.5 lg:hidden">
           <ThemeToggle
-            className="inline-flex h-9 w-9 items-center justify-center border border-zro-line bg-zro-surface/40 text-zro-ink transition-colors hover:border-zro-line-strong"
-            iconSize={16}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.08] text-neutral-800 dark:text-neutral-200"
+            iconSize={17}
           />
           <button
             ref={menuButtonRef}
             type="button"
             aria-expanded={menuOpen}
-            aria-controls="mobile-nav"
-            onClick={() => setMenuOpen((open) => !open)}
-            className="inline-flex h-9 w-9 items-center justify-center border border-zro-line text-zro-ink transition-colors hover:border-zro-line-strong"
+            aria-controls="mobile-navigation-sheet"
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.08] text-neutral-900 dark:text-neutral-100 hover:bg-black/5 dark:hover:bg-white/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
           >
-          <span className="sr-only">
-            {menuOpen ? "Close menu" : "Open menu"}
-          </span>
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            aria-hidden="true"
-          >
-            {menuOpen ? (
-              <path
-                d="M1 1l12 12M13 1L1 13"
-                stroke="currentColor"
-                strokeWidth="1.25"
-              />
-            ) : (
-              <path
-                d="M1 4h12M1 10h12"
-                stroke="currentColor"
-                strokeWidth="1.25"
-              />
-            )}
-          </svg>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              {menuOpen ? (
+                <path
+                  d="M3 3l12 12M15 3L3 15"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                />
+              ) : (
+                <path
+                  d="M2.5 5h13M2.5 9h13M2.5 13h13"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                />
+              )}
+            </svg>
           </button>
         </div>
       </div>
 
-      {menuOpen ? (
+      {/* Full-screen Mobile Navigation Sheet (< 1024px) */}
+      {menuOpen && (
         <div
-          id="mobile-nav"
-          className="zro-menu-panel border-t border-zro-line bg-zro-canvas/95 backdrop-blur-md sm:hidden"
+          id="mobile-navigation-sheet"
+          ref={sheetRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation Menu"
+          data-lenis-prevent
+          className="fixed inset-x-0 top-14 h-[calc(100dvh-3.5rem)] overflow-y-auto bg-white dark:bg-[#050508] border-t border-black/[0.08] dark:border-white/[0.08] z-50 lg:hidden flex flex-col justify-between p-6"
         >
-          <nav
-            aria-label="Mobile"
-            className="mx-auto flex max-w-6xl flex-col px-6 py-5"
-          >
-            {NAV_LINKS.map((link, index) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                aria-current={current(link.href)}
-                style={{ "--i": index } as CSSProperties}
-                className={`flex items-center justify-between border-b border-zro-line py-3.5 font-ds-mono text-[0.6875rem] uppercase tracking-[0.14em] transition-colors ${
-                  active === link.href.slice(1)
-                    ? "text-zro-ink"
-                    : "text-zro-muted hover:text-zro-ink"
-                }`}
-              >
-                {link.label}
-                <span aria-hidden="true" className="text-zro-faint">
-                  ↓
-                </span>
-              </a>
-            ))}
-            <div
-              className="mt-5 flex items-center gap-2.5"
-              style={{ "--i": NAV_LINKS.length } as CSSProperties}
-            >
-              <Button
-                href={CONTACT_LINKS.resumePdf}
-                variant="outline"
-                className="flex-1"
-                arrow
-                external
-              >
-                Download résumé
-              </Button>
-              <ThemeToggle
-                className="inline-flex h-10 w-10 items-center justify-center border border-zro-line bg-zro-surface text-zro-ink"
-                iconSize={16}
-              />
-            </div>
+          <nav aria-label="Mobile Navigation" className="flex flex-col space-y-1">
+            {NAV_LINKS.map((link) => {
+              const isActive = activeSection === link.href;
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(link.href, e)}
+                  aria-current={isActive ? 'location' : undefined}
+                  className={`flex min-h-[48px] items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+                    isActive
+                      ? 'bg-violet-500/10 text-violet-600 dark:text-violet-400 font-semibold'
+                      : 'text-neutral-700 dark:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/5 hover:text-black dark:hover:text-white'
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  <span className="text-neutral-400 text-xs font-mono" aria-hidden="true">
+                    ↓
+                  </span>
+                </a>
+              );
+            })}
 
-            <div
-              className="mt-5 flex items-start gap-2.5 border-t border-zro-line pt-4"
-              style={{ "--i": NAV_LINKS.length + 1 } as CSSProperties}
+            <div className="h-px bg-black/[0.08] dark:bg-white/[0.08] my-3" aria-hidden="true" />
+
+            <Link
+              href="/desktop"
+              onClick={() => setMenuOpen(false)}
+              className="flex min-h-[48px] items-center justify-between px-4 py-3 rounded-xl text-base font-medium text-neutral-700 dark:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             >
-              <span
-                aria-hidden="true"
-                className="zro-pulse-dot mt-[0.3rem] h-1.5 w-1.5 shrink-0 bg-zro-accent"
-              />
-              <span className="zro-metric text-[0.625rem] uppercase leading-[1.6] tracking-[0.08em] text-zro-faint">
-                {PORTFOLIO_HEADER.availability}
+              <span className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-cyan-400" aria-hidden="true" />
+                Desktop OS View
               </span>
-            </div>
+              <span className="text-neutral-400 text-xs font-mono" aria-hidden="true">
+                ↗
+              </span>
+            </Link>
           </nav>
+
+          {/* Bottom Actions inside Sheet */}
+          <div className="pt-6 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col gap-3">
+            <Button
+              href={CONTACT_LINKS.resumePdf}
+              variant="solid"
+              external
+              className="w-full min-h-[48px] justify-center text-sm font-semibold"
+            >
+              Download Résumé (PDF)
+            </Button>
+            <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400 font-mono px-1">
+              <span>{PORTFOLIO_HEADER.availability}</span>
+              <span>© {new Date().getFullYear()}</span>
+            </div>
+          </div>
         </div>
-      ) : null}
+      )}
     </header>
   );
 }
+
+export default Navbar;

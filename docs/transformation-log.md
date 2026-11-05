@@ -102,7 +102,33 @@
   - Typecheck: 0 errors
   - Next.js build: Clean in 10.9s; Home route first load JS: 184 kB (0 kB delta from baseline 184 kB).
   - Console errors: 0
-- **Open questions:** Pending user approval of design direction and screenshots before proceeding to Phase 4 (Navigation).
+- **Open questions:** None. Approved by owner. Proceeded to Phase 4.
+
+### Phase 4 — Navigation (2026-11-05)
+- **Branch:** `feat/portfolio-p04-nav`
+- **What changed:**
+  - Adopted and refactored Spotlight Navbar (`portfolio/src/components/ui/spotlight-navbar.tsx`) from `@vengeanceui` with dynamic cursor spotlight tracking (`--spotlight-x`) and spring-smoothed active section ambience (`--ambience-x`).
+  - Implemented top fixed frosted glass desktop navigation (`h-14`, `sticky top-0 z-40`, `backdrop-blur-md`, hairline `--border`) with:
+    - Identity: Avatar + "Aritra Dutta" + role subtitle
+    - Center: Spotlight links (About, Experience, Projects, Skills, Education, Contact)
+    - Right: Desktop OS (`/desktop`), Résumé (`resume.pdf`), and Theme Toggle
+  - Synchronized navigation labels and ordering across desktop nav, mobile sheet, and footer (`FooterSection.tsx` updated so `About`, `Experience`, `Projects`, `Skills`, `Education`, `Contact` match identically).
+  - Implemented full-screen mobile/tablet sheet (`lg:hidden`):
+    - Keyboard accessible with focus trap and `Escape` to close.
+    - Locks page scroll (`lockScroll(true)` / stops Lenis while open).
+    - Added `data-lenis-prevent` and safe-area insets (`h-[calc(100dvh-3.5rem)]`).
+    - Touch targets ≥ 44px (`min-h-[48px]`, `h-11 w-11`).
+    - Zero horizontal overflow at 320px viewport width (`scrollWidth = 320px`).
+  - In-page smooth scrolling powered by `scrollToTarget` from `scrollBridge.ts` with correct header offset (64px).
+  - Documented component adoption in `docs/components.md`.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 12.8s
+  - Console errors: 0
+  - 320px horizontal scroll: 0px overflow
+- **Open questions:** None. All Phase 4 acceptance criteria satisfied.
+
 
 
 
