@@ -287,6 +287,31 @@
   - Console errors: 0
 - **Open questions:** None. All Phase 12 acceptance criteria satisfied.
 
+### Phase 13 — Tests and CI (2026-11-05)
+- **Branch:** `feat/portfolio-p13-tests`
+- **What changed:**
+  - Playwright test infrastructure:
+    - Added `portfolio/playwright.config.ts` configured for Chromium and Mobile Chrome with webServer automation (`npm run start` on port 3000).
+    - Built comprehensive smoke tests (`portfolio/e2e/smoke.spec.ts`):
+      - In-page anchors resolution & zero console errors check.
+      - Project filter chips reactivity and popLayout switching.
+      - Alternate routes `/classic` and `/desktop` status check.
+      - AI pill interaction with mocked `/api/chat` route (zero LLM costs/network calls in CI).
+      - User reduced-motion preferences test.
+  - Accessibility testing:
+    - Installed `@axe-core/playwright` and created `portfolio/e2e/a11y.spec.ts` verifying zero critical WCAG AA accessibility violations on `/` and `/classic`.
+  - Automation & CI:
+    - Added `lighthouserc.json` asserting performance, accessibility (≥0.95), and CLS (≤0.1).
+    - Created `.github/workflows/ci.yml` running lint, build, and e2e smoke tests on push/PR to main.
+    - Added `test:e2e` and `lhci` scripts in `portfolio/package.json`.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Build: Clean
+  - Console errors: 0
+- **Open questions:** None. All Phase 13 acceptance criteria satisfied.
+
+
 
 
 
