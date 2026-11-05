@@ -7,9 +7,16 @@ import experience from '@/content/experience.json'
 import projects from '@/content/projects.json'
 
 export const metadata: Metadata = {
-  title: 'Aritra Dutta | Desktop OS',
+  title: 'Aritra Dutta — Desktop OS Workspace',
   description:
     'The interactive desktop edition of the Aritra Dutta portfolio: explore experience, projects, skills and contact details inside a macOS-style workspace.',
+  robots: {
+    index: false,
+    follow: false,
+  },
+  alternates: {
+    canonical: 'https://www.aritrodutta.tech/desktop',
+  },
 }
 
 /* The 3D desktop is invisible to crawlers and screen readers, so the same
@@ -119,6 +126,13 @@ function SemanticContent() {
 export default function DesktopPage() {
   return (
     <>
+      {/* Return to main portfolio link */}
+      <Link
+        href="/"
+        className="os-focusable fixed top-1.5 right-3 z-[8000] inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-3 py-1 text-[11px] font-mono text-white/90 backdrop-blur-md hover:bg-black/80 hover:text-white transition-colors"
+      >
+        <span>← Main site</span>
+      </Link>
       <PortfolioOS />
       <SemanticContent />
       <noscript>

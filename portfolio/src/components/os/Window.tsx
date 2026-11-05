@@ -78,6 +78,19 @@ export default function Window({
     }, GENIE_MS)
   }, [minimizeWindow, win.appType, win.id, reduce])
 
+  /* Esc closes the active focused window */
+  React.useEffect(() => {
+    if (!focused) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeWindow(win.id)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [focused, closeWindow, win.id])
+
   /* Arrow keys nudge the window while its title bar has focus. */
   const onTitleKeyDown = (e: React.KeyboardEvent) => {
     const step = e.shiftKey ? 24 : 6

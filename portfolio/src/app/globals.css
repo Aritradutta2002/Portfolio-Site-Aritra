@@ -593,3 +593,42 @@ img {
 .float-dot { animation: float-dot 2.4s ease-in-out infinite; }
 .float-dot-delay-1 { animation-delay: 0.2s; }
 .float-dot-delay-2 { animation-delay: 0.4s; }
+
+/* ── Print Stylesheet (Clean A4 Output) ───────────────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
+  body, html {
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-size: 10pt !important;
+  }
+  .print\:hidden,
+  nav,
+  header,
+  footer,
+  button,
+  .zro-cursor,
+  .luxe-grain,
+  .gradient-orb,
+  .zro-progress,
+  .zro-rail {
+    display: none !important;
+  }
+  a {
+    color: #111111 !important;
+    text-decoration: underline !important;
+  }
+  section, article, .glass-card {
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+  }
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    color: #000000 !important;
+  }
+}

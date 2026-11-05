@@ -231,6 +231,27 @@
   - Console errors: 0
 - **Open questions:** None. All Phase 9 acceptance criteria satisfied.
 
+### Phase 10 — /desktop and /classic (2026-11-05)
+- **Branch:** `feat/portfolio-p10-alt-views`
+- **What changed:**
+  - `/desktop` route (`portfolio/src/app/desktop/page.tsx` & `portfolio/src/components/os/Window.tsx`):
+    - Added global `Esc` key listener on active focused windows to smoothly close window without touching mouse.
+    - Added accessible floating `← Main site` top link returning cleanly to `/`.
+    - Maintained mobile springboard fallback (`<MobileShell />`) on viewports <768px with touch-safe app tiles and zero broken drag UI.
+    - Updated robots metadata to `noindex, nofollow` per specification (interactive canvas/WebGL edition).
+  - `/classic` route (`portfolio/src/app/classic/page.tsx`):
+    - Added accessible skip link (`#main-content`).
+    - Added top banner with `← Back to main portfolio (datasheet)` navigation.
+    - Updated metadata to canonical `https://www.aritrodutta.tech/classic` with `robots: index, follow`.
+    - Added clean A4 `@media print` stylesheet in `portfolio/src/app/globals.css` with monochrome contrast, page-break avoidance, and interactive chrome suppression.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 12.2s; `/classic` first load JS: 193 kB; `/desktop` first load JS: 151 kB.
+  - Console errors: 0
+- **Open questions:** None. All Phase 10 acceptance criteria satisfied.
+
+
 
 
 
