@@ -1,7 +1,5 @@
 import { Sparkles, ArrowUpRight } from "lucide-react";
 import { Tag } from "../ui/Tag";
-import { AnimatedMetric } from "../AnimatedMetric";
-import { EDUCATION } from "@/data/portfolioCatalog";
 
 const FOCUS = [
   "Java 21",
@@ -85,34 +83,6 @@ export function StoryPanel() {
             <strong>RAG evaluation &amp; Azure architecture</strong>
           </li>
         </ul>
-      </div>
-
-      <div className="zro-story-metrics mt-auto grid grid-cols-2 gap-2.5 pt-6 sm:grid-cols-4">
-        <div className="zro-stat">
-          <p>
-            <AnimatedMetric value="2+" />
-          </p>
-          <span>Years in production</span>
-        </div>
-        <div className="zro-stat">
-          <p>
-            <AnimatedMetric value="20x" delay={120} />
-          </p>
-          <span>API speed-up</span>
-        </div>
-        <div className="zro-stat">
-          <p>
-            <AnimatedMetric value="700+" delay={220} />
-          </p>
-          <span>Problems solved</span>
-        </div>
-        <div className="zro-stat">
-          <p>
-            {EDUCATION[0].score}
-            <small>/{EDUCATION[0].scoreSuffix.replace("/", "").trim()}</small>
-          </p>
-          <span>B.Tech CGPA</span>
-        </div>
       </div>
     </article>
   );

@@ -1,16 +1,41 @@
-'use client'
+'use client';
 
-import type { CSSProperties, MouseEvent } from "react";
-import Image from "next/image";
-import { Button } from "./ui/Button";
-import { HeroChatbot } from "./HeroChatbot";
-import { ParticleNetworkBFS } from "@/components/luxe/ParticleNetworkBFS";
-import {
-  CONTACT_LINKS,
-  PORTFOLIO_HEADER,
-} from "@/data/portfolioCatalog";
+import React, { type MouseEvent } from 'react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { Button } from './ui/Button';
+import { HeroChatbot } from './HeroChatbot';
+import { TechnicalProofRibbon } from './TechnicalProofRibbon';
+import { FlipText } from '@/components/ui/flip-text';
+import { SplitReveal } from '@/components/motion/SplitReveal';
+import { EASINGS } from '@/lib/motion';
+import { CONTACT_LINKS, PORTFOLIO_HEADER } from '@/data/portfolioCatalog';
+
+// Lazy-load Animated Rays to keep initial bundle ultra-light
+const AnimatedRays = dynamic(
+  () => import('@/components/ui/animated-rays').then((mod) => mod.AnimatedRays),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_35%,transparent_35%,rgba(5,5,8,0.85)_100%)]"
+        aria-hidden="true"
+      />
+    ),
+  }
+);
+
+const ROTATING_DOMAINS = [
+  'Java 21 · Spring Boot',
+  'Azure PaaS · Microservices',
+  'LangChain · RAG Systems',
+  'Algorithms · LeetCode 1672',
+];
 
 export function Hero() {
+  const shouldReduceMotion = useReducedMotion();
+
   const handleHeroClick = (event: MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
     if (
@@ -20,203 +45,200 @@ export function Hero() {
     ) {
       return;
     }
-    if (typeof window !== "undefined" && window.getSelection()?.toString()) {
+    if (typeof window !== 'undefined' && window.getSelection()?.toString()) {
       return;
     }
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(
-        new CustomEvent("particle:wave", {
-          detail: { x: event.clientX, y: event.clientY },
-        })
-      );
-    }
+  };
+
+  // Lightweight in-situ entry stagger (<= 300ms total)
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0 : 0.06,
+        delayChildren: 0.02,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 12 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.1 : 0.28,
+        ease: EASINGS.easeOut,
+      },
+    },
   };
 
   return (
     <section
       onClick={handleHeroClick}
       data-spot
-      className="zro-hero relative overflow-hidden border-b border-zro-line cursor-default"
+      className="zro-hero relative overflow-hidden border-b border-black/[0.08] dark:border-white/[0.08] cursor-default bg-transparent"
     >
-      {/* Background Layer: Canvas 2D BFS Engine + Hero Focus Vignette */}
-      <div
-        className="zro-hero-bg pointer-events-none absolute inset-0 z-0 overflow-hidden"
-        aria-hidden="true"
-      >
-        <ParticleNetworkBFS className="pointer-events-none absolute inset-0 h-full w-full" />
-        <div className="zro-hero-light" />
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 65% 55% at 50% 40%, transparent 35%, rgb(var(--zro-canvas) / 0.72) 100%)",
-          }}
-        />
-      </div>
+      {/* 1. Background Layer: Lazy-loaded Animated Rays with Dark Vignette */}
+      <AnimatedRays />
 
-      {/* Foreground Hero Content (Tightened top spacing to remove excess dead space) */}
-      <div className="zro-hero-content relative z-10 mx-auto flex max-w-6xl flex-col px-6 pt-6 md:px-8 md:pt-8 lg:min-h-[calc(100svh-4rem)] lg:pt-8">
-        <div className="grid flex-1 grid-cols-1 items-center gap-12 py-6 md:py-8 lg:grid-cols-12 lg:gap-12 lg:py-10">
+      {/* 2. Foreground Hero Content */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="zro-hero-content relative z-10 mx-auto flex max-w-6xl flex-col px-6 pt-6 md:px-8 md:pt-8 lg:pt-10"
+      >
+        <div className="grid flex-1 grid-cols-1 items-center gap-10 py-6 md:py-8 lg:grid-cols-12 lg:gap-12 lg:py-10">
           <div className="lg:col-span-7">
-            {/* Mobile identification block — the desktop figure carries this. */}
-            <div className="mb-7 flex items-center gap-4 lg:hidden">
-              <div className="zro-hero-id-photo relative h-[104px] w-[84px] shrink-0 overflow-hidden border border-zro-line bg-zro-surface">
+            {/* Mobile Portrait Identification Block */}
+            <motion.div
+              variants={itemVariants}
+              className="mb-6 flex items-center gap-4 lg:hidden"
+            >
+              <div className="relative h-[96px] w-[78px] shrink-0 overflow-hidden rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.02]">
                 <Image
                   src="/aritra-portrait-sm.webp"
                   alt=""
                   fill
-                  sizes="84px"
+                  priority
+                  sizes="78px"
                   className="object-cover"
                 />
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-0 bottom-0 h-px bg-zro-accent/70"
+                  className="absolute inset-x-0 bottom-0 h-px bg-violet-500/70"
                 />
               </div>
               <div>
-                <p className="zro-eyebrow">{PORTFOLIO_HEADER.location}</p>
-                <p className="zro-metric mt-1.5 text-[0.625rem] uppercase tracking-[0.12em] text-zro-faint">
-                  Portfolio · 2026
+                <p className="zro-eyebrow text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                  {PORTFOLIO_HEADER.location}
                 </p>
+                <div className="mt-1 flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+                  <span className="font-mono text-[11px] text-neutral-600 dark:text-neutral-300">
+                    {PORTFOLIO_HEADER.availability}
+                  </span>
+                </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div
-              data-reveal="fade"
-              className="flex items-center gap-2.5"
+            {/* Desktop Status Badge */}
+            <motion.div
+              variants={itemVariants}
+              className="hidden lg:flex items-center gap-2.5"
             >
               <span
                 aria-hidden="true"
-                className="zro-pulse-dot h-1.5 w-1.5 rounded-full bg-zro-accent"
+                className="h-2 w-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse"
               />
-              <span className="zro-eyebrow zro-hero-availability">
+              <span className="font-mono text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                 {PORTFOLIO_HEADER.availability}
               </span>
-            </div>
+            </motion.div>
 
-            {/* Name and role share one display block; only the role line is
-                revealed so the H1 (the LCP element) paints on the first frame. */}
-            <h1 className="mt-6 max-w-4xl">
-              <span className="zro-display block text-zro-ink">
+            {/* Main Headline: Static H1 for SEO/LCP + Masked SplitReveal Subtitle */}
+            <h1 className="mt-5 max-w-4xl">
+              <span className="block text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 font-sans">
                 {PORTFOLIO_HEADER.name}
               </span>
-              <span
-                data-reveal
-                style={{ "--zro-delay": "80ms" } as CSSProperties}
-                className="mt-4 block text-[1.375rem] leading-[1.45] tracking-[-0.02em] text-zro-muted"
-              >
-                {PORTFOLIO_HEADER.role} at {PORTFOLIO_HEADER.company}.
-              </span>
+              <SplitReveal
+                text={`${PORTFOLIO_HEADER.role} at ${PORTFOLIO_HEADER.company}.`}
+                as="span"
+                delay={0.08}
+                className="mt-3.5 block text-xl sm:text-2xl font-medium tracking-tight text-neutral-600 dark:text-neutral-400"
+              />
             </h1>
 
-            <p
-              data-reveal
-              style={{ "--zro-delay": "150ms" } as CSSProperties}
-              className="zro-lede mt-6 max-w-[52ch] text-zro-muted"
-            >
-              <span className="lg:hidden">2+ years</span>
-              <span className="hidden lg:inline">
-                {PORTFOLIO_HEADER.location} · 2+ years
-              </span>{" "}
-              building and modernising enterprise Java systems.
-            </p>
+            {/* Narrative & Focus Domains */}
+            <motion.div variants={itemVariants} className="mt-5 max-w-[54ch]">
+              <p className="text-base sm:text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
+                <span className="lg:hidden">2+ years</span>
+                <span className="hidden lg:inline">
+                  {PORTFOLIO_HEADER.location} · 2+ years
+                </span>{' '}
+                building and modernising enterprise Java systems.
+              </p>
+              <div className="mt-2.5 flex items-center gap-2 font-mono text-xs text-neutral-500 dark:text-neutral-400">
+                <span className="text-violet-600 dark:text-violet-400 font-semibold">Focus:</span>
+                <FlipText words={ROTATING_DOMAINS} interval={3200} />
+              </div>
+            </motion.div>
 
-            <div
-              data-reveal
-              style={{ "--zro-delay": "220ms" } as CSSProperties}
-              className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4"
+            {/* Primary Action Buttons */}
+            <motion.div
+              variants={itemVariants}
+              className="mt-8 flex flex-wrap items-center gap-3.5 sm:gap-4"
             >
               <Button
                 href={CONTACT_LINKS.resumePdf}
                 variant="solid"
                 arrow
-                magnetic
+                external
+                className="min-h-[44px] px-5 text-sm font-semibold"
               >
                 Download resume
               </Button>
               <Button
                 href={`mailto:${CONTACT_LINKS.email}`}
                 variant="outline"
-                magnetic
+                className="min-h-[44px] px-5 text-sm font-medium"
               >
                 Email me
               </Button>
-              <Button href="#experience" variant="quiet" arrow>
+              <Button
+                href="#experience"
+                variant="quiet"
+                arrow
+                className="min-h-[44px] px-3 text-sm text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white"
+              >
                 Read experience
               </Button>
-            </div>
-
-            <ul
-              data-reveal
-              style={{ "--zro-delay": "280ms" } as CSSProperties}
-              className="zro-hero-proof"
-              aria-label="Career highlights"
-            >
-              <li>
-                <strong>TCS</strong>
-                <span>Enterprise Java</span>
-              </li>
-              <li>
-                <strong>20×</strong>
-                <span>API speed-up</span>
-              </li>
-              <li>
-                <strong>700+</strong>
-                <span>DSA problems</span>
-              </li>
-              <li>
-                <strong>1672</strong>
-                <span>LeetCode</span>
-              </li>
-            </ul>
+            </motion.div>
           </div>
 
-          <div className="hidden lg:col-span-5 lg:block">
-            <figure
-              data-reveal="fade"
-              className="zro-portrait mx-auto w-full max-w-[400px] overflow-visible border border-zro-line bg-zro-surface"
-            >
-              <span className="zro-portrait-halo" aria-hidden="true" />
-              <div
-                data-scroll
-                className="zro-portrait-frame relative aspect-[4/5] w-full overflow-hidden"
-              >
-                <div className="zro-portrait-media">
-                  <Image
-                    src="/aritra-portrait.webp"
-                    alt={`${PORTFOLIO_HEADER.name}, ${PORTFOLIO_HEADER.role}`}
-                    fill
-                    sizes="(max-width: 1024px) 0px, 400px"
-                    className="object-cover"
-                  />
-                </div>
-                <span className="zro-portrait-tag" aria-hidden="true">
+          {/* Desktop Portrait Frame */}
+          <motion.div
+            variants={itemVariants}
+            className="hidden lg:col-span-5 lg:block"
+          >
+            <figure className="relative mx-auto w-full max-w-[380px] rounded-2xl overflow-hidden border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.02] shadow-xl">
+              <div className="relative aspect-[4/5] w-full overflow-hidden">
+                <Image
+                  src="/aritra-portrait.webp"
+                  alt={`${PORTFOLIO_HEADER.name}, ${PORTFOLIO_HEADER.role}`}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 0px, 380px"
+                  className="object-cover"
+                />
+                <span className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md text-[11px] font-mono font-medium backdrop-blur-md bg-black/60 text-white border border-white/10" aria-hidden="true">
                   Java 21 · Azure · RAG
                 </span>
               </div>
-              <figcaption className="border-t border-zro-line px-4 py-3 text-[0.6875rem] uppercase leading-relaxed tracking-[0.14em] text-zro-faint">
+              <figcaption className="border-t border-black/[0.08] dark:border-white/[0.08] px-4 py-3 font-mono text-[11px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                 {PORTFOLIO_HEADER.name} · {PORTFOLIO_HEADER.role}
               </figcaption>
             </figure>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Separator hairline */}
-        <div
-          data-reveal="rule"
-          style={{ "--zro-delay": "340ms" } as CSSProperties}
-          aria-hidden="true"
-        />
+        {/* 3. Consolidated Technical Proof Ribbon (Consolidates 20x, 700+, 1672, 8.79) */}
+        <motion.div variants={itemVariants} className="mt-4 mb-8">
+          <TechnicalProofRibbon />
+        </motion.div>
 
-        {/* Ask Me Anything Chatbot replacing the static 3 metrics */}
-        <div
-          data-reveal="fade"
-          style={{ "--zro-delay": "380ms" } as CSSProperties}
-          className="pb-9 pt-3.5"
-        >
+        {/* 4. Separator Hairline */}
+        <div className="h-px w-full bg-black/[0.08] dark:bg-white/[0.08]" aria-hidden="true" />
+
+        {/* 5. Inline Ask My Résumé Pill & Streaming Area */}
+        <motion.div variants={itemVariants} className="py-6">
           <HeroChatbot />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
+
+export default Hero;

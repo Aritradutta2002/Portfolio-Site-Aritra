@@ -129,6 +129,25 @@
   - 320px horizontal scroll: 0px overflow
 - **Open questions:** None. All Phase 4 acceptance criteria satisfied.
 
+### Phase 5 — Hero and instant entrance (2026-11-05)
+- **Branch:** `feat/portfolio-p05-hero`
+- **What changed:**
+  - Implemented lazy-loaded `AnimatedRays` background component (`portfolio/src/components/ui/animated-rays.tsx`) with central dark radial vignette mask (`radial-gradient(circle at center, rgba(5,5,8,0.94) 15%, rgba(5,5,8,0.82) 45%, rgba(5,5,8,0.4) 80%, transparent 100%)`) over canvas rays, guaranteeing text contrast (resolves Outside Review HR-4).
+  - Integrated `useInViewPause` to suspend background ray animation when scrolled out of viewport.
+  - Kept H1 completely static ("Aritra Dutta") for SEO and LCP stability; revealed subtitle via `SplitReveal` (`portfolio/src/components/motion/SplitReveal.tsx`).
+  - Added rotating focus domain keywords via `FlipText` (`portfolio/src/components/ui/flip-text.tsx`) with fixed-height wrapper to guarantee zero cumulative layout shift (0 CLS).
+  - Created unified `TechnicalProofRibbon` (`portfolio/src/components/zro/TechnicalProofRibbon.tsx`) consolidating core quantitative metrics (TCS 20× API speed-up, 700+ DSA problems, 1672 LeetCode rating, 8.79 CGPA) with in-view `CountUp` numbers.
+  - Eliminated duplicate metric bento cards from `StoryPanel` (`portfolio/src/components/zro/about/StoryPanel.tsx`), streamlining the About section narrative (resolves Outside Review HR-5).
+  - Guaranteed instant hydration with lightweight in-situ entry stagger (≤300ms total) and zero blocking splash loaders.
+  - Ensured priority loading and fixed dimensions on both desktop and mobile hero portrait images.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 11.7s; Home route first load JS: 196 kB.
+  - Console errors: 0
+- **Open questions:** None. All Phase 5 acceptance criteria satisfied.
+
+
 
 
 
