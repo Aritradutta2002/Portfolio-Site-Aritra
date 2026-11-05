@@ -53,7 +53,6 @@ const PERSON_JSON_LD = {
   jobTitle: PORTFOLIO_HEADER.role,
   url: "https://www.aritrodutta.tech/",
   image: "https://www.aritrodutta.tech/aritra-portrait.webp",
-  email: `mailto:${CONTACT_LINKS.email}`,
   worksFor: { "@type": "Organization", name: PORTFOLIO_HEADER.company },
   address: {
     "@type": "PostalAddress",

@@ -251,6 +251,43 @@
   - Console errors: 0
 - **Open questions:** None. All Phase 10 acceptance criteria satisfied.
 
+### Phase 11 — Optional premium extras (2026-11-05)
+- **Status:** Evaluated and opted-out per audit decisions D2 and D3:
+  - 11a (Skiper Pro): Skiper UI Pro requires $129 paid license; bespoke native Framer Motion primitives used instead.
+  - 11b (Animmaster): No external proprietary license; native Framer Motion primitives used.
+  - 11c (Hero WebGL): Three.js WebGL already runs on `/desktop`; on `/`, Animated Rays with dark vignette mask provides optimal mobile LCP and 60fps performance without GPU bloat.
+
+### Phase 12 — SEO, structured data, analytics (2026-11-05)
+- **Branch:** `feat/portfolio-p12-seo`
+- **What changed:**
+  - `sitemap.ts` (`portfolio/src/app/sitemap.ts`):
+    - Standardized canonical URLs on `https://www.aritrodutta.tech/` and `/classic`.
+    - Removed `/desktop` to respect its `noindex` directive.
+  - `robots.ts` (`portfolio/src/app/robots.ts`):
+    - Disallowed `/api/`, `/desktop`, and `/no-stalking`.
+    - Set canonical sitemap link to `https://www.aritrodutta.tech/sitemap.xml`.
+  - JSON-LD (`portfolio/src/app/(datasheet)/page.tsx`):
+    - Removed email from `PERSON_JSON_LD` schema per security and anti-scraping guidelines.
+  - PWA Web Manifest (`portfolio/src/app/manifest.ts`):
+    - Added valid `manifest.webmanifest` metadata with app icons, background/theme colors, and description.
+  - Viewport & Theme Colors (`portfolio/src/app/layout.tsx`):
+    - Implemented Next.js 15 `export const viewport: Viewport` supporting both dark (`#0a0a0b`) and light (`#fafafc`) color schemes.
+  - Custom 404 (`portfolio/src/app/not-found.tsx`):
+    - Created bespoke `not-found.tsx` matching the site's dark datasheet aesthetic with recovery navigation back to home and classic view.
+  - Security Headers & CSP (`portfolio/next.config.mjs`):
+    - Added `X-Content-Type-Options: nosniff`.
+    - Added `Referrer-Policy: strict-origin-when-cross-origin`.
+    - Added `Permissions-Policy: camera=(), microphone=(), geolocation=()`.
+    - Added `X-Frame-Options: SAMEORIGIN`.
+    - Added `Content-Security-Policy-Report-Only` allowing first-party scripts, styles, Google Fonts, and verified endpoints without breaking execution.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 12.3s; 21/21 static pages generated.
+  - Console errors: 0
+- **Open questions:** None. All Phase 12 acceptance criteria satisfied.
+
+
 
 
 
