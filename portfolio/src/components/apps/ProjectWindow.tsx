@@ -24,7 +24,10 @@ export default function ProjectWindow({ payload }: AppProps) {
   ].filter(Boolean) as Array<{ label: string; href: string; primary: boolean }>
 
   return (
-    <div className="os-scroll h-full w-full overflow-y-auto bg-white px-5 py-4 text-[#1D1D1F]">
+    <div
+      className="os-scroll h-full w-full overflow-y-auto bg-white px-5 py-4 text-[#1D1D1F]"
+      data-lenis-prevent
+    >
       {/* ── Header ── */}
       <header className="mb-4 flex items-start gap-3.5">
         <AppIcon name="project" size={54} />

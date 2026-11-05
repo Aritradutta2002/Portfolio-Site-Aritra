@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import SmoothScroll from '@/components/SmoothScroll'
+import MotionProvider from '@/components/providers/MotionProvider'
+import ScrollProgress from '@/components/ScrollProgress'
 
 /* Variable display + body fonts, self-hosted via next/font (no CDN). */
 const geistSans = Geist({
@@ -85,9 +87,12 @@ export default function RootLayout({
             enableSystem={true}
             disableTransitionOnChange={false}
           >
-            <SmoothScroll>
-              {children}
-            </SmoothScroll>
+            <MotionProvider>
+              <ScrollProgress />
+              <SmoothScroll>
+                {children}
+              </SmoothScroll>
+            </MotionProvider>
           </ThemeProvider>
         </ErrorBoundary>
       </body>

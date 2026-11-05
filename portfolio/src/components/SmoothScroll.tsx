@@ -18,6 +18,9 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (disabled) return
 
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (reduced.matches) return
+
     let cancelled = false
     let frame = 0
 

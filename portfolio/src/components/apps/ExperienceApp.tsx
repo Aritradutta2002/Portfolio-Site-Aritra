@@ -12,7 +12,10 @@ export default function ExperienceApp() {
   return (
     <div className="flex h-full w-full bg-white text-[#1D1D1F] dark:bg-[#1e1e20] dark:text-[#f4f4f6]">
       {/* ── Left column: role list (Finder column view) ── */}
-      <div className="os-scroll w-[42%] min-w-[190px] max-w-[300px] shrink-0 overflow-y-auto border-r border-black/[0.08] bg-[#F7F7F9] py-1.5 dark:border-white/10 dark:bg-[#252529]">
+      <div
+        className="os-scroll w-[42%] min-w-[190px] max-w-[300px] shrink-0 overflow-y-auto border-r border-black/[0.08] bg-[#F7F7F9] py-1.5 dark:border-white/10 dark:bg-[#252529]"
+        data-lenis-prevent
+      >
         <p className="px-3 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.09em] text-[#86868B]">
           Roles
         </p>
@@ -52,7 +55,10 @@ export default function ExperienceApp() {
 
       {/* ── Right column: detail pane ── */}
       {active && (
-        <div className="os-scroll min-w-0 flex-1 overflow-y-auto px-5 py-4">
+        <div
+          className="os-scroll min-w-0 flex-1 overflow-y-auto px-5 py-4"
+          data-lenis-prevent
+        >
           <header className="mb-3">
             <h1 className="text-[17px] font-semibold leading-tight tracking-[-0.01em]">
               {active.role}

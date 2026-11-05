@@ -51,6 +51,23 @@
   --space-4: 2rem;    /* 32px */
   --space-6: 3rem;    /* 48px */
   --space-8: 4rem;    /* 64px */
+
+  /* Radius tokens per Plan.md §5.1 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Motion tokens per Plan.md §5.1 */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --dur-micro: 150ms;
+  --dur-ui: 280ms;
+  --dur-reveal: 700ms;
+
+  /* Layout tokens */
+  --maxw: 1240px;
+  --section-y: clamp(72px, 10vw, 160px);
 }
 
 .dark {

@@ -288,6 +288,7 @@ export function Projects() {
               exit={{ y: 32, opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="glass-card max-w-2xl w-full max-h-[90vh] overflow-y-auto overflow-x-hidden"
+              data-lenis-prevent
               onClick={e => e.stopPropagation()}
               role="dialog"
               aria-modal="true"

@@ -96,7 +96,10 @@ export default function ContactApp() {
       </div>
 
       {/* ── Reply-to + body ── */}
-      <div className="os-scroll min-h-0 flex-1 overflow-y-auto px-4 py-3">
+      <div
+        className="os-scroll min-h-0 flex-1 overflow-y-auto px-4 py-3"
+        data-lenis-prevent
+      >
         <div className="mb-3 grid grid-cols-2 gap-2">
           <div>
             <label htmlFor="c-name" className="mb-1 block text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#86868B] dark:text-[#8e8e93]">

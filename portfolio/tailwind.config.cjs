@@ -52,12 +52,26 @@ module.exports = {
         'zro-label': '0.14em',
         'zro-eyebrow': '0.18em',
       },
+      borderRadius: {
+        'token-sm': 'var(--radius-sm, 6px)',
+        'token-md': 'var(--radius-md, 10px)',
+        'token-lg': 'var(--radius-lg, 16px)',
+        'token-full': 'var(--radius-full, 9999px)',
+      },
       transitionTimingFunction: {
+        'ease-out-token': 'var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1))',
+        'ease-inout-token': 'var(--ease-in-out, cubic-bezier(0.65, 0, 0.35, 1))',
         'zro-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
         'zro-inout': 'cubic-bezier(0.65, 0, 0.35, 1)',
       },
       transitionDuration: {
+        'micro': 'var(--dur-micro, 150ms)',
+        'ui': 'var(--dur-ui, 280ms)',
+        'reveal': 'var(--dur-reveal, 700ms)',
         zro: '240ms',
+      },
+      maxWidth: {
+        'content': 'var(--maxw, 1240px)',
       },
       /* Modular type scale — 1.25 ratio */
       fontSize: {

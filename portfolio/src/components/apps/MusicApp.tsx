@@ -70,7 +70,7 @@ export default function MusicApp() {
           <h2 className="text-sm font-semibold text-[#1d1d1f] dark:text-white">Up next</h2>
           <span className="text-[11px] text-black/40 dark:text-white/40">{MUSIC_TRACKS.length} songs</span>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1" data-lenis-prevent>
           {MUSIC_TRACKS.map((item, index) => {
             const active = index === currentIndex
             return (

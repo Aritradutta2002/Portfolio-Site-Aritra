@@ -44,7 +44,10 @@ export default function AboutApp() {
   const skillGroups = Object.entries(about.skills) as Array<[string, string[]]>
 
   return (
-    <div className="os-scroll h-full w-full overflow-y-auto bg-white px-5 py-4 text-[#1D1D1F] dark:bg-[#1e1e20] dark:text-[#f4f4f6]">
+    <div
+      className="os-scroll h-full w-full overflow-y-auto bg-white px-5 py-4 text-[#1D1D1F] dark:bg-[#1e1e20] dark:text-[#f4f4f6]"
+      data-lenis-prevent
+    >
       {/* ── Identity ── */}
       <header className="mb-5 flex items-start gap-4">
         <div

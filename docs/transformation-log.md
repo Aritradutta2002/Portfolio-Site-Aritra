@@ -48,3 +48,37 @@
   - Next.js build: Clean in 10.7s; Home route first load JS: 184 kB (unchanged, 0 kB delta).
 - **Open questions:** None. All Phase 1 Acceptance criteria satisfied. Ready for Phase 2.
 
+### Phase 2 — Foundations and component registry (2026-11-05)
+- **Branch:** `feat/portfolio-p02-foundations`
+- **What changed:**
+  - Installed utility dependencies `clsx` and `tailwind-merge` in `portfolio/package.json`.
+  - Created `portfolio/src/lib/utils.ts` exporting standard `cn` helper.
+  - Created `portfolio/components.json` with `@vengeanceui` registry (`https://www.vengenceui.com/r/{name}.json`).
+  - Audited component registry slugs via curl and documented in `docs/components.md`:
+    - `animated-rays` (200 OK, Vengeance)
+    - `flip-text` & `morph-text` (200 OK, Vengeance)
+    - `staggered-grid` & `cursor-card` (200 OK, Vengeance)
+    - `spotlight-navbar` (200 OK, Vengeance)
+    - Substituted `my-animated-button` (404) with verified official slug `animated-button` (200 OK).
+    - Substituted Skiper Pro paid components (`skiper2` 401 Unauthorized) with bespoke zero-dependency Framer Motion primitives.
+  - Implemented design and motion tokens in `portfolio/src/app/globals.css` and extended `portfolio/tailwind.config.cjs` (radius, easings, durations, max content width).
+  - Built SSR-safe and reduced-motion compliant shared motion primitives:
+    - `portfolio/src/lib/motion.ts` (easings, durations, spring configs, viewport config)
+    - `portfolio/src/hooks/usePointerFine.ts` (fine pointer check for hover-only devices)
+    - `portfolio/src/hooks/useInViewPause.ts` (IntersectionObserver + visibilitychange loop pauser)
+    - `portfolio/src/components/motion/Reveal.tsx` (scroll reveal with y/opacity)
+    - `portfolio/src/components/motion/Stagger.tsx` (stagger container & items with max 80ms interval)
+    - `portfolio/src/components/motion/SplitReveal.tsx` (accessible masked word/line slide-up)
+    - `portfolio/src/components/motion/CountUp.tsx` (eased numeric counter with instant reduced-motion fallback)
+    - `portfolio/src/components/ScrollProgress.tsx` (spring-smoothed top viewport scroll indicator)
+  - Mounted `<MotionConfig reducedMotion="user">` provider (`portfolio/src/components/providers/MotionProvider.tsx`) and `<ScrollProgress />` in `portfolio/src/app/layout.tsx`.
+  - Added reduced-motion guard to `portfolio/src/components/SmoothScroll.tsx`.
+  - Appended `data-lenis-prevent` to modal and application inner scroll containers (`Projects.tsx`, `blog/page.tsx`, `ExperienceApp.tsx`, `ContactApp.tsx`, `ProjectWindow.tsx`, `AboutApp.tsx`, `MusicApp.tsx`, `ProjectsFolder.tsx`).
+  - Added `.github/pull_request_template.md` per Plan.md §14.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 14.3s; Home route first load JS: 184 kB (0 kB delta from baseline 184 kB).
+- **Open questions:** None. All Phase 2 acceptance criteria met. Ready for Phase 3.
+
+

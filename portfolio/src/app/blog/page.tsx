@@ -397,6 +397,7 @@ export default function BlogPage() {
             <motion.div initial={{ y: 32, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
               exit={{ y: 32, opacity: 0 }} transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="glass-card relative max-w-3xl w-full max-h-[85vh] overflow-y-auto overflow-x-hidden"
+              data-lenis-prevent
               onClick={e => e.stopPropagation()}
               role="dialog"
               aria-modal="true"

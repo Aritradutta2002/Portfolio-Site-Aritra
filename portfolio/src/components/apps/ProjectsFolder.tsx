@@ -19,7 +19,7 @@ export default function ProjectsFolder() {
       </div>
 
       {/* Icon grid */}
-      <div className="os-scroll flex-1 overflow-y-auto p-5">
+      <div className="os-scroll flex-1 overflow-y-auto p-5" data-lenis-prevent>
         <div className="flex flex-wrap gap-5">
           {projects.map((p) => {
             const on = selected === p.id
