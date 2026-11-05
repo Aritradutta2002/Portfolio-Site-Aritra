@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 type ButtonVariant = "solid" | "outline" | "quiet";
 
 interface ButtonProps {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   children: ReactNode;
   variant?: ButtonVariant;
   size?: "md" | "sm";
@@ -16,6 +17,7 @@ interface ButtonProps {
 
 export function Button({
   href,
+  onClick,
   children,
   variant = "solid",
   size = "md",
@@ -45,6 +47,14 @@ export function Button({
   );
 
   const magnet = magnetic ? { "data-magnetic": "" } : {};
+
+  if (!href) {
+    return (
+      <button type="button" onClick={onClick} className={classes} {...magnet}>
+        {content}
+      </button>
+    );
+  }
 
   if (external) {
     return (

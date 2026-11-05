@@ -6,10 +6,12 @@ import { ArrowUpRight, SlidersHorizontal } from "lucide-react";
 import { SectionHeader } from "./ui/SectionHeader";
 import { FlagshipShowcase } from "./projects/FlagshipShowcase";
 import { ProjectCard } from "./projects/ProjectCard";
+import { CaseStudyDrawer } from "./projects/CaseStudyDrawer";
 import {
   CONTACT_LINKS,
   PROJECTS,
   type CatalogCategory,
+  type ProjectItem,
   type SystemCategory,
 } from "@/data/portfolioCatalog";
 
@@ -26,6 +28,9 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export function ProjectsSection() {
   const [selectedCategory, setSelectedCategory] =
     useState<SystemCategory>("ALL");
+  const [activeCaseStudy, setActiveCaseStudy] = useState<ProjectItem | null>(
+    null
+  );
   const reduceMotion = useReducedMotion();
 
   const categoryCounts = useMemo(() => {
@@ -163,7 +168,10 @@ export function ProjectsSection() {
                 transition={transition}
                 className="mt-8"
               >
-                <FlagshipShowcase project={flagship} />
+                <FlagshipShowcase
+                  project={flagship}
+                  onOpenCaseStudy={setActiveCaseStudy}
+                />
               </motion.div>
             ) : null}
           </AnimatePresence>
@@ -182,7 +190,11 @@ export function ProjectsSection() {
                   transition={transition}
                   className="min-w-0"
                 >
-                  <ProjectCard project={project} index={index} />
+                  <ProjectCard
+                    project={project}
+                    index={index}
+                    onOpenCaseStudy={setActiveCaseStudy}
+                  />
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -228,6 +240,11 @@ export function ProjectsSection() {
             </AnimatePresence>
           </motion.div>
         </LayoutGroup>
+
+        <CaseStudyDrawer
+          project={activeCaseStudy}
+          onClose={() => setActiveCaseStudy(null)}
+        />
       </div>
     </section>
   );

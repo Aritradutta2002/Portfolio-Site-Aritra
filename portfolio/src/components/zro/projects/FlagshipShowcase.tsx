@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useRef, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+  useReducedMotion,
+  type Variants,
+} from "framer-motion";
 import {
   ArrowUp,
   ArrowUpRight,
@@ -24,9 +30,154 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
+const CODE_LINES = [
+  {
+    num: 1,
+    content: (
+      <>
+        <b className="tok-key">class</b> <b className="tok-type">Solution</b> {"{"}
+      </>
+    ),
+  },
+  {
+    num: 2,
+    content: (
+      <>
+        {"  "}
+        <b className="tok-key">public</b> <b className="tok-type">int</b>[]{" "}
+        <b className="tok-fn">twoSum</b>(<b className="tok-type">int</b>[] nums,{" "}
+        <b className="tok-type">int</b> target) {"{"}
+      </>
+    ),
+  },
+  {
+    num: 3,
+    content: (
+      <>
+        {"    "}
+        <b className="tok-type">Map</b>
+        {"<Integer, Integer> seen = "}
+        <b className="tok-key">new</b> <b className="tok-type">HashMap</b>
+        {"<>();"}
+      </>
+    ),
+  },
+  {
+    num: 4,
+    content: (
+      <>
+        {"    "}
+        <b className="tok-key">for</b> (<b className="tok-type">int</b> i = 0; i {"<"} nums.length;
+        i++) {"{"}
+      </>
+    ),
+  },
+  {
+    num: 5,
+    content: (
+      <>
+        {"      "}
+        <b className="tok-type">int</b> need = target - nums[i];
+      </>
+    ),
+  },
+  {
+    num: 6,
+    content: (
+      <>
+        {"      "}
+        <b className="tok-key">if</b> (seen.
+        <b className="tok-fn">containsKey</b>(need)) {"{"}
+      </>
+    ),
+  },
+  {
+    num: 7,
+    content: (
+      <>
+        {"        "}
+        <b className="tok-key">return</b> <b className="tok-key">new</b>{" "}
+        <b className="tok-type">int</b>
+        {"[]{seen.get(need), i};"}
+      </>
+    ),
+  },
+  {
+    num: 8,
+    content: <>{"      }"}</>,
+  },
+  {
+    num: 9,
+    content: (
+      <>
+        {"      "}seen.<b className="tok-fn">put</b>(nums[i], i);
+      </>
+    ),
+  },
+  {
+    num: 10,
+    content: <>{"    }"}</>,
+  },
+  {
+    num: 11,
+    content: (
+      <>
+        {"    "}
+        <b className="tok-key">return</b> <b className="tok-key">new</b>{" "}
+        <b className="tok-type">int</b>
+        {"[]{};"}
+      </>
+    ),
+  },
+  {
+    num: 12,
+    content: <>{"  }"}</>,
+  },
+  {
+    num: 13,
+    content: <>{"}"}</>,
+  },
+];
+
 function Playground() {
+  const reduceMotion = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-10%" });
+
+  const codeContainerVariants: Variants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.055,
+      },
+    },
+  };
+
+  const lineVariants: Variants = {
+    hidden: { opacity: 0, x: -6 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.12, ease: "easeOut" },
+    },
+  };
+
+  const resultVariants: Variants = {
+    hidden: { opacity: 0, y: 8, scale: 0.96 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: 13 * 0.055 + 0.15,
+        duration: 0.35,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  };
+
   return (
-    <div className="zro-demo zro-demo--ide">
+    <div ref={ref} className="zro-demo zro-demo--ide">
       <div className="zro-demo-problem">
         <span className="zro-demo-level">Easy</span>
         <span className="zro-demo-name">Two Sum · Java 21</span>
@@ -34,116 +185,36 @@ function Playground() {
       </div>
 
       <pre className="zro-code" aria-hidden="true">
-        <code>
-          <span className="zro-code-line">
-            <i>1</i>
-            <span>
-              <b className="tok-key">class</b>{" "}
-              <b className="tok-type">Solution</b> {"{"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>2</i>
-            <span>
-              {"  "}
-              <b className="tok-key">public</b>{" "}
-              <b className="tok-type">int</b>[]{" "}
-              <b className="tok-fn">twoSum</b>(
-              <b className="tok-type">int</b>[] nums,{" "}
-              <b className="tok-type">int</b> target) {"{"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>3</i>
-            <span>
-              {"    "}
-              <b className="tok-type">Map</b>
-              {"<Integer, Integer> seen = "}
-              <b className="tok-key">new</b>{" "}
-              <b className="tok-type">HashMap</b>
-              {"<>();"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>4</i>
-            <span>
-              {"    "}
-              <b className="tok-key">for</b> (
-              <b className="tok-type">int</b> i = 0; i {"<"} nums.length;
-              i++) {"{"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>5</i>
-            <span>
-              {"      "}
-              <b className="tok-type">int</b> need = target - nums[i];
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>6</i>
-            <span>
-              {"      "}
-              <b className="tok-key">if</b> (seen.
-              <b className="tok-fn">containsKey</b>(need)) {"{"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>7</i>
-            <span>
-              {"        "}
-              <b className="tok-key">return</b>{" "}
-              <b className="tok-key">new</b>{" "}
-              <b className="tok-type">int</b>
-              {"[]{seen.get(need), i};"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>8</i>
-            <span>
-              {"      }"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>9</i>
-            <span>
-              {"      "}seen.<b className="tok-fn">put</b>(nums[i], i);
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>10</i>
-            <span>
-              {"    }"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>11</i>
-            <span>
-              {"    "}
-              <b className="tok-key">return</b>{" "}
-              <b className="tok-key">new</b>{" "}
-              <b className="tok-type">int</b>
-              {"[]{};"}
-            </span>
-          </span>
-          <span className="zro-code-line">
-            <i>12</i>
-            <span>{"  }"}</span>
-          </span>
-          <span className="zro-code-line">
-            <i>13</i>
-            <span>{"}"}</span>
-          </span>
-        </code>
+        <motion.code
+          variants={reduceMotion ? undefined : codeContainerVariants}
+          initial={reduceMotion ? false : "hidden"}
+          animate={reduceMotion ? false : isInView ? "visible" : "hidden"}
+        >
+          {CODE_LINES.map((line) => (
+            <motion.span
+              key={line.num}
+              variants={reduceMotion ? undefined : lineVariants}
+              className="zro-code-line"
+            >
+              <i>{line.num}</i>
+              <span>{line.content}</span>
+            </motion.span>
+          ))}
+        </motion.code>
       </pre>
 
-      <div className="zro-demo-result">
+      <motion.div
+        variants={reduceMotion ? undefined : resultVariants}
+        initial={reduceMotion ? false : "hidden"}
+        animate={reduceMotion ? false : isInView ? "visible" : "hidden"}
+        className="zro-demo-result"
+      >
         <span>
           <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
           3 / 3 test cases passed
         </span>
         <span>4 ms · O(n)</span>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -267,7 +338,13 @@ function Telemetry() {
   );
 }
 
-export function FlagshipShowcase({ project }: { project: ProjectItem }) {
+export function FlagshipShowcase({
+  project,
+  onOpenCaseStudy,
+}: {
+  project: ProjectItem;
+  onOpenCaseStudy?: (project: ProjectItem) => void;
+}) {
   const [tab, setTab] = useState<TabId>("playground");
   const reduceMotion = useReducedMotion();
 
@@ -339,6 +416,15 @@ export function FlagshipShowcase({ project }: { project: ProjectItem }) {
               <Github className="h-3.5 w-3.5" aria-hidden="true" />
               Source
             </Button>
+            {onOpenCaseStudy ? (
+              <Button
+                variant="outline"
+                arrow
+                onClick={() => onOpenCaseStudy(project)}
+              >
+                Read case study
+              </Button>
+            ) : null}
           </div>
 
           <div className="zro-flagship-stack">

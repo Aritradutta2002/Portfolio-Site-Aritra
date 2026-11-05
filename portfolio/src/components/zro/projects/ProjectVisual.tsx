@@ -1,4 +1,8 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useEffect, useRef, type CSSProperties } from "react";
+import { useReducedMotion } from "framer-motion";
+import { useInViewPause } from "@/hooks/useInViewPause";
 
 type VisualKind =
   | "architecture"
@@ -27,9 +31,25 @@ const HEAT_LEVELS = [
   2, 1, 3, 0, 1, 2, 4, 2, 1, 0, 2, 1, 3, 0, 1, 2,
 ];
 
-function ArchitectureVisual() {
+function ArchitectureVisual({ isInView, reduceMotion }: { isInView: boolean; reduceMotion: boolean | null }) {
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    try {
+      if (isInView && !reduceMotion) {
+        svg.unpauseAnimations?.();
+      } else {
+        svg.pauseAnimations?.();
+      }
+    } catch {
+      // SVG SMIL methods might not be supported in some environments
+    }
+  }, [isInView, reduceMotion]);
+
   return (
-    <svg viewBox="0 0 320 190" className="zro-vis-svg" role="presentation">
+    <svg ref={svgRef} viewBox="0 0 320 190" className="zro-vis-svg" role="presentation">
       <g className="zro-vis-lines" fill="none">
         <path d="M160 38 L68 82" />
         <path d="M160 38 L252 82" />
@@ -70,7 +90,7 @@ function ArchitectureVisual() {
   );
 }
 
-function SortingVisual() {
+function SortingVisual({ isInView }: { isInView: boolean }) {
   return (
     <div className="zro-vis-bars">
       {BAR_HEIGHTS.map((height, index) => (
@@ -80,11 +100,15 @@ function SortingVisual() {
             {
               "--bar-h": `${height}%`,
               "--bar-i": index,
+              animationPlayState: isInView ? "running" : "paused",
             } as CSSProperties
           }
         />
       ))}
-      <span className="zro-vis-scan" />
+      <span
+        className="zro-vis-scan"
+        style={{ animationPlayState: isInView ? "running" : "paused" }}
+      />
     </div>
   );
 }
@@ -169,7 +193,7 @@ function HeatmapVisual() {
   );
 }
 
-function ChatVisual() {
+function ChatVisual({ isInView }: { isInView: boolean }) {
   return (
     <div className="zro-vis-chat">
       <div className="zro-vis-bubble zro-vis-bubble--user">
@@ -179,10 +203,14 @@ function ChatVisual() {
         <span className="zro-vis-ai-label">GPT-4</span>
         Merge sort runs in <strong>O(n log n)</strong> time — the merge step
         dominates at each level.
-        <span className="zro-vis-typing" aria-hidden="true">
-          <i />
-          <i />
-          <i />
+        <span
+          className="zro-vis-typing"
+          aria-hidden="true"
+          style={{ animationPlayState: isInView ? "running" : "paused" }}
+        >
+          <i style={{ animationPlayState: isInView ? "running" : "paused" }} />
+          <i style={{ animationPlayState: isInView ? "running" : "paused" }} />
+          <i style={{ animationPlayState: isInView ? "running" : "paused" }} />
         </span>
       </div>
       <div className="zro-vis-sliders" aria-hidden="true">
@@ -197,7 +225,7 @@ function ChatVisual() {
   );
 }
 
-function EditorVisual() {
+function EditorVisual({ isInView }: { isInView: boolean }) {
   const lines = [
     { indent: 0, widths: [42, 68, 34] },
     { indent: 1, widths: [58, 26] },
@@ -219,7 +247,10 @@ function EditorVisual() {
           ))}
         </div>
       ))}
-      <span className="zro-vis-caret" />
+      <span
+        className="zro-vis-caret"
+        style={{ animationPlayState: isInView ? "running" : "paused" }}
+      />
     </div>
   );
 }
@@ -234,19 +265,30 @@ const LABELS: Record<VisualKind, string> = {
 };
 
 export function ProjectVisual({ id }: { id: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInViewPause(containerRef);
+  const reduceMotion = useReducedMotion();
   const kind = VISUALS[id] ?? "editor";
 
   return (
-    <div className="zro-vis" data-kind={kind} aria-hidden="true">
+    <div
+      ref={containerRef}
+      className="zro-vis"
+      data-kind={kind}
+      data-paused={!isInView}
+      aria-hidden="true"
+    >
       <span className="zro-vis-grid" />
       <span className="zro-vis-badge zro-metric">{LABELS[kind]}</span>
       <div className="zro-vis-stage">
-        {kind === "architecture" && <ArchitectureVisual />}
-        {kind === "sorting" && <SortingVisual />}
+        {kind === "architecture" && (
+          <ArchitectureVisual isInView={isInView} reduceMotion={reduceMotion} />
+        )}
+        {kind === "sorting" && <SortingVisual isInView={isInView} />}
         {kind === "huffman" && <HuffmanVisual />}
         {kind === "heatmap" && <HeatmapVisual />}
-        {kind === "chat" && <ChatVisual />}
-        {kind === "editor" && <EditorVisual />}
+        {kind === "chat" && <ChatVisual isInView={isInView} />}
+        {kind === "editor" && <EditorVisual isInView={isInView} />}
       </div>
     </div>
   );

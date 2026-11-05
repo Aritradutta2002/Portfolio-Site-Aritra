@@ -156,8 +156,9 @@ export function MotionController() {
         const rect = nextTilt.getBoundingClientRect();
         const px = (event.clientX - rect.left) / rect.width - 0.5;
         const py = (event.clientY - rect.top) / rect.height - 0.5;
-        nextTilt.style.setProperty("--rx", `${clamp(-py * 5, -5, 5).toFixed(2)}deg`);
-        nextTilt.style.setProperty("--ry", `${clamp(px * 7, -7, 7).toFixed(2)}deg`);
+        /* Subtle 3D tilt for project artwork. Clamped to max 6 degrees for fine pointer only. */
+        nextTilt.style.setProperty("--rx", `${clamp(-py * 6, -6, 6).toFixed(2)}deg`);
+        nextTilt.style.setProperty("--ry", `${clamp(px * 6, -6, 6).toFixed(2)}deg`);
         nextTilt.style.setProperty("--gx", `${((px + 0.5) * 100).toFixed(1)}%`);
         nextTilt.style.setProperty("--gy", `${((py + 0.5) * 100).toFixed(1)}%`);
         tilt = nextTilt;

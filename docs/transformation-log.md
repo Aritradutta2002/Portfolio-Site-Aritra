@@ -182,6 +182,32 @@
   - Console errors: 0
 - **Open questions:** None. All Phase 7 acceptance criteria satisfied.
 
+### Phase 8 — Projects (2026-11-05)
+- **Branch:** `feat/portfolio-p08-projects`
+- **What changed:**
+  - Built accessible `CaseStudyDrawer` (`portfolio/src/components/zro/projects/CaseStudyDrawer.tsx`):
+    - Desktop (≥768px): 50vw slide-over drawer from right with focus trap, `role="dialog"`, `aria-modal="true"`, `Esc` listener, Lenis scroll lock (`lockScroll(true)`), focus restoration to trigger element on dismiss, and internal scroll container with `data-lenis-prevent`.
+    - Mobile (<768px): Responsive bottom sheet (`max-h-[85dvh]`) with touch drag handle.
+    - Full technical write-up, system overview, architecture diagram / visual, full stack chips, metric badges, and verified source/live links.
+  - AlgoGuru live mock (`portfolio/src/components/zro/projects/FlagshipShowcase.tsx`):
+    - Animated line-by-line typing sequence for Two Sum Java 21 solution (13 lines, 55ms stagger) when in view via Framer Motion `useInView`.
+    - Animated test pass banner ("3 / 3 test cases passed · 4 ms · O(n)") sliding in after code typing finishes.
+    - Instant static fallback under `prefers-reduced-motion: reduce`.
+  - Inline project visuals (`portfolio/src/components/zro/projects/ProjectVisual.tsx`):
+    - Wired `useInViewPause` to stop all CSS keyframe animations (`.zro-vis[data-paused="true"]`) when offscreen or tab backgrounded.
+    - Paused SVG SMIL packet animations on `ArchitectureVisual` via `svg.pauseAnimations()` / `unpauseAnimations()`.
+  - Track B 3D tilt:
+    - Clamped tilt degrees to `max 6°` (`clamp(-py * 6, -6, 6)`) for fine-pointer/mouse only in `portfolio/src/components/zro/MotionController.tsx`.
+    - Added fine-pointer hover lift (`translateY(-4px)`) and enhanced card depth in `portfolio/src/styles/datasheet.css`.
+  - Filter chips: Motion layout re-flow with `popLayout` without scroll jumps; all chip counts, metrics, tags, and links 100% frozen.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 9.5s; Home route first load JS: 199 kB.
+  - Console errors: 0
+- **Open questions:** None. All Phase 8 acceptance criteria satisfied.
+
+
 
 
 

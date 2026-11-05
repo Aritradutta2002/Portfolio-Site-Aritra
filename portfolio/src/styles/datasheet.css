@@ -3489,6 +3489,18 @@ html:not(.js) .zro-exp-toggle {
     0 30px 60px -46px rgba(0, 0, 0, 0.82);
 }
 
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .zro-project-card {
+    transition: transform 260ms var(--zro-ease), box-shadow 260ms var(--zro-ease);
+  }
+  .zro-project-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 34px 64px -40px rgba(0, 0, 0, 0.95);
+  }
+}
+
 /* An open case study must not stretch its row neighbour into a column of
    empty space. The archive tile keeps stretching so it still fills its cell. */
 .zro-project-grid:has(.zro-project-details[data-open="true"]) {
@@ -3841,6 +3853,11 @@ html:not(.js) .zro-project-toggle {
     ),
     linear-gradient(180deg, #0b0c0f 0%, #07080a 100%);
   color: #d8d8dd;
+}
+
+.zro-vis[data-paused="true"],
+.zro-vis[data-paused="true"] * {
+  animation-play-state: paused !important;
 }
 
 .zro-vis[data-kind="heatmap"] {
@@ -4406,6 +4423,11 @@ html:not(.dark) .zro-flagship-live {
     0 30px 70px -38px rgba(0, 0, 0, 0.95),
     0 0 0 1px rgba(0, 0, 0, 0.4);
   color: #d8d8dd;
+}
+
+.zro-vis[data-paused="true"],
+.zro-vis[data-paused="true"] * {
+  animation-play-state: paused !important;
 }
 
 .zro-product-bar {

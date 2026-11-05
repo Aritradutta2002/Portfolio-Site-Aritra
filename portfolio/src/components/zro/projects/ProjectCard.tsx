@@ -8,12 +8,21 @@ import { ProjectVisual } from "./ProjectVisual";
 interface ProjectCardProps {
   project: ProjectItem;
   index: number;
+  onOpenCaseStudy?: (project: ProjectItem) => void;
 }
 
-export function ProjectCard({ project, index }: ProjectCardProps) {
+export function ProjectCard({ project, index, onOpenCaseStudy }: ProjectCardProps) {
   const [open, setOpen] = useState(false);
   const panelId = `project-details-${project.id}`;
   const number = String(index + 2).padStart(2, "0");
+
+  const handleToggle = () => {
+    if (onOpenCaseStudy) {
+      onOpenCaseStudy(project);
+    } else {
+      setOpen((value) => !value);
+    }
+  };
 
   return (
     <article
@@ -56,9 +65,10 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         <button
           type="button"
           className="zro-project-toggle"
-          aria-expanded={open}
-          aria-controls={panelId}
-          onClick={() => setOpen((value) => !value)}
+          aria-expanded={onOpenCaseStudy ? undefined : open}
+          aria-haspopup={onOpenCaseStudy ? "dialog" : undefined}
+          aria-controls={onOpenCaseStudy ? undefined : panelId}
+          onClick={handleToggle}
         >
           <span className="zro-project-toggle-icon" aria-hidden="true">
             {open ? <Minus className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
