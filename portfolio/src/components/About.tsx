@@ -77,12 +77,12 @@ export function About() {
 
               <div className="space-y-5 text-[15px] md:text-base text-muted leading-relaxed">
                 <p>
-                  Hello! I&apos;m <span className="font-semibold text-ink">Aritra Dutta</span>, a Full Stack Application Engineer with 2+ years at{' '}
-                  <span className="font-semibold text-ink">Tata Consultancy Services (TCS)</span> in Bhubaneswar, India.
+                  Hello! I&apos;m <span className="font-semibold text-ink">Aritra Dutta</span>, a Full Stack Application Engineer with 2+ years of experience at{' '}
+                  <span className="font-semibold text-ink">Tata Consultancy Services (TCS)</span> in Bhubaneswar, Odisha.
                 </p>
                 <p>
-                  Currently modernizing enterprise backends serving 10K+ daily users with{' '}
-                  <span className="font-semibold text-ink">Java (8 to 21), Spring Boot 4, PostgreSQL, AWS, and Azure PaaS</span>. Executing remediation and cloud migrations for clients like Element Fleet Management. I also build{' '}
+                  Leading the remediation phase of a Java microservices modernization initiative with{' '}
+                  <span className="font-semibold text-ink">Java (8 to 21), Spring Boot (1.x.x to 4.x.x), AWS Transform (ATX), and Azure Tomcat PaaS</span>, delivering up to 20× faster response times. I also build{' '}
                   <span className="font-semibold text-ink">AI-powered features with Python, LangChain, and RAG</span>.
                 </p>
                 <p>

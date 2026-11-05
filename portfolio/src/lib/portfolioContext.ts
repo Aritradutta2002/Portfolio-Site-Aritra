@@ -22,10 +22,10 @@ Your job is to answer questions from recruiters, engineering leaders, and collab
 - **Contact**: Email: aritradutta049@gmail.com | LinkedIn: https://www.linkedin.com/in/aritra-dutta-rick20/ | Résumé: /resume.pdf
 
 ### Enterprise Experience at TCS:
-- **Java 21 Modernization**: Migrated critical microservices from legacy Java 8 to Java 21 and Spring Boot 1.x to 4.x.
-- **Cloud Migration**: Moved legacy JBoss apps to Azure Tomcat PaaS with health probes and zero-downtime deployment slots.
+- **Java 21 Modernization**: Migrated critical microservices from legacy Java 8 to Java 21 and Spring Boot 1.x.x to 4.x.x using AWS Transform (ATX).
+- **Cloud Migration**: Moved legacy JBoss apps to Azure Tomcat PaaS with health checks and zero-downtime deployment slots.
 - **20× API Speedup**: Optimized complex SQL queries and REST endpoints for high-throughput production services.
-- **CI/CD**: Jenkins pipelines with Docker, SonarQube quality gates, and JaCoCo coverage.
+- **CI/CD & Productivity**: Jenkins CI/CD pipelines with Docker, SonarQube, JaCoCo, and accelerated delivery using Claude Code and GitHub Copilot.
 
 ### Featured Projects:
 1. **AlgoGuru (https://www.algoguru.online/)**: Full-stack competitive programming platform with an in-browser Java sandbox and **Guru Bot**, an autonomous AI tutor built with Python, LangChain, and RAG. Database: Supabase & PostgreSQL with Row-Level Security (RLS).
@@ -38,9 +38,9 @@ Your job is to answer questions from recruiters, engineering leaders, and collab
 
 ### Technical Stack:
 - **Languages**: Java 21, Python, TypeScript, SQL, C++
-- **Backend**: Spring Boot 4, Spring Security, Spring Data JPA, Hibernate, REST APIs, Microservices, LangChain
-- **Frontend**: React, Next.js, Tailwind CSS, TypeScript
-- **Cloud & DevOps**: Azure PaaS, AWS, AWS Transform, Docker, Jenkins, SonarQube, Git
+- **Backend**: Spring Boot (1.x.x to 4.x.x), Spring MVC, Spring Security, Spring Data JPA, Hibernate, REST APIs, Microservices, LangChain
+- **Frontend**: React, Next.js, Angular, Tailwind CSS, TypeScript
+- **Cloud & DevOps**: Azure PaaS, AWS, AWS Transform (ATX), Docker, Jenkins, SonarQube, Tomcat, JBoss, Git, Maven, Claude Code, GitHub Copilot
 - **Databases**: PostgreSQL, Supabase, Oracle, MySQL, Apache Kafka
 `.trim();
 

@@ -1,14 +1,14 @@
 {
   "name": "Aritra Dutta",
   "handle": "aritro",
-  "title": "System Engineer · Full Stack Application Engineer",
+  "title": "Full Stack Application Engineer",
   "company": "Tata Consultancy Services",
-  "location": "Bhubaneswar, India",
-  "bio": "Full Stack Application Engineer with 2+ years of experience building scalable Java microservices, end-to-end web applications, and AI-powered features. I modernise legacy systems — migrating Java 8 monoliths to Java 21 microservices, moving JBoss workloads onto cloud PaaS, and squeezing 20–30x performance gains out of critical APIs. Outside of work I build products end-to-end and solve competitive programming problems.",
+  "location": "Bhubaneswar, Odisha",
+  "bio": "Results-driven Full Stack Application Engineer with 2+ years of experience building scalable Java microservices, end-to-end web applications, and AI-powered features. Proficient in Java, Spring Boot, Python, Generative AI (RAG/LangChain), React, and AWS — with a strong focus on backend modernization and intelligent system integration, delivering measurable performance improvements in enterprise, client-facing environments.",
   "quickFacts": [
     { "label": "Role", "value": "System Engineer" },
     { "label": "Company", "value": "Tata Consultancy Services" },
-    { "label": "Location", "value": "Bhubaneswar, India" },
+    { "label": "Location", "value": "Bhubaneswar, Odisha" },
     { "label": "Experience", "value": "2+ years" }
   ],
   "education": [
@@ -37,7 +37,7 @@
   "certifications": [
     {
       "title": "Enterprise Java Modernisation — AWS Transform",
-      "detail": "Led remediation of enterprise microservices: Java 8 → 21, Spring Boot 1.x → 3.x, with 20× faster critical APIs."
+      "detail": "Led remediation of enterprise microservices: Java 8 → 21, Spring Boot 1.x.x → 4.x.x, with up to 20× faster critical APIs."
     }
   ],
   "achievements": [
@@ -61,6 +61,7 @@
       "Hibernate",
       "REST APIs",
       "Microservices",
+      "LangChain",
       "React",
       "Angular",
       "Tailwind CSS"
@@ -79,9 +80,10 @@
       "Tomcat",
       "JBoss",
       "GitHub Copilot",
+      "Claude Code",
       "CI/CD"
     ],
-    "Methodologies": ["Agile", "Scrum", "Jira", "Code Review"]
+    "Methodologies": ["Agile", "Scrum", "Jira", "Jile", "Code Review"]
   },
   "spokenLanguages": ["English", "Hindi", "Bengali"],
   "links": {

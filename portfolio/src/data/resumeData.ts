@@ -17,16 +17,16 @@ export const resumeData = {
 
   /* ── Summary ───────────────────────────────────────────────────────── */
   summary:
-    'Results-driven Full Stack Application Engineer with 2+ years of experience building scalable Java microservices, end-to-end web applications, and AI-powered features. Proficient in Java, Spring Boot, Python, Generative AI (RAG/LangChain), and React — with a strong focus on backend modernization and intelligent system integration, delivering measurable performance improvements in enterprise, client-facing environments.',
+    'Results-driven Full Stack Application Engineer with 2+ years of experience building scalable Java microservices, end-to-end web applications, and AI-powered features. Proficient in Java, Spring Boot, Python, Generative AI (RAG/LangChain), React, and AWS — with a strong focus on backend modernization and intelligent system integration, delivering measurable performance improvements in enterprise, client-facing environments.',
 
   /* ── Technical Skills ──────────────────────────────────────────────── */
   skills: [
-    { category: 'Programming Languages', items: 'Java, Python, TypeScript, SQL' },
-    { category: 'Frameworks & Libraries', items: 'Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, REST APIs, Microservices, LangChain, React, Angular, Tailwind CSS' },
     { category: 'Databases',             items: 'PostgreSQL, Oracle, MySQL, Apache Kafka' },
-    { category: 'Tools & Platforms',     items: 'AWS, AWS Transform, Azure PaaS, Docker, Jenkins, Git, Maven, SonarQube, Tomcat, JBoss, Node.js, GitHub Copilot, Claude Code, CI/CD' },
-    { category: 'Soft Skills',           items: 'Agile, Scrum, Jira, Jile, Code Review' },
+    { category: 'Frameworks & Libraries', items: 'Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, REST APIs, Microservices, LangChain, React, Angular, Tailwind CSS' },
     { category: 'Languages',             items: 'English, Hindi, Bengali' },
+    { category: 'Programming Languages', items: 'Java, Python, TypeScript, SQL' },
+    { category: 'Soft Skills',           items: 'Agile, Scrum, Jira, Jile, Code Review' },
+    { category: 'Tools & Platforms',     items: 'AWS, AWS Transform, Azure PaaS, Docker, Jenkins, Git, Maven, SonarQube, Tomcat, JBoss, GitHub Copilot, CI/CD' },
   ],
 
   /* ── Experience ────────────────────────────────────────────────────── */
@@ -37,10 +37,10 @@ export const resumeData = {
       role:      'System Engineer · Full-time',
       location:  'On-site · Bhubaneswar, Odisha',
       bullets: [
-        'Led the remediation phase of a <strong>Java microservices modernization initiative</strong>, migrating backend services from <strong>Java 8 to Java 21 and Spring Boot 1.x to 4.x</strong>, improving maintainability, security, and long-term support.',
+        'Led the remediation phase of a <strong>Java microservices modernization initiative</strong>, migrating backend services from <strong>Java 8 to Java 21 and Spring Boot 1.x.x to 4.x.x</strong>, improving maintainability, security, and long-term support.',
         'Migrated critical applications from <strong>legacy JBoss infrastructure to Azure Tomcat PaaS</strong>, configuring health checks, deployment slots, and monitoring to ensure high availability in production.',
-        'Utilized <strong>AWS Transform</strong> tooling to accelerate dependency upgrades, code refactoring, and compatibility validation across Java microservices running on AWS-based infrastructure.',
-        'Built and maintained <strong>end-to-end Jenkins CI/CD pipelines</strong> with Docker-based deployments, automated build and release workflows, <strong>JaCoCo/JUnit test coverage reporting</strong>, and enhanced code quality through <strong>SonarQube</strong> analysis.',
+        'Utilized <strong>AWS Transform (ATX)</strong> tooling to accelerate dependency upgrades, code refactoring, and compatibility validation across Java microservices running on AWS-based infrastructure.',
+        'Built and maintained <strong>end-to-end Jenkins CI/CD pipelines</strong> with Docker-based deployments, automated build and release workflows, integrated <strong>JaCoCo/JUnit test coverage reporting</strong>, and enhanced code quality through <strong>SonarQube</strong> analysis.',
         'Optimized complex SQL queries and REST APIs, delivering up to <strong>20× faster response times</strong> for critical business workflows in production environments.',
         'Managed <strong>Git and GitHub workflows</strong>, including complex merge conflict resolution, pull request reviews, branch management, release merges, and enforcement of code review best practices across distributed development teams.',
         'Collaborated with <strong>UI/UX teams</strong> to implement and refine user-facing features, ensuring responsive design, usability improvements, and alignment with business requirements.',
@@ -49,7 +49,7 @@ export const resumeData = {
         'Leveraged <strong>GitHub Copilot and Claude Code</strong> to accelerate development, refactoring, documentation, and peer-review activities, improving engineering productivity across modernization initiatives.',
       ],
       technologies:
-        'Java, Spring Boot, Azure, AWS, Jenkins, Docker, SQL, React, AWS Transform, CI/CD, Tomcat, Node.js, Claude Code, GitHub Copilot',
+        'Java, Spring Boot, Azure, AWS, Jenkins, Docker, SQL, React, AWS Transform, CICD, Tomcat, Node.js, Claude Code, Github Copilot',
     },
   ],
 
@@ -74,23 +74,9 @@ export const resumeData = {
     {
       institution: 'Maulana Abul Kalam Azad University of Technology',
       location:    'Kolkata, India',
-      degree:      'B.Tech, Electronics &amp; Communication Engineering',
-      grade:       'CGPA: 8.79 / 10',
+      degree:      'B.Tech',
+      grade:       'CGPA : 8.79/10',
       dateRange:   '2020 – 2024',
-    },
-    {
-      institution: 'Kirnahar Shib Chandra High School',
-      location:    'Kirnahar, India',
-      degree:      'Higher Secondary — Physics, Chemistry &amp; Mathematics',
-      grade:       'Grade: 92%',
-      dateRange:   'Mar 2018 – Mar 2020',
-    },
-    {
-      institution: 'Kirnahar Shib Chandra High School',
-      location:    'Kirnahar, India',
-      degree:      'Secondary (WBBSE)',
-      grade:       'Grade: 91%',
-      dateRange:   '2017 – 2018',
     },
   ],
 
