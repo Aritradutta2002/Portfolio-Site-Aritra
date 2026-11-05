@@ -5761,11 +5761,7 @@ html:not(.dark) .zro-edu-status {
 }
 
 .zro-edu-timeline::after {
-  background: linear-gradient(
-    180deg,
-    rgb(var(--zro-accent) / 0.25),
-    rgb(var(--zro-accent) / 0.85)
-  );
+  display: none;
 }
 
 html.js .zro-edu-timeline::after {

@@ -1,7 +1,11 @@
+"use client";
+
 import type { CSSProperties } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "./ui/Button";
 import { CopyEmail } from "./CopyEmail";
 import { LocalClock } from "./LocalClock";
+import { usePointerFine } from "@/hooks/usePointerFine";
 import { CONTACT_LINKS, PORTFOLIO_HEADER } from "@/data/portfolioCatalog";
 
 const NAVIGATE_LINKS = [
@@ -31,6 +35,9 @@ const WORDMARK = PORTFOLIO_HEADER.name.toUpperCase();
 const stagger = (index: number) => ({ "--zro-i": index } as CSSProperties);
 
 export function FooterSection() {
+  const isPointerFine = usePointerFine();
+  const reduceMotion = useReducedMotion();
+
   return (
     <footer id="contact" className="zro-footer relative overflow-hidden bg-zro-canvas">
       {/* Ambient light: gold pool above, grid fading upward from the base. */}
@@ -71,11 +78,15 @@ export function FooterSection() {
                 href={`mailto:${CONTACT_LINKS.email}`}
                 variant="solid"
                 arrow
-                magnetic
+                magnetic={isPointerFine}
               >
                 Email me
               </Button>
-              <Button href={CONTACT_LINKS.resumePdf} variant="outline" magnetic>
+              <Button
+                href={CONTACT_LINKS.resumePdf}
+                variant="outline"
+                magnetic={isPointerFine}
+              >
                 Download resume
               </Button>
             </div>
@@ -196,26 +207,32 @@ export function FooterSection() {
           </div>
         </div>
 
-        {/* ── Wordmark ─────────────────────────────────────────────── */}
-        <div
-          data-reveal
+        {/* ── Wordmark (Scroll-in Reveal) ───────────────────────────── */}
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 35 }}
+          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           data-spot
           aria-hidden="true"
-          className="zro-wordmark mt-16 md:mt-20"
+          className="zro-wordmark mt-16 md:mt-20 select-none overflow-hidden"
         >
           <span className="zro-wordmark-base">{WORDMARK}</span>
           <span className="zro-wordmark-lit">{WORDMARK}</span>
-        </div>
+        </motion.div>
 
-        {/* ── Legal bar ────────────────────────────────────────────── */}
-        <div className="relative flex flex-col gap-3 border-t border-zro-line py-6 sm:flex-row sm:items-center sm:justify-between">
-          <span className="zro-metric text-[0.6875rem] uppercase tracking-[0.14em] text-zro-faint">
-            © {new Date().getFullYear()} {PORTFOLIO_HEADER.name}
-          </span>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+        {/* ── Legal & Credits bar ──────────────────────────────────── */}
+        <div className="relative flex flex-col gap-4 border-t border-zro-line py-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1">
             <span className="zro-metric text-[0.6875rem] uppercase tracking-[0.14em] text-zro-faint">
-              {PORTFOLIO_HEADER.location}
+              © {new Date().getFullYear()} {PORTFOLIO_HEADER.name} · {PORTFOLIO_HEADER.location}
             </span>
+            <span className="text-[0.6875rem] font-mono text-zro-faint">
+              Built with Next.js 15, Tailwind CSS &amp; Framer Motion · Registry components refactored from Vengeance UI
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <a
               href="#top"
               className="zro-foot-link zro-metric text-[0.6875rem] uppercase tracking-[0.14em] text-zro-muted"

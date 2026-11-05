@@ -1,9 +1,26 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useRef, type CSSProperties } from "react";
+import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { GraduationCap, School } from "lucide-react";
 import { EDUCATION } from "@/data/portfolioCatalog";
 import { SectionHeader } from "./ui/SectionHeader";
 
 export function BenchmarksSection() {
+  const reduceMotion = useReducedMotion();
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ["start 80%", "end 55%"],
+  });
+
+  const scaleY = useSpring(scrollYProgress, {
+    stiffness: 300,
+    damping: 35,
+    restDelta: 0.001,
+  });
+
   return (
     <section
       id="education"
@@ -45,11 +62,19 @@ export function BenchmarksSection() {
 
           <div className="lg:col-span-8">
             <div
-              className="zro-edu-timeline"
+              ref={timelineRef}
+              className="zro-edu-timeline relative"
               data-scroll
               role="group"
               aria-label="Academic timeline"
             >
+              {/* Scroll-linked progress line (transform scaleY only) */}
+              <motion.div
+                style={{ scaleY: reduceMotion ? 1 : scaleY }}
+                className="absolute left-[3px] top-[1.8rem] bottom-[1.8rem] w-[2px] bg-gradient-to-b from-zro-accent/25 via-zro-accent to-zro-accent origin-top pointer-events-none z-10"
+                aria-hidden="true"
+              />
+
               {EDUCATION.map((edu, index) => (
                 <article
                   key={`${edu.level}-${edu.period}`}

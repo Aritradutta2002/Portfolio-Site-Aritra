@@ -1,51 +1,86 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useMemo } from "react";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import {
-  Boxes,
   Cloud,
   Code2,
-  Container,
-  Coffee,
   Database,
-  Languages,
-  Monitor,
   Sparkles,
   Terminal,
   Workflow,
   type LucideIcon,
 } from "lucide-react";
-import { SKILL_GROUPS } from "@/data/portfolioCatalog";
 import { SectionHeader } from "./ui/SectionHeader";
 
-const GROUP_ICONS: Record<string, LucideIcon> = {
-  "Programming languages": Code2,
-  "Frameworks & libraries": Boxes,
-  Databases: Database,
-  "Tools & platforms": Cloud,
-  Practices: Workflow,
-  "Spoken languages": Languages,
-};
-
-const DAILY_DRIVERS: {
-  name: string;
-  note: string;
+interface SkillDiscipline {
+  index: string;
+  discipline: string;
+  tagline: string;
   icon: LucideIcon;
-}[] = [
-  { name: "Java 21", note: "Backend core", icon: Coffee },
-  { name: "Spring Boot", note: "Service layer", icon: Boxes },
-  { name: "Azure PaaS", note: "Deployment", icon: Cloud },
-  { name: "React", note: "Interfaces", icon: Monitor },
-  { name: "Docker", note: "Packaging", icon: Container },
-  { name: "LangChain", note: "RAG systems", icon: Sparkles },
+  skills: string[];
+}
+
+const DISCIPLINES: SkillDiscipline[] = [
+  {
+    index: "01",
+    discipline: "Languages & Runtimes",
+    tagline: "Core execution, type safety & backend algorithms",
+    icon: Code2,
+    skills: ["Java 21", "TypeScript", "Python", "SQL", "C++"],
+  },
+  {
+    index: "02",
+    discipline: "Cloud & Distributed Systems",
+    tagline: "Containerization, orchestration & message brokering",
+    icon: Cloud,
+    skills: [
+      "Azure",
+      "Spring Boot",
+      "Microservices",
+      "Docker",
+      "Kubernetes",
+      "Kafka",
+      "AWS Transform",
+      "Jenkins",
+    ],
+  },
+  {
+    index: "03",
+    discipline: "AI & Architecture",
+    tagline: "RAG orchestration, vector databases & system design",
+    icon: Sparkles,
+    skills: ["RAG", "Vector DBs", "LangChain", "System Design", "REST/gRPC"],
+  },
+  {
+    index: "04",
+    discipline: "Storage & Databases",
+    tagline: "Relational persistence, cache layers & ORM mappings",
+    icon: Database,
+    skills: [
+      "PostgreSQL",
+      "Redis",
+      "MongoDB",
+      "Hibernate/JPA",
+      "Oracle",
+      "Supabase",
+    ],
+  },
+  {
+    index: "05",
+    discipline: "Practices & Tools",
+    tagline: "Automated pipelines, static analysis & team agility",
+    icon: Workflow,
+    skills: [
+      "Git",
+      "CI/CD",
+      "Agile",
+      "Linux",
+      "SonarQube",
+      "Unit/Integration Testing",
+    ],
+  },
 ];
-
-const TECH_GROUPS = SKILL_GROUPS.filter(
-  (group) => group.domain !== "Spoken languages"
-);
-
-const TECH_COUNT = TECH_GROUPS.reduce(
-  (total, group) => total + group.items.length,
-  0
-);
 
 const PRINCIPLES = [
   "Measure before and after — every optimisation needs a number.",
@@ -54,6 +89,31 @@ const PRINCIPLES = [
 ];
 
 export function SkillsMatrix() {
+  const reduceMotion = useReducedMotion();
+
+  const totalSkills = useMemo(
+    () => DISCIPLINES.reduce((sum, d) => sum + d.skills.length, 0),
+    []
+  );
+
+  const containerVariants: Variants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.08,
+      },
+    },
+  };
+
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 14 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
   return (
     <section
       id="skills"
@@ -62,6 +122,7 @@ export function SkillsMatrix() {
     >
       <div className="mx-auto max-w-6xl px-6 md:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
+          {/* Section Header & Principles */}
           <div className="lg:col-span-4">
             <SectionHeader
               id="skills-heading"
@@ -72,12 +133,12 @@ export function SkillsMatrix() {
 
             <div className="zro-skills-stats mt-7 border-y border-zro-line">
               <div>
-                <p>{String(TECH_COUNT).padStart(2, "0")}</p>
+                <p>{String(totalSkills).padStart(2, "0")}</p>
                 <span>Technologies in use</span>
               </div>
               <div>
-                <p>{String(SKILL_GROUPS.length).padStart(2, "0")}</p>
-                <span>Domains covered</span>
+                <p>{String(DISCIPLINES.length).padStart(2, "0")}</p>
+                <span>Disciplines covered</span>
               </div>
             </div>
 
@@ -94,76 +155,74 @@ export function SkillsMatrix() {
             </div>
           </div>
 
+          {/* High-Density Categorical Skills Matrix Grid */}
           <div className="lg:col-span-8">
-            <div className="zro-drivers" data-reveal data-spot>
-              <div className="zro-drivers-head">
-                <div>
-                  <p className="zro-eyebrow flex items-center gap-2 !text-zro-accent">
-                    <Terminal className="h-3.5 w-3.5" aria-hidden="true" />
-                    Daily drivers
-                  </p>
-                  <h3>The six tools behind most of the work.</h3>
-                </div>
-                <span className="zro-metric">CORE STACK</span>
+            <div className="mb-4 flex items-center justify-between border-b border-zro-line pb-3">
+              <div className="flex items-center gap-2">
+                <Terminal className="h-3.5 w-3.5 text-zro-accent" aria-hidden="true" />
+                <span className="text-xs font-mono uppercase tracking-[0.12em] text-zro-accent font-semibold">
+                  Engineering Skills Matrix
+                </span>
               </div>
-
-              <ul className="zro-drivers-grid">
-                {DAILY_DRIVERS.map((driver) => {
-                  const Icon = driver.icon;
-                  return (
-                    <li key={driver.name}>
-                      <span className="zro-driver-icon" aria-hidden="true">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <span>
-                        <strong>{driver.name}</strong>
-                        <small>{driver.note}</small>
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
+              <span className="text-[0.6875rem] font-mono uppercase tracking-wider text-zro-faint">
+                {DISCIPLINES.length} Categorical Disciplines
+              </span>
             </div>
 
-            <div className="zro-skill-domains__grid mt-5 gap-4 sm:columns-2">
-              {SKILL_GROUPS.map((group, index) => {
-                const Icon = GROUP_ICONS[group.domain] ?? Terminal;
+            <motion.div
+              variants={reduceMotion ? undefined : containerVariants}
+              initial={reduceMotion ? false : "hidden"}
+              whileInView={reduceMotion ? undefined : "visible"}
+              viewport={{ once: true, margin: "-10%" }}
+              className="space-y-4"
+            >
+              {DISCIPLINES.map((item) => {
+                const Icon = item.icon;
                 return (
-                  <article
-                    key={group.domain}
-                    data-reveal
+                  <motion.article
+                    key={item.discipline}
+                    variants={reduceMotion ? undefined : cardVariants}
                     data-spot
-                    style={{ "--zro-i": index } as CSSProperties}
-                    className="zro-card zro-skill-domain mb-4 break-inside-avoid"
+                    className="zro-card rounded-xl border border-zro-line bg-[#0c0d10]/95 p-5 md:p-6 transition-colors hover:border-zro-line/80"
                   >
-                    <div className="zro-skill-domain__head">
-                      <span className="zro-skill-domain__icon" aria-hidden="true">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <div className="min-w-0">
-                        <h3>{group.domain}</h3>
-                        <p>
-                          {group.items.length}{" "}
-                          {group.items.length === 1 ? "item" : "items"}
-                        </p>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-3.5 border-b border-zro-line/50">
+                      <div className="flex items-start gap-3">
+                        <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-zro-line bg-white/[0.03] text-zro-accent">
+                          <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                        </span>
+                        <div>
+                          <h3 className="text-sm font-sans font-semibold text-zro-ink">
+                            {item.discipline}
+                          </h3>
+                          <p className="mt-0.5 text-xs text-zro-muted">
+                            {item.tagline}
+                          </p>
+                        </div>
                       </div>
-                      <span className="zro-skill-domain__index" aria-hidden="true">
-                        {String(index + 1).padStart(2, "0")}
+                      <span className="text-[0.625rem] font-mono tracking-widest text-zro-faint">
+                        {"// "}{item.index}
                       </span>
                     </div>
 
-                    <ul className="zro-skill-terms">
-                      {group.items.map((item) => (
-                        <li key={item}>
-                          <span aria-hidden="true" />
-                          {item}
-                        </li>
+                    {/* Skill Badges */}
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {item.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-zro-line bg-white/[0.02] px-2.5 py-1 text-xs font-mono text-zro-ink transition-colors hover:border-zro-accent hover:text-zro-accent"
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="h-1 w-1 rounded-full bg-zro-accent/70"
+                          />
+                          {skill}
+                        </span>
                       ))}
-                    </ul>
-                  </article>
+                    </div>
+                  </motion.article>
                 );
               })}
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

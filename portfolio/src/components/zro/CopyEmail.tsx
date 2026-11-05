@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Check } from "lucide-react";
 
 /**
- * Email address that copies on click. Falls back to the mail client when the
- * Clipboard API is unavailable or denied, and announces the result politely.
+ * Email address that copies on click with a 2s checkmark confirmation toast.
+ * Falls back to mailto: when the Clipboard API is unavailable or denied.
  */
 export function CopyEmail({ email }: { email: string }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
@@ -15,7 +16,7 @@ export function CopyEmail({ email }: { email: string }) {
   const flash = (next: "copied" | "failed") => {
     setState(next);
     window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setState("idle"), 2200);
+    timer.current = window.setTimeout(() => setState("idle"), 2000);
   };
 
   const copy = async () => {
@@ -33,18 +34,30 @@ export function CopyEmail({ email }: { email: string }) {
       <button
         type="button"
         onClick={copy}
-        className="zro-copy text-[0.875rem]"
+        className="zro-copy text-[0.875rem] inline-flex items-center gap-1.5"
         aria-label={`Copy email address ${email}`}
       >
-        {email}
+        <span>{email}</span>
+        {state === "copied" ? (
+          <Check className="h-3.5 w-3.5 text-emerald-400 animate-in fade-in" aria-hidden="true" />
+        ) : null}
       </button>
       <span
         role="status"
         aria-live="polite"
         data-show={state !== "idle"}
-        className="zro-copy-status"
+        className="zro-copy-status inline-flex items-center gap-1"
       >
-        {state === "copied" ? "Copied" : state === "failed" ? "Opening mail" : ""}
+        {state === "copied" ? (
+          <>
+            <Check className="h-3 w-3 text-emerald-400" aria-hidden="true" />
+            <span>Copied to clipboard</span>
+          </>
+        ) : state === "failed" ? (
+          "Opening mail"
+        ) : (
+          ""
+        )}
       </span>
     </span>
   );
