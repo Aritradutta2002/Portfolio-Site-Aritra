@@ -81,4 +81,28 @@
   - Next.js build: Clean in 14.3s; Home route first load JS: 184 kB (0 kB delta from baseline 184 kB).
 - **Open questions:** None. All Phase 2 acceptance criteria met. Ready for Phase 3.
 
+### Phase 3 — Design direction and global systems (2026-11-05)
+- **Branch:** `feat/portfolio-p03-design`
+- **What changed:**
+  - Locked typography system: Geist Sans & Geist Mono via `next/font/google` (`display: 'swap'`).
+  - Added clamp-based responsive type scale into `portfolio/tailwind.config.cjs` (`scale-display`, `scale-h2`, `scale-h3`, `scale-body`, `scale-badge`).
+  - Added hairline `--border` CSS variable to `:root` (light) and `.dark` in `portfolio/src/app/globals.css`.
+  - Built subtle atmospheric grain overlay (`portfolio/src/components/GrainOverlay.tsx`) with pure SVG fractal noise (3.5% opacity, `pointer-events: none`, 0 network requests).
+  - Built bespoke interactive cursor (`portfolio/src/components/Cursor.tsx`):
+    - Smooth outer ring (`w-7 h-7` to `w-11 h-11` on links, `w-15 h-15` on view triggers) + precise inner dot.
+    - SSR-safe fine-pointer gate via `usePointerFine()` (never mounts on touch/coarse devices).
+    - Preserves native text caret on inputs/textareas (`input, textarea, select, [contenteditable]`).
+    - Bypassed completely under `prefers-reduced-motion`.
+  - Built page route enter transition (`portfolio/src/app/template.tsx`) with opacity and translateY animation (disabled under reduced motion).
+  - Created comprehensive design system guide in `docs/DESIGN.md` (colors, typography, rhythm, motion, cursor, state matrix, do/don't rules).
+  - Mounted `GrainOverlay` and `Cursor` in `portfolio/src/app/layout.tsx`.
+  - Captured responsive screenshots via `gstack browse` at 375px, 768px, and 1440px in both dark and light modes into `docs/screenshots/phase-03/`.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 10.9s; Home route first load JS: 184 kB (0 kB delta from baseline 184 kB).
+  - Console errors: 0
+- **Open questions:** Pending user approval of design direction and screenshots before proceeding to Phase 4 (Navigation).
+
+
 

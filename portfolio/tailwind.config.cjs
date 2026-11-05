@@ -41,7 +41,7 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-geist-mono)', 'var(--font-fira-code)', 'monospace'],
-        display: ['var(--font-display)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-geist-sans)', 'var(--font-display)', 'system-ui', 'sans-serif'],
         /* Zro datasheet — scoped so the legacy sites keep their own typefaces. */
         'ds-sans': ['var(--font-ds-sans)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         'ds-mono': ['var(--font-ds-mono)', 'var(--font-geist-mono)', 'ui-monospace', 'monospace'],
@@ -75,6 +75,12 @@ module.exports = {
       },
       /* Modular type scale — 1.25 ratio */
       fontSize: {
+        /* Plan.md Phase 3 clamp() typography scale */
+        'scale-display': ['clamp(2.5rem, 5vw, 4.25rem)', { lineHeight: '1.05', letterSpacing: '-0.03em', fontWeight: '700' }],
+        'scale-h2': ['clamp(1.75rem, 3.5vw, 2.5rem)', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'scale-h3': ['clamp(1.125rem, 2vw, 1.35rem)', { lineHeight: '1.3', fontWeight: '600' }],
+        'scale-body': ['1rem', { lineHeight: '1.6', fontWeight: '400' }],
+        'scale-badge': ['0.75rem', { lineHeight: '1.4', letterSpacing: '0.08em', fontWeight: '500' }],
         xs:   ['0.8rem',   { lineHeight: '1.6' }],
         sm:   ['1rem',     { lineHeight: '1.7' }],
         base: ['1.25rem',  { lineHeight: '1.7' }],

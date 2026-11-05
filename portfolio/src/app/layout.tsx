@@ -6,6 +6,8 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 import SmoothScroll from '@/components/SmoothScroll'
 import MotionProvider from '@/components/providers/MotionProvider'
 import ScrollProgress from '@/components/ScrollProgress'
+import GrainOverlay from '@/components/GrainOverlay'
+import Cursor from '@/components/Cursor'
 
 /* Variable display + body fonts, self-hosted via next/font (no CDN). */
 const geistSans = Geist({
@@ -88,6 +90,8 @@ export default function RootLayout({
             disableTransitionOnChange={false}
           >
             <MotionProvider>
+              <GrainOverlay />
+              <Cursor />
               <ScrollProgress />
               <SmoothScroll>
                 {children}

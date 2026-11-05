@@ -29,7 +29,8 @@
   --aurora-3: #F472B6; /* pink   */
   --aurora-text: #6D28D9; /* text-safe accent in light */
 
-  /* Glass */
+  /* Glass & Hairlines */
+  --border: rgba(0, 0, 0, 0.08);
   --glass-bg: rgba(255, 255, 255, 0.62);
   --glass-border: rgba(255, 255, 255, 0.9);
   --glass-shadow: 0 8px 32px rgba(13, 16, 40, 0.10);
@@ -94,7 +95,8 @@
   --aurora-3: #F472B6;
   --aurora-text: #A78BFA;
 
-  /* Glass */
+  /* Glass & Hairlines */
+  --border: rgba(255, 255, 255, 0.08);
   --glass-bg: rgba(255, 255, 255, 0.04);
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
