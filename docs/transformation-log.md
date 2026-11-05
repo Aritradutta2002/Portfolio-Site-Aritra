@@ -147,6 +147,27 @@
   - Console errors: 0
 - **Open questions:** None. All Phase 5 acceptance criteria satisfied.
 
+### Phase 6 — "Ask my résumé" pill (2026-11-05)
+- **Branch:** `feat/portfolio-p06-ai-pill`
+- **What changed:**
+  - Preserved backend and API routes 100% untouched (`/api/chat` and `rateLimit.ts` untouched; zero backend diff).
+  - Built bespoke in-situ expanding pill UI (`portfolio/src/components/zro/HeroChatbot.tsx`) with Framer Motion layout animations:
+    - **Collapsed state:** Centered, subtle pulsing frosted pill with "Ask my résumé · AI Companion" and live quota pill (`10/10 Daily` in emerald or red when exhausted).
+    - **Expanded state:** Smooth layout expansion into glass console (`max-w-2xl`) containing top status row, thread history, input form with `Enter` submit, and quick-prompt category chips.
+  - Keyboard accessibility: `Enter` sends query, `Escape` collapses back to pill.
+  - Streaming answer area: `max-h-[320px] overflow-y-auto` with `data-lenis-prevent`.
+  - Screen reader accessibility: persistent live region with `role="status" aria-live="polite" aria-atomic="true"`.
+  - Quota and error handling: styled red warning banner when `remainingQueries === 0` ("Daily question quota reached. Resets at 00:00 UTC").
+  - Captured before/after screenshots in `docs/screenshots/phase-06/`.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 8.9s; Home route first load JS: 197 kB.
+  - Console errors: 0
+  - Backend files modified: 0
+- **Open questions:** None. All Phase 6 acceptance criteria satisfied.
+
+
 
 
 
