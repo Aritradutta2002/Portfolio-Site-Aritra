@@ -3,6 +3,6 @@ import type { MetadataRoute } from "next";
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [{ userAgent: "*", allow: "/", disallow: ["/api/", "/no-stalking"] }],
-    sitemap: "https://www.aritradutta.tech/sitemap.xml",
+    sitemap: "https://www.aritrodutta.tech/sitemap.xml",
   };
 }

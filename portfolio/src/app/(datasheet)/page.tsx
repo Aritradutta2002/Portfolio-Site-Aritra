@@ -22,17 +22,17 @@ const DESCRIPTION =
   "Aritra Dutta — Full Stack Application Engineer at TCS. Java 21 microservices, Azure PaaS migrations and AI platforms, with up to 20× faster APIs.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.aritradutta.tech"),
+  metadataBase: new URL("https://www.aritrodutta.tech"),
   title: TITLE,
   description: DESCRIPTION,
   keywords:
     "Aritra Dutta, Java 21, Spring Boot 4, microservices, Azure PaaS, AWS Transform, LangChain, full stack engineer, TCS, portfolio, resume",
   alternates: {
-    canonical: "https://www.aritradutta.tech/",
+    canonical: "https://www.aritrodutta.tech/",
   },
   openGraph: {
     type: "profile",
-    url: "https://www.aritradutta.tech/",
+    url: "https://www.aritrodutta.tech/",
     siteName: "Aritra Dutta",
     title: TITLE,
     description: DESCRIPTION,
@@ -51,8 +51,8 @@ const PERSON_JSON_LD = {
   "@type": "Person",
   name: PORTFOLIO_HEADER.name,
   jobTitle: PORTFOLIO_HEADER.role,
-  url: "https://www.aritradutta.tech/",
-  image: "https://www.aritradutta.tech/aritra-portrait.webp",
+  url: "https://www.aritrodutta.tech/",
+  image: "https://www.aritrodutta.tech/aritra-portrait.webp",
   email: `mailto:${CONTACT_LINKS.email}`,
   worksFor: { "@type": "Organization", name: PORTFOLIO_HEADER.company },
   address: {
@@ -70,7 +70,7 @@ const PERSON_JSON_LD = {
 
 export default function PortfolioHomePage() {
   return (
-    <div className="zro-root luxe-grain relative min-h-screen text-zro-ink">
+    <div id="top" className="zro-root luxe-grain relative min-h-screen text-zro-ink">
       <Backdrop />
       <a
         href="#about"

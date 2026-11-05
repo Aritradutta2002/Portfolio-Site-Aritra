@@ -10,7 +10,7 @@ export const resumeData = {
     { label: 'Gmail',     href: 'mailto:aritradutta049@gmail.com',                         icon: '✉' },
     { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/aritra-dutta-rick20/',        icon: '🔗' },
     { label: 'GitHub',    href: 'https://github.com/Aritradutta2002',                      icon: '⌥' },
-    { label: 'Portfolio', href: 'https://www.aritradutta.tech/',                           icon: '🌐' },
+    { label: 'Portfolio', href: 'https://www.aritrodutta.tech/',                           icon: '🌐' },
     { label: 'LeetCode',  href: 'https://leetcode.com/u/Ari2001/',                         icon: '⚡' },
     { label: 'CodeChef',  href: 'https://www.codechef.com/users/interover01',              icon: '🍴' },
   ],
@@ -25,7 +25,7 @@ export const resumeData = {
     { category: 'Frameworks & Libraries', items: 'Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, REST APIs, Microservices, LangChain, React, Angular, Tailwind CSS' },
     { category: 'Languages',             items: 'English, Hindi, Bengali' },
     { category: 'Programming Languages', items: 'Java, Python, TypeScript, SQL' },
-    { category: 'Soft Skills',           items: 'Agile, Scrum, Jira, Jile, Code Review' },
+    { category: 'Soft Skills',           items: 'Agile, Scrum, Jira, TCS Jile (Agile), Code Review' },
     { category: 'Tools & Platforms',     items: 'AWS, AWS Transform, Azure PaaS, Docker, Jenkins, Git, Maven, SonarQube, Tomcat, JBoss, GitHub Copilot, CI/CD' },
   ],
 

@@ -309,7 +309,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
   },
   {
     domain: "Practices",
-    items: ["Agile", "Scrum", "Jira", "Jile", "Code Review"],
+    items: ["Agile", "Scrum", "Jira", "TCS Jile (Agile)", "Code Review"],
   },
   {
     domain: "Spoken languages",

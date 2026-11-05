@@ -83,7 +83,7 @@
       "Claude Code",
       "CI/CD"
     ],
-    "Methodologies": ["Agile", "Scrum", "Jira", "Jile", "Code Review"]
+    "Methodologies": ["Agile", "Scrum", "Jira", "TCS Jile (Agile)", "Code Review"]
   },
   "spokenLanguages": ["English", "Hindi", "Bengali"],
   "links": {

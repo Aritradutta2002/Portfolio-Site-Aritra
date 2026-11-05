@@ -42,7 +42,7 @@ const skillCategories = [
   },
 ]
 
-const extraTech = ['Spring MVC', 'Spring Data JPA', 'Spring Security', 'Hibernate', 'REST APIs', 'Microservices', 'JUnit 5', 'Mockito', 'Maven', 'SonarQube', 'Tomcat', 'JBoss', 'Kafka', 'Tailwind CSS', 'Agile/Scrum', 'Jira', 'Jile', 'Code Review', 'GitHub Copilot', 'CI/CD', 'Oracle Database', 'MySQL']
+const extraTech = ['Spring MVC', 'Spring Data JPA', 'Spring Security', 'Hibernate', 'REST APIs', 'Microservices', 'JUnit 5', 'Mockito', 'Maven', 'SonarQube', 'Tomcat', 'JBoss', 'Kafka', 'Tailwind CSS', 'Agile/Scrum', 'Jira', 'TCS Jile (Agile)', 'Code Review', 'GitHub Copilot', 'CI/CD', 'Oracle Database', 'MySQL']
 
 const aiTech = ['Generative AI', 'RAG', 'LangChain', 'LLM Integration']
 

@@ -43,6 +43,7 @@ const datasheetMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.aritrodutta.tech"),
   title: "Aritra Dutta | Portfolio",
   description: "Full Stack Application Engineer at TCS with 2+ years building Java microservices, AI-powered features, and cloud platforms. 700+ problems solved, LeetCode 1672.",
   keywords: "Aritra Dutta, Full Stack Application Engineer, Java, Spring Boot, LangChain, React, AWS, Portfolio, TCS, Competitive Programming, LeetCode",
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://aritradutta.dev",
+    url: "https://www.aritrodutta.tech/",
     title: "Aritra Dutta | Full Stack Application Engineer Portfolio",
     description: "Full Stack Application Engineer at TCS with 2+ years. Java microservices, AI-powered features with LangChain, 20x API performance gains.",
     siteName: "Aritra Dutta Portfolio",

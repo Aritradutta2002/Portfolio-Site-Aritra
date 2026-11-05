@@ -31,3 +31,20 @@
   - Initialized `AGENTS.md` and `docs/transformation-log.md`.
 - **Perf (mobile 4x CPU):** LCP < 2.5s budget, total home route JS 184 kB, shared JS 102 kB.
 - **Open questions:** None. Ready to proceed to Phase 1.
+
+### Phase 1 — Correctness fixes (2026-11-05)
+- **Branch:** `feat/portfolio-p01-fixes`
+- **What changed:**
+  - Standardized domain to `https://www.aritrodutta.tech` across `page.tsx`, `layout.tsx`, `sitemap.ts`, `robots.ts`, `resumeData.ts`, and JSON-LD schema.
+  - Added 301 edge redirects in `next.config.mjs` for non-canonical domains (`aritradutta.tech`, `www.aritradutta.tech`, apex `aritrodutta.tech`).
+  - Fixed anchor navigation: Added `Experience` (`#experience`) and `Education` (`#education`) to desktop nav and mobile sheet in `Navbar.tsx`, synchronizing with `SectionRail.tsx`.
+  - Added explicit `#top` to root container in `page.tsx` for footer back-to-top return.
+  - Added `scroll-mt-20` on `<div id="experience">`.
+  - Fixed copy typo in 4 content/catalog files: `Jile` → `TCS Jile (Agile)`.
+  - Verified job titles (Hero: "Full Stack Application Engineer", Experience: "System Engineer") remain preserved per D4.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 10.7s; Home route first load JS: 184 kB (unchanged, 0 kB delta).
+- **Open questions:** None. All Phase 1 Acceptance criteria satisfied. Ready for Phase 2.
+

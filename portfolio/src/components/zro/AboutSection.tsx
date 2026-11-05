@@ -59,7 +59,7 @@ export function AboutSection() {
           </div>
         </div>
 
-        <div id="experience" className="mt-10">
+        <div id="experience" className="mt-10 scroll-mt-20">
           <div
             data-reveal
             className="flex flex-wrap items-end justify-between gap-3 border-b border-zro-line pb-4"
