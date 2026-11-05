@@ -3132,6 +3132,11 @@ html:not(.dark) .zro-exp-live {
   }
 }
 
+.zro-pillar:active {
+  background: rgb(var(--zro-surface-2));
+  transform: scale(0.99);
+}
+
 .zro-pillar-icon {
   display: inline-flex;
   width: 1.75rem;

@@ -167,6 +167,22 @@
   - Backend files modified: 0
 - **Open questions:** None. All Phase 6 acceptance criteria satisfied.
 
+### Phase 7 — About and Experience (2026-11-05)
+- **Branch:** `feat/portfolio-p07-experience`
+- **What changed:**
+  - About section: Dedicated solely to editorial narrative, profile card, and "Right now" current engineering focus. Eliminated duplicate quantitative metrics (20×, 700+, 1672, 8.79) now consolidated in the Technical Proof Ribbon.
+  - Wrapped pull quote in once-only subtle `Reveal` animation (`portfolio/src/components/zro/about/StoryPanel.tsx`).
+  - TCS Experience block: Maintained the 4 key technical achievements (Microservices modernisation, Azure PaaS migration, API & database tuning, DevOps & quality gates).
+  - Expand/collapse for full responsibilities uses smooth CSS grid transition (`grid-template-rows: 0fr -> 1fr`) with zero layout jump; keyboard accessible with `aria-expanded` and `aria-controls`.
+  - Added `:active` touch feedback for pillar cards in `portfolio/src/styles/datasheet.css`, ensuring cursor spotlight runs only on fine-pointer devices.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors
+  - Typecheck: 0 errors
+  - Next.js build: Clean in 11.1s; Home route first load JS: 197 kB.
+  - Console errors: 0
+- **Open questions:** None. All Phase 7 acceptance criteria satisfied.
+
+
 
 
 

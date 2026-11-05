@@ -1,5 +1,6 @@
 import { Sparkles, ArrowUpRight } from "lucide-react";
 import { Tag } from "../ui/Tag";
+import { Reveal } from "@/components/motion/Reveal";
 
 const FOCUS = [
   "Java 21",
@@ -27,13 +28,15 @@ export function StoryPanel() {
         </span>
       </div>
 
-      <blockquote className="zro-story-quote mt-6">
-        <span aria-hidden="true" className="zro-story-mark">
-          &ldquo;
-        </span>
-        I make the systems companies already depend on{" "}
-        <em>faster, safer, and ready for what comes next.</em>
-      </blockquote>
+      <Reveal y={12} delay={0.08}>
+        <blockquote className="zro-story-quote mt-6">
+          <span aria-hidden="true" className="zro-story-mark">
+            &ldquo;
+          </span>
+          I make the systems companies already depend on{" "}
+          <em>faster, safer, and ready for what comes next.</em>
+        </blockquote>
+      </Reveal>
 
       <div className="zro-story-copy mt-6 space-y-4">
         <p>
