@@ -5838,3 +5838,28 @@ html.js .zro-edu-card.is-visible .zro-edu-meter-fill {
     transition: none;
   }
 }
+
+/* ── Phase 14 Performance & Low-Power Optimizations ────────────────────── */
+
+/* Below-the-fold content visibility for faster initial paint & layout */
+#skills,
+#education {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 700px;
+}
+
+/* Low-power downgrade overrides */
+html[data-low-power="true"] [data-tilt],
+html[data-low-power="true"] .zro-tilt {
+  transform: none !important;
+  transition: none !important;
+}
+
+html[data-low-power="true"] [data-magnetic] {
+  transform: none !important;
+  transition: none !important;
+}
+
+html[data-low-power="true"] .animate-aurora-bg {
+  animation: none !important;
+}

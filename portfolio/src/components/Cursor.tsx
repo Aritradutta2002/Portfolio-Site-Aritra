@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
 import { usePointerFine } from '@/hooks/usePointerFine';
+import { useLowPower } from '@/hooks/useLowPower';
 
 type CursorState = 'default' | 'link' | 'view' | 'hidden';
 
 export function Cursor() {
   const isFinePointer = usePointerFine();
   const shouldReduceMotion = useReducedMotion();
+  const isLowPower = useLowPower();
   const [cursorState, setCursorState] = useState<CursorState>('default');
   const [isVisible, setIsVisible] = useState(false);
 
@@ -20,7 +22,7 @@ export function Cursor() {
   const springY = useSpring(mouseY, { stiffness: 450, damping: 30, mass: 0.5 });
 
   useEffect(() => {
-    if (!isFinePointer || shouldReduceMotion) return;
+    if (!isFinePointer || shouldReduceMotion || isLowPower) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
@@ -66,10 +68,10 @@ export function Cursor() {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [isFinePointer, shouldReduceMotion, isVisible, mouseX, mouseY]);
+  }, [isFinePointer, shouldReduceMotion, isLowPower, isVisible, mouseX, mouseY]);
 
-  // Never render on touch, non-fine pointers, or under reduced motion
-  if (!isFinePointer || shouldReduceMotion || !isVisible) {
+  // Never render on touch, non-fine pointers, low-power devices, or under reduced motion
+  if (!isFinePointer || shouldReduceMotion || isLowPower || !isVisible) {
     return null;
   }
 

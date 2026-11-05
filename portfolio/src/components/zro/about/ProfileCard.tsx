@@ -37,7 +37,7 @@ export function ProfileCard() {
 
       <figure className="zro-profile-media relative mt-4 aspect-[4/3.85] w-full overflow-hidden border border-zro-line bg-zro-surface">
         <Image
-          src="/aritra-memoji.jpg"
+          src="/aritra-memoji.webp"
           alt={`Illustrated avatar of ${PORTFOLIO_HEADER.name}`}
           fill
           sizes="(max-width: 1024px) 100vw, 380px"

@@ -132,7 +132,8 @@ export function MotionController() {
         spot.style.setProperty("--my", `${(event.clientY - rect.top).toFixed(1)}px`);
       }
 
-      if (reduced) {
+      if (reduced || document.documentElement.dataset.lowPower === "true") {
+        resetMagnet();
         resetTilt();
         return;
       }

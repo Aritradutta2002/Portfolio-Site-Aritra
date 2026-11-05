@@ -311,6 +311,32 @@
   - Console errors: 0
 - **Open questions:** None. All Phase 13 acceptance criteria satisfied.
 
+---
+
+### Phase 14 — Performance and Polish (2026-11-05)
+- **Branch:** `feat/portfolio-p14-perf`
+- **What changed:**
+  - Low-power mode detection (`portfolio/src/hooks/useLowPower.ts`):
+    - Detects `navigator.hardwareConcurrency <= 4`, `navigator.connection?.saveData`, or `navigator.deviceMemory <= 4`.
+    - Automatically sets `document.documentElement.dataset.lowPower = "true"`.
+  - Animation loop and background downgrades:
+    - `portfolio/src/components/ui/animated-rays.tsx`: Suspends `animate-aurora-bg` when `isLowPower` is detected or offscreen, falling back to a static radial gradient.
+    - `portfolio/src/components/Cursor.tsx`: Completely disables spring follower under low power or non-fine pointer.
+    - `portfolio/src/components/zro/MotionController.tsx`: Automatically resets and skips 3D tilt and magnetic offset tracking under low-power mode or reduced motion.
+  - Layout rendering optimization (`portfolio/src/styles/datasheet.css`):
+    - Added `content-visibility: auto` and `contain-intrinsic-size: 1px 700px` on long below-the-fold sections (`#skills`, `#education`).
+    - Added CSS overrides for `html[data-low-power="true"]` to guarantee zero GPU overhead on 3D tilt and aurora rays.
+  - Asset optimizations:
+    - Converted `aritra-memoji.jpg` (130 kB) to `aritra-memoji.webp` (31.8 kB, 75.6% size reduction); updated `ProfileCard.tsx`.
+    - Verified single animation engine (`framer-motion` 12.23.16).
+    - Verified LCP hero portrait preload priority with accurate responsive `sizes`.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors, 0 warnings
+  - Typecheck: 0 errors
+  - Build: Clean (21/21 static pages generated)
+  - First Load JS (`/`): 207 kB (shared JS: 102 kB)
+- **Open questions:** None. All Phase 14 acceptance criteria satisfied.
+
 
 
 

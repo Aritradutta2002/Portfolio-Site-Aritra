@@ -3,6 +3,7 @@
 import React, { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useInViewPause } from '@/hooks/useInViewPause';
+import { useLowPower } from '@/hooks/useLowPower';
 
 export interface AnimatedRaysProps {
   className?: string;
@@ -13,11 +14,13 @@ export interface AnimatedRaysProps {
  * Refactored with:
  * - Central dark radial vignette mask (resolves HR-4 contrast)
  * - useInViewPause to suspend execution when offscreen
+ * - Low-power detection (downgrades to static background on low-spec/data-saver devices)
  * - Static CSS gradient fallback on mobile (<768px) and reduced-motion
  */
 export function AnimatedRays({ className }: AnimatedRaysProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInViewPause(containerRef);
+  const isLowPower = useLowPower();
 
   return (
     <div
@@ -29,7 +32,7 @@ export function AnimatedRays({ className }: AnimatedRaysProps) {
       <div
         className={cn(
           'absolute inset-0 opacity-40 dark:opacity-30 transition-opacity duration-700',
-          isInView ? 'animate-aurora-bg' : ''
+          isInView && !isLowPower ? 'animate-aurora-bg' : ''
         )}
         style={{
           backgroundImage: `
