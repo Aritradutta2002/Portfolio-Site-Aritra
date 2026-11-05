@@ -87,4 +87,15 @@ test.describe("Portfolio Smoke Tests", () => {
     // Verify main content is immediately visible without blocking loader
     await expect(page.locator("h1")).toBeVisible();
   });
+
+  test("zero horizontal scroll at 320px mobile viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.goto("/");
+    await page.waitForLoadState("domcontentloaded");
+
+    const scrollWidth = await page.evaluate(
+      () => document.documentElement.scrollWidth
+    );
+    expect(scrollWidth).toBeLessThanOrEqual(320);
+  });
 });

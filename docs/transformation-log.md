@@ -337,6 +337,31 @@
   - First Load JS (`/`): 207 kB (shared JS: 102 kB)
 - **Open questions:** None. All Phase 14 acceptance criteria satisfied.
 
+---
+
+### Phase 15 — QA, Release & Post-Launch Verification (2026-11-05)
+- **Branch:** `feat/portfolio-p15-release`
+- **What changed:**
+  - End-to-end verification and release packaging:
+    - Executed all acceptance checks from `Plan.md` §10 (Performance & Accessibility) and §11 (QA & Cross-Device).
+    - Added automated Playwright test for 320px mobile viewport in `portfolio/e2e/smoke.spec.ts` proving zero horizontal overflow (`scrollWidth <= 320px`).
+    - Verified all 8 automated Playwright tests pass across desktop Chromium and mobile viewports (100% pass rate).
+    - Confirmed automated `@axe-core/playwright` accessibility checks pass with 0 critical WCAG AA violations on both `/` and `/classic`.
+  - Protected files diff check:
+    - Diffed `portfolio/src/app/api/chat/route.ts`, `portfolio/src/lib/rateLimit.ts`, and `portfolio/public/resume.pdf` against baseline commit `caa9904`. Diff is 0 bytes (100% unchanged).
+  - Alternate routes verification:
+    - Confirmed `/desktop` and `/classic` load cleanly with 200 OK and are reachable via Navbar and Footer.
+  - Documentation and release deliverables:
+    - Produced comprehensive `docs/RELEASE.md` containing adopted component registry, before/after metrics, verification matrix, rollback procedures, and week-1 post-launch checklist.
+- **Perf (mobile 4x CPU):**
+  - Lint: 0 errors, 0 warnings
+  - Typecheck: 0 errors
+  - Build: 21/21 static pages clean
+  - Playwright E2E: 8/8 passed (desktop + mobile)
+  - Console errors: 0
+  - CLS: 0.00
+- **Open questions:** None. All 16 phases (0 through 15) complete and release-ready.
+
 
 
 
